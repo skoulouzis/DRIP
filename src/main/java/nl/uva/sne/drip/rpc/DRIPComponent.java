@@ -20,27 +20,17 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author S. Koulouzis.
  */
-@Component
-@RestController
 class DRIPComponent {
-    
-    @Autowired
-    @Value("${message.broker.host}")
-    private String messageBrokerHost;
 
     private Connection connection;
     private Channel channel;
 
-    private void connect() throws IOException, TimeoutException {
+    private void connect(String messageBrokerHost) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(messageBrokerHost);
 
@@ -55,9 +45,9 @@ class DRIPComponent {
     /**
      * @return the channel
      */
-    public Channel getChannel() throws IOException, TimeoutException {
+    public Channel getChannel(String messageBrokerHost) throws IOException, TimeoutException {
         if (channel == null) {
-            connect();
+            connect(messageBrokerHost);
         }
         return channel;
     }

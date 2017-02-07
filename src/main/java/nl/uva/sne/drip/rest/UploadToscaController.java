@@ -15,13 +15,9 @@
  */
 package nl.uva.sne.drip.rest;
 
-import nl.uva.sne.drip.rpc.Panner;
-import java.io.BufferedOutputStream;
+import nl.uva.sne.drip.rpc.Planner;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,21 +52,17 @@ public class UploadToscaController {
         if (!file.isEmpty()) {
             try {
 
-                System.err.println(messageBrokerHost);
-
                 String originalFileName = file.getOriginalFilename();
                 String name = originalFileName + System.currentTimeMillis();
                 File targetToscaFile = new File(inputToscaFolderPath + File.separator + name);
                 file.transferTo(targetToscaFile);
 
-                Panner planner = new Panner();
-                planner.plan(targetToscaFile);
+                Planner planner = new Planner(messageBrokerHost);
+                String returned = planner.plan(targetToscaFile);
+                System.err.println(returned);
+                planner.close();
                 return "You successfully uploaded " + name + " into " + name + "-uploaded !";
-            } catch (IOException ex) {
-                return "Upload failed. " + ex.getMessage();
-            } catch (IllegalStateException ex) {
-                return "Upload failed. " + ex.getMessage();
-            } catch (TimeoutException ex) {
+            } catch (IOException | IllegalStateException | TimeoutException | InterruptedException ex) {
                 Logger.getLogger(UploadToscaController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
