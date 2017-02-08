@@ -19,13 +19,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+//import javax.persistence.Column;
+//import javax.persistence.Entity;
+//import javax.persistence.GeneratedValue;
+//import javax.persistence.GenerationType;
+//import javax.persistence.Id;
+//import javax.persistence.Temporal;
+//import javax.persistence.TemporalType;
 
 /**
  *
@@ -33,21 +33,21 @@ import javax.persistence.TemporalType;
  *
  * @author S. Koulouzis.
  */
-@Entity
+//@Entity
 public class Request implements IRequest, Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.S")
-    @Temporal(TemporalType.DATE)
+//    @Temporal(TemporalType.DATE)
     private Date creationDate;
 
-    @Column
+//    @Column
     private Status status;
 
-    @Column
+//    @Column
     private List arguments;
 
     @Override

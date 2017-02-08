@@ -11,5 +11,6 @@
   <modules>
     <module>drip-api</module>
     <module>drip-commons</module>
+    <module>drip-planner</module>
   </modules>
 </project>

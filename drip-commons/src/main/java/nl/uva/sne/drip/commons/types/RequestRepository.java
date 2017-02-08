@@ -20,13 +20,12 @@ package nl.uva.sne.drip.commons.types;
  * @author S. Koulouzis
  */
 import java.util.List;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+//import org.springframework.data.repository.PagingAndSortingRepository;
+//import org.springframework.data.repository.query.Param;
+//import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(collectionResourceRel = "requests", path = "requests")
-public interface RequestRepository extends PagingAndSortingRepository<Request, Long> {
+//@RepositoryRestResource(collectionResourceRel = "requests", path = "requests")
+public interface RequestRepository {//extends PagingAndSortingRepository<Request, Long> {
 
-    List<Request> findById(@Param("id") String id);
-
+//    List<Request> findById(@Param("id") String id);
 }
