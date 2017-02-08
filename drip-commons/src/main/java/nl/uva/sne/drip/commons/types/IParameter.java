@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 S. Koulouzis.
+ * Copyright 2017 S. Koulouzis, Wang Junchao, Huan Zhou, Yang Hu 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.rest;
+package nl.uva.sne.drip.commons.types;
 
 /**
  *
- * @author S. Koulouzis.
+ * @author S. Koulouzis
  */
-interface IFileArgument {
+public interface IParameter {
 
-    public void setID(String id);
+    public void setName(String name);
 
-    public String getID();
+    public String getName();
 
-    public String getURL();
+    public String getValue();
 
-    public void setURL(String url);
-
-    public String getEncoding();
-
-    public void setEncoding(String encoding);
-
-    public String getContents();
-
-    public void setContents(String contents);
+    public void setValue(String value);
 
 }

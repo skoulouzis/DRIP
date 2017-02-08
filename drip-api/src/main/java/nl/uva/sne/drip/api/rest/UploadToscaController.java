@@ -15,11 +15,11 @@
  */
 package nl.uva.sne.drip.api.rest;
 
+import nl.uva.sne.drip.commons.types.FileParameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nl.uva.sne.drip.api.rpc.Planner;
+import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,25 +28,16 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-import nl.uva.sne.drip.commons.types.IRequest;
-import nl.uva.sne.drip.commons.types.Request;
+import nl.uva.sne.drip.commons.types.Message;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import nl.uva.sne.drip.commons.types.IMessage;
 
 /**
  *
@@ -71,22 +62,33 @@ public class UploadToscaController {
             try {
 
                 String originalFileName = file.getOriginalFilename();
-                String name = originalFileName + System.currentTimeMillis();
-                File targetToscaFile = new File(inputToscaFolderPath + File.separator + name);
-                file.transferTo(targetToscaFile);
+                String name = System.currentTimeMillis() + "_" + originalFileName;
+//                File targetToscaFile = new File(inputToscaFolderPath + File.separator + name);
+//                file.transferTo(targetToscaFile);
 
-                Planner planner = new Planner(messageBrokerHost);
+                Message invokationMessage = new Message();
 
-                Request r = new Request();
-                List args = new ArrayList();
-                FileArgument fileArg = new FileArgument();
-                fileArg.setURL(targetToscaFile.toURI().toString());
-                args.add(targetToscaFile);
-                r.setArguments(args);
-                r.setCreationDate(new Date(System.currentTimeMillis()));
-                r.setStatus(IRequest.Status.SUCCESS);
+                List parameters = new ArrayList();
+                FileParameter fileArgument = new FileParameter();
+                byte[] bytes = file.getBytes();//Files.readAllBytes(Paths.get(targetToscaFile.getAbsolutePath()));
+                String charset = "UTF-8";
+                fileArgument.setValue(new String(bytes, charset));
+                fileArgument.setEncoding(charset);
+                fileArgument.setName(name);
+                parameters.add(fileArgument);
 
-                String returned = planner.plan(r);
+                fileArgument = new FileParameter();
+                bytes = Files.readAllBytes(Paths.get("/home/alogo/Downloads/DRIP/example_a.yml"));
+                fileArgument.setValue(new String(bytes, charset));
+                fileArgument.setEncoding(charset);
+                fileArgument.setName("example_a.yml");
+                parameters.add(fileArgument);
+
+                invokationMessage.setParameters(parameters);
+                invokationMessage.setCreationDate(new Date(System.currentTimeMillis()));
+
+                PlannerCaller planner = new PlannerCaller(messageBrokerHost);
+                String returned = planner.plan(invokationMessage);
 
                 planner.close();
                 return "You successfully uploaded " + name + " into " + name + "-uploaded !";
@@ -98,26 +100,25 @@ public class UploadToscaController {
     }
 
     @RequestMapping(value = "/args", method = RequestMethod.GET)
-    public Request args() {
+    public Message args() {
         try {
-            Request r = new Request();
+            Message r = new Message();
             List args = new ArrayList();
             args.add(1);
             args.add("str");
-            FileArgument targetToscaFile = new FileArgument();
+            FileParameter targetToscaFile = new FileParameter();
             byte[] bytes = Files.readAllBytes(Paths.get("/home/alogo/Downloads/planner_output_all.yml"));
-            targetToscaFile.setContents(new String(bytes, "UTF-8"));
+            targetToscaFile.setValue(new String(bytes, "UTF-8"));
+            targetToscaFile.setName("planner_output_all.yml");
             targetToscaFile.setEncoding("UTF-8");
 
             args.add(targetToscaFile);
-            r.setArguments(args);
+            r.setParameters(args);
             r.setCreationDate(new Date(System.currentTimeMillis()));
-            r.setStatus(IRequest.Status.SUCCESS);
 
-            ObjectMapper mapper = new ObjectMapper();
-            String jsonInString = mapper.writeValueAsString(r);
-            System.err.println(jsonInString);
-
+//            ObjectMapper mapper = new ObjectMapper();
+//            String jsonInString = mapper.writeValueAsString(r);
+//            System.err.println(jsonInString);
             return r;
         } catch (IOException ex) {
             Logger.getLogger(UploadToscaController.class.getName()).log(Level.SEVERE, null, ex);

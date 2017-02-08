@@ -19,9 +19,9 @@ package nl.uva.sne.drip.api.rpc;
  *
  * @author S. Koulouzis.
  */
-class DRIPComponent {
+class DRIPComponentCaller {
 
-    public DRIPComponent(){
+    public DRIPComponentCaller(){
         
     }
 

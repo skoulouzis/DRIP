@@ -34,55 +34,28 @@ import java.util.List;
  * @author S. Koulouzis.
  */
 //@Entity
-public class Request implements IRequest, Serializable {
-
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+public class Message implements IMessage, Serializable {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.S")
 //    @Temporal(TemporalType.DATE)
     private Date creationDate;
 
 //    @Column
-    private Status status;
-
-//    @Column
-    private List arguments;
-
-    @Override
-    public void setID(String id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getID() {
-        return this.id;
-    }
-
+    private List<IParameter> parameters;
+    
     @Override
     public Date getCreationDate() {
         return this.creationDate;
     }
 
     @Override
-    public Status getStatus() {
-        return this.status;
+    public void setParameters(List args) {
+        this.parameters = args;
     }
 
     @Override
-    public void setStatus(Status status) {
-        status = this.status;
-    }
-
-    @Override
-    public void setArguments(List args) {
-        this.arguments = args;
-    }
-
-    @Override
-    public List getArguments() {
-        return this.arguments;
+    public List getParameters() {
+        return this.parameters;
     }
 
     @Override

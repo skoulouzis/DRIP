@@ -16,7 +16,6 @@
 package nl.uva.sne.drip.api.rpc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
 import java.io.IOException;
 
 import com.rabbitmq.client.AMQP;
@@ -25,27 +24,24 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
-import com.rabbitmq.client.RpcClient;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
-import nl.uva.sne.drip.commons.types.Request;
+import nl.uva.sne.drip.commons.types.Message;
 
 /**
  *
  * @author S. Koulouzis.
  */
-public class Planner {
+public class PlannerCaller {
 
     private static final String REQUEST_QUEUE_NAME = "planner_queue";
     private final Connection connection;
     private final Channel channel;
     private final String replyQueueName;
 
-    public Planner(String messageBrokerHost) throws IOException, TimeoutException {
+    public PlannerCaller(String messageBrokerHost) throws IOException, TimeoutException {
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(messageBrokerHost);
@@ -59,7 +55,7 @@ public class Planner {
         replyQueueName = channel.queueDeclare().getQueue();
     }
 
-    public String plan(Request r) throws IOException, TimeoutException, InterruptedException {
+    public String plan(Message r) throws IOException, TimeoutException, InterruptedException {
 
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = mapper.writeValueAsString(r);

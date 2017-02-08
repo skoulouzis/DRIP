@@ -13,35 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.rest;
+package nl.uva.sne.drip.commons.types;
 
 import java.io.Serializable;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 /**
  *
  * @author S. Koulouzis.
  */
-class FileArgument implements IFileArgument, Serializable {
+public class FileParameter implements IFileParameter, IParameter, Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    public static final String NAME = "name";
+    public static final String URL = "url";
+    public static final String VALUE = "value";
+    public static final String ENCODING = "encoding";
+    
     private String url;
     private String encoding;
-    private String contents;
-
-    @Override
-    public void setID(String id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getID() {
-        return this.id;
-    }
+    private String value;
+    private String name;
 
     @Override
     public String getURL() {
@@ -64,13 +54,23 @@ class FileArgument implements IFileArgument, Serializable {
     }
 
     @Override
-    public String getContents() {
-        return this.contents;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
-    public void setContents(String contents) {
-        this.contents = contents;
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public String getValue() {
+        return this.value;
+    }
+
+    @Override
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }

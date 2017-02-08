@@ -22,27 +22,14 @@ import java.util.List;
  *
  * @author S. Koulouzis
  */
-public interface IRequest {
-
-    public enum Status {
-        FAILED,
-        SUCCESS;
-    }
-
-    public void setID(String id);
-
-    public String getID();
-
-    public Date getCreationDate();
+public interface IMessage {
     
-        public void setCreationDate(Date creationDate);
+    public Date getCreationDate();
 
-    public Status getStatus();
+    public void setCreationDate(Date creationDate);
 
-    public void setStatus(Status status);
+    public void setParameters(List args);
 
-    public void setArguments(List args);
-
-    public List getArguments();
+    public List getParameters();
 
 }
