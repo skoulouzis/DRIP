@@ -21,6 +21,11 @@ package nl.uva.sne.drip.commons.types;
  */
 public interface IParameter {
 
+    public static final String NAME = "name";
+    public static final String URL = "url";
+    public static final String VALUE = "value";
+    public static final String ENCODING = "encoding";
+
     public void setName(String name);
 
     public String getName();
@@ -29,4 +34,12 @@ public interface IParameter {
 
     public void setValue(String value);
 
+    public String getURL();
+
+    public void setURL(String url);
+
+    public String getEncoding();
+
+    public void setEncoding(String encoding);
+    
 }

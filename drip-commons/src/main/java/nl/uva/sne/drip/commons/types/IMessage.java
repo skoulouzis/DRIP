@@ -28,8 +28,8 @@ public interface IMessage {
 
     public void setCreationDate(Date creationDate);
 
-    public void setParameters(List args);
+    public void setParameters(List<IParameter> params);
 
     public List getParameters();
-
+    
 }

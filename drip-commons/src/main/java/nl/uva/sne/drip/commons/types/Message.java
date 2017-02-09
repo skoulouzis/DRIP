@@ -49,7 +49,7 @@ public class Message implements IMessage, Serializable {
     }
 
     @Override
-    public void setParameters(List args) {
+    public void setParameters(List<IParameter> args) {
         this.parameters = args;
     }
 

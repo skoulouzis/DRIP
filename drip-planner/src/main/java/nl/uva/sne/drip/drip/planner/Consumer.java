@@ -32,15 +32,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.commons.types.FileParameter;
+import nl.uva.sne.drip.commons.types.Parameter;
 import nl.uva.sne.drip.commons.types.Message;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import nl.uva.sne.drip.commons.types.IFileParameter;
 
 /**
  *
@@ -95,15 +93,15 @@ public class Consumer extends DefaultConsumer {
         for (int i = 0; i < 2; i++) {
             Map<String, String> fileArg = (java.util.LinkedHashMap) request.getParameters().get(i);
 
-            String fileName = fileArg.get(FileParameter.NAME);
+            String fileName = fileArg.get(Parameter.NAME);
             //If not null should be able to use it to download file 
-            String url = fileArg.get(FileParameter.URL);
+            String url = fileArg.get(Parameter.URL);
             if (url != null) {
                 //download
             }
 
-            String encoding = fileArg.get(FileParameter.ENCODING);
-            String value = fileArg.get(FileParameter.VALUE);
+            String encoding = fileArg.get(Parameter.ENCODING);
+            String value = fileArg.get(Parameter.VALUE);
             try (PrintWriter out = new PrintWriter(fileName)) {
                 out.print(value);
             }
@@ -120,7 +118,7 @@ public class Consumer extends DefaultConsumer {
         //We know that in parameters 0-2 we should have files
         for (int i = 0; i < 2; i++) {
             JSONObject arg = (JSONObject) args.get(i);
-            String fileName = (String) arg.get(FileParameter.NAME);
+            String fileName = (String) arg.get(Parameter.NAME);
             //If not null should be able to use it to download file
 
             if (!arg.isNull("url")) {
@@ -128,8 +126,8 @@ public class Consumer extends DefaultConsumer {
                 //download
             }
             //Otherwise get contents as string 
-            String value = (String) arg.get(FileParameter.VALUE);
-            String encoding = (String) arg.get(FileParameter.ENCODING);
+            String value = (String) arg.get(Parameter.VALUE);
+            String encoding = (String) arg.get(Parameter.ENCODING);
 
             try (PrintWriter out = new PrintWriter(fileName)) {
                 out.print(value);
@@ -145,7 +143,7 @@ public class Consumer extends DefaultConsumer {
         List parameters = new ArrayList();
         String charset = "UTF-8";
         for (File f : files) {
-            FileParameter fileParam = new FileParameter();
+            Parameter fileParam = new Parameter();
             byte[] bytes = Files.readAllBytes(Paths.get(f.getAbsolutePath()));
             fileParam.setValue(new String(bytes, charset));
             fileParam.setEncoding(charset);

@@ -21,12 +21,7 @@ import java.io.Serializable;
  *
  * @author S. Koulouzis.
  */
-public class FileParameter implements IFileParameter, IParameter, Serializable {
-
-    public static final String NAME = "name";
-    public static final String URL = "url";
-    public static final String VALUE = "value";
-    public static final String ENCODING = "encoding";
+public class Parameter implements IParameter, Serializable {
     
     private String url;
     private String encoding;

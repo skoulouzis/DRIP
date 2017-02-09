@@ -15,10 +15,8 @@
  */
 package nl.uva.sne.drip.api.rest;
 
-import nl.uva.sne.drip.commons.types.FileParameter;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import nl.uva.sne.drip.commons.types.Parameter;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.commons.types.IParameter;
 import nl.uva.sne.drip.commons.types.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -37,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import nl.uva.sne.drip.commons.types.IMessage;
 
 /**
  *
@@ -69,7 +67,7 @@ public class UploadToscaController {
                 Message invokationMessage = new Message();
 
                 List parameters = new ArrayList();
-                FileParameter fileArgument = new FileParameter();
+                Parameter fileArgument = new Parameter();
                 byte[] bytes = file.getBytes();//Files.readAllBytes(Paths.get(targetToscaFile.getAbsolutePath()));
                 String charset = "UTF-8";
                 fileArgument.setValue(new String(bytes, charset));
@@ -77,7 +75,7 @@ public class UploadToscaController {
                 fileArgument.setName(name);
                 parameters.add(fileArgument);
 
-                fileArgument = new FileParameter();
+                fileArgument = new Parameter();
                 bytes = Files.readAllBytes(Paths.get("/home/alogo/Downloads/DRIP/example_a.yml"));
                 fileArgument.setValue(new String(bytes, charset));
                 fileArgument.setEncoding(charset);
@@ -103,16 +101,26 @@ public class UploadToscaController {
     public Message args() {
         try {
             Message r = new Message();
-            List args = new ArrayList();
-            args.add(1);
-            args.add("str");
-            FileParameter targetToscaFile = new FileParameter();
+            List<IParameter> args = new ArrayList();
+            IParameter intParam = new Parameter();
+            intParam.setValue("1");
+            args.add(intParam);
+            Parameter strParam = new Parameter();
+            strParam.setValue("string");
+            args.add(strParam);
+
+            IParameter targetToscaFile = new Parameter();
             byte[] bytes = Files.readAllBytes(Paths.get("/home/alogo/Downloads/planner_output_all.yml"));
             targetToscaFile.setValue(new String(bytes, "UTF-8"));
             targetToscaFile.setName("planner_output_all.yml");
             targetToscaFile.setEncoding("UTF-8");
-
             args.add(targetToscaFile);
+            
+            IParameter file = new Parameter();
+            file.setName("Dockerfile");
+            file.setURL("https://github.com/QCAPI-DRIP/DRIP-integradation/releases/download/valpha/Dockerfile");
+            args.add(file);
+
             r.setParameters(args);
             r.setCreationDate(new Date(System.currentTimeMillis()));
 
