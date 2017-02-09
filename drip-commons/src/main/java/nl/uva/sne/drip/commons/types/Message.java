@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 //import javax.persistence.Column;
 //import javax.persistence.Entity;
 //import javax.persistence.GeneratedValue;
@@ -36,30 +37,29 @@ import java.util.List;
 //@Entity
 public class Message implements IMessage, Serializable {
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.S")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.S")
 //    @Temporal(TemporalType.DATE)
-    private Date creationDate;
+    private Long creationDate;
 
-//    @Column
-    private List<IParameter> parameters;
-    
+    private List<Parameter> parameters;
+
     @Override
-    public Date getCreationDate() {
+    public Long getCreationDate() {
         return this.creationDate;
     }
 
     @Override
-    public void setParameters(List<IParameter> args) {
-        this.parameters = args;
+    public void setParameters(List<Parameter> parameters) {
+        this.parameters = parameters;
     }
 
     @Override
-    public List getParameters() {
+    public List<Parameter> getParameters() {
         return this.parameters;
     }
 
     @Override
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(Long creationDate) {
         this.creationDate = creationDate;
     }
 

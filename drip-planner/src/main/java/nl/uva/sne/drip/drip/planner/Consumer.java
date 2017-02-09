@@ -65,18 +65,24 @@ public class Consumer extends DefaultConsumer {
         try {
             String message = new String(body, "UTF-8");
             File[] inputFiles;
+            File tempDir = new File(System.getProperty("java.io.tmpdir") + File.separator + this.getClass().getSimpleName() + "-" + Long.toString(System.nanoTime()));
+            if (!(tempDir.mkdirs())) {
+                throw new FileNotFoundException("Could not create output directory: " + tempDir.getAbsolutePath());
+            }
 
             inputFiles = jacksonUnmarshalExample(message);
-            panner.plan(inputFiles[0].getAbsolutePath(), inputFiles[1].getAbsolutePath(), "/tmp/out");
+            panner.plan(inputFiles[0].getAbsolutePath(), inputFiles[1].getAbsolutePath(), tempDir.getAbsolutePath());
             inputFiles = simpleJsonUnmarshalExample(message);
-            List<File> files = panner.plan(inputFiles[0].getAbsolutePath(), inputFiles[1].getAbsolutePath(), "/tmp/out");
+
+            List<File> files = panner.plan(inputFiles[0].getAbsolutePath(), inputFiles[1].getAbsolutePath(), tempDir.getAbsolutePath());
             response = jacksonMarshalExample(files);
             System.err.println(response);
 
             response = simpleJsonMarshalExample(files);
             System.err.println(response);
 
-        } catch (RuntimeException | JSONException ex) {
+        } catch (JSONException | FileNotFoundException ex) {
+            response = ex.getMessage();
             Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             channel.basicPublish("", properties.getReplyTo(), replyProps, response.getBytes("UTF-8"));
@@ -89,50 +95,48 @@ public class Consumer extends DefaultConsumer {
         File[] files = new File[2];
         ObjectMapper mapper = new ObjectMapper();
         Message request = mapper.readValue(message, Message.class);
-        //We know that in parameters 0-1 we should have files
-        for (int i = 0; i < 2; i++) {
-            Map<String, String> fileArg = (java.util.LinkedHashMap) request.getParameters().get(i);
-
-            String fileName = fileArg.get(Parameter.NAME);
-            //If not null should be able to use it to download file 
-            String url = fileArg.get(Parameter.URL);
-            if (url != null) {
-                //download
+        List<Parameter> params = request.getParameters();
+        File inputFile = File.createTempFile("input-", Long.toString(System.nanoTime()));
+        File exampleFile = File.createTempFile("example-", Long.toString(System.nanoTime()));
+        for (Parameter param : params) {
+            if (param.getName().equals("input")) {
+                try (PrintWriter out = new PrintWriter(inputFile)) {
+                    out.print(param.getValue());
+                }
+                files[0] = inputFile;
             }
-
-            String encoding = fileArg.get(Parameter.ENCODING);
-            String value = fileArg.get(Parameter.VALUE);
-            try (PrintWriter out = new PrintWriter(fileName)) {
-                out.print(value);
+            if (param.getName().equals("example")) {
+                try (PrintWriter out = new PrintWriter(exampleFile)) {
+                    out.print(param.getValue());
+                }
+                files[1] = exampleFile;
             }
-            files[i] = new File(fileName);
         }
         return files;
     }
 
-    private File[] simpleJsonUnmarshalExample(String message) throws JSONException, FileNotFoundException {
+    private File[] simpleJsonUnmarshalExample(String message) throws JSONException, FileNotFoundException, IOException {
         File[] files = new File[2];
 
         JSONObject jo = new JSONObject(message);
-        JSONArray args = jo.getJSONArray("parameters");
-        //We know that in parameters 0-2 we should have files
-        for (int i = 0; i < 2; i++) {
-            JSONObject arg = (JSONObject) args.get(i);
-            String fileName = (String) arg.get(Parameter.NAME);
-            //If not null should be able to use it to download file
-
-            if (!arg.isNull("url")) {
-                String url = (String) arg.get("url");
-                //download
+        JSONArray parameters = jo.getJSONArray("parameters");
+        File inputFile = File.createTempFile("input-", Long.toString(System.nanoTime()));
+        File exampleFile = File.createTempFile("example-", Long.toString(System.nanoTime()));
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("input")) {
+                try (PrintWriter out = new PrintWriter(inputFile)) {
+                    out.print(param.get(Parameter.VALUE));
+                }
+                files[0] = inputFile;
             }
-            //Otherwise get contents as string 
-            String value = (String) arg.get(Parameter.VALUE);
-            String encoding = (String) arg.get(Parameter.ENCODING);
-
-            try (PrintWriter out = new PrintWriter(fileName)) {
-                out.print(value);
+            if (name.equals("example")) {
+                try (PrintWriter out = new PrintWriter(exampleFile)) {
+                    out.print(param.get(Parameter.VALUE));
+                }
+                files[1] = exampleFile;
             }
-            files[i] = new File(fileName);
         }
         return files;
     }
@@ -149,10 +153,9 @@ public class Consumer extends DefaultConsumer {
             fileParam.setEncoding(charset);
             fileParam.setName(f.getName());
             parameters.add(fileParam);
-
         }
         responseMessage.setParameters(parameters);
-        responseMessage.setCreationDate(new Date(System.currentTimeMillis()));
+        responseMessage.setCreationDate((System.currentTimeMillis()));
 
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(responseMessage);
@@ -160,7 +163,7 @@ public class Consumer extends DefaultConsumer {
 
     private String simpleJsonMarshalExample(List<File> files) throws JSONException, IOException {
         JSONObject jo = new JSONObject();
-        jo.put("creationDate", new Date(System.currentTimeMillis()));
+        jo.put("creationDate", (System.currentTimeMillis()));
         List parameters = new ArrayList();
         String charset = "UTF-8";
         for (File f : files) {

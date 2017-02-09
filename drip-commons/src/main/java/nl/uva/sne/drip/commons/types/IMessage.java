@@ -23,13 +23,15 @@ import java.util.List;
  * @author S. Koulouzis
  */
 public interface IMessage {
-    
-    public Date getCreationDate();
 
-    public void setCreationDate(Date creationDate);
+    public static final String CREATION_DATE = "creationDate";
 
-    public void setParameters(List<IParameter> params);
+    public Long getCreationDate();
+
+    public void setCreationDate(Long creationDate);
+
+    public void setParameters(List<Parameter> params);
 
     public List getParameters();
-    
+
 }

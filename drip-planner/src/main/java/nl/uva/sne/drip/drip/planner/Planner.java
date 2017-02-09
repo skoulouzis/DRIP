@@ -111,6 +111,7 @@ public class Planner {
         outputFiles.add(new File(outfPath));
         outputFiles.add(new File(allFilePath));
         return outputFiles;
+
     }
 
     private String generateVM(String block, String nodeName, String dockerName, String privateAddress, String role) {

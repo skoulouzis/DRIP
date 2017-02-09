@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.api.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.uva.sne.drip.commons.types.Parameter;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import java.io.IOException;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.commons.types.IParameter;
 import nl.uva.sne.drip.commons.types.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -56,81 +56,55 @@ public class UploadToscaController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public @ResponseBody
     String toscaUpload(@RequestParam("file") MultipartFile file) {
+        PlannerCaller planner = null;
         if (!file.isEmpty()) {
             try {
 
                 String originalFileName = file.getOriginalFilename();
                 String name = System.currentTimeMillis() + "_" + originalFileName;
-//                File targetToscaFile = new File(inputToscaFolderPath + File.separator + name);
-//                file.transferTo(targetToscaFile);
 
                 Message invokationMessage = new Message();
 
                 List parameters = new ArrayList();
                 Parameter fileArgument = new Parameter();
-                byte[] bytes = file.getBytes();//Files.readAllBytes(Paths.get(targetToscaFile.getAbsolutePath()));
+                byte[] bytes = file.getBytes();
                 String charset = "UTF-8";
                 fileArgument.setValue(new String(bytes, charset));
                 fileArgument.setEncoding(charset);
-                fileArgument.setName(name);
+                fileArgument.setName("input");
                 parameters.add(fileArgument);
 
                 fileArgument = new Parameter();
                 bytes = Files.readAllBytes(Paths.get("/home/alogo/Downloads/DRIP/example_a.yml"));
                 fileArgument.setValue(new String(bytes, charset));
                 fileArgument.setEncoding(charset);
-                fileArgument.setName("example_a.yml");
+                fileArgument.setName("example");
                 parameters.add(fileArgument);
 
                 invokationMessage.setParameters(parameters);
-                invokationMessage.setCreationDate(new Date(System.currentTimeMillis()));
+                invokationMessage.setCreationDate((System.currentTimeMillis()));
 
-                PlannerCaller planner = new PlannerCaller(messageBrokerHost);
+                planner = new PlannerCaller(messageBrokerHost);
                 String returned = planner.plan(invokationMessage);
+                ObjectMapper mapper = new ObjectMapper();
+                Message request = mapper.readValue(returned, Message.class);
 
-                planner.close();
+                System.err.println(returned);
+                System.err.println(request.getCreationDate());
+
                 return "You successfully uploaded " + name + " into " + name + "-uploaded !";
             } catch (IOException | IllegalStateException | TimeoutException | InterruptedException ex) {
                 Logger.getLogger(UploadToscaController.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                if (planner != null) {
+                    try {
+                        planner.close();
+                    } catch (IOException | TimeoutException ex) {
+                        Logger.getLogger(UploadToscaController.class.getName()).log(Level.WARNING, null, ex);
+                    }
+                }
             }
         }
         return "Upload failed. 'file' was empty.";
-    }
-
-    @RequestMapping(value = "/args", method = RequestMethod.GET)
-    public Message args() {
-        try {
-            Message r = new Message();
-            List<IParameter> args = new ArrayList();
-            IParameter intParam = new Parameter();
-            intParam.setValue("1");
-            args.add(intParam);
-            Parameter strParam = new Parameter();
-            strParam.setValue("string");
-            args.add(strParam);
-
-            IParameter targetToscaFile = new Parameter();
-            byte[] bytes = Files.readAllBytes(Paths.get("/home/alogo/Downloads/planner_output_all.yml"));
-            targetToscaFile.setValue(new String(bytes, "UTF-8"));
-            targetToscaFile.setName("planner_output_all.yml");
-            targetToscaFile.setEncoding("UTF-8");
-            args.add(targetToscaFile);
-            
-            IParameter file = new Parameter();
-            file.setName("Dockerfile");
-            file.setURL("https://github.com/QCAPI-DRIP/DRIP-integradation/releases/download/valpha/Dockerfile");
-            args.add(file);
-
-            r.setParameters(args);
-            r.setCreationDate(new Date(System.currentTimeMillis()));
-
-//            ObjectMapper mapper = new ObjectMapper();
-//            String jsonInString = mapper.writeValueAsString(r);
-//            System.err.println(jsonInString);
-            return r;
-        } catch (IOException ex) {
-            Logger.getLogger(UploadToscaController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
     }
 }

@@ -21,49 +21,55 @@ import java.io.Serializable;
  *
  * @author S. Koulouzis.
  */
-public class Parameter implements IParameter, Serializable {
-    
+public class Parameter implements Serializable {
+
     private String url;
     private String encoding;
     private String value;
     private String name;
 
-    @Override
+    public static final String NAME = "name";
+    public static final String URL = "url";
+    public static final String VALUE = "value";
+    public static final String ENCODING = "encoding";
+
+//    @Override
     public String getURL() {
         return this.url;
     }
 
-    @Override
+//    @Override
     public void setURL(String url) {
         this.url = url;
     }
 
-    @Override
+//    @Override
     public String getEncoding() {
         return this.encoding;
     }
 
-    @Override
+//    @Override
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
 
-    @Override
+//    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    @Override
+//    @Override
     public String getName() {
         return this.name;
     }
+//
+//    @Override
 
-    @Override
     public String getValue() {
         return this.value;
     }
 
-    @Override
+//    @Override
     public void setValue(String value) {
         this.value = value;
     }
