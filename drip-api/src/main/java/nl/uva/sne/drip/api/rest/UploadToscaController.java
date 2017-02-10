@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -59,7 +58,7 @@ public class UploadToscaController {
         PlannerCaller planner = null;
         if (!file.isEmpty()) {
             try {
-
+                
                 String originalFileName = file.getOriginalFilename();
                 String name = System.currentTimeMillis() + "_" + originalFileName;
 
