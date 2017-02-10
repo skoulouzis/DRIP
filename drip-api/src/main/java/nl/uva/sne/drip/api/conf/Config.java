@@ -30,7 +30,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 })
 
 @EnableWebMvc
-public class AppConfig {
+public class Config {
 
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver createMultipartResolver() {
@@ -39,7 +39,6 @@ public class AppConfig {
 //        resolver.setMaxInMemorySize(0);
 //resolver.setMaxUploadSize(0);
 //resolver.setMaxUploadSizePerFile(0);
-
         return resolver;
     }
 

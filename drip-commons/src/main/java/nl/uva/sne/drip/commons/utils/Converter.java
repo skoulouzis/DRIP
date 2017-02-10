@@ -15,14 +15,20 @@
  */
 package nl.uva.sne.drip.commons.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.events.Event;
 
 /**
  *
@@ -30,17 +36,73 @@ import org.yaml.snakeyaml.Yaml;
  */
 public class Converter {
 
-    public static String yml2Json(String yamlString) {
+    public static String ymlString2Json(String yamlString) {
+        JSONObject jsonObject = new JSONObject(ymlString2Map(yamlString));
+        return jsonObject.toString();
+    }
+
+    public static Map<String, Object> ymlString2Map(String yamlString) {
         Yaml yaml = new Yaml();
-        Map<String, Object> map = (Map<String, Object>) yaml.load(yamlString);
+        return (Map<String, Object>) yaml.load(yamlString);
+    }
+
+    public static Map<String, Object> ymlString2Map(InputStream in) {
+        Yaml yaml = new Yaml();
+        Map<String, Object> map = (Map<String, Object>) yaml.load(in);
+        return map;
+    }
+
+    public static String map2YmlString(Map<String, Object> map) throws JSONException {
+        JSONObject jsonObject = new JSONObject(map);
+        return json2Yml2(jsonObject.toString());
+    }
+
+    public static String map2JsonString(Map<String, Object> map) {
         JSONObject jsonObject = new JSONObject(map);
         return jsonObject.toString();
     }
 
+    public static Map<String, Object> jsonString2Map(String jsonString) throws JSONException {
+        JSONObject jsonObject = new JSONObject(jsonString);
+        return jsonObject2Map(jsonObject);
+    }
+
+    public static Map<String, Object> jsonObject2Map(JSONObject object) throws JSONException {
+        Map<String, Object> map = new HashMap();
+
+        Iterator<String> keysItr = object.keys();
+        while (keysItr.hasNext()) {
+            String key = keysItr.next();
+            Object value = object.get(key);
+
+            if (value instanceof JSONArray) {
+                value = jsonArray2List((JSONArray) value);
+            } else if (value instanceof JSONObject) {
+                value = jsonObject2Map((JSONObject) value);
+            }
+            map.put(key, value);
+        }
+        return map;
+    }
+
+    public static List<Object> jsonArray2List(JSONArray array) throws JSONException {
+        List<Object> list = new ArrayList();
+        for (int i = 0; i < array.length(); i++) {
+            Object value = array.get(i);
+            if (value instanceof JSONArray) {
+                value = jsonArray2List((JSONArray) value);
+            } else if (value instanceof JSONObject) {
+                value = jsonObject2Map((JSONObject) value);
+            }
+            list.add(value);
+        }
+        return list;
+
+    }
+
     public static String json2Yml2(String jsonString) throws JSONException {
         Yaml yaml = new Yaml();
-        Map<String, Object> map = (Map<String, Object>) yaml.load(jsonString);
-        return yaml.dump(map);
+        return yaml.dump(ymlString2Map(jsonString));
     }
 
 }

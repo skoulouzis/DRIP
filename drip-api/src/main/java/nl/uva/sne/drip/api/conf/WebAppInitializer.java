@@ -11,8 +11,6 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-
-
 package nl.uva.sne.drip.api.conf;
 
 import javax.servlet.ServletContext;
@@ -27,8 +25,11 @@ public class WebAppInitializer implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
-        ctx.register(AppConfig.class);
+        ctx.register(Config.class);
+        ctx.register(MongoConfig.class);
+
         ctx.setServletContext(servletContext);
+
         Dynamic dynamic = servletContext.addServlet("dispatcher", new DispatcherServlet(ctx));
         dynamic.addMapping("/");
         dynamic.setLoadOnStartup(1);
