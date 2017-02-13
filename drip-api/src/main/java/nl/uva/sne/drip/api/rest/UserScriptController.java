@@ -46,7 +46,7 @@ public class UserScriptController {
     @Autowired
     private UserScriptDao dao;
 
-//    curl -v -X POST -F "file=@.ssh/id_dsa.pub" localhost:8080/drip-api/rest/user_script/upload
+//    curl -v -X POST -F "file=@script.sh" localhost:8080/drip-api/rest/user_script/upload
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public @ResponseBody
     String uploadUserScript(@RequestParam("file") MultipartFile file) throws JSONException {
@@ -70,16 +70,15 @@ public class UserScriptController {
         }
         return null;
     }
-
-//    curl -H "Content-Type: application/json" -X POST -d  '{"key":"ssh-rsa AAAAB3NzaDWBqs75i849MytgwgQcRYMcsXIki0yeYTKABH6JqoiyFBHtYlyh/EV1t6cujb9LyNP4J5EN4fPbtwKYvxecd0LojSPxl4wjQlfrHyg6iKUYB7hVzGqACMvgYZHrtHPfrdEmOGPplPVPpoaX2j+u0BZ0yYhrWMKjzyYZKa68yy5N18+Gq+1p83HfUDwIU9wWaUYdgEvDujqF6b8p3z6LDx9Ob+RanSMZSt+b8eZRcd+F2Oy/gieJEJ8kc152VIOv8UY1xB3hVEwVnSRGgrAsa+9PChfF6efXUGWiKf8KBlWgBOYsSTsOY4ks9zkXMnbcTdC+o7xspOkyIcWjv us@u\n","name":"id_rsa.pub"}' localhost:8080/drip-api/rest/user_key/
-    @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody
-    String postConf(UserScript us) {
-        String name = System.currentTimeMillis() + "_" + us.getName();
-        us.setName(name);
-        dao.save(us);
-        return us.getId();
-    }
+    
+//    @RequestMapping(method = RequestMethod.POST)
+//    public @ResponseBody
+//    String postConf(UserScript us) {
+//        String name = System.currentTimeMillis() + "_" + us.getName();
+//        us.setName(name);
+//        dao.save(us);
+//        return us.getId();
+//    }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public UserScript get(@PathVariable("id") String id) {
