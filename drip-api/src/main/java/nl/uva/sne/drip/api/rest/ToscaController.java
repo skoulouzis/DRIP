@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,16 +46,15 @@ import nl.uva.sne.drip.api.dao.ToscaDao;
 @Component
 public class ToscaController {
 
-    @Value("${message.broker.host}")
-    private String messageBrokerHost;
-
+//    @Value("${message.broker.host}")
+//    private String messageBrokerHost;
     @Autowired
     private ToscaDao dao;
 
-//    curl -X POST -F "file=@DRIP/input.yaml" localhost:8080/drip-api/rest/upload 
+//    curl -X POST -F "file=@DRIP/input.yaml" localhost:8080/drip-api/rest/upload
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public @ResponseBody
-    String toscaUpload(@RequestParam("file") MultipartFile file) throws JSONException {
+    String toscaUpload(@RequestParam("file") MultipartFile file) {
         PlannerCaller planner = null;
         if (!file.isEmpty()) {
             try {
@@ -92,21 +90,26 @@ public class ToscaController {
 //    curl http://localhost:8080/drip-api/rest/tosca/589e1160d9925f9dc127e882/?fromat=yaml
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"fromat"})
     public @ResponseBody
-    String get(@PathVariable("id") String id, @RequestParam(value = "fromat") String fromat) throws JSONException {
-        Map<String, Object> map = dao.findOne(id).getKvMap();
-        if (fromat != null && fromat.equals("yml")) {
+    String get(@PathVariable("id") String id, @RequestParam(value = "fromat") String fromat) {
+        try {
+            Map<String, Object> map = dao.findOne(id).getKvMap();
+            if (fromat != null && fromat.equals("yml")) {
+                String ymlStr = Converter.map2YmlString(map);
+                ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+                return ymlStr;
+            }
+            if (fromat != null && fromat.equals("json")) {
+                String jsonStr = Converter.map2JsonString(map);
+                jsonStr = jsonStr.replaceAll("\\uff0E", "\\.");
+                return jsonStr;
+            }
             String ymlStr = Converter.map2YmlString(map);
             ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
             return ymlStr;
+        } catch (JSONException ex) {
+            Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (fromat != null && fromat.equals("json")) {
-            String jsonStr = Converter.map2JsonString(map);
-            jsonStr = jsonStr.replaceAll("\\uff0E", "\\.");
-            return jsonStr;
-        }
-        String ymlStr = Converter.map2YmlString(map);
-        ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
-        return ymlStr;
+        return null;
     }
 
 //    http://localhost:8080/drip-api/rest/tosca/ids
