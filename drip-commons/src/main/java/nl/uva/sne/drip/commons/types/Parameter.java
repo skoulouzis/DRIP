@@ -16,6 +16,7 @@
 package nl.uva.sne.drip.commons.types;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  *
@@ -27,6 +28,7 @@ public class Parameter implements Serializable {
     private String encoding;
     private String value;
     private String name;
+    private Map<String, String> attributes;
 
     public static final String NAME = "name";
     public static final String URL = "url";
@@ -72,6 +74,20 @@ public class Parameter implements Serializable {
 //    @Override
     public void setValue(String value) {
         this.value = value;
+    }
+
+    /**
+     * @return the attributes
+     */
+    public Map<String, String> getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * @param attributes the attributes to set
+     */
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
     }
 
 }

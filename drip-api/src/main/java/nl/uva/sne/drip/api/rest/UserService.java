@@ -15,12 +15,28 @@
  */
 package nl.uva.sne.drip.api.rest;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import nl.uva.sne.drip.api.dao.UserDao;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface ToscaRepository extends MongoRepository<ToscaRepresentation, String> {
+@Service
+public class UserService implements UserDetailsService {
+
+    @Autowired
+    private UserDao userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String string) throws UsernameNotFoundException {
+        
+        
+        return null;
+    }
 
 }

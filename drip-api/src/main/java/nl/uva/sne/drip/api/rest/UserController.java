@@ -15,34 +15,46 @@
  */
 package nl.uva.sne.drip.api.rest;
 
-import org.json.JSONException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import nl.uva.sne.drip.commons.types.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import nl.uva.sne.drip.api.dao.UserDao;
 
 /**
  *
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/rest")
+@RequestMapping("/user/")
 @Component
-public class ProvisionController {
+public class UserController {
 
-    @Value("${message.broker.host}")
-    private String messageBrokerHost;
     @Autowired
-    private ToscaRepository dao;
+    private UserDao userRepository;
 
-    @RequestMapping(value = "/t", method = RequestMethod.GET)
-    public ToscaRepresentation toscaUpload() throws JSONException {
-        return dao.findAll().get(0);
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public @ResponseBody
+    String register(User user) {
+        userRepository.save(user);
+        return "registration";
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    User get(@PathVariable("id") String id) {
+        try {
+            return userRepository.findOne(id);
+        } catch (Exception ex) {
+            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }

@@ -13,44 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.rest;
+package nl.uva.sne.drip.api.dao;
 
-import java.util.Map;
-import javax.persistence.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import nl.uva.sne.drip.commons.types.ToscaRepresentation;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  *
  * @author S. Koulouzis
  */
-@Document
-public class ToscaRepresentation {
-
-    @Id
-    private String id;
-
-    private Map<String, Object> kvMap;
-
-    public final String getId() {
-        return id;
-    }
-
-    public final void setId(final String id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the kvMap
-     */
-    public Map<String, Object> getKvMap() {
-        return kvMap;
-    }
-
-    /**
-     * @param kvMap the kvMap to set
-     */
-    public void setKvMap(Map<String, Object> kvMap) {
-        this.kvMap = kvMap;
-    }
+public interface ToscaDao extends MongoRepository<ToscaRepresentation, String> {
 
 }
