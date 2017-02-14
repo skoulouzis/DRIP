@@ -15,24 +15,42 @@
  */
 package nl.uva.sne.drip.api.service;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.uva.sne.drip.api.dao.UserDao;
+import nl.uva.sne.drip.commons.types.User;
+import nl.uva.sne.drip.commons.types.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
  *
  * @author S. Koulouzis
  */
-//@Service
-public class UserService {// implements UserDetailsService {
+@Service
+public class UserService implements UserDetailsService {
 
-//    @Autowired
-//    UserDao dao;
-//    @Override
-//    public UserDetails loadUserByUsername(String string) throws UsernameNotFoundException {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
+    @Autowired
+    UserDao dao;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        try {
+            User user = dao.findByUsername(username);
+            return user;
+        } catch (Exception ex) {
+            Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 }

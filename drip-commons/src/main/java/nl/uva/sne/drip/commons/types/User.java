@@ -15,16 +15,14 @@
  */
 package nl.uva.sne.drip.commons.types;
 
-import nl.uva.sne.drip.commons.utils.PasswordUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  *
@@ -33,52 +31,39 @@ import org.springframework.security.core.userdetails.UserDetails;
 @JsonIgnoreProperties({"password"})
 @Document
 public class User implements UserDetails {
-
+    
     @Id
     private String id;
-
-    private String username;
-
-    @JsonIgnore
+    private Collection<? extends GrantedAuthority> athorities;
     private String password;
-
-    private Set<UserRole> roles;
-    private boolean expired;
-    private boolean nonLocked;
+    private String username;
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
-    private Collection<? extends GrantedAuthority> authorities;
 
-    public void setPassword(String password) throws Exception {
-        this.password = PasswordUtil.hash(password);
-    }
-
-    public boolean isValide(String password) throws Exception {
-        if (this.password != null && password != null) {
-            return PasswordUtil.validate(this.password, password);
-        }
-        return false;
-    }
-
-    public Set<UserRole> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<UserRole> roles) {
-        this.roles = roles;
-    }
-
+    /**
+     * @return the id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * @param id the id to set
+     */
     public void setId(String id) {
         this.id = id;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
+        return this.athorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
     }
 
     @Override
@@ -88,12 +73,12 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return this.expired;
+        return this.accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.nonLocked;
+        return this.accountNonLocked;
     }
 
     @Override
@@ -106,8 +91,53 @@ public class User implements UserDetails {
         return this.enabled;
     }
 
-    @Override
-    public String getPassword() {
-        return this.password;
+    /**
+     * @param athorities the athorities to set
+     */
+    public void setAthorities(Collection<? extends GrantedAuthority> athorities) {
+        this.athorities = athorities;
     }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * @param accountNonExpired the accountNonExpired to set
+     */
+    public void setAccountNonExpired(boolean accountNonExpired) {
+        this.accountNonExpired = accountNonExpired;
+    }
+
+    /**
+     * @param accountNonLocked the accountNonLocked to set
+     */
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    /**
+     * @param credentialsNonExpired the credentialsNonExpired to set
+     */
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+        this.credentialsNonExpired = credentialsNonExpired;
+    }
+
+    /**
+     * @param enabled the enabled to set
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
 }
