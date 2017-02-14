@@ -26,15 +26,13 @@ import org.springframework.stereotype.Service;
  *
  * @author S. Koulouzis
  */
-@Service
-public class UserService implements UserDetailsService {
+//@Service
+public class UserService {// implements UserDetailsService {
 
-    @Autowired
-    UserDao dao;
-
-    @Override
-    public UserDetails loadUserByUsername(String string) throws UsernameNotFoundException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+//    @Autowired
+//    UserDao dao;
+//    @Override
+//    public UserDetails loadUserByUsername(String string) throws UsernameNotFoundException {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 }

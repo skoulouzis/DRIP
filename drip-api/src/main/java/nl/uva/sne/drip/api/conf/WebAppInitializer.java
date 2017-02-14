@@ -27,7 +27,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
         AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
         ctx.register(MultipartConfig.class);
         ctx.register(MongoConfig.class);
-//        ctx.register(SecurityConfig.class);
+        ctx.register(SecurityConfig.class);
 
         ctx.setServletContext(servletContext);
 
