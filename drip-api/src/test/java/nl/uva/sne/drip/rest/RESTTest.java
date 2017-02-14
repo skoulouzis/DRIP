@@ -49,7 +49,7 @@ public class RESTTest {
 
     @BeforeClass
     public static void setUpClass() throws URISyntaxException {
-        url = new URI("http://localhost:8080/drip-api/rest/upload");
+        url = new URI("http://localhost:8080/drip-api/upload");
         toscaFile = new File("./etc/input.yaml");
     }
 

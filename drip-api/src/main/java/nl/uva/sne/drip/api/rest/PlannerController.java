@@ -49,7 +49,7 @@ import nl.uva.sne.drip.api.dao.ToscaDao;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/rest/planner")
+@RequestMapping("/planner")
 @Component
 public class PlannerController {
 

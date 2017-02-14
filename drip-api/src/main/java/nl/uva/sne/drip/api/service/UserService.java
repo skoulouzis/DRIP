@@ -15,22 +15,14 @@
  */
 package nl.uva.sne.drip.api.service;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.api.dao.UserDao;
 import nl.uva.sne.drip.commons.types.User;
-import nl.uva.sne.drip.commons.types.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -40,17 +32,50 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService implements UserDetailsService {
 
+    public static final String ADMIN = "ADMIN";
+
     @Autowired
     UserDao dao;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
+//            dao.deleteAll();
+//            User u = new User();
+//            u.setAccountNonExpired(true);
+//            u.setAccountNonLocked(true);
+//            Collection<GrantedAuthority> athorities = new HashSet<>();
+//            GrantedAuthority ga = new SimpleGrantedAuthority("ROLE_USER");
+//            athorities.add(ga);
+//            u.setAthorities(athorities);
+//            u.setCredentialsNonExpired(true);
+//            u.setEnabled(true);
+//            u.setPassword(new BCryptPasswordEncoder().encode("123"));
+//            u.setUsername(username);
+//            dao.save(u);
+//
+//            User u2 = new User();
+//            u2.setAccountNonExpired(true);
+//            u2.setAccountNonLocked(true);
+//            athorities = new HashSet<>();
+//            ga = new SimpleGrantedAuthority("ROLE_ADMIN");
+//            athorities.add(ga);
+//            u2.setAthorities(athorities);
+//            u2.setCredentialsNonExpired(true);
+//            u2.setEnabled(true);
+//            u2.setPassword(new BCryptPasswordEncoder().encode("admin"));
+//            u2.setUsername("admin");
+//            dao.save(u2);
+
             User user = dao.findByUsername(username);
             return user;
         } catch (Exception ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public UserDao getDao() {
+        return dao;
     }
 }

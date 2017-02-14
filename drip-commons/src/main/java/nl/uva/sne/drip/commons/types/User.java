@@ -17,12 +17,10 @@ package nl.uva.sne.drip.commons.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Collection;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  *
