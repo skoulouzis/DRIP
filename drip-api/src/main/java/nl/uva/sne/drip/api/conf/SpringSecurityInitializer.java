@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.api.conf;
 
-public class MessageSecurityWebApplicationInitializer{
-        //extends AbstractSecurityWebApplicationInitializer {
+import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
+
+public class SpringSecurityInitializer extends AbstractSecurityWebApplicationInitializer {
+
 }

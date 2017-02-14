@@ -30,7 +30,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 })
 
 @EnableWebMvc
-public class Config {
+public class MultipartConfig {
 
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver createMultipartResolver() {

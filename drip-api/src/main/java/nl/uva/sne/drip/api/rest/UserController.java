@@ -17,6 +17,7 @@ package nl.uva.sne.drip.api.rest;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.commons.types.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,32 +26,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.dao.UserDao;
+import nl.uva.sne.drip.api.service.UserService;
 
 /**
  *
  * @author S. Koulouzis
  */
+//@CrossOrigin(origins = "http://domain2.com", maxAge = 3600)
 @RestController
 @RequestMapping("/user/")
 @Component
 public class UserController {
 
     @Autowired
-    private UserDao userRepository;
+    private UserService service;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
     String register(User user) {
-        userRepository.save(user);
-        return "registration";
+        service.getDao().save(user);
+        return user.getId();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
     User get(@PathVariable("id") String id) {
         try {
-            return userRepository.findOne(id);
+            return service.getDao().findOne(id);
         } catch (Exception ex) {
             Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
         }

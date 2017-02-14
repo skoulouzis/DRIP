@@ -38,14 +38,14 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/rest/user_key")
+@RequestMapping("/user_key")
 @Component
 public class UserPublicKeysController {
 
     @Autowired
     private UserKeyDao dao;
 
-//    curl -v -X POST -F "file=@.ssh/id_dsa.pub" localhost:8080/drip-api/rest/user_key/upload
+//    curl -v -X POST -F "file=@.ssh/id_dsa.pub" localhost:8080/drip-api/user_key/upload
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public @ResponseBody
     String uploadUserPublicKeys(@RequestParam("file") MultipartFile file) {
@@ -70,7 +70,7 @@ public class UserPublicKeysController {
     }
 
     
-//    curl -H "Content-Type: application/json" -X POST -d  '{"key":"ssh-rsa AAAAB3NzaDWBqs75i849MytgwgQcRYMcsXIki0yeYTKABH6JqoiyFBHtYlyh/EV1t6cujb9LyNP4J5EN4fPbtwKYvxecd0LojSPxl4wjQlfrHyg6iKUYB7hVzGqACMvgYZHrtHPfrdEmOGPplPVPpoaX2j+u0BZ0yYhrWMKjzyYZKa68yy5N18+Gq+1p83HfUDwIU9wWaUYdgEvDujqF6b8p3z6LDx9Ob+RanSMZSt+b8eZRcd+F2Oy/gieJEJ8kc152VIOv8UY1xB3hVEwVnSRGgrAsa+9PChfF6efXUGWiKf8KBlWgBOYsSTsOY4ks9zkXMnbcTdC+o7xspOkyIcWjv us@u\n","name":"id_rsa.pub"}' localhost:8080/drip-api/rest/user_key/
+//    curl -H "Content-Type: application/json" -X POST -d  '{"key":"ssh-rsa AAAAB3NzaDWBqs75i849MytgwgQcRYMcsXIki0yeYTKABH6JqoiyFBHtYlyh/EV1t6cujb9LyNP4J5EN4fPbtwKYvxecd0LojSPxl4wjQlfrHyg6iKUYB7hVzGqACMvgYZHrtHPfrdEmOGPplPVPpoaX2j+u0BZ0yYhrWMKjzyYZKa68yy5N18+Gq+1p83HfUDwIU9wWaUYdgEvDujqF6b8p3z6LDx9Ob+RanSMZSt+b8eZRcd+F2Oy/gieJEJ8kc152VIOv8UY1xB3hVEwVnSRGgrAsa+9PChfF6efXUGWiKf8KBlWgBOYsSTsOY4ks9zkXMnbcTdC+o7xspOkyIcWjv us@u\n","name":"id_rsa.pub"}' localhost:8080/drip-api/user_key/
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody
     String postConf(UserPublicKey uk) throws JSONException {
@@ -80,13 +80,13 @@ public class UserPublicKeysController {
         return uk.getId();
     }
 
-    //curl localhost:8080/drip-api/rest/user_key/58a20be263d4a5898835676e
+    //curl localhost:8080/drip-api/user_key/58a20be263d4a5898835676e
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public UserPublicKey get(@PathVariable("id") String id) {
         return dao.findOne(id);
     }
 
-//    localhost:8080/drip-api/rest/user_key/ids
+//    localhost:8080/drip-api/user_key/ids
     @RequestMapping(value = "/ids")
     public @ResponseBody
     List<String> getIds() {

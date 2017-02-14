@@ -42,7 +42,7 @@ import nl.uva.sne.drip.api.dao.ToscaDao;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/rest/tosca")
+@RequestMapping("/tosca")
 @Component
 public class ToscaController {
 
@@ -51,7 +51,7 @@ public class ToscaController {
     @Autowired
     private ToscaDao dao;
 
-//    curl -X POST -F "file=@DRIP/input.yaml" localhost:8080/drip-api/rest/upload
+//    curl -X POST -F "file=@DRIP/input.yaml" localhost:8080/drip-api/upload
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public @ResponseBody
     String toscaUpload(@RequestParam("file") MultipartFile file) {
@@ -87,7 +87,7 @@ public class ToscaController {
         return null;
     }
 
-//    curl http://localhost:8080/drip-api/rest/tosca/589e1160d9925f9dc127e882/?fromat=yaml
+//    curl http://localhost:8080/drip-api/tosca/589e1160d9925f9dc127e882/?fromat=yaml
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"fromat"})
     public @ResponseBody
     String get(@PathVariable("id") String id, @RequestParam(value = "fromat") String fromat) {
@@ -112,7 +112,7 @@ public class ToscaController {
         return null;
     }
 
-//    http://localhost:8080/drip-api/rest/tosca/ids
+//    http://localhost:8080/drip-api/tosca/ids
     @RequestMapping(value = "/ids")
     public @ResponseBody
     List<String> getIds() {

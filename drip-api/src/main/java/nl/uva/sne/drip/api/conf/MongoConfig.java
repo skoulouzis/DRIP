@@ -17,18 +17,12 @@ package nl.uva.sne.drip.api.conf;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
-import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
-import org.springframework.data.mongodb.core.convert.DbRefResolver;
-import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
-import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 /**
@@ -41,6 +35,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
     @PropertySource(value = "classpath:drip.properties", ignoreResourceNotFound = true),
     @PropertySource(value = "file:etc/drip.properties", ignoreResourceNotFound = true)
 })
+@ComponentScan("nl.uva.sne.drip")
 public class MongoConfig extends AbstractMongoConfiguration {
 
     @Value("${db.name}")
@@ -54,7 +49,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
 //    private MongoDbFactory mongoFactory;
 //    @Autowired
 //    private MongoMappingContext mongoMappingContext;
-
     @Override
     protected String getDatabaseName() {
         return dbName;
@@ -69,14 +63,4 @@ public class MongoConfig extends AbstractMongoConfiguration {
     protected String getMappingBasePackage() {
         return "nl.uva.sne.drip";
     }
-
-//    @Bean
-//    public MappingMongoConverter mongoConverter() throws Exception {
-//        DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoFactory);
-//        MappingMongoConverter mongoConverter = new MappingMongoConverter(dbRefResolver, mongoMappingContext);
-//        mongoConverter.setMapKeyDotReplacement('\uff0E');
-//        mongoConverter.afterPropertiesSet();
-//        return mongoConverter;
-//    }
-
 }
