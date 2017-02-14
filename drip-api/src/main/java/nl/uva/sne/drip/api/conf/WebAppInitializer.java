@@ -25,7 +25,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
-        ctx.register(Config.class);
+        ctx.register(MultipartConfig.class);
         ctx.register(MongoConfig.class);
 //        ctx.register(SecurityConfig.class);
 

@@ -15,34 +15,77 @@
  */
 package nl.uva.sne.drip.api.conf;
 
+import nl.uva.sne.drip.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import nl.uva.sne.drip.api.dao.UserDao;
 
 /**
  *
+ * @author S. Koulouzis
  */
+@Configuration
 @EnableWebSecurity
+@ComponentScan("nl.uva.sne.drip")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+//    @Autowired
+//    private UserService userService;
 
-        auth.inMemoryAuthentication()
-                .withUser("user").password("password").roles("USER");
+//    @Autowired
+//    private AuthenticationFailureHandlerImpl authFailureHandler;
+//
+//    @Autowired
+//    private AuthenticationSuccessHandlerImpl authSuccessHandler;
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth
+//                .userDetailsService(userService).passwordEncoder(passwordEncoder());
+        auth.inMemoryAuthentication().withUser("mkyong").password("123456").roles("USER");
+        auth.inMemoryAuthentication().withUser("admin").password("123456").roles("ADMIN");
+        auth.inMemoryAuthentication().withUser("dba").password("123456").roles("DBA");
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder;
-    }
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .exceptionHandling()
+//                .authenticationEntryPoint(authenticationEntryPoint())
+//                .accessDeniedHandler(accessDeniedHandler())
+//                .and();
+//    }
+//
+//    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+//    @Override
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
+////
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        PasswordEncoder encoder = new BCryptPasswordEncoder();
+//        return encoder;
+//    }
+////
+//    @Bean
+//    public AuthenticationEntryPoint authenticationEntryPoint() {
+//        AuthenticationEntryPoint authEp = new LoginUrlAuthenticationEntryPoint("/login.jsp");
+//        return authEp;
+//    }
+//
+//    @Bean
+//    public AccessDeniedHandler accessDeniedHandler() {
+//        AccessDeniedHandler accessDenied = new org.springframework.security.web.access.AccessDeniedHandlerImpl();
+//        return accessDenied;
+//    }
 
 }

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.rest;
+package nl.uva.sne.drip.api.service;
 
+import nl.uva.sne.drip.api.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import nl.uva.sne.drip.api.dao.UserDao;
 
 /**
  *
@@ -30,13 +30,11 @@ import nl.uva.sne.drip.api.dao.UserDao;
 public class UserService implements UserDetailsService {
 
     @Autowired
-    private UserDao userRepository;
+    UserDao dao;
 
     @Override
     public UserDetails loadUserByUsername(String string) throws UsernameNotFoundException {
-        
-        
-        return null;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

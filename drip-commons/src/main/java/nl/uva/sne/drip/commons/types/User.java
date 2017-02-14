@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,7 +42,7 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
-    private List<String> roles;
+    private Set<UserRole> roles;
     private boolean expired;
     private boolean nonLocked;
     private boolean credentialsNonExpired;
@@ -59,11 +60,11 @@ public class User implements UserDetails {
         return false;
     }
 
-    public List<String> getRoles() {
+    public Set<UserRole> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
     }
 
