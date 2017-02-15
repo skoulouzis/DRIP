@@ -15,8 +15,9 @@
  */
 package nl.uva.sne.drip.api.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.ByteArrayOutputStream;
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -26,10 +27,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
+import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.Parameter;
@@ -44,7 +47,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.dao.ToscaDao;
+import nl.uva.sne.drip.api.rpc.DRIPCaller;
+import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
 import nl.uva.sne.drip.api.service.UserService;
+import nl.uva.sne.drip.commons.types.CloudCredentials;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  *
@@ -59,59 +66,43 @@ public class PlannerController {
     private String messageBrokerHost;
     @Autowired
     private ToscaDao dao;
+    @Autowired
+    private CloudCredentialsDao cloudCredentialsDao;
 
     @RequestMapping(value = "/plan/{tosca_id}", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String plann(@PathVariable("tosca_id") String toscaId) {
-        PlannerCaller planner = null;
+        DRIPCaller planner = null;
+        DRIPCaller provisioner = null;
+        List<DRIPCaller> dripComponetens = new ArrayList<>();
         try {
-            ToscaRepresentation t2 = dao.findOne(toscaId);
-            Map<String, Object> map = t2.getKvMap();
-            String ymlStr = Converter.map2YmlString(map);
-            ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
-            byte[] bytes = ymlStr.getBytes();
 
-            Message invokationMessage = new Message();
-            List parameters = new ArrayList();
-            Parameter fileArgument = new Parameter();
-
-            String charset = "UTF-8";
-            fileArgument.setValue(new String(bytes, charset));
-            fileArgument.setEncoding(charset);
-            fileArgument.setName("input");
-            parameters.add(fileArgument);
-
-            fileArgument = new Parameter();
-            bytes = Files.readAllBytes(Paths.get("/home/alogo/Downloads/DRIP/example_a.yml"));
-            fileArgument.setValue(new String(bytes, charset));
-            fileArgument.setEncoding(charset);
-            fileArgument.setName("example");
-            parameters.add(fileArgument);
-
-            invokationMessage.setParameters(parameters);
-            invokationMessage.setCreationDate((System.currentTimeMillis()));
+            Message plannerInvokationMessage = buildPlannerMessage(toscaId);
 
             planner = new PlannerCaller(messageBrokerHost);
-            String returned = planner.plan(invokationMessage);
-            System.err.println(returned);
+            dripComponetens.add(planner);
+            Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
 
-            ObjectMapper mapper = new ObjectMapper();
-            Message request = mapper.readValue(returned, Message.class);
+            Message provisionerInvokationMessage = buildProvisionerMessage(plannerReturnedMessage, "58a1f0a963d42f004b1d63ad");
+            provisioner = new ProvisionerCaller(messageBrokerHost);
+            dripComponetens.add(provisioner);
+            provisioner.call(provisionerInvokationMessage);
 
-            return returned;
-        } catch (UnsupportedEncodingException | TimeoutException | InterruptedException ex) {
-            Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException | IOException ex) {
+            return "";
+        } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
             Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (planner != null) {
-                try {
-                    planner.close();
-                } catch (IOException | TimeoutException ex) {
-                    Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
+            for (DRIPCaller drip : dripComponetens) {
+                if (drip != null) {
+                    try {
+                        drip.close();
+                    } catch (IOException | TimeoutException ex) {
+                        Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
+
         }
         return null;
     }
@@ -156,5 +147,75 @@ public class PlannerController {
             Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    private Message buildPlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException, IOException {
+        ToscaRepresentation t2 = dao.findOne(toscaId);
+        Map<String, Object> map = t2.getKvMap();
+        String ymlStr = Converter.map2YmlString(map);
+        ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+        byte[] bytes = ymlStr.getBytes();
+
+        Message invokationMessage = new Message();
+        List parameters = new ArrayList();
+        Parameter fileArgument = new Parameter();
+
+        String charset = "UTF-8";
+        fileArgument.setValue(new String(bytes, charset));
+        fileArgument.setEncoding(charset);
+        fileArgument.setName("input");
+        parameters.add(fileArgument);
+
+        fileArgument = new Parameter();
+        bytes = Files.readAllBytes(Paths.get(System.getProperty("user.home") + File.separator + "Downloads/DRIP/example_a.yml"));
+        fileArgument.setValue(new String(bytes, charset));
+        fileArgument.setEncoding(charset);
+        fileArgument.setName("example");
+        parameters.add(fileArgument);
+
+        invokationMessage.setParameters(parameters);
+        invokationMessage.setCreationDate((System.currentTimeMillis()));
+        return invokationMessage;
+    }
+
+    private Message buildProvisionerMessage(Message plannerReturnedMessage, String cloudConfID) throws IOException, JsonProcessingException, JSONException {
+        Message invokationMessage = new Message();
+        List<Parameter> parameters = new ArrayList();
+        Parameter conf = new Parameter();
+        String charset = "UTF-8";
+        CloudCredentials cred = cloudCredentialsDao.findOne(cloudConfID);
+        Properties prop = Converter.Object2Properties(cred);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        prop.store(baos, null);
+        byte[] bytes = baos.toByteArray();
+        conf.setName("ec2.conf");
+        conf.setValue(new String(bytes, charset));
+        parameters.add(conf);
+
+        List<Parameter> returnedParams = plannerReturnedMessage.getParameters();
+        for (Parameter param : returnedParams) {
+            Parameter topology = new Parameter();
+            String name = param.getName();
+            if (name.equals("planner_output_all.yml")) {
+                topology.setName("topology");
+                topology.setValue(param.getValue());
+                Map<String, String> attributes = new HashMap<>();
+                attributes.put("level", "0");
+                attributes.put("filename", FilenameUtils.removeExtension(name));
+                topology.setAttributes(attributes);
+            } else {
+                topology.setName("topology");
+                topology.setValue(param.getValue());
+                Map<String, String> attributes = new HashMap<>();
+                attributes.put("level", "1");
+                attributes.put("filename", FilenameUtils.removeExtension(name));
+                topology.setAttributes(attributes);
+            }
+            parameters.add(topology);
+        }
+
+        invokationMessage.setParameters(parameters);
+        invokationMessage.setCreationDate((System.currentTimeMillis()));
+        return invokationMessage;
     }
 }

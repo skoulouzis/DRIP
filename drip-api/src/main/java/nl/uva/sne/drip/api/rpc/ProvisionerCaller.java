@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 S. Koulouzis.
+ * Copyright 2017 S. Koulouzis, Wang Junchao, Huan Zhou, Yang Hu 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,18 @@
  */
 package nl.uva.sne.drip.api.rpc;
 
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
 /**
  *
- * @author S. Koulouzis.
+ * @author S. Koulouzis
  */
-class DRIPComponentCaller {
+public class ProvisionerCaller extends DRIPCaller {
 
-    public DRIPComponentCaller(){
-        
+    private static final String REQUEST_QUEUE_NAME = "provisioner_queue";
+
+    public ProvisionerCaller(String messageBrokerHost) throws IOException, TimeoutException {
+        super(messageBrokerHost, REQUEST_QUEUE_NAME);
     }
-
 }

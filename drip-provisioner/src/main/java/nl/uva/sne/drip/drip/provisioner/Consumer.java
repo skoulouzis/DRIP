@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.types.Parameter;
+import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,7 +76,7 @@ public class Consumer extends DefaultConsumer {
         try {
             //The queue only moves bytes so we need to convert them to stting 
             String message = new String(body, "UTF-8");
-            
+
             String tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
             File tempInputDir = new File(tempInputDirPath);
             if (!(tempInputDir.mkdirs())) {
@@ -145,39 +146,32 @@ public class Consumer extends DefaultConsumer {
                 int fileLevel = Integer.valueOf((String) attribute_level.get("level"));
                 if (fileLevel == 0) /////if the file level is 0, it means that this is the top level description
                 {
-                    try {
-                        File topologyFile = new File(tempInputDirPath + "topology_main");
-                        if (topologyFile.createNewFile()) {
-                            PrintWriter out = new PrintWriter(topologyFile);
-                            out.print(param.get(Parameter.VALUE));
-                            mainTopologyPath = topologyFile.getAbsolutePath();
-                        } else {
-                            return null;
-                        }
-                    } catch (IOException e) {
-                        Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
+
+                    File topologyFile = new File(tempInputDirPath + "topology_main");
+                    if (topologyFile.createNewFile()) {
+                        PrintWriter out = new PrintWriter(topologyFile);
+                        out.print(param.get(Parameter.VALUE));
+                        mainTopologyPath = topologyFile.getAbsolutePath();
+                    } else {
                         return null;
                     }
+
                 } else if (fileLevel == 1) {    ////this means that this file is the low level detailed description
                     String fileName = (String) attribute_level.get("filename");   ////This file name does not contain suffix of '.yml' for example
-                    try {
-                        File topologyFile = new File(tempInputDirPath + fileName + ".yml");
-                        String outputFilePath = tempInputDirPath + fileName + "_provisioned.yml";
-                        if (topologyFile.createNewFile()) {
-                            PrintWriter out = new PrintWriter(geniConfFile);
-                            out.print(param.get(Parameter.VALUE));
-                            topologyElement x = new topologyElement();
-                            x.topologyName = fileName;
-                            x.outputFilePath = outputFilePath;
-                            topologyInfoArray.add(x);
+                    File topologyFile = new File(tempInputDirPath + fileName + ".yml");
+                    String outputFilePath = tempInputDirPath + fileName + "_provisioned.yml";
+                    if (topologyFile.createNewFile()) {
+                        PrintWriter out = new PrintWriter(outputFilePath);
+                        out.print(param.get(Parameter.VALUE));
+                        topologyElement x = new topologyElement();
+                        x.topologyName = fileName;
+                        x.outputFilePath = outputFilePath;
+                        topologyInfoArray.add(x);
 
-                        } else {
-                            return null;
-                        }
-                    } catch (IOException e) {
-                        Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
+                    } else {
                         return null;
                     }
+
                 }
             } else if (name.equals("logdir")) {
                 logDir = (String) param.get(Parameter.VALUE);
@@ -194,10 +188,8 @@ public class Consumer extends DefaultConsumer {
         String[] ls = curDir.list();
         for (int i = 0; i < ls.length; i++) {
             if (ls[i].contains(".")) {
-                String[] fileTypes = ls[i].split("\\.");
-                if (fileTypes.length > 0) {
-                    int lastIndex = fileTypes.length - 1;
-                    String fileType = fileTypes[lastIndex];
+                String fileType = FilenameUtils.getExtension(ls[i]);
+                if (fileType != null) {
                     if (fileType.equals("yml")) {
                         String toscaFile = curDir + ls[i];
                         if (!sshKeyFilePath.equals("null")) {
@@ -228,7 +220,7 @@ public class Consumer extends DefaultConsumer {
             geniConfFilePath = geniConfFile.getAbsolutePath();
         }
         if (logDir.equals("null")) {
-            logDir = "/tmp/";
+            logDir = System.getProperty("java.io.tmpdir");
         }
 
         String cmd = "java -jar " + jarFilePath + " ec2=" + ec2ConfFilePath + " exogeni=" + geniConfFilePath + " logDir=" + logDir + " topology=" + mainTopologyPath;

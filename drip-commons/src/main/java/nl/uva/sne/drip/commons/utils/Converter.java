@@ -15,20 +15,19 @@
  */
 package nl.uva.sne.drip.commons.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Properties;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.events.Event;
 
 /**
  *
@@ -103,6 +102,12 @@ public class Converter {
     public static String json2Yml2(String jsonString) throws JSONException {
         Yaml yaml = new Yaml();
         return yaml.dump(ymlString2Map(jsonString));
+    }
+
+    public static Properties Object2Properties(Object obj) throws JsonProcessingException, JSONException {
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInString = mapper.writeValueAsString(obj);
+        return Property.toProperties(new JSONObject(jsonInString));
     }
 
 }
