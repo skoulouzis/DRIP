@@ -15,25 +15,33 @@
  */
 package nl.uva.sne.drip.commons.types;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import java.util.Collection;
+import java.util.HashSet;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
  * @author S. Koulouzis
  */
-@JsonIgnoreProperties({"password"})
 @Document
 public class User implements UserDetails {
-    
+
     @Id
     private String id;
-    private Collection<? extends GrantedAuthority> athorities;
+    private Collection<String> roles;
+
+    @JsonProperty(access = Access.WRITE_ONLY)
     private String password;
+
+    @Indexed
     private String username;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
@@ -55,8 +63,19 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.athorities;
+        Collection<GrantedAuthority> athorities = new HashSet<>();
+        if (roles != null) {
+            for (String role : roles) {
+                String addedRole = role;
+                if (!role.startsWith("ROLE_")) {
+                    addedRole = "ROLE_" + role;
+                }
+                athorities.add(new SimpleGrantedAuthority(addedRole));
+            }
+        }
+        return athorities;
     }
 
     @Override
@@ -87,13 +106,6 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.enabled;
-    }
-
-    /**
-     * @param athorities the athorities to set
-     */
-    public void setAthorities(Collection<? extends GrantedAuthority> athorities) {
-        this.athorities = athorities;
     }
 
     /**
@@ -136,6 +148,20 @@ public class User implements UserDetails {
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    /**
+     * @return the roles
+     */
+    public Collection<String> getRoles() {
+        return roles;
+    }
+
+    /**
+     * @param roles the roles to set
+     */
+    public void setRoles(Collection<String> roles) {
+        this.roles = roles;
     }
 
 }
