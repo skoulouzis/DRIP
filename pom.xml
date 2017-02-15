@@ -8,9 +8,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-  <modules>
-    <module>drip-api</module>
-    <module>drip-commons</module>
-    <module>drip-simple_planner</module>
-  </modules>
+    <modules>
+        <module>drip-api</module>
+        <module>drip-commons</module>
+        <module>drip-simple_planner</module>
+        <module>drip-provisioner</module>
+    </modules>
 </project>
