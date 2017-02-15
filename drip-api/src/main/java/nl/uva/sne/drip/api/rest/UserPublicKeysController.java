@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.RolesAllowed;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import nl.uva.sne.drip.api.dao.UserKeyDao;
+import nl.uva.sne.drip.api.service.UserService;
 import org.springframework.web.bind.annotation.PathVariable;
 
 /**
@@ -38,7 +40,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user_key")
+@RequestMapping("/user/user_key")
 @Component
 public class UserPublicKeysController {
 
@@ -47,6 +49,7 @@ public class UserPublicKeysController {
 
 //    curl -v -X POST -F "file=@.ssh/id_dsa.pub" localhost:8080/drip-api/user_key/upload
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String uploadUserPublicKeys(@RequestParam("file") MultipartFile file) {
         if (!file.isEmpty()) {
@@ -69,9 +72,9 @@ public class UserPublicKeysController {
         return null;
     }
 
-    
 //    curl -H "Content-Type: application/json" -X POST -d  '{"key":"ssh-rsa AAAAB3NzaDWBqs75i849MytgwgQcRYMcsXIki0yeYTKABH6JqoiyFBHtYlyh/EV1t6cujb9LyNP4J5EN4fPbtwKYvxecd0LojSPxl4wjQlfrHyg6iKUYB7hVzGqACMvgYZHrtHPfrdEmOGPplPVPpoaX2j+u0BZ0yYhrWMKjzyYZKa68yy5N18+Gq+1p83HfUDwIU9wWaUYdgEvDujqF6b8p3z6LDx9Ob+RanSMZSt+b8eZRcd+F2Oy/gieJEJ8kc152VIOv8UY1xB3hVEwVnSRGgrAsa+9PChfF6efXUGWiKf8KBlWgBOYsSTsOY4ks9zkXMnbcTdC+o7xspOkyIcWjv us@u\n","name":"id_rsa.pub"}' localhost:8080/drip-api/user_key/
     @RequestMapping(method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String postConf(UserPublicKey uk) throws JSONException {
         String name = System.currentTimeMillis() + "_" + uk.getName();
@@ -82,12 +85,14 @@ public class UserPublicKeysController {
 
     //curl localhost:8080/drip-api/user_key/58a20be263d4a5898835676e
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
     public UserPublicKey get(@PathVariable("id") String id) {
         return dao.findOne(id);
     }
 
 //    localhost:8080/drip-api/user_key/ids
     @RequestMapping(value = "/ids")
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {
         List<UserPublicKey> all = dao.findAll();

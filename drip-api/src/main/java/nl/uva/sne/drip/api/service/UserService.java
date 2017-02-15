@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 public class UserService implements UserDetailsService {
 
     public static final String ADMIN = "ADMIN";
+    public static final String USER = "USER";
 
     @Autowired
     UserDao dao;

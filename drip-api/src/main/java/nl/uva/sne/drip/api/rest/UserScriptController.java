@@ -15,7 +15,6 @@
  */
 package nl.uva.sne.drip.api.rest;
 
-import nl.uva.sne.drip.commons.types.UserPublicKey;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/rest/user_script")
+@RequestMapping("/user/user_script")
 @Component
 public class UserScriptController {
 
@@ -70,7 +69,7 @@ public class UserScriptController {
         }
         return null;
     }
-    
+
 //    @RequestMapping(method = RequestMethod.POST)
 //    public @ResponseBody
 //    String postConf(UserScript us) {
@@ -79,7 +78,6 @@ public class UserScriptController {
 //        dao.save(us);
 //        return us.getId();
 //    }
-
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public UserScript get(@PathVariable("id") String id) {
         return dao.findOne(id);

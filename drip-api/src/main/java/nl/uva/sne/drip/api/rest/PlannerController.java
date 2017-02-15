@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.Parameter;
@@ -43,13 +44,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.dao.ToscaDao;
+import nl.uva.sne.drip.api.service.UserService;
 
 /**
  *
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/planner")
+@RequestMapping("/user/planner")
 @Component
 public class PlannerController {
 
@@ -59,6 +61,7 @@ public class PlannerController {
     private ToscaDao dao;
 
     @RequestMapping(value = "/plan/{tosca_id}", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String plann(@PathVariable("tosca_id") String toscaId) {
         PlannerCaller planner = null;
@@ -114,14 +117,12 @@ public class PlannerController {
     }
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
     public Message get() {
 
         try {
 
             File tempFile1 = new File("/home/alogo/Downloads/DRIP/input.yaml");
-            
-            
-
 
             Message message1 = new Message();
             message1.setCreationDate((System.currentTimeMillis()));

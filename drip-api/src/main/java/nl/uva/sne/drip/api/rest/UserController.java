@@ -34,7 +34,7 @@ import nl.uva.sne.drip.api.service.UserService;
  */
 //@CrossOrigin(origins = "http://domain2.com", maxAge = 3600)
 @RestController
-@RequestMapping("/user/")
+@RequestMapping("/manager/user/")
 @Component
 public class UserController {
 

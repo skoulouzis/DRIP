@@ -15,16 +15,22 @@
  */
 package nl.uva.sne.drip.api.conf;
 
+import nl.uva.sne.drip.api.auth.MyBasicAuthenticationEntryPoint;
+import nl.uva.sne.drip.api.auth.AuthFilter;
 import nl.uva.sne.drip.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 /**
  *
@@ -38,19 +44,43 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     UserService userService;
 
+//    @Autowired
+//    BasicAuthenticationFilter authenticationFilter;
+    @Autowired
+    private MyBasicAuthenticationEntryPoint authenticationEntryPoint;
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
     }
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-////        http.authorizeRequests().antMatchers("/**").hasRole("USER").and().formLogin();
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+//        http.authorizeRequests().antMatchers("/**").hasRole("USER");
 //        http.csrf().disable();
-//    }
+        http
+                //                .addFilterBefore(authenticationFilter, BasicAuthenticationFilter.class)
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/user/*").hasRole("USER")
+                .and()
+                .authorizeRequests()
+                .antMatchers("/manager/*").hasRole("ADMIN")
+                .and()
+                .formLogin()
+                .and()
+                .httpBasic()
+                .authenticationEntryPoint(authenticationEntryPoint);
+
+        http.addFilterAfter(new AuthFilter(), BasicAuthenticationFilter.class);
+
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder;
     }
+
+
 }

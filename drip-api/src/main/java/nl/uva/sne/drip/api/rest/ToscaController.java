@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PathVariable;
 import nl.uva.sne.drip.api.dao.ToscaDao;
+import nl.uva.sne.drip.api.service.UserService;
 
 /**
  *
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/tosca")
+@RequestMapping("/user/tosca")
 @Component
 public class ToscaController {
 
@@ -53,6 +55,7 @@ public class ToscaController {
 
 //    curl -X POST -F "file=@DRIP/input.yaml" localhost:8080/drip-api/upload
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String toscaUpload(@RequestParam("file") MultipartFile file) {
         PlannerCaller planner = null;
@@ -89,6 +92,7 @@ public class ToscaController {
 
 //    curl http://localhost:8080/drip-api/tosca/589e1160d9925f9dc127e882/?fromat=yaml
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"fromat"})
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String get(@PathVariable("id") String id, @RequestParam(value = "fromat") String fromat) {
         try {
@@ -114,6 +118,7 @@ public class ToscaController {
 
 //    http://localhost:8080/drip-api/tosca/ids
     @RequestMapping(value = "/ids")
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {
         List<ToscaRepresentation> all = dao.findAll();
