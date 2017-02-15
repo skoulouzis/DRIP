@@ -71,7 +71,12 @@ public class Consumer extends DefaultConsumer {
             prop.load(in);
         }
         jarFilePath = prop.getProperty("jar.file.path", "/root/SWITCH/bin/ProvisioningCore.jar");
-
+        File jarFile = new File(jarFilePath);
+        if (!jarFile.exists()) {
+            throw new IOException(jarFile.getAbsolutePath() + " not found!");
+        } else {
+            jarFilePath = jarFile.getAbsolutePath();
+        }
     }
 
     @Override
@@ -201,6 +206,7 @@ public class Consumer extends DefaultConsumer {
             if (ls[i].contains(".")) {
                 String fileType = FilenameUtils.getExtension(ls[i]);
                 if (fileType != null) {
+                    //Are you sure you are looking for yml files?
                     if (fileType.equals("yml")) {
                         String toscaFile = curDir + ls[i];
                         if (!sshKeyFilePath.equals("null")) {
@@ -236,6 +242,7 @@ public class Consumer extends DefaultConsumer {
 
         String cmd = "java -jar " + jarFilePath + " ec2=" + ec2ConfFilePath + " exogeni=" + geniConfFilePath + " logDir=" + logDir + " topology=" + mainTopologyPath;
         try {
+            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Executing: " + cmd);
             Process p = Runtime.getRuntime().exec(cmd);
             p.waitFor();
         } catch (IOException | InterruptedException e) {
