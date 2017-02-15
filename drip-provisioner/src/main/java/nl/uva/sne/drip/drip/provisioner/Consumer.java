@@ -233,6 +233,10 @@ public class Consumer extends DefaultConsumer {
             e.printStackTrace();
         } 
 
+        topologyElement x = new topologyElement();
+        x.topologyName = "kubernetes";
+        x.outputFilePath = tempInputDirPath+"file_kubernetes";
+        topologyInfoArray.add();
 
         return topologyInfoArray;
     }
