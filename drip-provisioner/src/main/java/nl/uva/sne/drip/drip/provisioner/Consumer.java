@@ -241,14 +241,15 @@ public class Consumer extends DefaultConsumer {
         }
 
         String cmd = "java -jar " + jarFilePath + " ec2=" + ec2ConfFilePath + " exogeni=" + geniConfFilePath + " logDir=" + logDir + " topology=" + mainTopologyPath;
-        try {
-            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Executing: " + cmd);
-            Process p = Runtime.getRuntime().exec(cmd);
-            p.waitFor();
-        } catch (IOException | InterruptedException e) {
-            // TODO Auto-generated catch block
-            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
-        }
+        Provisioning.ProvisioningCore.main(cmd.split(" "));
+//        try {
+//            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Executing: " + cmd);
+//            Process p = Runtime.getRuntime().exec(cmd);
+//            p.waitFor();
+//        } catch (IOException | InterruptedException e) {
+//            // TODO Auto-generated catch block
+//            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
+//        }
 
         topologyElement x = new topologyElement();
         x.topologyName = "kubernetes";
