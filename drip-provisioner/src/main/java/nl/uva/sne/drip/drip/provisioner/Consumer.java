@@ -21,17 +21,21 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.types.Parameter;
@@ -45,12 +49,13 @@ import org.json.JSONObject;
  * This is an example of a Message consumer
  *
  *
- * @author H. Zhou
+ * @author H. Zhou, S. Koulouzis
  */
 public class Consumer extends DefaultConsumer {
 
     private final Channel channel;
-    private final String jarFilePath = "/root/SWITCH/bin/ProvisioningCore.jar";
+    private final String propertiesPath = "etc/consumer.properties";
+    private String jarFilePath;
 
     public class topologyElement {
 
@@ -58,9 +63,15 @@ public class Consumer extends DefaultConsumer {
         String outputFilePath = "";
     }
 
-    public Consumer(Channel channel) {
+    public Consumer(Channel channel) throws IOException {
         super(channel);
         this.channel = channel;
+        Properties prop = new Properties();
+        try (InputStream in = new FileInputStream(propertiesPath)) {
+            prop.load(in);
+        }
+        jarFilePath = prop.getProperty("jar.file.path", "/root/SWITCH/bin/ProvisioningCore.jar");
+
     }
 
     @Override
