@@ -75,7 +75,7 @@ public class Consumer extends DefaultConsumer {
         try {
             //The queue only moves bytes so we need to convert them to stting 
             String message = new String(body, "UTF-8");
-            //Create a tmp folder to save the output. 
+            
             String tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
             File tempInputDir = new File(tempInputDirPath);
             if (!(tempInputDir.mkdirs())) {
@@ -114,7 +114,6 @@ public class Consumer extends DefaultConsumer {
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
             String name = (String) param.get(Parameter.NAME);
-
             if (name.equals("ec2.conf")) {
                 try {
                     ec2ConfFile = new File(tempInputDirPath + "ec2.Conf");
@@ -149,7 +148,7 @@ public class Consumer extends DefaultConsumer {
                     try {
                         File topologyFile = new File(tempInputDirPath + "topology_main");
                         if (topologyFile.createNewFile()) {
-                            PrintWriter out = new PrintWriter(geniConfFile);
+                            PrintWriter out = new PrintWriter(topologyFile);
                             out.print(param.get(Parameter.VALUE));
                             mainTopologyPath = topologyFile.getAbsolutePath();
                         } else {
