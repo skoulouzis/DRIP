@@ -160,11 +160,9 @@ public class Consumer extends DefaultConsumer {
                 int fileLevel = Integer.valueOf((String) attribute_level.get("level"));
                 if (fileLevel == 0) /////if the file level is 0, it means that this is the top level description
                 {
-
                     File topologyFile = new File(tempInputDirPath + "topology_main");
                     if (topologyFile.createNewFile()) {
                         writeValueToFile((String) param.get(Parameter.VALUE), topologyFile);
-
                         mainTopologyPath = topologyFile.getAbsolutePath();
                     } else {
                         return null;
@@ -186,6 +184,13 @@ public class Consumer extends DefaultConsumer {
                         return null;
                     }
 
+                }
+            } else if (name.equals("certificate")) {
+                JSONObject attribute = param.getJSONObject("attributes");
+                String fileName = (String) attribute.get("filename");   ////This file name does not contain suffix of '.yml' for example
+                File certificate = new File(tempInputDirPath + fileName + ".pem");
+                if (certificate.createNewFile()) {
+                    writeValueToFile((String) param.get(Parameter.VALUE), certificate);
                 }
             } else if (name.equals("logdir")) {
                 logDir = (String) param.get(Parameter.VALUE);

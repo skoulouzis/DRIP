@@ -108,7 +108,6 @@ public class PlannerController {
         return null;
     }
 
-    
     private Message buildPlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException, IOException {
         ToscaRepresentation t2 = dao.findOne(toscaId);
         Map<String, Object> map = t2.getKvMap();
@@ -141,26 +140,56 @@ public class PlannerController {
     private Message buildProvisionerMessage(Message plannerReturnedMessage, String cloudConfID) throws IOException, JsonProcessingException, JSONException {
         Message invokationMessage = new Message();
         List<Parameter> parameters = new ArrayList();
+        CloudCredentials cred = cloudCredentialsDao.findOne(cloudConfID);
+
+        Parameter conf = buildCloudConfParam(cred);
+        parameters.add(conf);
+
+        List<Parameter> certs = buildCertificatesParam(cred);
+        parameters.addAll(certs);
+
+        List<Parameter> topologies = buildTopologyParams(plannerReturnedMessage);
+        parameters.addAll(topologies);
+
+        invokationMessage.setParameters(parameters);
+        invokationMessage.setCreationDate((System.currentTimeMillis()));
+        return invokationMessage;
+    }
+
+    private Parameter buildCloudConfParam(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
         Parameter conf = new Parameter();
         String charset = "UTF-8";
-        CloudCredentials cred = cloudCredentialsDao.findOne(cloudConfID);
         Properties prop = Converter.Object2Properties(cred);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         prop.store(baos, null);
         byte[] bytes = baos.toByteArray();
         conf.setName("ec2.conf");
         conf.setValue(new String(bytes, charset));
-        parameters.add(conf);
-        
+        return conf;
+    }
+
+    private List<Parameter> buildCertificatesParam(CloudCredentials cred) {
         List<LoginKey> loginKeys = cred.getLogineKys();
-        for(LoginKey lk : loginKeys){
+        List<Parameter> parameters = new ArrayList<>();
+        for (LoginKey lk : loginKeys) {
             String domainName = lk.getAttributes().get("domain_name");
+            if (domainName == null) {
+                domainName = lk.getAttributes().get("domain_name ");
+            }
             Parameter cert = new Parameter();
             cert.setName("certificate");
-            cert.setValue(charset);
+            cert.setValue(lk.getKey());
+            Map<String, String> attributes = new HashMap<>();
+            attributes.put("filename", domainName);
+            cert.setAttributes(attributes);
+            parameters.add(cert);
         }
+        return parameters;
+    }
 
+    private List<Parameter> buildTopologyParams(Message plannerReturnedMessage) {
         List<Parameter> returnedParams = plannerReturnedMessage.getParameters();
+        List<Parameter> parameters = new ArrayList();
         for (Parameter param : returnedParams) {
             Parameter topology = new Parameter();
             String name = param.getName();
@@ -181,9 +210,6 @@ public class PlannerController {
             }
             parameters.add(topology);
         }
-
-        invokationMessage.setParameters(parameters);
-        invokationMessage.setCreationDate((System.currentTimeMillis()));
-        return invokationMessage;
+        return parameters;
     }
 }
