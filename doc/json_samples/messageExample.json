@@ -21,7 +21,8 @@
       "value": null,
       "name": "theNameOfTheParamater",
       "attributes": {
-        "level": "0"
+        "level": "0",
+        "filename":"file.txt"
       }
     }
   ]
