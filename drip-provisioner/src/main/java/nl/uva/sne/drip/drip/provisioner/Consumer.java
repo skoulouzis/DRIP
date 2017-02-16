@@ -55,7 +55,7 @@ public class Consumer extends DefaultConsumer {
 
     private final Channel channel;
     private final String propertiesPath = "etc/consumer.properties";
-    private String jarFilePath;
+//    private String jarFilePath;
 
     public class topologyElement {
 
@@ -70,13 +70,13 @@ public class Consumer extends DefaultConsumer {
         try (InputStream in = new FileInputStream(propertiesPath)) {
             prop.load(in);
         }
-        jarFilePath = prop.getProperty("jar.file.path", "/root/SWITCH/bin/ProvisioningCore.jar");
-        File jarFile = new File(jarFilePath);
-        if (!jarFile.exists()) {
-            throw new IOException(jarFile.getAbsolutePath() + " not found!");
-        } else {
-            jarFilePath = jarFile.getAbsolutePath();
-        }
+//        jarFilePath = prop.getProperty("jar.file.path", "/root/SWITCH/bin/ProvisioningCore.jar");
+//        File jarFile = new File(jarFilePath);
+//        if (!jarFile.exists()) {
+//            throw new IOException(jarFile.getAbsolutePath() + " not found!");
+//        } else {
+//            jarFilePath = jarFile.getAbsolutePath();
+//        }
     }
 
     @Override
@@ -135,8 +135,7 @@ public class Consumer extends DefaultConsumer {
                 try {
                     ec2ConfFile = new File(tempInputDirPath + "ec2.Conf");
                     if (ec2ConfFile.createNewFile()) {
-                        PrintWriter out = new PrintWriter(ec2ConfFile);
-                        out.print(param.get(Parameter.VALUE));
+                        writeValueToFile((String) param.get(Parameter.VALUE), ec2ConfFile);
                     } else {
                         return null;
                     }
@@ -148,8 +147,7 @@ public class Consumer extends DefaultConsumer {
                 try {
                     geniConfFile = new File(tempInputDirPath + "geni.Conf");
                     if (geniConfFile.createNewFile()) {
-                        PrintWriter out = new PrintWriter(geniConfFile);
-                        out.print(param.get(Parameter.VALUE));
+                        writeValueToFile((String) param.get(Parameter.VALUE), geniConfFile);
                     } else {
                         return null;
                     }
@@ -165,8 +163,8 @@ public class Consumer extends DefaultConsumer {
 
                     File topologyFile = new File(tempInputDirPath + "topology_main");
                     if (topologyFile.createNewFile()) {
-                        PrintWriter out = new PrintWriter(topologyFile);
-                        out.print(param.get(Parameter.VALUE));
+                        writeValueToFile((String) param.get(Parameter.VALUE), topologyFile);
+
                         mainTopologyPath = topologyFile.getAbsolutePath();
                     } else {
                         return null;
@@ -177,8 +175,8 @@ public class Consumer extends DefaultConsumer {
                     File topologyFile = new File(tempInputDirPath + fileName + ".yml");
                     String outputFilePath = tempInputDirPath + fileName + "_provisioned.yml";
                     if (topologyFile.createNewFile()) {
-                        PrintWriter out = new PrintWriter(outputFilePath);
-                        out.print(param.get(Parameter.VALUE));
+                        writeValueToFile((String) param.get(Parameter.VALUE), topologyFile);
+
                         topologyElement x = new topologyElement();
                         x.topologyName = fileName;
                         x.outputFilePath = outputFilePath;
@@ -240,8 +238,9 @@ public class Consumer extends DefaultConsumer {
             logDir = System.getProperty("java.io.tmpdir");
         }
 
-        String cmd = "java -jar " + jarFilePath + " ec2=" + ec2ConfFilePath + " exogeni=" + geniConfFilePath + " logDir=" + logDir + " topology=" + mainTopologyPath;
+        String cmd = "ec2=" + ec2ConfFilePath + " exogeni=" + geniConfFilePath + " logDir=" + logDir + " topology=" + mainTopologyPath;
         Provisioning.ProvisioningCore.main(cmd.split(" "));
+//        String cmd = "java -jar " + jarFilePath + " ec2=" + ec2ConfFilePath + " exogeni=" + geniConfFilePath + " logDir=" + logDir + " topology=" + mainTopologyPath;
 //        try {
 //            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Executing: " + cmd);
 //            Process p = Runtime.getRuntime().exec(cmd);
@@ -350,6 +349,15 @@ public class Consumer extends DefaultConsumer {
         }
         jo.put("parameters", parameters);
         return jo.toString();
+    }
+
+    private void writeValueToFile(String value, File file) throws FileNotFoundException {
+        try (PrintWriter out = new PrintWriter(file)) {
+            out.print(value);
+        }
+        if (!file.exists() || file.length() < value.getBytes().length) {
+            throw new FileNotFoundException("File " + file.getAbsolutePath() + " doesn't exist or contents are missing ");
+        }
     }
 
 }

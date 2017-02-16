@@ -109,7 +109,7 @@ public abstract class DRIPCaller {
             }
         });
         String strResponse = response.take();
-        System.err.println(strResponse);
+//        System.err.println(strResponse);
         return mapper.readValue(strResponse, Message.class);
     }
 
