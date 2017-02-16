@@ -51,6 +51,7 @@ import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.types.CloudCredentials;
+import nl.uva.sne.drip.commons.types.LoginKey;
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -107,48 +108,7 @@ public class PlannerController {
         return null;
     }
 
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public Message get() {
-
-        try {
-
-            File tempFile1 = new File("/home/alogo/Downloads/DRIP/input.yaml");
-
-            Message message1 = new Message();
-            message1.setCreationDate((System.currentTimeMillis()));
-            List<Parameter> parameters = new ArrayList();
-            Parameter numParam = new Parameter();
-            String numParamName = "input";
-            numParam.setName(numParamName);
-            numParam.setValue("33000");
-            parameters.add(numParam);
-
-            Parameter fileParamContents = new Parameter();
-            String fileParamContentsName = "someInputFile";
-            fileParamContents.setName(fileParamContentsName);
-            byte[] bytes = Files.readAllBytes(Paths.get(tempFile1.getAbsolutePath()));
-            String charset = "UTF-8";
-            fileParamContents.setValue(new String(bytes, charset));
-            fileParamContents.setEncoding(charset);
-            parameters.add(fileParamContents);
-
-            Parameter fileParamRef = new Parameter();
-            fileParamRef.setName("theNameOfTheParamater");
-            fileParamRef.setURL("http://www.gutenberg.org/cache/epub/3160/pg3160.txt");
-            Map<String, String> attributes = new HashMap<>();
-            attributes.put("level", "0");
-            fileParamRef.setAttributes(attributes);
-            parameters.add(fileParamRef);
-
-            message1.setParameters(parameters);
-            return message1;
-        } catch (IOException ex) {
-            Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
+    
     private Message buildPlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException, IOException {
         ToscaRepresentation t2 = dao.findOne(toscaId);
         Map<String, Object> map = t2.getKvMap();
@@ -191,6 +151,14 @@ public class PlannerController {
         conf.setName("ec2.conf");
         conf.setValue(new String(bytes, charset));
         parameters.add(conf);
+        
+        List<LoginKey> loginKeys = cred.getLogineKys();
+        for(LoginKey lk : loginKeys){
+            String domainName = lk.getAttributes().get("domain_name");
+            Parameter cert = new Parameter();
+            cert.setName("certificate");
+            cert.setValue(charset);
+        }
 
         List<Parameter> returnedParams = plannerReturnedMessage.getParameters();
         for (Parameter param : returnedParams) {
