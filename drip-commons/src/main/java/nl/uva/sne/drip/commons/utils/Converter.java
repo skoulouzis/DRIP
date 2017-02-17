@@ -19,11 +19,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import nl.uva.sne.drip.commons.types.CloudCredentials;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +36,8 @@ import org.yaml.snakeyaml.Yaml;
  * @author S. Koulouzis
  */
 public class Converter {
+
+    private static Map<String, String> EC2_NAME_MAP = new HashMap();
 
     public static String ymlString2Json(String yamlString) {
         JSONObject jsonObject = new JSONObject(ymlString2Map(yamlString));
@@ -108,6 +112,29 @@ public class Converter {
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = mapper.writeValueAsString(obj);
         return Property.toProperties(new JSONObject(jsonInString));
+    }
+
+    public static Properties getEC2Properties(CloudCredentials cred) throws JsonProcessingException, JSONException {
+        Properties prop = Object2Properties(cred);
+        Enumeration<String> names = (Enumeration<String>) prop.propertyNames();
+        Properties ec2Props = new Properties();
+        if (EC2_NAME_MAP.isEmpty()) {
+            initEC2_NAME_MAP();
+        }
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            String ec2Name = EC2_NAME_MAP.get(name);
+            if (ec2Name != null) {
+                ec2Props.setProperty(ec2Name, prop.getProperty(name));
+            }
+
+        }
+        return ec2Props;
+    }
+
+    private static void initEC2_NAME_MAP() {
+        EC2_NAME_MAP.put("keyIdAlias", "AWSAccessKeyId");
+        EC2_NAME_MAP.put("key", "AWSSecretKey");
     }
 
 }

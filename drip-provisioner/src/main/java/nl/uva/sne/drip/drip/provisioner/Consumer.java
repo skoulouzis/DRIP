@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,8 +57,10 @@ public class Consumer extends DefaultConsumer {
 
     private final Channel channel;
     private final String propertiesPath = "etc/consumer.properties";
-//    private String jarFilePath;
 
+    Map<String, String> em = new HashMap<String, String>();
+
+//    private String jarFilePath;
     public class topologyElement {
 
         String topologyName = "";
@@ -77,6 +81,18 @@ public class Consumer extends DefaultConsumer {
 //        } else {
 //            jarFilePath = jarFile.getAbsolutePath();
 //        }
+
+        em.put("Virginia", "ec2.us-east-1.amazonaws.com");
+        em.put("California", "ec2.us-west-1.amazonaws.com");
+        em.put("Oregon", "ec2.us-west-2.amazonaws.com");
+        em.put("Mumbai", "ec2.ap-south-1.amazonaws.com");
+        em.put("Singapore", "ec2.ap-southeast-1.amazonaws.com");
+        em.put("Seoul", "ec2.ap-northeast-2.amazonaws.com");
+        em.put("Sydney", "ec2.ap-southeast-2.amazonaws.com");
+        em.put("Tokyo", "ec2.ap-northeast-1.amazonaws.com");
+        em.put("Frankfurt", "ec2.eu-central-1.amazonaws.com");
+        em.put("Ireland", "ec2.eu-west-1.amazonaws.com");
+        em.put("Paulo", "ec2.sa-east-1.amazonaws.com");
     }
 
     @Override
@@ -128,6 +144,7 @@ public class Consumer extends DefaultConsumer {
         //loop through the parameters in a message to find the input files
         String logDir = "null", mainTopologyPath = "null", sshKeyFilePath = "null", scriptPath = "null";
         ArrayList<topologyElement> topologyInfoArray = new ArrayList();
+        List<String> certificateNames = new ArrayList();
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
             String name = (String) param.get(Parameter.NAME);
@@ -187,8 +204,9 @@ public class Consumer extends DefaultConsumer {
                 }
             } else if (name.equals("certificate")) {
                 JSONObject attribute = param.getJSONObject("attributes");
-                String fileName = (String) attribute.get("filename");   ////This file name does not contain suffix of '.yml' for example
-                File certificate = new File(tempInputDirPath + fileName + ".pem");
+                String fileName = (String) attribute.get("filename");
+                certificateNames.add(fileName);
+                File certificate = new File(tempInputDirPath + File.separator + fileName + ".pem");
                 if (certificate.createNewFile()) {
                     writeValueToFile((String) param.get(Parameter.VALUE), certificate);
                 }
@@ -235,9 +253,30 @@ public class Consumer extends DefaultConsumer {
         String geniConfFilePath = "null";
         if (ec2ConfFile != null) {
             ec2ConfFilePath = ec2ConfFile.getAbsolutePath();
+            Properties prop = new Properties();
+            prop.load(new FileInputStream(ec2ConfFile));
+            StringBuilder supportDomains = new StringBuilder();
+            String prefix = "";
+            for (String certName : certificateNames) {
+                String supported = this.em.get(certName);
+                if (supported != null) {
+                    supportDomains.append(prefix);
+                    prefix = ", ";
+                    supportDomains.append(supported);
+                }
+            }
+            prop.setProperty("KeyDir", tempInputDirPath);
+            prop.setProperty("SupportDomains", supportDomains.toString());
+            prop.store(new FileOutputStream(ec2ConfFile), null);
+
         }
         if (geniConfFile != null) {
             geniConfFilePath = geniConfFile.getAbsolutePath();
+            Properties prop = new Properties();
+            prop.load(new FileInputStream(geniConfFile));
+            prop.propertyNames();
+            prop.setProperty("KeyDir", tempInputDirPath);
+            prop.store(new FileOutputStream(geniConfFile), null);
         }
         if (logDir.equals("null")) {
             logDir = System.getProperty("java.io.tmpdir");

@@ -49,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.dao.ToscaDao;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
+import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.types.CloudCredentials;
 import nl.uva.sne.drip.commons.types.LoginKey;
@@ -70,6 +71,8 @@ public class PlannerController {
     @Autowired
     private CloudCredentialsDao cloudCredentialsDao;
 
+//    @Autowired
+//    PlannerService plannerService;
     @RequestMapping(value = "/plan/{tosca_id}", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -157,14 +160,13 @@ public class PlannerController {
     }
 
     private Parameter buildCloudConfParam(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
-        Parameter conf = new Parameter();
-        String charset = "UTF-8";
-        Properties prop = Converter.Object2Properties(cred);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        prop.store(baos, null);
-        byte[] bytes = baos.toByteArray();
-        conf.setName("ec2.conf");
-        conf.setValue(new String(bytes, charset));
+        Parameter conf = null;
+
+        switch (cred.getCloudProviderName().toLowerCase()) {
+            case "ec2":
+                conf = buildEC2Conf(cred);
+                break;
+        }
         return conf;
     }
 
@@ -211,5 +213,19 @@ public class PlannerController {
             parameters.add(topology);
         }
         return parameters;
+    }
+
+    private Parameter buildEC2Conf(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
+
+        Properties prop = Converter.getEC2Properties(cred);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        prop.store(baos, null);
+        byte[] bytes = baos.toByteArray();
+        Parameter conf = new Parameter();
+        conf.setName("ec2.conf");
+        String charset = "UTF-8";
+        conf.setValue(new String(bytes, charset));
+        return conf;
+
     }
 }
