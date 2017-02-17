@@ -82,19 +82,16 @@ public class Consumer extends DefaultConsumer {
             List<File> files = panner.plan(inputFiles[0].getAbsolutePath(), inputFiles[1].getAbsolutePath(), tempDir.getAbsolutePath());
 
             //Here we do the same as above with a different API
-            inputFiles = simpleJsonUnmarshalExample(message);
+//            inputFiles = simpleJsonUnmarshalExample(message);
             //Call the method with the extracted parameters  
-            files = panner.plan(inputFiles[0].getAbsolutePath(), inputFiles[1].getAbsolutePath(), tempDir.getAbsolutePath());
-
-            
+//            files = panner.plan(inputFiles[0].getAbsolutePath(), inputFiles[1].getAbsolutePath(), tempDir.getAbsolutePath());
             //Now we need to put the result of the call to a message and respond 
             //Example 1
             response = jacksonMarshalExample(files);
 
             //Example 2
-            response = simpleJsonMarshalExample(files);
-
-        } catch (IOException | JSONException ex) {
+//            response = simpleJsonMarshalExample(files);
+        } catch (Exception ex) {
             response = ex.getMessage();
             Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -136,7 +133,7 @@ public class Consumer extends DefaultConsumer {
     }
 
     private File[] simpleJsonUnmarshalExample(String message) throws JSONException, FileNotFoundException, IOException {
-         //Use the JSONObject API to convert json to Object (Message)
+        //Use the JSONObject API to convert json to Object (Message)
         File[] files = new File[2];
         JSONObject jo = new JSONObject(message);
         JSONArray parameters = jo.getJSONArray("parameters");
@@ -183,7 +180,7 @@ public class Consumer extends DefaultConsumer {
     }
 
     private String simpleJsonMarshalExample(List<File> files) throws JSONException, IOException {
-         //Use the JSONObject API to convert Object (Message) to json
+        //Use the JSONObject API to convert Object (Message) to json
         JSONObject jo = new JSONObject();
         jo.put("creationDate", (System.currentTimeMillis()));
         List parameters = new ArrayList();

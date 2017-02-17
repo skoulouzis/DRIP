@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import nl.uva.sne.drip.commons.utils.Converter;
 
 /**
  *
@@ -45,9 +46,12 @@ public class Planner {
             }
             if (check) {
                 if (line.contains("file")) {
-                    String content = line.trim().replace('\"', ' ');
+                    String content = line.trim().replace('\'', ' ').replace('\"', ' ');
                     String[] cs = content.split(":");
                     String docker_name = cs[1].trim();
+                    if (docker_name.equals("{file")) {
+                        docker_name = cs[2].trim();
+                    }
                     dockerNames.add(docker_name);
                 }
             }
@@ -111,7 +115,6 @@ public class Planner {
         outputFiles.add(new File(outfPath));
         outputFiles.add(new File(allFilePath));
         return outputFiles;
-
     }
 
     private String generateVM(String block, String nodeName, String dockerName, String privateAddress, String role) {

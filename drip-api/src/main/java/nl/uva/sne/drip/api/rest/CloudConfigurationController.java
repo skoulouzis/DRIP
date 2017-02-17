@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.api.service.UserService;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  *
@@ -46,7 +47,7 @@ public class CloudConfigurationController {
     @RequestMapping(method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String postConf(CloudCredentials cc) {
+    String postConf(@RequestBody CloudCredentials cc) {
         cloudCredentialsDao.save(cc);
         return cc.getId();
     }

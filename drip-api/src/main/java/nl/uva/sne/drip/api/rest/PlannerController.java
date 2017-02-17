@@ -88,7 +88,7 @@ public class PlannerController {
             dripComponetens.add(planner);
             Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
 
-            Message provisionerInvokationMessage = buildProvisionerMessage(plannerReturnedMessage, "58a1f0a963d42f004b1d63ad");
+            Message provisionerInvokationMessage = buildProvisionerMessage(plannerReturnedMessage, "58a7281c55363e65b3c9eb82");
             provisioner = new ProvisionerCaller(messageBrokerHost);
             dripComponetens.add(provisioner);
             provisioner.call(provisionerInvokationMessage);

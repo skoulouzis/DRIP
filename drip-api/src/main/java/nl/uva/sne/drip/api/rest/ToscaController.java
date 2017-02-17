@@ -116,6 +116,24 @@ public class ToscaController {
         return null;
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    ToscaRepresentation getToscaRepresentation(@PathVariable("id") String id) {
+
+        ToscaRepresentation tosca = dao.findOne(id);
+
+        return tosca;
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String delete(@PathVariable("id") String id) {
+        dao.delete(id);
+        return "Deleted tosca :" + id;
+    }
+
 //    http://localhost:8080/drip-api/tosca/ids
     @RequestMapping(value = "/ids")
     @RolesAllowed({UserService.USER, UserService.ADMIN})
