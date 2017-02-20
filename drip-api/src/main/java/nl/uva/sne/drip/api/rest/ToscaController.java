@@ -16,12 +16,10 @@
 package nl.uva.sne.drip.api.rest;
 
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
-import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
@@ -37,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PathVariable;
 import nl.uva.sne.drip.api.dao.ToscaDao;
+import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.service.UserService;
 
 /**
@@ -48,8 +47,6 @@ import nl.uva.sne.drip.api.service.UserService;
 @Component
 public class ToscaController {
 
-//    @Value("${message.broker.host}")
-//    private String messageBrokerHost;
     @Autowired
     private ToscaDao dao;
 
@@ -58,35 +55,26 @@ public class ToscaController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String toscaUpload(@RequestParam("file") MultipartFile file) {
-        PlannerCaller planner = null;
-        if (!file.isEmpty()) {
-            try {
-
-                String originalFileName = file.getOriginalFilename();
-                String name = System.currentTimeMillis() + "_" + originalFileName;
-                byte[] bytes = file.getBytes();
-                String str = new String(bytes, "UTF-8");
-                str = str.replaceAll("\\.", "\uff0E");
-
-                Map<String, Object> map = Converter.ymlString2Map(str);
-                ToscaRepresentation t = new ToscaRepresentation();
-                t.setName(name);
-                t.setKvMap(map);
-                dao.save(t);
-
-                return t.getId();
-            } catch (IOException | IllegalStateException ex) {
-                Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                if (planner != null) {
-                    try {
-                        planner.close();
-                    } catch (IOException | TimeoutException ex) {
-                        Logger.getLogger(ToscaController.class.getName()).log(Level.WARNING, null, ex);
-                    }
-                }
-            }
+        if (file.isEmpty()) {
+            throw new BadRequestException("Must uplaod a file");
         }
+        try {
+            String originalFileName = file.getOriginalFilename();
+            String name = System.currentTimeMillis() + "_" + originalFileName;
+            byte[] bytes = file.getBytes();
+            String str = new String(bytes, "UTF-8");
+            str = str.replaceAll("\\.", "\uff0E");
+
+            Map<String, Object> map = Converter.ymlString2Map(str);
+            ToscaRepresentation t = new ToscaRepresentation();
+            t.setName(name);
+            t.setKvMap(map);
+            dao.save(t);
+            return t.getId();
+        } catch (IOException | IllegalStateException ex) {
+            Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         return null;
     }
 
@@ -114,16 +102,6 @@ public class ToscaController {
             Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-    }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    ToscaRepresentation getToscaRepresentation(@PathVariable("id") String id) {
-
-        ToscaRepresentation tosca = dao.findOne(id);
-
-        return tosca;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

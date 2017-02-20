@@ -31,9 +31,11 @@ public class CloudCredentials {
 
     private String key;
 
+    
     private String keyIdAlias;
-
-    private List<LoginKey> logineKys;
+    
+    private List<LoginKey> loginKeys;
+    
     
     private String cloudProviderName;
 
@@ -74,17 +76,17 @@ public class CloudCredentials {
     }
 
     /**
-     * @return the logineKys
+     * @return the loginKeys
      */
-    public List<LoginKey> getLogineKys() {
-        return logineKys;
+    public List<LoginKey> getLoginKeys() {
+        return loginKeys;
     }
 
     /**
-     * @param logineKys the logineKys to set
+     * @param loginKeys the loginKeys to set
      */
-    public void setLogineKys(List<LoginKey> logineKys) {
-        this.logineKys = logineKys;
+    public void setLogineKeys(List<LoginKey> loginKeys) {
+        this.loginKeys = loginKeys;
     }
 
     /**

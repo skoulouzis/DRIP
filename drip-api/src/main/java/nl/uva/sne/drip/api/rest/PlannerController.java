@@ -49,7 +49,6 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.dao.ToscaDao;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
-import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.types.CloudCredentials;
 import nl.uva.sne.drip.commons.types.LoginKey;
@@ -67,7 +66,7 @@ public class PlannerController {
     @Value("${message.broker.host}")
     private String messageBrokerHost;
     @Autowired
-    private ToscaDao dao;
+    private ToscaDao toscaDao;
     @Autowired
     private CloudCredentialsDao cloudCredentialsDao;
 
@@ -78,7 +77,7 @@ public class PlannerController {
     public @ResponseBody
     String plann(@PathVariable("tosca_id") String toscaId) {
         DRIPCaller planner = null;
-        DRIPCaller provisioner = null;
+//        DRIPCaller provisioner = null;
         List<DRIPCaller> dripComponetens = new ArrayList<>();
         try {
 
@@ -87,13 +86,27 @@ public class PlannerController {
             planner = new PlannerCaller(messageBrokerHost);
             dripComponetens.add(planner);
             Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
-
-            Message provisionerInvokationMessage = buildProvisionerMessage(plannerReturnedMessage, "58a7281c55363e65b3c9eb82");
-            provisioner = new ProvisionerCaller(messageBrokerHost);
-            dripComponetens.add(provisioner);
-            provisioner.call(provisionerInvokationMessage);
-
-            return "";
+            List<Parameter> toscaFiles = plannerReturnedMessage.getParameters();
+            ToscaRepresentation tr = new ToscaRepresentation();
+            StringBuilder name = new StringBuilder();
+            StringBuilder value = new StringBuilder();
+            String prefix = "";
+            for (Parameter p : toscaFiles) {
+                Map<String, String> attributess = p.getAttributes();
+                String level = attributess.get("level");
+                name.append(prefix);
+                name.append(p.getName());
+                value.append(p.getValue());
+                value.append("\n");
+            }
+            tr.setName(name.toString());
+            tr.setKvMap(Converter.ymlString2Map(toscaId));
+            toscaDao.save(tr);
+//            Message provisionerInvokationMessage = buildProvisionerMessage(plannerReturnedMessage, "58a7281c55363e65b3c9eb82");
+//            provisioner = new ProvisionerCaller(messageBrokerHost);
+//            dripComponetens.add(provisioner);
+//            provisioner.call(provisionerInvokationMessage);
+            return tr.getId();
         } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
             Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -112,7 +125,7 @@ public class PlannerController {
     }
 
     private Message buildPlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException, IOException {
-        ToscaRepresentation t2 = dao.findOne(toscaId);
+        ToscaRepresentation t2 = toscaDao.findOne(toscaId);
         Map<String, Object> map = t2.getKvMap();
         String ymlStr = Converter.map2YmlString(map);
         ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
@@ -171,7 +184,7 @@ public class PlannerController {
     }
 
     private List<Parameter> buildCertificatesParam(CloudCredentials cred) {
-        List<LoginKey> loginKeys = cred.getLogineKys();
+        List<LoginKey> loginKeys = cred.getLoginKeys();
         List<Parameter> parameters = new ArrayList<>();
         for (LoginKey lk : loginKeys) {
             String domainName = lk.getAttributes().get("domain_name");
