@@ -87,26 +87,22 @@ public class PlannerController {
             dripComponetens.add(planner);
             Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
             List<Parameter> toscaFiles = plannerReturnedMessage.getParameters();
-            ToscaRepresentation tr = new ToscaRepresentation();
-            StringBuilder name = new StringBuilder();
-            StringBuilder value = new StringBuilder();
-            String prefix = "";
             for (Parameter p : toscaFiles) {
+                ToscaRepresentation tr = new ToscaRepresentation();
                 Map<String, String> attributess = p.getAttributes();
-                String level = attributess.get("level");
-                name.append(prefix);
-                name.append(p.getName());
-                value.append(p.getValue());
-                value.append("\n");
+                String originalFileName = p.getName();
+                String name = System.currentTimeMillis() + "_" + originalFileName;
+
+                tr.setName(name);
+                tr.setKvMap(Converter.ymlString2Map(p.getValue()));
+                toscaDao.save(tr);
             }
-            tr.setName(name.toString());
-            tr.setKvMap(Converter.ymlString2Map(toscaId));
-            toscaDao.save(tr);
+
 //            Message provisionerInvokationMessage = buildProvisionerMessage(plannerReturnedMessage, "58a7281c55363e65b3c9eb82");
 //            provisioner = new ProvisionerCaller(messageBrokerHost);
 //            dripComponetens.add(provisioner);
 //            provisioner.call(provisionerInvokationMessage);
-            return tr.getId();
+            return "";//tr.getId();
         } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
             Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
