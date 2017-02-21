@@ -1,5 +1,6 @@
 package nl.uva.sne.drip.api.rpc;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -87,6 +88,7 @@ public abstract class DRIPCaller {
     public Message call(Message r) throws IOException, TimeoutException, InterruptedException {
 
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         String jsonInString = mapper.writeValueAsString(r);
 
         //Build a correlation ID to distinguish responds 
@@ -109,6 +111,7 @@ public abstract class DRIPCaller {
             }
         });
         String strResponse = response.take();
+        strResponse = strResponse.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
 //        System.err.println(strResponse);
         return mapper.readValue(strResponse, Message.class);
     }

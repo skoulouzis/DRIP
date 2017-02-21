@@ -14,30 +14,23 @@ from ICPCP import Workflow
 import random
 import time
 import json
+import time
 
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.2'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.3'))
 channel = connection.channel()
 channel.queue_declare(queue='planner_queue')
 
 
-
-def handleDelivery(message):
-    parsed_json = json.loads(message)
-    params = parsed_json["parameters"]
-    for param in params:
-        name = param["name"]
-        value = param["value"]
-        
-    
-
 def on_request(ch, method, props, body):
-    handleDelivery(body)
-
-    print(" Message %s" % body)
-    response = "AAAAAAAAAAAAAAAAAAAAAA"
-    json1 = response.get('parameters')[0].get('value').get('topology_template').get('node_templates')
+    
+    parsed_message = json.loads(body)
+    value = parsed_message.get('parameters')[0].get('value')
+    parsed_value =  json.loads(value)
+    
+    json1 = parsed_value.get('topology_template').get('node_templates')
+    
     deadline = 0
 
     for j in json1:
@@ -101,22 +94,22 @@ def on_request(ch, method, props, body):
     #print content['workflow']
     #return 
     res = wf.generateJSON()
-    
     end = time.time()
     print (end - start)
     
     # generate the json files in the corresponding format as the 
     outcontent = {}
-    outcontent["creationDate"] = 1487002029722
+    outcontent["creationDate"] = time.time()
     outcontent["parameters"] = []
     par1 = {}
-    par1["url"] = "null"
+    par1["url"] = 'null'
     par1["encoding"] = "UTF-8"
-    par1["value"] = res
-    par1["attributes"] = "null"
+    par1["value"] = str(res) 
+    par1["attributes"] = 'null'
     outcontent["parameters"].append(par1)
     
     response = outcontent
+    print(response)
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
                      properties=pika.BasicProperties(correlation_id = \

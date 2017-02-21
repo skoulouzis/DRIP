@@ -106,12 +106,21 @@ public class CloudConfigurationController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public CloudCredentials get(@PathVariable("id") String id) {
+    public @ResponseBody
+    CloudCredentials get(@PathVariable("id") String id) {
         CloudCredentials cc = cloudCredentialsDao.findOne(id);
         if (cc == null) {
             throw new NotFoundException();
         }
         return cc;
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String delete(@PathVariable("id") String id) {
+        cloudCredentialsDao.delete(id);
+        return "Deleted :" + id;
     }
 
     @RequestMapping(value = "/ids")
