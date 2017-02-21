@@ -15,8 +15,8 @@
  */
 package nl.uva.sne.drip.commons.types;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,14 +29,35 @@ public class ToscaRepresentation {
 
     @Id
     private String id;
-    
-    private List<String> lowerLevelIDs;
+
+    private Set<String> lowerLevelIDs;
 
     private String name;
 
     private Map<String, Object> kvMap;
-    
+
     private Integer level;
+
+    private Type type;
+
+    public static enum Type {
+        PLAN,
+        SIDE
+    }
+
+    /**
+     * @return the type
+     */
+    public Type getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(Type type) {
+        this.type = type;
+    }
 
     public final String getId() {
         return id;
@@ -91,14 +112,14 @@ public class ToscaRepresentation {
     /**
      * @return the lowerLevelIDs
      */
-    public List<String> getLowerLevelIDs() {
+    public Set<String> getLowerLevelIDs() {
         return lowerLevelIDs;
     }
 
     /**
      * @param lowerLevelIDs the lowerLevelIDs to set
      */
-    public void setLowerLevelIDs(List<String> lowerLevelIDs) {
+    public void setLowerLevelIDs(Set<String> lowerLevelIDs) {
         this.lowerLevelIDs = lowerLevelIDs;
     }
 

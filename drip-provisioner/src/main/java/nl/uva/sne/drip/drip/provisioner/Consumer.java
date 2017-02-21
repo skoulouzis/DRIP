@@ -30,10 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -382,7 +380,6 @@ public class Consumer extends DefaultConsumer {
                     byte[] bytes = Files.readAllBytes(Paths.get(f.getAbsolutePath()));
                     fileArguments.put("value", new String(bytes, charset));
                     parameters.add(fileArguments);
-
                 } else {
                     fileArguments.put("name", outputs.get(i).topologyName);
                     fileArguments.put("value", "ERROR::There is no output for topology " + outputs.get(i).topologyName);

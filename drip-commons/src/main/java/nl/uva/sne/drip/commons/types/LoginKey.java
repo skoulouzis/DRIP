@@ -16,6 +16,7 @@
 package nl.uva.sne.drip.commons.types;
 
 import java.util.Map;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -25,11 +26,37 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class LoginKey {
 
+    @Id
+    private String id;
+
     private Map<String, String> attributes;
 
     private String key;
 
     private Type type;
+    private String name;
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public static enum Type {
         PRIVATE,

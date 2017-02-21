@@ -1,0 +1,113 @@
+/*
+ * Copyright 2017 S. Koulouzis, Wang Junchao, Huan Zhou, Yang Hu 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package nl.uva.sne.drip.api.service;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import nl.uva.sne.drip.api.dao.ToscaDao;
+import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.commons.types.ToscaRepresentation;
+import nl.uva.sne.drip.commons.utils.Converter;
+import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ *
+ * @author S. Koulouzis
+ */
+@Service
+public class ToscaService {
+
+    @Autowired
+    private ToscaDao dao;
+
+    public String get(String id, String fromat, ToscaRepresentation.Type type) throws JSONException {
+        ToscaRepresentation tosca = dao.findOne(id);
+        if (tosca == null || !tosca.getType().equals(type)) {
+            throw new NotFoundException();
+        }
+        Set<String> ids = tosca.getLowerLevelIDs();
+        Map<String, Object> map = tosca.getKvMap();
+        if (ids != null) {
+            for (String lowID : ids) {
+                map.putAll(dao.findOne(lowID).getKvMap());
+            }
+        }
+
+        if (fromat != null && fromat.equals("yml")) {
+            String ymlStr = Converter.map2YmlString(map);
+            ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+            return ymlStr;
+        }
+        if (fromat != null && fromat.equals("json")) {
+            String jsonStr = Converter.map2JsonString(map);
+            jsonStr = jsonStr.replaceAll("\\uff0E", "\\.");
+            return jsonStr;
+        }
+        String ymlStr = Converter.map2YmlString(map);
+        ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+        return ymlStr;
+    }
+
+    public String save(MultipartFile file, ToscaRepresentation.Type type) throws IOException {
+        String originalFileName = file.getOriginalFilename();
+        String name = System.currentTimeMillis() + "_" + originalFileName;
+        byte[] bytes = file.getBytes();
+        String str = new String(bytes, "UTF-8");
+        str = str.replaceAll("\\.", "\uff0E");
+
+        Map<String, Object> map = Converter.ymlString2Map(str);
+        ToscaRepresentation t = new ToscaRepresentation();
+        t.setName(name);
+        t.setKvMap(map);
+        t.setType(type);
+        dao.save(t);
+        return t.getId();
+    }
+
+    public void delete(String id, ToscaRepresentation.Type type) {
+        ToscaRepresentation tosca = dao.findOne(id);
+        if (!tosca.getType().equals(type)) {
+            throw new NotFoundException();
+        } else {
+            dao.delete(id);
+        }
+
+    }
+
+    public List<ToscaRepresentation> findAll(ToscaRepresentation.Type type) {
+        List<ToscaRepresentation> all = dao.findAll();
+        List<ToscaRepresentation> allType = new ArrayList<>();
+        if (all == null) {
+            throw new NotFoundException();
+        }
+        for (ToscaRepresentation tr : all) {
+            if (tr.getType() != null && tr.getType().equals(type)) {
+                allType.add(tr);
+            }
+        }
+        return allType;
+    }
+
+    public ToscaDao getDao() {
+        return dao;
+    }
+}
