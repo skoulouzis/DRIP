@@ -42,15 +42,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.dao.ToscaDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
 import nl.uva.sne.drip.api.service.ToscaService;
+import nl.uva.sne.drip.api.service.UserKeyService;
+import nl.uva.sne.drip.api.service.UserScriptService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.types.CloudCredentials;
 import nl.uva.sne.drip.commons.types.LoginKey;
+import nl.uva.sne.drip.commons.types.UserScript;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -68,6 +70,12 @@ public class ProvisionController {
 
     @Autowired
     private ToscaService toscaService;
+
+    @Autowired
+    private UserScriptService userScriptService;
+
+    @Autowired
+    private UserKeyService userKeysService;
 
     @Autowired
     private CloudCredentialsDao cloudCredentialsDao;
@@ -120,7 +128,7 @@ public class ProvisionController {
         parameters.addAll(userScripts);
 
         List<Parameter> userKeys = buildKeysParams(pReq.getUserKeyID());
-        parameters.addAll(userScripts);
+        parameters.addAll(userKeys);
 
         invokationMessage.setParameters(parameters);
         invokationMessage.setCreationDate((System.currentTimeMillis()));
@@ -208,11 +216,31 @@ public class ProvisionController {
     }
 
     private List<Parameter> buildScriptParams(String userScriptID) {
-
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        UserScript script = userScriptService.getDao().findOne(userScriptID);
+        if (script == null) {
+            throw new BadRequestException("User script: " + userScriptID + " was not found");
+        }
+        List<Parameter> parameters = new ArrayList();
+        Parameter scriptParameter = new Parameter();
+        scriptParameter.setName("guiscript");
+        scriptParameter.setValue(script.getContents());
+        scriptParameter.setEncoding("UTF-8");
+        parameters.add(scriptParameter);
+        return parameters;
     }
 
     private List<Parameter> buildKeysParams(String userKeyID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        LoginKey key = userKeysService.get(userKeyID, LoginKey.Type.PUBLIC);
+        if (key == null) {
+            throw new BadRequestException("User key: " + userKeyID + " was not found");
+        }
+        List<Parameter> parameters = new ArrayList();
+        Parameter keyParameter = new Parameter();
+        keyParameter.setName("sshkey");
+        keyParameter.setValue(key.getKey());
+        keyParameter.setEncoding("UTF-8");
+        parameters.add(keyParameter);
+        return parameters;
+
     }
 }

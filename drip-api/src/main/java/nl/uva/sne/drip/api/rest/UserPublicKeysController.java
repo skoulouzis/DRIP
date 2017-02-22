@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +31,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import nl.uva.sne.drip.api.dao.UserKeyDao;
+import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.api.service.UserKeyService;
 import nl.uva.sne.drip.api.service.UserService;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  *
@@ -46,7 +48,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class UserPublicKeysController {
 
     @Autowired
-    private UserKeyDao dao;
+    private UserKeyService service;
 
 //    curl -v -X POST -F "file=@.ssh/id_dsa.pub" localhost:8080/drip-api/user_key/upload
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
@@ -64,7 +66,8 @@ public class UserPublicKeysController {
                 upk.setKey(key);
                 upk.setName(name);
                 upk.setType(LoginKey.Type.PUBLIC);
-                dao.save(upk);
+
+                service.getDao().save(upk);
 
                 return upk.getId();
             } catch (IOException | IllegalStateException ex) {
@@ -75,24 +78,38 @@ public class UserPublicKeysController {
     }
 
 //    curl -H "Content-Type: application/json" -X POST -d  '{"key":"ssh-rsa AAAAB3NzaDWBqs75i849MytgwgQcRYMcsXIki0yeYTKABH6JqoiyFBHtYlyh/EV1t6cujb9LyNP4J5EN4fPbtwKYvxecd0LojSPxl4wjQlfrHyg6iKUYB7hVzGqACMvgYZHrtHPfrdEmOGPplPVPpoaX2j+u0BZ0yYhrWMKjzyYZKa68yy5N18+Gq+1p83HfUDwIU9wWaUYdgEvDujqF6b8p3z6LDx9Ob+RanSMZSt+b8eZRcd+F2Oy/gieJEJ8kc152VIOv8UY1xB3hVEwVnSRGgrAsa+9PChfF6efXUGWiKf8KBlWgBOYsSTsOY4ks9zkXMnbcTdC+o7xspOkyIcWjv us@u\n","name":"id_rsa.pub"}' localhost:8080/drip-api/user_key/
-//    @RequestMapping(method = RequestMethod.POST)
-//    @RolesAllowed({UserService.USER, UserService.ADMIN})
-//    public @ResponseBody
-//    String postConf(LoginKey uk) throws JSONException {
-//        String name = System.currentTimeMillis() + "_" + uk.getName();
-//        uk.setName(name);
-//        dao.save(uk);
-//        return uk.getId();
-//    }
+    @RequestMapping(method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String postKey(@RequestBody LoginKey uk) {
+        LoginKey.Type type = uk.getType();
+        if (type != null && type.equals(LoginKey.Type.PRIVATE)) {
+            throw new BadRequestException("Key can't be private");
+        }
+        if (uk.getKey() == null) {
+            throw new BadRequestException("Key can't be empty");
+        }
+        String originalName = uk.getName();
+        if (originalName == null) {
+            originalName = "id.pub";
+        }
+        String name = System.currentTimeMillis() + "_" + originalName;
+        uk.setName(name);
+        uk.setType(LoginKey.Type.PUBLIC);
+
+        service.getDao().save(uk);
+        return uk.getId();
+    }
+
     //curl localhost:8080/drip-api/user_key/58a20be263d4a5898835676e
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public LoginKey get(@PathVariable("id") String id) {
-        LoginKey key = dao.findOne(id);
-        if (key == null || !key.getType().equals(LoginKey.Type.PUBLIC)) {
+    public @ResponseBody
+    LoginKey get(@PathVariable("id") String id) {
+        LoginKey key = service.get(id, LoginKey.Type.PUBLIC);
+        if (key == null) {
             throw new NotFoundException();
         }
-
         return key;
     }
 
@@ -101,14 +118,20 @@ public class UserPublicKeysController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {
-        List<LoginKey> all = dao.findAll();
+        List<LoginKey> all = service.getAll(LoginKey.Type.PUBLIC);
         List<String> ids = new ArrayList<>();
         for (LoginKey tr : all) {
-            if (tr.getType().equals(LoginKey.Type.PUBLIC)) {
-                ids.add(tr.getId());
-            }
+            ids.add(tr.getId());
         }
         return ids;
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String delete(@PathVariable("id") String id) {
+        service.delete(id, LoginKey.Type.PUBLIC);
+        return "Deleteed: " + id;
     }
 
 }
