@@ -15,13 +15,13 @@
  */
 package nl.uva.sne.drip.api.dao;
 
-import nl.uva.sne.drip.commons.types.UserPublicKey;
+import nl.uva.sne.drip.commons.types.LoginKey;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface UserKeyDao extends MongoRepository<UserPublicKey, String> {
+public interface UserKeyDao extends MongoRepository<LoginKey, String> {
 
 }

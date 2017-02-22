@@ -1,30 +1,22 @@
 #!/usr/bin/env python
 import pika
+import random
+import time
 import json
 
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.2'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.3'))
 channel = connection.channel()
 channel.queue_declare(queue='planner_queue')
 
 
-
-def handleDelivery(message):
-    parsed_json = json.loads(message)
-    params = parsed_json["parameters"]
-    for param in params:
-        name = param["name"]
-        value = param["value"]
-        
-    
-
 def on_request(ch, method, props, body):
-    handleDelivery(body)
-
-    print(" Message %s" % body)
-    response = "AAAAAAAAAAAAAAAAAAAAAA"
-
+    parsed_message = json.loads(body)
+    
+    response = consume_message(parsed_message)
+    
+    
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
                      properties=pika.BasicProperties(correlation_id = \

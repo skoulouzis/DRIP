@@ -47,6 +47,16 @@ public class UserController {
     @Autowired
     private UserService service;
 
+    /**
+     * Register new user. A normal user cannot create accounts, only the user
+     * with the 'ADMIN' role can do that.
+     *
+     * @param user
+     * @return Response on success: The ID of the newly register user. Response
+     * on fail: If the user name already exists, or the user name is 'null' or
+     * the password is 'null' there will be a 'BadRequestException'
+     *
+     */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
@@ -74,8 +84,7 @@ public class UserController {
         if (registeredUser == null) {
             throw new NotFoundException("User " + user.getUsername() + " not found");
         }
-        service.getDao().save(user);
-        return user.getId();
+        return this.register(user);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
