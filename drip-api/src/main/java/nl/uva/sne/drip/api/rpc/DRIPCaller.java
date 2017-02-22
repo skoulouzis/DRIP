@@ -9,11 +9,17 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 import nl.uva.sne.drip.commons.types.Message;
+import nl.uva.sne.drip.commons.types.Parameter;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /*
  * Copyright 2017 S. Koulouzis, Wang Junchao, Huan Zhou, Yang Hu 
@@ -34,7 +40,7 @@ import nl.uva.sne.drip.commons.types.Message;
  *
  * @author S. Koulouzis
  */
-public abstract class DRIPCaller {
+public abstract class DRIPCaller implements AutoCloseable {
 
     private final Connection connection;
     private final Channel channel;
@@ -76,6 +82,7 @@ public abstract class DRIPCaller {
         return replyQueueName;
     }
 
+    @Override
     public void close() throws IOException, TimeoutException {
         if (channel != null && channel.isOpen()) {
             channel.close();
@@ -85,7 +92,7 @@ public abstract class DRIPCaller {
         }
     }
 
-    public Message call(Message r) throws IOException, TimeoutException, InterruptedException {
+    public Message call(Message r) throws IOException, TimeoutException, InterruptedException, JSONException {
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
@@ -113,7 +120,24 @@ public abstract class DRIPCaller {
         String strResponse = response.take();
         strResponse = strResponse.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
 //        System.err.println(strResponse);
-        return mapper.readValue(strResponse, Message.class);
+        JSONObject jsonObj = new JSONObject(strResponse);
+        Message responseMessage = new Message();
+
+        responseMessage.setCreationDate((Long) jsonObj.get("creationDate"));
+        JSONArray jsonParams = (JSONArray) jsonObj.get("parameters");
+        List<Parameter> parameters = new ArrayList<>();
+
+        for (int i = 0; i < jsonParams.length(); i++) {
+            JSONObject jsonParam = (JSONObject) jsonParams.get(i);
+
+            Parameter parameter = new Parameter();
+            parameter.setName(jsonParam.getString("name"));
+            parameter.setName(jsonParam.getString("value"));
+            parameters.add(parameter);
+        }
+
+        responseMessage.setParameters(parameters);
+        return responseMessage;//mapper.readValue(strResponse, Message.class);
     }
 
 }

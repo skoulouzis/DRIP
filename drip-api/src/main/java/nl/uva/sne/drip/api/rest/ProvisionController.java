@@ -79,29 +79,19 @@ public class ProvisionController {
         re.setUserScriptID("58a2112363d41754cca042b4");
         return re;
     }
-        
-    
+
     @RequestMapping(value = "/provision", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String plann(@RequestBody ProvisionRequest req) {
-        DRIPCaller provisioner = null;
-        try {
+
+        try (DRIPCaller provisioner = new ProvisionerCaller(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisionerMessage(req);
-            provisioner = new ProvisionerCaller(messageBrokerHost);
+
             Message response = provisioner.call(provisionerInvokationMessage);
             return "";
         } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {
             Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-
-            if (provisioner != null) {
-                try {
-                    provisioner.close();
-                } catch (IOException | TimeoutException ex) {
-                    Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
         }
         return null;
     }
@@ -190,7 +180,6 @@ public class ProvisionController {
         return parameters;
     }
 
-    
     private Parameter buildEC2Conf(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
 
         Properties prop = Converter.getEC2Properties(cred);

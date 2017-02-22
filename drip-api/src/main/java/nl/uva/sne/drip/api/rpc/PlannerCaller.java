@@ -23,12 +23,12 @@ import java.util.concurrent.TimeoutException;
  *
  * @author S. Koulouzis.
  */
-public class PlannerCaller extends DRIPCaller {
+public class PlannerCaller extends DRIPCaller  {
 
     private static final String REQUEST_QUEUE_NAME = "planner_queue";
 
     public PlannerCaller(String messageBrokerHost) throws IOException, TimeoutException {
-        super(messageBrokerHost,REQUEST_QUEUE_NAME);
+        super(messageBrokerHost, REQUEST_QUEUE_NAME);
     }
 
 }

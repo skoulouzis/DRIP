@@ -45,11 +45,22 @@ public class PlannerService {
     private String messageBrokerHost;
 
     public ToscaRepresentation getPlan(String toscaId) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
-        Message plannerInvokationMessage = buildPlannerMessage(toscaId);
-        PlannerCaller planner = new PlannerCaller(messageBrokerHost);
-        Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
 
-        return null;
+        try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
+            Message plannerInvokationMessage = buildPlannerMessage(toscaId);
+
+            Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
+            List<Parameter> parameters = plannerReturnedMessage.getParameters();
+            for(Parameter param: parameters){
+                
+            }
+            ToscaRepresentation tr = new ToscaRepresentation();
+            Map<String, Object> kvMap = null;
+            tr.setKvMap(kvMap);
+            tr.setType(ToscaRepresentation.Type.PLAN);
+
+            return null;
+        }
     }
 
     private Message buildPlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException {

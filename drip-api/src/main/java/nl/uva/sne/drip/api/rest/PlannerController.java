@@ -18,17 +18,13 @@ package nl.uva.sne.drip.api.rest;
 import nl.uva.sne.drip.api.service.SimplePlannerService;
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
-import nl.uva.sne.drip.commons.types.Message;
-import nl.uva.sne.drip.commons.types.Parameter;
-import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.api.exception.NotFoundException;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -69,6 +65,9 @@ public class PlannerController {
 //            ToscaRepresentation plan = simplePlannerService.getPlan(toscaId);
 //            return plan.getId();
             ToscaRepresentation plan = plannerService.getPlan(toscaId);
+            if (plan == null) {
+                throw new NotFoundException("Could not make plan");
+            }
             return plan.getId();
         } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
             Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
