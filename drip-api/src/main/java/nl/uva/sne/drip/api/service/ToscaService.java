@@ -110,4 +110,12 @@ public class ToscaService {
     public ToscaDao getDao() {
         return dao;
     }
+
+    public ToscaRepresentation get(String planID, ToscaRepresentation.Type type) {
+        ToscaRepresentation tosca = dao.findOne(planID);
+        if (tosca == null || !tosca.getType().equals(type)) {
+            throw new NotFoundException();
+        }
+        return tosca;
+    }
 }

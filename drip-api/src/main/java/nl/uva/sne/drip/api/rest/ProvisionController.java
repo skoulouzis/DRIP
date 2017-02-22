@@ -47,6 +47,7 @@ import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
+import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.types.CloudCredentials;
 import nl.uva.sne.drip.commons.types.LoginKey;
@@ -64,8 +65,10 @@ public class ProvisionController {
 
     @Value("${message.broker.host}")
     private String messageBrokerHost;
+
     @Autowired
-    private ToscaDao toscaDao;
+    private ToscaService toscaService;
+
     @Autowired
     private CloudCredentialsDao cloudCredentialsDao;
 
@@ -140,6 +143,9 @@ public class ProvisionController {
 
     private List<Parameter> buildCertificatesParam(CloudCredentials cred) {
         List<LoginKey> loginKeys = cred.getLoginKeys();
+        if (loginKeys == null || loginKeys.isEmpty()) {
+            throw new BadRequestException("Log in keys can't be empty");
+        }
         List<Parameter> parameters = new ArrayList<>();
         for (LoginKey lk : loginKeys) {
             String domainName = lk.getAttributes().get("domain_name");
@@ -158,7 +164,7 @@ public class ProvisionController {
     }
 
     private List<Parameter> buildTopologyParams(String planID) throws JSONException {
-        ToscaRepresentation plan = toscaDao.findOne(planID);
+        ToscaRepresentation plan = toscaService.get(planID, ToscaRepresentation.Type.PLAN);
         if (plan == null) {
             throw new NotFoundException();
         }
@@ -174,7 +180,7 @@ public class ProvisionController {
 
         Set<String> ids = plan.getLowerLevelIDs();
         for (String lowID : ids) {
-            plan = toscaDao.findOne(lowID);
+            plan = toscaService.get(lowID, ToscaRepresentation.Type.PLAN);
             topology = new Parameter();
             topology.setName("topology");
             topology.setValue(Converter.map2YmlString(plan.getKvMap()));
@@ -202,6 +208,7 @@ public class ProvisionController {
     }
 
     private List<Parameter> buildScriptParams(String userScriptID) {
+
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
