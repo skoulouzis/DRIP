@@ -305,9 +305,8 @@ public class Consumer extends DefaultConsumer {
     private void changeKeyFilePath(String toscaFilePath, String newKeyFilePath) {
         File toscaFile = new File(toscaFilePath);
         String fileContent = "";
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(toscaFile));
-            String line = "";
+        try (BufferedReader in = new BufferedReader(new FileReader(toscaFile))) {
+            String line;
             while ((line = in.readLine()) != null) {
                 if (line.contains("publicKeyPath")) {
                     fileContent += ("publicKeyPath: " + newKeyFilePath + "\n");
@@ -315,11 +314,9 @@ public class Consumer extends DefaultConsumer {
                     fileContent += (line + "\n");
                 }
             }
-            in.close();
-
-            FileWriter fw = new FileWriter(toscaFilePath, false);
-            fw.write(fileContent);
-            fw.close();
+            try (FileWriter fw = new FileWriter(toscaFilePath, false)) {
+                fw.write(fileContent);
+            }
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
@@ -327,13 +324,13 @@ public class Consumer extends DefaultConsumer {
             // TODO Auto-generated catch block
             Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
         }
+
     }
 
     private void changeGUIScriptFilePath(String toscaFilePath, String newScriptPath) {
         File toscaFile = new File(toscaFilePath);
         String fileContent = "";
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(toscaFile));
+        try (BufferedReader in = new BufferedReader(new FileReader(toscaFile))) {
             String line;
             while ((line = in.readLine()) != null) {
                 if (line.contains("script")) {
@@ -344,11 +341,9 @@ public class Consumer extends DefaultConsumer {
                     fileContent += (line + "\n");
                 }
             }
-            in.close();
-
-            FileWriter fw = new FileWriter(toscaFilePath, false);
-            fw.write(fileContent);
-            fw.close();
+            try (FileWriter fw = new FileWriter(toscaFilePath, false)) {
+                fw.write(fileContent);
+            }
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
