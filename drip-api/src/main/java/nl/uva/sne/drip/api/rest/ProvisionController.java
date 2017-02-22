@@ -101,7 +101,9 @@ public class ProvisionController {
         Message invokationMessage = new Message();
         List<Parameter> parameters = new ArrayList();
         CloudCredentials cred = cloudCredentialsDao.findOne(pReq.getCloudConfID());
-
+        if (cred == null) {
+            throw new NotFoundException("Cloud credentials :" + pReq.getCloudConfID() + " not found");
+        }
         Parameter conf = buildCloudConfParam(cred);
         parameters.add(conf);
 
