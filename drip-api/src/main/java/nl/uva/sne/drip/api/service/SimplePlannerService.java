@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.types.Message;
@@ -81,7 +82,8 @@ public class SimplePlannerService {
                 }
                 ids.add(tr.getId());
                 topLevel.setLowerLevelIDs(ids);
-            }   topLevel.setType(ToscaRepresentation.Type.PLAN);
+            }
+            topLevel.setType(ToscaRepresentation.Type.PLAN);
             toscaService.getDao().save(topLevel);
         }
         return topLevel;
@@ -89,8 +91,8 @@ public class SimplePlannerService {
 
     private Message buildSimplePlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException, IOException {
         ToscaRepresentation t2 = toscaService.getDao().findOne(toscaId);
-        if (t2 == null) {
-            throw new NotFoundException();
+        if (t2 == null || t2.getType().equals(ToscaRepresentation.Type.PLAN)) {
+            throw new BadRequestException("The description: " + toscaId + " is a plan. Cannot be used as planner input");
         }
         Map<String, Object> map = t2.getKvMap();
         String ymlStr = Converter.map2YmlString(map);

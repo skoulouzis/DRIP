@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.dao.ToscaDao;
+import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
@@ -74,7 +75,7 @@ public class ProvisionController {
     ProvisionRequest get() {
         ProvisionRequest re = new ProvisionRequest();
         re.setCloudConfID("58a1f0a963d42f004b1d63ad");
-        re.setPlanID("58ac1e70e4949b54f8ac1051");
+        re.setPlanID("58ad99d578b6ba941aeb22a4");
         re.setUserKeyID("58a20be263d4a5898835676e");
         re.setUserScriptID("58a2112363d41754cca042b4");
         return re;
@@ -123,6 +124,10 @@ public class ProvisionController {
 
     private Parameter buildCloudConfParam(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
         Parameter conf = null;
+        String provider = cred.getCloudProviderName();
+        if (provider == null) {
+            throw new BadRequestException("Provider name can't be null. Check the cloud credentials: " + cred.getId());
+        }
         switch (cred.getCloudProviderName().toLowerCase()) {
             case "ec2":
                 conf = buildEC2Conf(cred);

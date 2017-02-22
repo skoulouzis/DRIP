@@ -118,11 +118,16 @@ public abstract class DRIPCaller implements AutoCloseable {
             }
         });
         String strResponse = response.take();
+
+//        return unMarshallWithSimpleJson(strResponse);
+        return mapper.readValue(strResponse, Message.class);
+    }
+
+    private Message unMarshallWithSimpleJson(String strResponse) throws JSONException {
         strResponse = strResponse.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
 //        System.err.println(strResponse);
         JSONObject jsonObj = new JSONObject(strResponse);
         Message responseMessage = new Message();
-
         responseMessage.setCreationDate((Long) jsonObj.get("creationDate"));
         JSONArray jsonParams = (JSONArray) jsonObj.get("parameters");
         List<Parameter> parameters = new ArrayList<>();
@@ -137,7 +142,8 @@ public abstract class DRIPCaller implements AutoCloseable {
         }
 
         responseMessage.setParameters(parameters);
-        return responseMessage;//mapper.readValue(strResponse, Message.class);
+        return responseMessage;//
+
     }
 
 }

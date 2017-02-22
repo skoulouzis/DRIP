@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
+import nl.uva.sne.drip.api.exception.BadRequestException;
+import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.Parameter;
@@ -51,8 +53,8 @@ public class PlannerService {
 
             Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
             List<Parameter> parameters = plannerReturnedMessage.getParameters();
-            for(Parameter param: parameters){
-                
+            for (Parameter param : parameters) {
+
             }
             ToscaRepresentation tr = new ToscaRepresentation();
             Map<String, Object> kvMap = null;
@@ -65,6 +67,9 @@ public class PlannerService {
 
     private Message buildPlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException {
         ToscaRepresentation t2 = toscaService.getDao().findOne(toscaId);
+        if (t2 == null || t2.getType().equals(ToscaRepresentation.Type.PLAN)) {
+            throw new BadRequestException("The description: " + toscaId + " is a plan. Cannot be used as planner input");
+        }
         Map<String, Object> map = t2.getKvMap();
         String json = Converter.map2JsonString(map);
         json = json.replaceAll("\\uff0E", "\\.");
