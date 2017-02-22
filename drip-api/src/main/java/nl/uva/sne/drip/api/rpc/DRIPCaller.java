@@ -132,7 +132,7 @@ public abstract class DRIPCaller implements AutoCloseable {
 
             Parameter parameter = new Parameter();
             parameter.setName(jsonParam.getString("name"));
-            parameter.setName(jsonParam.getString("value"));
+            parameter.setValue(jsonParam.getString("value"));
             parameters.add(parameter);
         }
 

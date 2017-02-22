@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.Parameter;
@@ -51,44 +52,46 @@ public class SimplePlannerService {
 
     public ToscaRepresentation getPlan(String toscaId) throws JSONException, IOException, TimeoutException, InterruptedException {
         Message plannerInvokationMessage = buildSimplePlannerMessage(toscaId);
-        PlannerCaller planner = new PlannerCaller(messageBrokerHost);
-
-        Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
-        List<Parameter> toscaFiles = plannerReturnedMessage.getParameters();
-        ToscaRepresentation topLevel = new ToscaRepresentation();
-        ToscaRepresentation tr = null;
-        for (Parameter p : toscaFiles) {
-            //Should have levels in attributes
-            Map<String, String> attributess = p.getAttributes();
-            String originalFileName = p.getName();
-            String name = System.currentTimeMillis() + "_" + originalFileName;
-            if (originalFileName.equals("planner_output_all.yml")) {
-                topLevel.setName(name);
-                topLevel.setLevel(0);
-                topLevel.setKvMap(Converter.ymlString2Map(p.getValue()));
-            } else {
-                tr = new ToscaRepresentation();
-                tr.setName(name);
-                tr.setKvMap(Converter.ymlString2Map(p.getValue()));
-                tr.setLevel(1);
-            }
-            tr.setType(ToscaRepresentation.Type.PLAN);
-            toscaService.getDao().save(tr);
-            Set<String> ids = topLevel.getLowerLevelIDs();
-            if (ids == null) {
-                ids = new HashSet<>();
-            }
-            ids.add(tr.getId());
-            topLevel.setLowerLevelIDs(ids);
+        ToscaRepresentation topLevel;
+        try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
+            Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
+            List<Parameter> toscaFiles = plannerReturnedMessage.getParameters();
+            topLevel = new ToscaRepresentation();
+            ToscaRepresentation tr = null;
+            for (Parameter p : toscaFiles) {
+                //Should have levels in attributes
+                Map<String, String> attributess = p.getAttributes();
+                String originalFileName = p.getName();
+                String name = System.currentTimeMillis() + "_" + originalFileName;
+                if (originalFileName.equals("planner_output_all.yml")) {
+                    topLevel.setName(name);
+                    topLevel.setLevel(0);
+                    topLevel.setKvMap(Converter.ymlString2Map(p.getValue()));
+                } else {
+                    tr = new ToscaRepresentation();
+                    tr.setName(name);
+                    tr.setKvMap(Converter.ymlString2Map(p.getValue()));
+                    tr.setLevel(1);
+                }
+                tr.setType(ToscaRepresentation.Type.PLAN);
+                toscaService.getDao().save(tr);
+                Set<String> ids = topLevel.getLowerLevelIDs();
+                if (ids == null) {
+                    ids = new HashSet<>();
+                }
+                ids.add(tr.getId());
+                topLevel.setLowerLevelIDs(ids);
+            }   topLevel.setType(ToscaRepresentation.Type.PLAN);
+            toscaService.getDao().save(topLevel);
         }
-        topLevel.setType(ToscaRepresentation.Type.PLAN);
-        toscaService.getDao().save(topLevel);
-        planner.close();
         return topLevel;
     }
 
     private Message buildSimplePlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException, IOException {
         ToscaRepresentation t2 = toscaService.getDao().findOne(toscaId);
+        if (t2 == null) {
+            throw new NotFoundException();
+        }
         Map<String, Object> map = t2.getKvMap();
         String ymlStr = Converter.map2YmlString(map);
         ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");

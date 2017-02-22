@@ -62,9 +62,8 @@ public class PlannerController {
     String plan(@PathVariable("tosca_id") String toscaId) {
 
         try {
-//            ToscaRepresentation plan = simplePlannerService.getPlan(toscaId);
-//            return plan.getId();
-            ToscaRepresentation plan = plannerService.getPlan(toscaId);
+            ToscaRepresentation plan = simplePlannerService.getPlan(toscaId);
+//            ToscaRepresentation plan = plannerService.getPlan(toscaId);
             if (plan == null) {
                 throw new NotFoundException("Could not make plan");
             }
