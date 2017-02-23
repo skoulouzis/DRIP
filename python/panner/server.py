@@ -114,7 +114,12 @@ def main(argv):
     
     end = time.time()
     print (end - start)
-    
+    # convert the json to the file required
+    res1 = {}
+    for key, value in sorted_nodeDic:
+        print value, res[str(value)]
+        res1[nodeDic1[value]] = res[str(value)]
+    print res1
     # generate the json files in the corresponding format as the 
     outcontent = {}
     outcontent["creationDate"] = 1487002029722
@@ -122,7 +127,7 @@ def main(argv):
     par1 = {}
     par1["url"] = "null"
     par1["encoding"] = "UTF-8"
-    par1["value"] = res
+    par1["value"] = res1
     par1["attributes"] = "null"
     outcontent["parameters"].append(par1)
     return outcontent

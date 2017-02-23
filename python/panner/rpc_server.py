@@ -17,19 +17,27 @@ import json
 
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.3'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.2'))
 channel = connection.channel()
 channel.queue_declare(queue='planner_queue')
 
 
+
+def handleDelivery(message):
+    parsed_json = json.loads(message)
+    params = parsed_json["parameters"]
+    for param in params:
+        name = param["name"]
+        value = param["value"]
+        
+    
+
 def on_request(ch, method, props, body):
-    
-    parsed_message = json.loads(body)
-    value = parsed_message.get('parameters')[0].get('value')
-    parsed_value =  json.loads(value)
-    
-    json1 = parsed_value.get('topology_template').get('node_templates')
-    
+    handleDelivery(body)
+
+    print(" Message %s" % body)
+    response = "AAAAAAAAAAAAAAAAAAAAAA"
+    json1 = response.get('parameters')[0].get('value').get('topology_template').get('node_templates')
     deadline = 0
 
     for j in json1:
@@ -93,24 +101,29 @@ def on_request(ch, method, props, body):
     #print content['workflow']
     #return 
     res = wf.generateJSON()
+    
     end = time.time()
     print (end - start)
     
+    # convert the json to the file required
+    res1 = {}
+    for key, value in sorted_nodeDic:
+        print value, res[str(value)]
+        res1[nodeDic1[value]] = res[str(value)]
+    print res1
     # generate the json files in the corresponding format as the 
     outcontent = {}
-    current_milli_time = lambda: int(round(time.time() * 1000))
-    outcontent["creationDate"] = current_milli_time()
+    outcontent["creationDate"] = 1487002029722
     outcontent["parameters"] = []
     par1 = {}
-    par1["url"] = 'null'
+    par1["url"] = "null"
     par1["encoding"] = "UTF-8"
-    par1["name"] = "plan"
-    par1["value"] = res
-    par1["attributes"] = 'null'
+    par1["value"] = res1
+    par1["attributes"] = "null"
     outcontent["parameters"].append(par1)
+    return outcontent
     
     response = outcontent
-    print(response)
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
                      properties=pika.BasicProperties(correlation_id = \
