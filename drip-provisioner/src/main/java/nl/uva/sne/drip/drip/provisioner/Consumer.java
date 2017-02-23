@@ -211,9 +211,19 @@ public class Consumer extends DefaultConsumer {
             } else if (name.equals("logdir")) {
                 logDir = (String) param.get(Parameter.VALUE);
             } else if (name.equals("sshkey")) {
-                sshKeyFilePath = (String) param.get(Parameter.VALUE);
+                String sshKeyContent = (String) param.get(Parameter.VALUE);
+                File sshKeyFile = new File(tempInputDirPath + File.separator + "user.pem");
+                if (sshKeyFile.createNewFile()) {
+                    writeValueToFile(sshKeyContent, sshKeyFile);
+                }
+                sshKeyFilePath = tempInputDirPath + File.separator + "user.pem";
             } else if (name.equals("guiscript")) {
-                scriptPath = (String) param.get(Parameter.VALUE);
+                String scriptContent = (String) param.get(Parameter.VALUE);
+                File scriptFile = new File(tempInputDirPath + File.separator + "guiscipt.sh");
+                if (scriptFile.createNewFile()) {
+                    writeValueToFile(scriptContent, scriptFile);
+                }
+                scriptPath = tempInputDirPath + File.separator + "guiscipt.sh";
             } else {
                 return null;
             }
@@ -226,6 +236,7 @@ public class Consumer extends DefaultConsumer {
                 String fileType = FilenameUtils.getExtension(ls[i]);
                 if (fileType != null) {
                     //Are you sure you are looking for yml files?
+                    //Yes, I am looking for yml files to changes the field of sshKeyPath and scriptPath
                     if (fileType.equals("yml")) {
                         String toscaFile = curDir + ls[i];
                         if (!sshKeyFilePath.equals("null")) {
