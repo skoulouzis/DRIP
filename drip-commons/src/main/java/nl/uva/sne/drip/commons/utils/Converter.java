@@ -57,7 +57,8 @@ public class Converter {
 
     public static String map2YmlString(Map<String, Object> map) throws JSONException {
         JSONObject jsonObject = new JSONObject(map);
-        return json2Yml2(jsonObject.toString());
+        String yamlStr = json2Yml2(jsonObject.toString());
+        return yamlStr;
     }
 
     public static String map2JsonString(Map<String, Object> map) {
@@ -105,7 +106,8 @@ public class Converter {
 
     public static String json2Yml2(String jsonString) throws JSONException {
         Yaml yaml = new Yaml();
-        return yaml.dump(ymlString2Map(jsonString));
+        String yamlStr = yaml.dump(ymlString2Map(jsonString));
+        return yamlStr;
     }
 
     public static Properties Object2Properties(Object obj) throws JsonProcessingException, JSONException {

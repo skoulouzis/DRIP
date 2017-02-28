@@ -124,11 +124,17 @@ public class ProvisionController {
         List<Parameter> topologies = buildTopologyParams(pReq.getPlanID());
         parameters.addAll(topologies);
 
-        List<Parameter> userScripts = buildScriptParams(pReq.getUserScriptID());
-        parameters.addAll(userScripts);
+        String scriptID = pReq.getUserScriptID();
+        if (scriptID != null) {
+            List<Parameter> userScripts = buildScriptParams(scriptID);
+            parameters.addAll(userScripts);
+        }
 
-        List<Parameter> userKeys = buildKeysParams(pReq.getUserKeyID());
-        parameters.addAll(userKeys);
+        String userKeyID = pReq.getUserKeyID();
+        if (userKeyID != null) {
+            List<Parameter> userKeys = buildKeysParams(userKeyID);
+            parameters.addAll(userKeys);
+        }
 
         invokationMessage.setParameters(parameters);
         invokationMessage.setCreationDate((System.currentTimeMillis()));
