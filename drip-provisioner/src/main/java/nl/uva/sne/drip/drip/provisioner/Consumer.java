@@ -57,7 +57,7 @@ public class Consumer extends DefaultConsumer {
     private final Channel channel;
     private final String propertiesPath = "etc/consumer.properties";
 
-    Map<String, String> em = new HashMap<String, String>();
+    Map<String, String> em = new HashMap<>();
 
     private File getCloudConfigurationFile(JSONArray parameters, String tempInputDirPath) throws JSONException {
         for (int i = 0; i < parameters.length(); i++) {
@@ -97,6 +97,67 @@ public class Consumer extends DefaultConsumer {
                     } else {
                         return null;
                     }
+                }
+            }
+        }
+        return null;
+    }
+
+    private Map<String, File> getCertificates(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
+        Map<String, File> files = new HashMap<>();
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("certificate")) {
+                JSONObject attribute = param.getJSONObject("attributes");
+                String fileName = (String) attribute.get("filename");
+                File certificate = new File(tempInputDirPath + File.separator + fileName + ".pem");
+                if (certificate.createNewFile()) {
+                    writeValueToFile((String) param.get(Parameter.VALUE), certificate);
+                    files.put(fileName, certificate);
+                }
+            }
+        }
+        return files;
+    }
+
+    private String getLogDirPath(JSONArray parameters, String tempInputDirPath) throws JSONException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("logdir")) {
+                return (String) param.get(Parameter.VALUE);
+            }
+        }
+        return System.getProperty("java.io.tmpdir");
+    }
+
+    private File getSSHKey(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("sshkey")) {
+                String sshKeyContent = (String) param.get(Parameter.VALUE);
+                File sshKeyFile = new File(tempInputDirPath + File.separator + "user.pem");
+                if (sshKeyFile.createNewFile()) {
+                    writeValueToFile(sshKeyContent, sshKeyFile);
+                    return sshKeyFile;
+                }
+            }
+        }
+        return null;
+    }
+
+    private File getSciptFile(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("guiscript")) {
+                String scriptContent = (String) param.get(Parameter.VALUE);
+                File scriptFile = new File(tempInputDirPath + File.separator + "guiscipt.sh");
+                if (scriptFile.createNewFile()) {
+                    writeValueToFile(scriptContent, scriptFile);
+                    return scriptFile;
                 }
             }
         }
@@ -185,7 +246,7 @@ public class Consumer extends DefaultConsumer {
         File ec2ConfFile = null;
         File geniConfFile = null;
         //loop through the parameters in a message to find the input files
-        String logDir = "null", mainTopologyPath = "null", sshKeyFilePath = "null", scriptPath = "null";
+        String logDir, mainTopologyPath, sshKeyFilePath, scriptPath;
         ArrayList<topologyElement> topologyInfoArray = new ArrayList();
         List<String> certificateNames = new ArrayList();
 
@@ -210,91 +271,16 @@ public class Consumer extends DefaultConsumer {
         topologyInfoArray.add(x);
         FileUtils.moveFile(topologyFile, secondaryTopologyFile);
 
-        for (int i = 0; i < parameters.length(); i++) {
-            JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
-//            if (name.equals("ec2.conf")) {
-//                try {
-//                    ec2ConfFile = new File(tempInputDirPath + "ec2.Conf");
-//                    if (ec2ConfFile.createNewFile()) {
-//                        writeValueToFile((String) param.get(Parameter.VALUE), ec2ConfFile);
-//                    } else {
-//                        return null;
-//                    }
-//                } catch (IOException e) {
-//                    Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
-//                    return null;
-//                }
-//            } else if (name.equals("geni.conf")) {
-//                try {
-//                    geniConfFile = new File(tempInputDirPath + "geni.Conf");
-//                    if (geniConfFile.createNewFile()) {
-//                        writeValueToFile((String) param.get(Parameter.VALUE), geniConfFile);
-//                    } else {
-//                        return null;
-//                    }
-//                } catch (IOException ex) {
-//                    Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
-//                    return null;
-//                }
-//            } else 
-//            if (name.equals("topology")) {
-//                JSONObject attribute_level = param.getJSONObject("attributes");
-//                int fileLevel = Integer.valueOf((String) attribute_level.get("level"));
-//                if (fileLevel == 0) /////if the file level is 0, it means that this is the top level description
-//                {
-//                    topologyFile = new File(tempInputDirPath + "topology_main");
-//                    if (topologyFile.createNewFile()) {
-//                        writeValueToFile((String) param.get(Parameter.VALUE), topologyFile);
-//                        mainTopologyPath = topologyFile.getAbsolutePath();
-//                    } else {
-//                        return null;
-//                    }
-//
-//                } else if (fileLevel == 1) {    ////this means that this file is the low level detailed description
-//                    String fileName = (String) attribute_level.get("filename");   ////This file name does not contain suffix of '.yml' for example
-//                    topologyFile = new File(tempInputDirPath + fileName + ".yml");
-//                    outputFilePath = tempInputDirPath + fileName + "_provisioned.yml";
-//                    if (topologyFile.createNewFile()) {
-//                        writeValueToFile((String) param.get(Parameter.VALUE), topologyFile);
-//
-//                        x = new topologyElement();
-//                        x.topologyName = fileName;
-//                        x.outputFilePath = outputFilePath;
-//                        topologyInfoArray.add(x);
-//
-//                    } else {
-//                        return null;
-//                    }
-//
-//                }
-//            } else 
-            if (name.equals("certificate")) {
-                JSONObject attribute = param.getJSONObject("attributes");
-                String fileName = (String) attribute.get("filename");
-                certificateNames.add(fileName);
-                File certificate = new File(tempInputDirPath + File.separator + fileName + ".pem");
-                if (certificate.createNewFile()) {
-                    writeValueToFile((String) param.get(Parameter.VALUE), certificate);
-                }
-            } else if (name.equals("logdir")) {
-                logDir = (String) param.get(Parameter.VALUE);
-            } else if (name.equals("sshkey")) {
-                String sshKeyContent = (String) param.get(Parameter.VALUE);
-                File sshKeyFile = new File(tempInputDirPath + File.separator + "user.pem");
-                if (sshKeyFile.createNewFile()) {
-                    writeValueToFile(sshKeyContent, sshKeyFile);
-                }
-                sshKeyFilePath = tempInputDirPath + File.separator + "user.pem";
-            } else if (name.equals("guiscript")) {
-                String scriptContent = (String) param.get(Parameter.VALUE);
-                File scriptFile = new File(tempInputDirPath + File.separator + "guiscipt.sh");
-                if (scriptFile.createNewFile()) {
-                    writeValueToFile(scriptContent, scriptFile);
-                }
-                scriptPath = tempInputDirPath + File.separator + "guiscipt.sh";
-            }
-        }
+        Map<String, File> certificatesMap = getCertificates(parameters, tempInputDirPath);
+        certificateNames.addAll(certificatesMap.keySet());
+
+        logDir = getLogDirPath(parameters, tempInputDirPath);
+
+        File sshKey = getSSHKey(parameters, tempInputDirPath);
+        sshKeyFilePath = sshKey.getAbsolutePath();
+
+        File scriptFile = getSciptFile(parameters, tempInputDirPath);
+        scriptPath = scriptFile.getAbsolutePath();
 
         File curDir = new File(tempInputDirPath);
         String[] ls = curDir.list();
@@ -302,15 +288,13 @@ public class Consumer extends DefaultConsumer {
             if (ls[i].contains(".")) {
                 String fileType = FilenameUtils.getExtension(ls[i]);
                 if (fileType != null) {
-                    //Are you sure you are looking for yml files?
-                    //Yes, I am looking for yml files to changes the field of sshKeyPath and scriptPath
                     if (fileType.equals("yml")) {
                         String toscaFile = curDir + ls[i];
-                        if (!sshKeyFilePath.equals("null")) {
+                        if (sshKeyFilePath != null) {
                             changeKeyFilePath(toscaFile, sshKeyFilePath);
                         }
 
-                        if (!scriptPath.equals("null")) {
+                        if (scriptPath != null) {
                             changeGUIScriptFilePath(toscaFile, scriptPath);
                         }
 
@@ -322,11 +306,11 @@ public class Consumer extends DefaultConsumer {
         if (ec2ConfFile == null && geniConfFile == null) {
             return null;
         }
-        if (mainTopologyPath.equals("null")) {
+        if (mainTopologyPath == null) {
             return null;
         }
-        String ec2ConfFilePath = "null";
-        String geniConfFilePath = "null";
+        String ec2ConfFilePath = null;
+        String geniConfFilePath = null;
         if (ec2ConfFile != null) {
             ec2ConfFilePath = ec2ConfFile.getAbsolutePath();
             Properties prop = new Properties();
@@ -353,9 +337,6 @@ public class Consumer extends DefaultConsumer {
             prop.propertyNames();
             prop.setProperty("KeyDir", tempInputDirPath);
             prop.store(new FileOutputStream(geniConfFile), null);
-        }
-        if (logDir.equals("null")) {
-            logDir = System.getProperty("java.io.tmpdir");
         }
 
         String cmd = "ec2=" + ec2ConfFilePath + " exogeni=" + geniConfFilePath + " logDir=" + logDir + " topology=" + mainTopologyPath;
