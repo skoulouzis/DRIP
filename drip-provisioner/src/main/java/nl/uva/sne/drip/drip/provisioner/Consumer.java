@@ -88,11 +88,22 @@ public class Consumer extends DefaultConsumer {
             if (name.equals("topology")) {
                 JSONObject attributes = param.getJSONObject("attributes");
                 int fileLevel = Integer.valueOf((String) attributes.get("level"));
-                String fileName = (String) attributes.get("filename");
+                String[] parts = ((String) attributes.get("filename")).split("_");
+                String fileName = "";
+                String prefix = "";
+                //Clear date part form file name
+                for (int j = 1; j < parts.length; j++) {
+                    fileName += prefix + parts[j];
+                    prefix = "_";
+                }
                 if (fileLevel == level) {
                     File topologyFile = new File(tempInputDirPath + File.separator + fileName);
                     if (topologyFile.createNewFile()) {
-                        writeValueToFile((String) param.get(Parameter.VALUE), topologyFile);
+                        String val = (String) param.get(Parameter.VALUE);
+                        //Replace '{' with indentation otherwise we get 'End of document execption'
+                        val = val.replaceAll("- \\{", "  - ").replaceAll(", ", "\n    ").replaceAll("}", "");
+
+                        writeValueToFile(val, topologyFile);
                         return topologyFile;
                     } else {
                         return null;
@@ -283,23 +294,19 @@ public class Consumer extends DefaultConsumer {
         scriptPath = scriptFile.getAbsolutePath();
 
         File curDir = new File(tempInputDirPath);
-        String[] ls = curDir.list();
-        for (int i = 0; i < ls.length; i++) {
-            if (ls[i].contains(".")) {
-                String fileType = FilenameUtils.getExtension(ls[i]);
-                if (fileType != null) {
-                    if (fileType.equals("yml")) {
-                        String toscaFile = curDir + ls[i];
-                        if (sshKeyFilePath != null) {
-                            changeKeyFilePath(toscaFile, sshKeyFilePath);
-                        }
-
-                        if (scriptPath != null) {
-                            changeGUIScriptFilePath(toscaFile, scriptPath);
-                        }
-
+        for (File f : curDir.listFiles()) {
+            String fileType = FilenameUtils.getExtension(f.getName());
+            if (fileType != null) {
+                if (fileType.equals("yml")) {
+                    String toscaFile = f.getAbsolutePath();
+                    if (sshKeyFilePath != null) {
+                        changeKeyFilePath(toscaFile, sshKeyFilePath);
+                    }
+                    if (scriptPath != null) {
+                        changeGUIScriptFilePath(toscaFile, scriptPath);
                     }
                 }
+
             }
         }
 
