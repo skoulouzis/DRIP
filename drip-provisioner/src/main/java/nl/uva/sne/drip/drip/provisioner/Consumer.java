@@ -39,6 +39,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.types.Parameter;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,6 +58,50 @@ public class Consumer extends DefaultConsumer {
     private final String propertiesPath = "etc/consumer.properties";
 
     Map<String, String> em = new HashMap<String, String>();
+
+    private File getCloudConfigurationFile(JSONArray parameters, String tempInputDirPath) throws JSONException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("ec2.conf") || name.equals("geni.conf")) {
+                try {
+                    File confFile = new File(tempInputDirPath + File.separator + name);
+                    if (confFile.createNewFile()) {
+                        writeValueToFile((String) param.get(Parameter.VALUE), confFile);
+                        return confFile;
+                    } else {
+                        return null;
+                    }
+                } catch (IOException e) {
+                    Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    private File getTopology(JSONArray parameters, String tempInputDirPath, int level) throws JSONException, IOException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("topology")) {
+                JSONObject attributes = param.getJSONObject("attributes");
+                int fileLevel = Integer.valueOf((String) attributes.get("level"));
+                String fileName = (String) attributes.get("filename");
+                if (fileLevel == level) {
+                    File topologyFile = new File(tempInputDirPath + File.separator + fileName);
+                    if (topologyFile.createNewFile()) {
+                        writeValueToFile((String) param.get(Parameter.VALUE), topologyFile);
+                        return topologyFile;
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
 //    private String jarFilePath;
     public class topologyElement {
@@ -143,64 +188,88 @@ public class Consumer extends DefaultConsumer {
         String logDir = "null", mainTopologyPath = "null", sshKeyFilePath = "null", scriptPath = "null";
         ArrayList<topologyElement> topologyInfoArray = new ArrayList();
         List<String> certificateNames = new ArrayList();
+
+        File cloudConfFile = getCloudConfigurationFile(parameters, tempInputDirPath);
+        if (cloudConfFile.getName().toLowerCase().contains("ec2")) {
+            ec2ConfFile = cloudConfFile;
+        } else if (cloudConfFile.getName().toLowerCase().contains("geni")) {
+            geniConfFile = cloudConfFile;
+        }
+
+        File topologyFile = getTopology(parameters, tempInputDirPath, 0);
+        File mainTopologyFile = new File(tempInputDirPath + "topology_main");
+        FileUtils.moveFile(topologyFile, mainTopologyFile);
+        mainTopologyPath = mainTopologyFile.getAbsolutePath();
+
+        topologyFile = getTopology(parameters, tempInputDirPath, 1);
+        File secondaryTopologyFile = new File(tempInputDirPath + File.separator + topologyFile.getName() + ".yml");
+        String outputFilePath = tempInputDirPath + File.separator + topologyFile.getName() + "_provisioned.yml";
+        topologyElement x = new topologyElement();
+        x.topologyName = topologyFile.getName();
+        x.outputFilePath = outputFilePath;
+        topologyInfoArray.add(x);
+        FileUtils.moveFile(topologyFile, secondaryTopologyFile);
+
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
             String name = (String) param.get(Parameter.NAME);
-            if (name.equals("ec2.conf")) {
-                try {
-                    ec2ConfFile = new File(tempInputDirPath + "ec2.Conf");
-                    if (ec2ConfFile.createNewFile()) {
-                        writeValueToFile((String) param.get(Parameter.VALUE), ec2ConfFile);
-                    } else {
-                        return null;
-                    }
-                } catch (IOException e) {
-                    Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
-                    return null;
-                }
-            } else if (name.equals("geni.conf")) {
-                try {
-                    geniConfFile = new File(tempInputDirPath + "geni.Conf");
-                    if (geniConfFile.createNewFile()) {
-                        writeValueToFile((String) param.get(Parameter.VALUE), geniConfFile);
-                    } else {
-                        return null;
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
-                    return null;
-                }
-            } else if (name.equals("topology")) {
-                JSONObject attribute_level = param.getJSONObject("attributes");
-                int fileLevel = Integer.valueOf((String) attribute_level.get("level"));
-                if (fileLevel == 0) /////if the file level is 0, it means that this is the top level description
-                {
-                    File topologyFile = new File(tempInputDirPath + "topology_main");
-                    if (topologyFile.createNewFile()) {
-                        writeValueToFile((String) param.get(Parameter.VALUE), topologyFile);
-                        mainTopologyPath = topologyFile.getAbsolutePath();
-                    } else {
-                        return null;
-                    }
-
-                } else if (fileLevel == 1) {    ////this means that this file is the low level detailed description
-                    String fileName = (String) attribute_level.get("filename");   ////This file name does not contain suffix of '.yml' for example
-                    File topologyFile = new File(tempInputDirPath + fileName + ".yml");
-                    String outputFilePath = tempInputDirPath + fileName + "_provisioned.yml";
-                    if (topologyFile.createNewFile()) {
-                        writeValueToFile((String) param.get(Parameter.VALUE), topologyFile);
-
-                        topologyElement x = new topologyElement();
-                        x.topologyName = fileName;
-                        x.outputFilePath = outputFilePath;
-                        topologyInfoArray.add(x);
-
-                    } else {
-                        return null;
-                    }
-
-                }
-            } else if (name.equals("certificate")) {
+//            if (name.equals("ec2.conf")) {
+//                try {
+//                    ec2ConfFile = new File(tempInputDirPath + "ec2.Conf");
+//                    if (ec2ConfFile.createNewFile()) {
+//                        writeValueToFile((String) param.get(Parameter.VALUE), ec2ConfFile);
+//                    } else {
+//                        return null;
+//                    }
+//                } catch (IOException e) {
+//                    Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
+//                    return null;
+//                }
+//            } else if (name.equals("geni.conf")) {
+//                try {
+//                    geniConfFile = new File(tempInputDirPath + "geni.Conf");
+//                    if (geniConfFile.createNewFile()) {
+//                        writeValueToFile((String) param.get(Parameter.VALUE), geniConfFile);
+//                    } else {
+//                        return null;
+//                    }
+//                } catch (IOException ex) {
+//                    Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
+//                    return null;
+//                }
+//            } else 
+//            if (name.equals("topology")) {
+//                JSONObject attribute_level = param.getJSONObject("attributes");
+//                int fileLevel = Integer.valueOf((String) attribute_level.get("level"));
+//                if (fileLevel == 0) /////if the file level is 0, it means that this is the top level description
+//                {
+//                    topologyFile = new File(tempInputDirPath + "topology_main");
+//                    if (topologyFile.createNewFile()) {
+//                        writeValueToFile((String) param.get(Parameter.VALUE), topologyFile);
+//                        mainTopologyPath = topologyFile.getAbsolutePath();
+//                    } else {
+//                        return null;
+//                    }
+//
+//                } else if (fileLevel == 1) {    ////this means that this file is the low level detailed description
+//                    String fileName = (String) attribute_level.get("filename");   ////This file name does not contain suffix of '.yml' for example
+//                    topologyFile = new File(tempInputDirPath + fileName + ".yml");
+//                    outputFilePath = tempInputDirPath + fileName + "_provisioned.yml";
+//                    if (topologyFile.createNewFile()) {
+//                        writeValueToFile((String) param.get(Parameter.VALUE), topologyFile);
+//
+//                        x = new topologyElement();
+//                        x.topologyName = fileName;
+//                        x.outputFilePath = outputFilePath;
+//                        topologyInfoArray.add(x);
+//
+//                    } else {
+//                        return null;
+//                    }
+//
+//                }
+//            } else 
+            if (name.equals("certificate")) {
                 JSONObject attribute = param.getJSONObject("attributes");
                 String fileName = (String) attribute.get("filename");
                 certificateNames.add(fileName);
@@ -224,8 +293,6 @@ public class Consumer extends DefaultConsumer {
                     writeValueToFile(scriptContent, scriptFile);
                 }
                 scriptPath = tempInputDirPath + File.separator + "guiscipt.sh";
-            } else {
-                return null;
             }
         }
 
@@ -303,7 +370,7 @@ public class Consumer extends DefaultConsumer {
 //            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
 //        }
 
-        topologyElement x = new topologyElement();
+        x = new topologyElement();
         x.topologyName = "kubernetes";
         x.outputFilePath = tempInputDirPath + "file_kubernetes";
         topologyInfoArray.add(x);
