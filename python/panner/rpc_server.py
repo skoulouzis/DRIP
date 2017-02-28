@@ -113,7 +113,8 @@ def on_request(ch, method, props, body):
     print res1
     # generate the json files in the corresponding format as the 
     outcontent = {}
-    outcontent["creationDate"] = 1487002029722
+    current_milli_time = lambda: int(round(time.time() * 1000))
+    outcontent["creationDate"] = current_milli_time()   
     outcontent["parameters"] = []
     par1 = {}
     par1["url"] = "null"
