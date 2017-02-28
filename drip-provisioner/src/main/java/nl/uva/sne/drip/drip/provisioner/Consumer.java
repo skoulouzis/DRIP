@@ -59,124 +59,8 @@ public class Consumer extends DefaultConsumer {
 
     Map<String, String> em = new HashMap<>();
 
-    private File getCloudConfigurationFile(JSONArray parameters, String tempInputDirPath) throws JSONException {
-        for (int i = 0; i < parameters.length(); i++) {
-            JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
-            if (name.equals("ec2.conf") || name.equals("geni.conf")) {
-                try {
-                    File confFile = new File(tempInputDirPath + File.separator + name);
-                    if (confFile.createNewFile()) {
-                        writeValueToFile((String) param.get(Parameter.VALUE), confFile);
-                        return confFile;
-                    } else {
-                        return null;
-                    }
-                } catch (IOException e) {
-                    Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
-                    return null;
-                }
-            }
-        }
-        return null;
-    }
-
-    private File getTopology(JSONArray parameters, String tempInputDirPath, int level) throws JSONException, IOException {
-        for (int i = 0; i < parameters.length(); i++) {
-            JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
-            if (name.equals("topology")) {
-                JSONObject attributes = param.getJSONObject("attributes");
-                int fileLevel = Integer.valueOf((String) attributes.get("level"));
-                String[] parts = ((String) attributes.get("filename")).split("_");
-                String fileName = "";
-                String prefix = "";
-                //Clear date part form file name
-                for (int j = 1; j < parts.length; j++) {
-                    fileName += prefix + parts[j];
-                    prefix = "_";
-                }
-                if (fileLevel == level) {
-                    File topologyFile = new File(tempInputDirPath + File.separator + fileName);
-                    if (topologyFile.createNewFile()) {
-                        String val = (String) param.get(Parameter.VALUE);
-                        //Replace '{' with indentation otherwise we get 'End of document execption'
-                        val = val.replaceAll("- \\{", "  - ").replaceAll(", ", "\n    ").replaceAll("}", "");
-
-                        writeValueToFile(val, topologyFile);
-                        return topologyFile;
-                    } else {
-                        return null;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private Map<String, File> getCertificates(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
-        Map<String, File> files = new HashMap<>();
-        for (int i = 0; i < parameters.length(); i++) {
-            JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
-            if (name.equals("certificate")) {
-                JSONObject attribute = param.getJSONObject("attributes");
-                String fileName = (String) attribute.get("filename");
-                File certificate = new File(tempInputDirPath + File.separator + fileName + ".pem");
-                if (certificate.createNewFile()) {
-                    writeValueToFile((String) param.get(Parameter.VALUE), certificate);
-                    files.put(fileName, certificate);
-                }
-            }
-        }
-        return files;
-    }
-
-    private String getLogDirPath(JSONArray parameters, String tempInputDirPath) throws JSONException {
-        for (int i = 0; i < parameters.length(); i++) {
-            JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
-            if (name.equals("logdir")) {
-                return (String) param.get(Parameter.VALUE);
-            }
-        }
-        return System.getProperty("java.io.tmpdir");
-    }
-
-    private File getSSHKey(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
-        for (int i = 0; i < parameters.length(); i++) {
-            JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
-            if (name.equals("sshkey")) {
-                String sshKeyContent = (String) param.get(Parameter.VALUE);
-                File sshKeyFile = new File(tempInputDirPath + File.separator + "user.pem");
-                if (sshKeyFile.createNewFile()) {
-                    writeValueToFile(sshKeyContent, sshKeyFile);
-                    return sshKeyFile;
-                }
-            }
-        }
-        return null;
-    }
-
-    private File getSciptFile(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
-        for (int i = 0; i < parameters.length(); i++) {
-            JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
-            if (name.equals("guiscript")) {
-                String scriptContent = (String) param.get(Parameter.VALUE);
-                File scriptFile = new File(tempInputDirPath + File.separator + "guiscipt.sh");
-                if (scriptFile.createNewFile()) {
-                    writeValueToFile(scriptContent, scriptFile);
-                    return scriptFile;
-                }
-            }
-        }
-        return null;
-    }
-
 //    private String jarFilePath;
-    public class topologyElement {
+    public class TopologyElement {
 
         String topologyName = "";
         String outputFilePath = "";
@@ -248,7 +132,7 @@ public class Consumer extends DefaultConsumer {
     ////If the provisioner jar file is successfully invoked, the returned value should be a set of output file paths which are expected.
     ////If there are some errors or some information missing with this message, the returned value will be null.
     ////The input dir path contains '/'
-    private ArrayList<topologyElement> invokeProvisioner(String message, String tempInputDirPath) throws IOException, JSONException {
+    private ArrayList<TopologyElement> invokeProvisioner(String message, String tempInputDirPath) throws IOException, JSONException {
         //Use the Jackson API to convert json to Object 
         JSONObject jo = new JSONObject(message);
         JSONArray parameters = jo.getJSONArray("parameters");
@@ -258,7 +142,7 @@ public class Consumer extends DefaultConsumer {
         File geniConfFile = null;
         //loop through the parameters in a message to find the input files
         String logDir, mainTopologyPath, sshKeyFilePath, scriptPath;
-        ArrayList<topologyElement> topologyInfoArray = new ArrayList();
+        ArrayList<TopologyElement> topologyInfoArray = new ArrayList();
         List<String> certificateNames = new ArrayList();
 
         File cloudConfFile = getCloudConfigurationFile(parameters, tempInputDirPath);
@@ -276,7 +160,7 @@ public class Consumer extends DefaultConsumer {
         topologyFile = getTopology(parameters, tempInputDirPath, 1);
         File secondaryTopologyFile = new File(tempInputDirPath + File.separator + topologyFile.getName() + ".yml");
         String outputFilePath = tempInputDirPath + File.separator + topologyFile.getName() + "_provisioned.yml";
-        topologyElement x = new topologyElement();
+        TopologyElement x = new TopologyElement();
         x.topologyName = topologyFile.getName();
         x.outputFilePath = outputFilePath;
         topologyInfoArray.add(x);
@@ -306,7 +190,6 @@ public class Consumer extends DefaultConsumer {
                         changeGUIScriptFilePath(toscaFile, scriptPath);
                     }
                 }
-
             }
         }
 
@@ -358,7 +241,7 @@ public class Consumer extends DefaultConsumer {
 //            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
 //        }
 
-        x = new topologyElement();
+        x = new TopologyElement();
         x.topologyName = "kubernetes";
         x.outputFilePath = tempInputDirPath + "file_kubernetes";
         topologyInfoArray.add(x);
@@ -419,7 +302,7 @@ public class Consumer extends DefaultConsumer {
         }
     }
 
-    private String generateResponse(ArrayList<topologyElement> outputs) throws JSONException, IOException {
+    private String generateResponse(ArrayList<TopologyElement> outputs) throws JSONException, IOException {
         //Use the JSONObject API to convert Object (Message) to json
         JSONObject jo = new JSONObject();
         jo.put("creationDate", (System.currentTimeMillis()));
@@ -460,6 +343,122 @@ public class Consumer extends DefaultConsumer {
         if (!file.exists() || file.length() < value.getBytes().length) {
             throw new FileNotFoundException("File " + file.getAbsolutePath() + " doesn't exist or contents are missing ");
         }
+    }
+
+    private File getCloudConfigurationFile(JSONArray parameters, String tempInputDirPath) throws JSONException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("ec2.conf") || name.equals("geni.conf")) {
+                try {
+                    File confFile = new File(tempInputDirPath + File.separator + name);
+                    if (confFile.createNewFile()) {
+                        writeValueToFile((String) param.get(Parameter.VALUE), confFile);
+                        return confFile;
+                    } else {
+                        return null;
+                    }
+                } catch (IOException e) {
+                    Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    private File getTopology(JSONArray parameters, String tempInputDirPath, int level) throws JSONException, IOException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("topology")) {
+                JSONObject attributes = param.getJSONObject("attributes");
+                int fileLevel = Integer.valueOf((String) attributes.get("level"));
+                String[] parts = ((String) attributes.get("filename")).split("_");
+                String fileName = "";
+                String prefix = "";
+                //Clear date part form file name
+                for (int j = 1; j < parts.length; j++) {
+                    fileName += prefix + parts[j];
+                    prefix = "_";
+                }
+                if (fileLevel == level) {
+                    File topologyFile = new File(tempInputDirPath + File.separator + fileName);
+                    if (topologyFile.createNewFile()) {
+                        String val = (String) param.get(Parameter.VALUE);
+                        //Replace '{' with indentation otherwise we get 'End of document execption'
+//                        val = val.replaceAll("- \\{", "  - ").replaceAll(", ", "\n    ").replaceAll("}", "");
+
+                        writeValueToFile(val, topologyFile);
+                        return topologyFile;
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private Map<String, File> getCertificates(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
+        Map<String, File> files = new HashMap<>();
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("certificate")) {
+                JSONObject attribute = param.getJSONObject("attributes");
+                String fileName = (String) attribute.get("filename");
+                File certificate = new File(tempInputDirPath + File.separator + fileName + ".pem");
+                if (certificate.createNewFile()) {
+                    writeValueToFile((String) param.get(Parameter.VALUE), certificate);
+                    files.put(fileName, certificate);
+                }
+            }
+        }
+        return files;
+    }
+
+    private String getLogDirPath(JSONArray parameters, String tempInputDirPath) throws JSONException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("logdir")) {
+                return (String) param.get(Parameter.VALUE);
+            }
+        }
+        return System.getProperty("java.io.tmpdir");
+    }
+
+    private File getSSHKey(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("sshkey")) {
+                String sshKeyContent = (String) param.get(Parameter.VALUE);
+                File sshKeyFile = new File(tempInputDirPath + File.separator + "user.pem");
+                if (sshKeyFile.createNewFile()) {
+                    writeValueToFile(sshKeyContent, sshKeyFile);
+                    return sshKeyFile;
+                }
+            }
+        }
+        return null;
+    }
+
+    private File getSciptFile(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get(Parameter.NAME);
+            if (name.equals("guiscript")) {
+                String scriptContent = (String) param.get(Parameter.VALUE);
+                File scriptFile = new File(tempInputDirPath + File.separator + "guiscipt.sh");
+                if (scriptFile.createNewFile()) {
+                    writeValueToFile(scriptContent, scriptFile);
+                    return scriptFile;
+                }
+            }
+        }
+        return null;
     }
 
 }
