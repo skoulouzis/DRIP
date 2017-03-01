@@ -38,8 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.DeployerCaller;
 import nl.uva.sne.drip.api.service.ProvisionService;
-import nl.uva.sne.drip.api.service.UserKeyService;
-import nl.uva.sne.drip.api.service.UserScriptService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.types.CloudCredentials;
 import nl.uva.sne.drip.commons.types.DeployParameter;
