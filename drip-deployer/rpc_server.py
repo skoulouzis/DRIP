@@ -2,7 +2,7 @@
 import pika
 import json
 import os
-
+import time
 
 from vm_info import VmInfo
 import docker_kubernetes
@@ -30,17 +30,21 @@ def handleDelivery(message):
         fo.close()
         vm = VmInfo(ip, user, key, role)
         vm_list.append(vm)
-    docker_kubernetes.run(vm_list)
+    return docker_kubernetes.run(vm_list)
     
 
 def on_request(ch, method, props, body):
-    handleDelivery(body)
-
-    print(" Message %s" % body)
-
-    kuber_file = open(path + "admin.conf", "r")
-    kuber_string = kuber_file.read()
-    kuber_file.close()
+    ret = handleDelivery(body)
+    print ret
+    if "ERROR" in ret:
+        kuber_string = ret
+        res_name = "error"
+    #print(" Message %s" % body)
+    else:
+        res_name = "credential"
+        kuber_file = open(path + "admin.conf", "r")
+        kuber_string = kuber_file.read()
+        kuber_file.close()
 
     response = {}
     outcontent = {}
@@ -50,7 +54,7 @@ def on_request(ch, method, props, body):
     par = {}
     par["url"] = "null"
     par["encoding"] = "UTF-8"
-    par["name"] = "credential"
+    par["name"] = res_name
     par["value"] = kuber_string
     par["attributes"] = "null"
     response["parameters"].append(par)

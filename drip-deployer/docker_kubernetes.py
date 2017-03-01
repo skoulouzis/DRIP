@@ -45,6 +45,7 @@ def install_manager(vm):
 		print "%s: ========= Kubernetes Master Installed =========" % (vm.ip)
 	except Exception as e:
 		print '%s: %s' % (vm.ip, e)
+		return "ERROR:"+vm.ip+" "+str(e)
 	ssh.close()
 	return retstr[-1]
 
@@ -68,14 +69,21 @@ def install_worker(join_cmd, vm):
 		print "%s: ========= Kubernetes Slave Installed =========" % (vm.ip)
 	except Exception as e:
 		print '%s: %s' % (vm.ip, e)
+		return "ERROR:"+vm.ip+" "+str(e)
 	ssh.close()
+	return ""
 
 def run(vm_list):
 	for i in vm_list:
 		if i.role == "master": join_cmd = install_manager(i)
-
-	join_cmd = join_cmd.encode()
-	join_cmd = join_cmd.strip()
+        if "ERROR" in join_cmd:
+            return join_cmd
+        else:
+            join_cmd = join_cmd.encode()
+            join_cmd = join_cmd.strip()
 
 	for i in vm_list:
-		if i.role == "slave": install_worker(join_cmd, i)
+		if i.role == "slave": worker_cmd = install_worker(join_cmd, i)
+        if "ERROR" in worker_cmd:
+            return worker_cmd
+        return ""
