@@ -16,7 +16,6 @@
 package nl.uva.sne.drip.api.rest;
 
 import nl.uva.sne.drip.api.service.SimplePlannerService;
-import nl.uva.sne.drip.commons.types.ToscaRepresentation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
+import nl.uva.sne.drip.commons.types.Plan;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -62,8 +62,8 @@ public class PlannerController {
     String plan(@PathVariable("tosca_id") String toscaId) {
 
         try {
-            ToscaRepresentation plan = simplePlannerService.getPlan(toscaId);
-//            ToscaRepresentation plan = plannerService.getPlan(toscaId);
+            Plan plan = simplePlannerService.getPlan(toscaId);
+//            Plan plan = plannerService.getPlan(toscaId);
             if (plan == null) {
                 throw new NotFoundException("Could not make plan");
             }
@@ -79,29 +79,35 @@ public class PlannerController {
     public @ResponseBody
     String get(@PathVariable("id") String id, @RequestParam(value = "format") String format) {
         try {
-            return toscaService.get(id, format, ToscaRepresentation.Type.PLAN);
+            return simplePlannerService.get(id, format);
         } catch (JSONException ex) {
             Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
+    @RequestMapping(value = "/tosca/{id}", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String getToscaID(@PathVariable("id") String id) {
+        return simplePlannerService.getToscaID(id);
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        toscaService.delete(id, ToscaRepresentation.Type.PLAN);
+        simplePlannerService.getDao().delete(id);
         return "Deleted tosca :" + id;
     }
 
-//    http://localhost:8080/drip-api/tosca/ids
     @RequestMapping(value = "/ids")
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {
-        List<ToscaRepresentation> all = toscaService.findAll(ToscaRepresentation.Type.PLAN);
+        List<Plan> all = simplePlannerService.findAll();
         List<String> ids = new ArrayList<>();
-        for (ToscaRepresentation tr : all) {
+        for (Plan tr : all) {
             ids.add(tr.getId());
         }
         return ids;

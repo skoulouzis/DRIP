@@ -57,11 +57,10 @@ public class ToscaController {
             throw new BadRequestException("Must uplaod a file");
         }
         try {
-            return toscaService.save(file, ToscaRepresentation.Type.SIDE);
+            return toscaService.save(file);
         } catch (IOException | IllegalStateException ex) {
             Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return null;
     }
 
@@ -71,7 +70,7 @@ public class ToscaController {
     public @ResponseBody
     String get(@PathVariable("id") String id, @RequestParam(value = "format") String format) {
         try {
-            return toscaService.get(id, format,ToscaRepresentation.Type.SIDE);
+            return toscaService.get(id, format);
         } catch (JSONException ex) {
             Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -82,7 +81,7 @@ public class ToscaController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        toscaService.delete(id,ToscaRepresentation.Type.SIDE);
+        toscaService.delete(id);
         return "Deleted tosca :" + id;
     }
 
@@ -91,7 +90,7 @@ public class ToscaController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {
-        List<ToscaRepresentation> all = toscaService.findAll(ToscaRepresentation.Type.SIDE);
+        List<ToscaRepresentation> all = toscaService.findAll();
         List<String> ids = new ArrayList<>();
         for (ToscaRepresentation tr : all) {
             ids.add(tr.getId());

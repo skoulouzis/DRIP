@@ -15,10 +15,11 @@
  */
 package nl.uva.sne.drip.api.rest;
 
-import nl.uva.sne.drip.commons.types.ProvisionRequest;
+import com.fasterxml.jackson.core.JsonParser;
+import nl.uva.sne.drip.commons.types.Provision;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
-import nl.uva.sne.drip.commons.types.ToscaRepresentation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,14 +47,17 @@ import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
-import nl.uva.sne.drip.api.service.ToscaService;
+import nl.uva.sne.drip.api.service.ProvisionService;
+import nl.uva.sne.drip.api.service.SimplePlannerService;
 import nl.uva.sne.drip.api.service.UserKeyService;
 import nl.uva.sne.drip.api.service.UserScriptService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.types.CloudCredentials;
 import nl.uva.sne.drip.commons.types.LoginKey;
+import nl.uva.sne.drip.commons.types.Plan;
 import nl.uva.sne.drip.commons.types.UserScript;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
@@ -69,9 +73,6 @@ public class ProvisionController {
     private String messageBrokerHost;
 
     @Autowired
-    private ToscaService toscaService;
-
-    @Autowired
     private UserScriptService userScriptService;
 
     @Autowired
@@ -80,35 +81,48 @@ public class ProvisionController {
     @Autowired
     private CloudCredentialsDao cloudCredentialsDao;
 
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    @Autowired
+    private ProvisionService provisionService;
+
+    @Autowired
+    private SimplePlannerService planService;
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    ProvisionRequest get() {
-        ProvisionRequest re = new ProvisionRequest();
-        re.setCloudConfID("58a1f0a963d42f004b1d63ad");
-        re.setPlanID("58ad99d578b6ba941aeb22a4");
-        re.setUserKeyID("58a20be263d4a5898835676e");
-        re.setUserScriptID("58a2112363d41754cca042b4");
-        return re;
+    Provision get(@PathVariable("id") String id) {
+        return provisionService.getDao().findOne(id);
     }
 
     @RequestMapping(value = "/provision", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String plann(@RequestBody ProvisionRequest req) {
-
+    String plann(@RequestBody Provision req) {
         try (DRIPCaller provisioner = new ProvisionerCaller(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisionerMessage(req);
 
-            Message response = provisioner.call(provisionerInvokationMessage);
-            return "";
+//            Message response = provisioner.call(provisionerInvokationMessage);
+            Message response = generateFakeResponse();
+            List<Parameter> params = response.getParameters();
+
+            for (Parameter p : params) {
+                String name = p.getName();
+                if (!name.equals("kubernetes")) {
+                    String value = p.getValue();
+                    Map<String, Object> kvMap = Converter.ymlString2Map(value);
+                    req.setKvMap(kvMap);
+                    req.setPlanID(req.getPlanID());
+                    provisionService.getDao().save(req);
+                }
+            }
+            return req.getId();
         } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {
             Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
-    private Message buildProvisionerMessage(ProvisionRequest pReq) throws JSONException, IOException {
+    private Message buildProvisionerMessage(Provision pReq) throws JSONException, IOException {
         Message invokationMessage = new Message();
         List<Parameter> parameters = new ArrayList();
         CloudCredentials cred = cloudCredentialsDao.findOne(pReq.getCloudConfID());
@@ -178,7 +192,7 @@ public class ProvisionController {
     }
 
     private List<Parameter> buildTopologyParams(String planID) throws JSONException {
-        ToscaRepresentation plan = toscaService.get(planID, ToscaRepresentation.Type.PLAN);
+        Plan plan = planService.getDao().findOne(planID);
         if (plan == null) {
             throw new NotFoundException();
         }
@@ -192,15 +206,15 @@ public class ProvisionController {
         topology.setAttributes(attributes);
         parameters.add(topology);
 
-        Set<String> ids = plan.getLowerLevelIDs();
+        Set<String> ids = plan.getLoweLevelPlanIDs();
         for (String lowID : ids) {
-            plan = toscaService.get(lowID, ToscaRepresentation.Type.PLAN);
+            Plan lowPlan = planService.getDao().findOne(lowID);
             topology = new Parameter();
             topology.setName("topology");
-            topology.setValue(Converter.map2YmlString(plan.getKvMap()));
+            topology.setValue(Converter.map2YmlString(lowPlan.getKvMap()));
             attributes = new HashMap<>();
-            attributes.put("level", String.valueOf(plan.getLevel()));
-            attributes.put("filename", FilenameUtils.removeExtension(plan.getName()));
+            attributes.put("level", String.valueOf(lowPlan.getLevel()));
+            attributes.put("filename", FilenameUtils.removeExtension(lowPlan.getName()));
             topology.setAttributes(attributes);
             parameters.add(topology);
         }
@@ -248,5 +262,28 @@ public class ProvisionController {
         parameters.add(keyParameter);
         return parameters;
 
+    }
+
+    private Message generateFakeResponse() throws IOException, TimeoutException, InterruptedException, JSONException {
+        String strResponse = "{\"creationDate\":1488368936945,\"parameters\":["
+                + "{\"name\":\"f293ff03-4b82-49e2-871a-899aadf821ce\","
+                + "\"encoding\":\"UTF-8\",\"value\":"
+                + "\"publicKeyPath: /tmp/Input-4007028381500/user.pem\\nuserName: "
+                + "zh9314\\nsubnets:\\n- {name: s1, subnet: 192.168.10.0, "
+                + "netmask: 255.255.255.0}\\ncomponents:\\n- "
+                + "name: faab6756-61b6-4800-bffa-ae9d859a9d6c\\n  "
+                + "type: Switch.nodes.Compute\\n  nodetype: t2.medium\\n  "
+                + "OStype: Ubuntu 16.04\\n  domain: ec2.us-east-1.amazonaws.com\\n  "
+                + "script: /tmp/Input-4007028381500/guiscipt.sh\\n  "
+                + "installation: null\\n  role: master\\n  "
+                + "dockers: mogswitch/InputDistributor\\n  "
+                + "public_address: 54.144.0.91\\n  instanceId: i-0e78cbf853328b820\\n  "
+                + "ethernet_port:\\n  - {name: p1, subnet_name: s1, "
+                + "address: 192.168.10.10}\\n- name: 1c75eedf-8497-46fe-aeb8-dab6a62154cb\\n  "
+                + "type: Switch.nodes.Compute\\n  nodetype: t2.medium\\n  OStype: Ubuntu 16.04\\n  domain: ec2.us-east-1.amazonaws.com\\n  script: /tmp/Input-4007028381500/guiscipt.sh\\n  installation: null\\n  role: slave\\n  dockers: mogswitch/ProxyTranscoder\\n  public_address: 34.207.254.160\\n  instanceId: i-0a99ea18fcc77ed7a\\n  ethernet_port:\\n  - {name: p1, subnet_name: s1, address: 192.168.10.11}\\n\"},{\"name\":\"kubernetes\",\"encoding\":\"UTF-8\",\"value\":\"54.144.0.91 ubuntu /tmp/Input-4007028381500/Virginia.pem master\\n34.207.254.160 ubuntu /tmp/Input-4007028381500/Virginia.pem slave\\n\"}]}";
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+
+        return mapper.readValue(strResponse, Message.class);
     }
 }

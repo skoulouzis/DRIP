@@ -118,9 +118,16 @@ public class Consumer extends DefaultConsumer {
             topologyInfoArray = invokeProvisioner(message, tempInputDirPath);
             response = generateResponse(topologyInfoArray);
 
-        } catch (IOException | JSONException ex) {
-            response = ex.getMessage();
-            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Throwable ex) {
+            try {
+                response = generateExeptionResponse(ex);
+                Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (JSONException ex1) {
+                response = "{\"creationDate\": " + System.currentTimeMillis()
+                        + ",\"parameters\": [{\"url\": null,\"encoding\": UTF-8,"
+                        + "\"value\": \"" + ex.getMessage() + "\",\"name\": \""
+                        + ex.getClass().getName() + "\",\"attributes\": null}]}";
+            }
         } finally {
             //We send the response back. No need to change anything here 
             channel.basicPublish("", properties.getReplyTo(), replyProps, response.getBytes("UTF-8"));
@@ -332,6 +339,22 @@ public class Consumer extends DefaultConsumer {
 
             }
         }
+        jo.put("parameters", parameters);
+        return jo.toString();
+    }
+
+    private String generateExeptionResponse(Throwable ex) throws JSONException {
+        JSONObject jo = new JSONObject();
+        jo.put("creationDate", (System.currentTimeMillis()));
+        List parameters = new ArrayList();
+        String charset = "UTF-8";
+
+        Map<String, String> errorArgument = new HashMap<>();
+        errorArgument.put("encoding", charset);
+        errorArgument.put("name", ex.getClass().getName());
+        errorArgument.put("value", ex.getMessage());
+        parameters.add(errorArgument);
+
         jo.put("parameters", parameters);
         return jo.toString();
     }

@@ -26,11 +26,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
-import nl.uva.sne.drip.api.exception.BadRequestException;
+import nl.uva.sne.drip.api.dao.PlanDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.Parameter;
+import nl.uva.sne.drip.commons.types.Plan;
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONException;
@@ -51,17 +52,29 @@ public class SimplePlannerService {
     @Autowired
     private ToscaService toscaService;
 
-    public ToscaRepresentation getPlan(String toscaId) throws JSONException, IOException, TimeoutException, InterruptedException {
-        Message plannerInvokationMessage = buildSimplePlannerMessage(toscaId);
-        ToscaRepresentation topLevel;
+    @Autowired
+    private PlanDao planDao;
+
+    public Plan getPlan(String toscaId) throws JSONException, IOException, TimeoutException, InterruptedException {
+        ToscaRepresentation tosca = toscaService.getDao().findOne(toscaId);
+        Message plannerInvokationMessage = buildSimplePlannerMessage(tosca);
+
+        Plan topLevel;
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
-            List<Parameter> toscaFiles = plannerReturnedMessage.getParameters();
-            topLevel = new ToscaRepresentation();
-            ToscaRepresentation tr = null;
-            for (Parameter p : toscaFiles) {
+            List<Parameter> planFiles = plannerReturnedMessage.getParameters();
+            topLevel = new Plan();
+            Set<String> ids = topLevel.getLoweLevelPlanIDs();
+            if (ids == null) {
+                ids = new HashSet<>();
+            }
+            Plan lowerLevelPlan = null;
+            for (Parameter p : planFiles) {
                 //Should have levels in attributes
                 Map<String, String> attributess = p.getAttributes();
+                if (attributess != null) {
+                    attributess.get("level");
+                }
                 String originalFileName = p.getName();
                 String name = System.currentTimeMillis() + "_" + originalFileName;
                 if (originalFileName.equals("planner_output_all.yml")) {
@@ -69,30 +82,24 @@ public class SimplePlannerService {
                     topLevel.setLevel(0);
                     topLevel.setKvMap(Converter.ymlString2Map(p.getValue()));
                 } else {
-                    tr = new ToscaRepresentation();
-                    tr.setName(name);
-                    tr.setKvMap(Converter.ymlString2Map(p.getValue()));
-                    tr.setLevel(1);
+                    lowerLevelPlan = new Plan();
+                    lowerLevelPlan.setName(name);
+                    lowerLevelPlan.setKvMap(Converter.ymlString2Map(p.getValue()));
+                    lowerLevelPlan.setLevel(1);
+                    planDao.save(lowerLevelPlan);
+                    ids.add(lowerLevelPlan.getId());
                 }
-                tr.setType(ToscaRepresentation.Type.PLAN);
-                toscaService.getDao().save(tr);
-                Set<String> ids = topLevel.getLowerLevelIDs();
-                if (ids == null) {
-                    ids = new HashSet<>();
-                }
-                ids.add(tr.getId());
-                topLevel.setLowerLevelIDs(ids);
             }
-            topLevel.setType(ToscaRepresentation.Type.PLAN);
-            toscaService.getDao().save(topLevel);
+            topLevel.setLoweLevelPlansIDs(ids);
         }
+        topLevel.setToscaID(toscaId);
+        planDao.save(topLevel);
         return topLevel;
     }
 
-    private Message buildSimplePlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException, IOException {
-        ToscaRepresentation t2 = toscaService.getDao().findOne(toscaId);
-        if (t2 == null || t2.getType().equals(ToscaRepresentation.Type.PLAN)) {
-            throw new BadRequestException("The description: " + toscaId + " is a plan. Cannot be used as planner input");
+    private Message buildSimplePlannerMessage(ToscaRepresentation t2) throws JSONException, UnsupportedEncodingException, IOException {
+        if (t2 == null) {
+            throw new NotFoundException();
         }
         Map<String, Object> map = t2.getKvMap();
         String ymlStr = Converter.map2YmlString(map);
@@ -119,5 +126,52 @@ public class SimplePlannerService {
         invokationMessage.setParameters(parameters);
         invokationMessage.setCreationDate((System.currentTimeMillis()));
         return invokationMessage;
+    }
+
+    public String get(String id, String fromat) throws JSONException {
+        Plan plan = planDao.findOne(id);
+        if (plan == null) {
+            throw new NotFoundException();
+        }
+
+        Map<String, Object> map = plan.getKvMap();
+        Set<String> ids = plan.getLoweLevelPlanIDs();
+        for (String lowID : ids) {
+            Map<String, Object> lowLevelMap = planDao.findOne(lowID).getKvMap();
+            map.putAll(lowLevelMap);
+        }
+
+        if (fromat != null && fromat.equals("yml")) {
+            String ymlStr = Converter.map2YmlString(map);
+            ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+            return ymlStr;
+        }
+        if (fromat != null && fromat.equals("json")) {
+            String jsonStr = Converter.map2JsonString(map);
+            jsonStr = jsonStr.replaceAll("\\uff0E", "\\.");
+            return jsonStr;
+        }
+        String ymlStr = Converter.map2YmlString(map);
+        ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+        return ymlStr;
+    }
+
+    public PlanDao getDao() {
+        return planDao;
+    }
+
+    public String getToscaID(String id) {
+        return planDao.findOne(id).getToscaID();
+    }
+
+    public List<Plan> findAll() {
+        List<Plan> all = planDao.findAll();
+        List<Plan> topLevel = new ArrayList<>();
+        for (Plan p : all) {
+            if (p.getLevel() == 0) {
+                topLevel.add(p);
+            }
+        }
+        return topLevel;
     }
 }

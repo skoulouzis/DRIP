@@ -58,7 +58,6 @@ public class PlannerService {
             ToscaRepresentation tr = new ToscaRepresentation();
             Map<String, Object> kvMap = null;
             tr.setKvMap(kvMap);
-            tr.setType(ToscaRepresentation.Type.PLAN);
 
             return null;
         }
@@ -66,7 +65,7 @@ public class PlannerService {
 
     private Message buildPlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException {
         ToscaRepresentation t2 = toscaService.getDao().findOne(toscaId);
-        if (t2 == null || t2.getType().equals(ToscaRepresentation.Type.PLAN)) {
+        if (t2 == null) {
             throw new BadRequestException("The description: " + toscaId + " is a plan. Cannot be used as planner input");
         }
         Map<String, Object> map = t2.getKvMap();

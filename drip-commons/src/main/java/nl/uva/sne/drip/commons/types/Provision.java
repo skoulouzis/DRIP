@@ -15,11 +15,17 @@
  */
 package nl.uva.sne.drip.commons.types;
 
+import java.util.Map;
+import org.springframework.data.annotation.Id;
+
 /**
  *
  * @author S. Koulouzis
  */
-public class ProvisionRequest {
+public class Provision {
+
+    @Id
+    private String id;
 
     private String cloudConfID;
 
@@ -28,6 +34,8 @@ public class ProvisionRequest {
     private String userScriptID;
 
     private String userKeyID;
+
+    private Map<String, Object> kvMap;
 
     /**
      * @return the cloudConfID
@@ -83,6 +91,34 @@ public class ProvisionRequest {
      */
     public void setUserKeyID(String userKeyID) {
         this.userKeyID = userKeyID;
+    }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the kvMap
+     */
+    public Map<String, Object> getKvMap() {
+        return kvMap;
+    }
+
+    /**
+     * @param kvMap the kvMap to set
+     */
+    public void setKvMap(Map<String, Object> kvMap) {
+        this.kvMap = kvMap;
     }
 
 }

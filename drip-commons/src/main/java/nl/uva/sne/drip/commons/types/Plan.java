@@ -25,15 +25,21 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
-public class ToscaRepresentation {
+public class Plan {
 
     @Id
     private String id;
 
+    private String toscaID;
+
     private String name;
 
+    private Integer level;
+
+    private Set<String> loweLevelPlansIDs;
+
     private Map<String, Object> kvMap;
-    
+
     public final String getId() {
         return id;
     }
@@ -68,5 +74,47 @@ public class ToscaRepresentation {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return the toscaID
+     */
+    public String getToscaID() {
+        return toscaID;
+    }
+
+    /**
+     * @param toscaID the toscaID to set
+     */
+    public void setToscaID(String toscaID) {
+        this.toscaID = toscaID;
+    }
+
+    /**
+     * @return the level
+     */
+    public Integer getLevel() {
+        return level;
+    }
+
+    /**
+     * @param level the level to set
+     */
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    /**
+     * @return the loweLevelPlansIDs
+     */
+    public Set<String> getLoweLevelPlanIDs() {
+        return loweLevelPlansIDs;
+    }
+
+    /**
+     * @param loweLevelPlans the loweLevelPlansIDs to set
+     */
+    public void setLoweLevelPlansIDs(Set<String> loweLevelPlansIDs) {
+        this.loweLevelPlansIDs = loweLevelPlansIDs;
     }
 }

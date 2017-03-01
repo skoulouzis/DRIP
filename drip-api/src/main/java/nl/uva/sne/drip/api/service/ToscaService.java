@@ -16,10 +16,8 @@
 package nl.uva.sne.drip.api.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import nl.uva.sne.drip.api.dao.ToscaDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
@@ -39,18 +37,13 @@ public class ToscaService {
     @Autowired
     private ToscaDao dao;
 
-    public String get(String id, String fromat, ToscaRepresentation.Type type) throws JSONException {
+    public String get(String id, String fromat) throws JSONException {
         ToscaRepresentation tosca = dao.findOne(id);
-        if (tosca == null || !tosca.getType().equals(type)) {
+        if (tosca == null) {
             throw new NotFoundException();
         }
-        Set<String> ids = tosca.getLowerLevelIDs();
+
         Map<String, Object> map = tosca.getKvMap();
-        if (ids != null) {
-            for (String lowID : ids) {
-                map.putAll(dao.findOne(lowID).getKvMap());
-            }
-        }
 
         if (fromat != null && fromat.equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);
@@ -67,7 +60,7 @@ public class ToscaService {
         return ymlStr;
     }
 
-    public String save(MultipartFile file, ToscaRepresentation.Type type) throws IOException {
+    public String save(MultipartFile file) throws IOException {
         String originalFileName = file.getOriginalFilename();
         String name = System.currentTimeMillis() + "_" + originalFileName;
         byte[] bytes = file.getBytes();
@@ -78,42 +71,25 @@ public class ToscaService {
         ToscaRepresentation t = new ToscaRepresentation();
         t.setName(name);
         t.setKvMap(map);
-        t.setType(type);
         dao.save(t);
         return t.getId();
     }
 
-    public void delete(String id, ToscaRepresentation.Type type) {
-        ToscaRepresentation tosca = dao.findOne(id);
-        if (!tosca.getType().equals(type)) {
-            throw new NotFoundException();
-        } else {
-            dao.delete(id);
-        }
-
+    public void delete(String id) {
+        dao.delete(id);
     }
 
-    public List<ToscaRepresentation> findAll(ToscaRepresentation.Type type) {
-        List<ToscaRepresentation> all = dao.findAll();
-        List<ToscaRepresentation> allType = new ArrayList<>();
-        if (all == null) {
-            throw new NotFoundException();
-        }
-        for (ToscaRepresentation tr : all) {
-            if (tr.getType() != null && tr.getType().equals(type)) {
-                allType.add(tr);
-            }
-        }
-        return allType;
+    public List<ToscaRepresentation> findAll() {
+        return dao.findAll();
     }
 
     public ToscaDao getDao() {
         return dao;
     }
 
-    public ToscaRepresentation get(String planID, ToscaRepresentation.Type type) {
+    public ToscaRepresentation get(String planID) {
         ToscaRepresentation tosca = dao.findOne(planID);
-        if (tosca == null || !tosca.getType().equals(type)) {
+        if (tosca == null) {
             throw new NotFoundException();
         }
         return tosca;
