@@ -16,7 +16,7 @@
 package nl.uva.sne.drip.api.rest;
 
 import com.fasterxml.jackson.core.JsonParser;
-import nl.uva.sne.drip.commons.types.Provision;
+import nl.uva.sne.drip.commons.types.ProvisionInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
@@ -90,14 +90,14 @@ public class ProvisionController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    Provision get(@PathVariable("id") String id) {
+    ProvisionInfo get(@PathVariable("id") String id) {
         return provisionService.getDao().findOne(id);
     }
 
     @RequestMapping(value = "/provision", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String plann(@RequestBody Provision req) {
+    String plann(@RequestBody ProvisionInfo req) {
         try (DRIPCaller provisioner = new ProvisionerCaller(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisionerMessage(req);
 
@@ -113,6 +113,19 @@ public class ProvisionController {
                     req.setKvMap(kvMap);
                     req.setPlanID(req.getPlanID());
                     provisionService.getDao().save(req);
+                } else {
+                    String value = p.getValue();
+                    String[] lines = value.split("\n");
+                    for (String line : lines) {
+                        String[] parts = line.split(" ");
+                        String deployIP = parts[0];
+                        String deployUser = parts[1];
+                        String deployCertPath = parts[2];
+                        String deployRole = parts[3];
+                        req.setDeployIP(deployIP);
+                        req.setDeployUser(deployUser);
+                        req.setDeployRole(deployRole);
+                    }
                 }
             }
             return req.getId();
@@ -122,7 +135,7 @@ public class ProvisionController {
         return null;
     }
 
-    private Message buildProvisionerMessage(Provision pReq) throws JSONException, IOException {
+    private Message buildProvisionerMessage(ProvisionInfo pReq) throws JSONException, IOException {
         Message invokationMessage = new Message();
         List<Parameter> parameters = new ArrayList();
         CloudCredentials cred = cloudCredentialsDao.findOne(pReq.getCloudConfID());

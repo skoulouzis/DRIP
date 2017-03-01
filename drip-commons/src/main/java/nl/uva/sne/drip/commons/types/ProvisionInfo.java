@@ -22,7 +22,7 @@ import org.springframework.data.annotation.Id;
  *
  * @author S. Koulouzis
  */
-public class Provision {
+public class ProvisionInfo {
 
     @Id
     private String id;
@@ -36,6 +36,9 @@ public class Provision {
     private String userKeyID;
 
     private Map<String, Object> kvMap;
+    private String deployIP;
+    private String deployUser;
+    private String deployRole;
 
     /**
      * @return the cloudConfID
@@ -119,6 +122,42 @@ public class Provision {
      */
     public void setKvMap(Map<String, Object> kvMap) {
         this.kvMap = kvMap;
+    }
+
+    public void setDeployIP(String deployIP) {
+        this.deployIP = deployIP;
+    }
+
+    public void setDeployRole(String deployRole) {
+        this.deployRole = deployRole;
+    }
+
+    /**
+     * @return the deployIP
+     */
+    public String getDeployIP() {
+        return deployIP;
+    }
+
+    /**
+     * @return the deployRole
+     */
+    public String getDeployRole() {
+        return deployRole;
+    }
+
+    /**
+     * @return the deployUser
+     */
+    public String getDeployUser() {
+        return deployUser;
+    }
+
+    /**
+     * @param deployUser the deployUser to set
+     */
+    public void setDeployUser(String deployUser) {
+        this.deployUser = deployUser;
     }
 
 }

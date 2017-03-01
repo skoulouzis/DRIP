@@ -15,13 +15,13 @@
  */
 package nl.uva.sne.drip.api.dao;
 
-import nl.uva.sne.drip.commons.types.Provision;
+import nl.uva.sne.drip.commons.types.ProvisionInfo;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface ProvisionDao extends MongoRepository<Provision, String> {
+public interface ProvisionInfoDao extends MongoRepository<ProvisionInfo, String> {
 
 }

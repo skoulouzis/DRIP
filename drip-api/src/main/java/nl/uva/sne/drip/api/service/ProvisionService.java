@@ -18,7 +18,6 @@ package nl.uva.sne.drip.api.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import nl.uva.sne.drip.api.dao.ProvisionDao;
 import nl.uva.sne.drip.api.dao.ToscaDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
@@ -27,6 +26,7 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import nl.uva.sne.drip.api.dao.ProvisionInfoDao;
 
 /**
  *
@@ -36,9 +36,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProvisionService {
 
     @Autowired
-    private ProvisionDao dao;
+    private ProvisionInfoDao dao;
 
-    public ProvisionDao getDao() {
+    public ProvisionInfoDao getDao() {
         return dao;
     }
 
