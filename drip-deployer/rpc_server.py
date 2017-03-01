@@ -7,7 +7,7 @@ import os
 from vm_info import VmInfo
 import docker_kubernetes
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.2'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.3'))
 channel = connection.channel()
 channel.queue_declare(queue='deployer_queue')
 
@@ -43,7 +43,9 @@ def on_request(ch, method, props, body):
     kuber_file.close()
 
     response = {}
-    response["creationDate"] = 1487002029722
+    outcontent = {}
+    current_milli_time = lambda: int(round(time.time() * 1000))
+    response["creationDate"] = current_milli_time()
     response["parameters"] = []
     par = {}
     par["url"] = "null"

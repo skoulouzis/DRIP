@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.commons.types;
 
+import java.util.List;
 import java.util.Map;
 import org.springframework.data.annotation.Id;
 
@@ -36,9 +37,7 @@ public class ProvisionInfo {
     private String userKeyID;
 
     private Map<String, Object> kvMap;
-    private String deployIP;
-    private String deployUser;
-    private String deployRole;
+    private List<DeployParameter> deployParameters;
 
     /**
      * @return the cloudConfID
@@ -124,40 +123,11 @@ public class ProvisionInfo {
         this.kvMap = kvMap;
     }
 
-    public void setDeployIP(String deployIP) {
-        this.deployIP = deployIP;
+    public void setDeployParameters(List<DeployParameter> deployParameters) {
+        this.deployParameters = deployParameters;
     }
 
-    public void setDeployRole(String deployRole) {
-        this.deployRole = deployRole;
+    public List<DeployParameter> getDeployParameters() {
+        return deployParameters;
     }
-
-    /**
-     * @return the deployIP
-     */
-    public String getDeployIP() {
-        return deployIP;
-    }
-
-    /**
-     * @return the deployRole
-     */
-    public String getDeployRole() {
-        return deployRole;
-    }
-
-    /**
-     * @return the deployUser
-     */
-    public String getDeployUser() {
-        return deployUser;
-    }
-
-    /**
-     * @param deployUser the deployUser to set
-     */
-    public void setDeployUser(String deployUser) {
-        this.deployUser = deployUser;
-    }
-
 }

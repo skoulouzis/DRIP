@@ -53,6 +53,7 @@ import nl.uva.sne.drip.api.service.UserKeyService;
 import nl.uva.sne.drip.api.service.UserScriptService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.types.CloudCredentials;
+import nl.uva.sne.drip.commons.types.DeployParameter;
 import nl.uva.sne.drip.commons.types.LoginKey;
 import nl.uva.sne.drip.commons.types.Plan;
 import nl.uva.sne.drip.commons.types.UserScript;
@@ -97,12 +98,12 @@ public class ProvisionController {
     @RequestMapping(value = "/provision", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String plann(@RequestBody ProvisionInfo req) {
+    String provision(@RequestBody ProvisionInfo req) {
         try (DRIPCaller provisioner = new ProvisionerCaller(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisionerMessage(req);
 
-//            Message response = provisioner.call(provisionerInvokationMessage);
-            Message response = generateFakeResponse();
+            Message response = provisioner.call(provisionerInvokationMessage);
+//            Message response = generateFakeResponse();
             List<Parameter> params = response.getParameters();
 
             for (Parameter p : params) {
@@ -112,21 +113,30 @@ public class ProvisionController {
                     Map<String, Object> kvMap = Converter.ymlString2Map(value);
                     req.setKvMap(kvMap);
                     req.setPlanID(req.getPlanID());
-                    provisionService.getDao().save(req);
                 } else {
                     String value = p.getValue();
                     String[] lines = value.split("\n");
+                    List<DeployParameter> deployParameters = new ArrayList<>();
                     for (String line : lines) {
+                        DeployParameter deployParam = new DeployParameter();
                         String[] parts = line.split(" ");
                         String deployIP = parts[0];
+
                         String deployUser = parts[1];
+
                         String deployCertPath = parts[2];
+                        String cloudCertificateName = FilenameUtils.removeExtension(FilenameUtils.getBaseName(deployCertPath));
                         String deployRole = parts[3];
-                        req.setDeployIP(deployIP);
-                        req.setDeployUser(deployUser);
-                        req.setDeployRole(deployRole);
+
+                        deployParam.setIP(deployIP);
+                        deployParam.setRole(deployRole);
+                        deployParam.setUser(deployUser);
+                        deployParam.setCloudCertificateName(cloudCertificateName);
+                        deployParameters.add(deployParam);
                     }
+                    req.setDeployParameters(deployParameters);
                 }
+                provisionService.getDao().save(req);
             }
             return req.getId();
         } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {

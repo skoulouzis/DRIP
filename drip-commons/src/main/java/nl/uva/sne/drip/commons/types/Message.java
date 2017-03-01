@@ -15,11 +15,8 @@
  */
 package nl.uva.sne.drip.commons.types;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 //import javax.persistence.Column;
 //import javax.persistence.Entity;
 //import javax.persistence.GeneratedValue;

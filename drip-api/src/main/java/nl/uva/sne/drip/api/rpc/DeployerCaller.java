@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.service;
+package nl.uva.sne.drip.api.rpc;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import nl.uva.sne.drip.api.dao.ProvisionInfoDao;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 /**
  *
  * @author S. Koulouzis
  */
-@Service
-public class ProvisionService {
+public class DeployerCaller extends DRIPCaller {
 
-    @Autowired
-    private ProvisionInfoDao dao;
+    private static final String REQUEST_QUEUE_NAME = "deployer_queue";
 
-    public ProvisionInfoDao getDao() {
-        return dao;
+    public DeployerCaller(String messageBrokerHost) throws IOException, TimeoutException {
+        super(messageBrokerHost, REQUEST_QUEUE_NAME);
     }
-
 }
