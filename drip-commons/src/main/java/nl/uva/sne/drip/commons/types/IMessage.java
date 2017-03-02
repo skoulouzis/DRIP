@@ -30,7 +30,7 @@ public interface IMessage {
 
     public void setCreationDate(Long creationDate);
 
-    public void setParameters(List<Parameter> params);
+    public void setParameters(List<MessageParameter> params);
 
     public List getParameters();
 

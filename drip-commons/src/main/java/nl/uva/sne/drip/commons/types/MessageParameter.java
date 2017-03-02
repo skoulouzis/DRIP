@@ -22,7 +22,7 @@ import java.util.Map;
  *
  * @author S. Koulouzis.
  */
-public class Parameter implements Serializable {
+public class MessageParameter implements Serializable {
 
     private String url;
     private String encoding;

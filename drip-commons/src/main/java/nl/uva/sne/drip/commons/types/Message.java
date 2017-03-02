@@ -38,7 +38,7 @@ public class Message implements IMessage, Serializable {
 //    @Temporal(TemporalType.DATE)
     private Long creationDate;
 
-    private List<Parameter> parameters;
+    private List<MessageParameter> parameters;
 
     @Override
     public Long getCreationDate() {
@@ -46,12 +46,12 @@ public class Message implements IMessage, Serializable {
     }
 
     @Override
-    public void setParameters(List<Parameter> parameters) {
+    public void setParameters(List<MessageParameter> parameters) {
         this.parameters = parameters;
     }
 
     @Override
-    public List<Parameter> getParameters() {
+    public List<MessageParameter> getParameters() {
         return this.parameters;
     }
 

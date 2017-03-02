@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.commons.types.Parameter;
+import nl.uva.sne.drip.commons.types.MessageParameter;
 import nl.uva.sne.drip.commons.types.Message;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -108,13 +108,13 @@ public class Consumer extends DefaultConsumer {
         ObjectMapper mapper = new ObjectMapper();
         Message request = mapper.readValue(message, Message.class);
 
-        List<Parameter> params = request.getParameters();
+        List<MessageParameter> params = request.getParameters();
 
         //Create tmp input files 
         File inputFile = File.createTempFile("input-", Long.toString(System.nanoTime()));
         File exampleFile = File.createTempFile("example-", Long.toString(System.nanoTime()));
         //loop through the parameters in a message to find the input files
-        for (Parameter param : params) {
+        for (MessageParameter param : params) {
             if (param.getName().equals("input")) {
                 try (PrintWriter out = new PrintWriter(inputFile)) {
                     out.print(param.getValue());
@@ -141,16 +141,16 @@ public class Consumer extends DefaultConsumer {
         File exampleFile = File.createTempFile("example-", Long.toString(System.nanoTime()));
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
+            String name = (String) param.get(MessageParameter.NAME);
             if (name.equals("input")) {
                 try (PrintWriter out = new PrintWriter(inputFile)) {
-                    out.print(param.get(Parameter.VALUE));
+                    out.print(param.get(MessageParameter.VALUE));
                 }
                 files[0] = inputFile;
             }
             if (name.equals("example")) {
                 try (PrintWriter out = new PrintWriter(exampleFile)) {
-                    out.print(param.get(Parameter.VALUE));
+                    out.print(param.get(MessageParameter.VALUE));
                 }
                 files[1] = exampleFile;
             }
@@ -164,7 +164,7 @@ public class Consumer extends DefaultConsumer {
         List parameters = new ArrayList();
         String charset = "UTF-8";
         for (File f : files) {
-            Parameter fileParam = new Parameter();
+            MessageParameter fileParam = new MessageParameter();
             byte[] bytes = Files.readAllBytes(Paths.get(f.getAbsolutePath()));
             fileParam.setValue(new String(bytes, charset));
             fileParam.setEncoding(charset);

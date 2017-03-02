@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.commons.types.Parameter;
+import nl.uva.sne.drip.commons.types.MessageParameter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
@@ -371,12 +371,12 @@ public class Consumer extends DefaultConsumer {
     private File getCloudConfigurationFile(JSONArray parameters, String tempInputDirPath) throws JSONException {
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
+            String name = (String) param.get(MessageParameter.NAME);
             if (name.equals("ec2.conf") || name.equals("geni.conf")) {
                 try {
                     File confFile = new File(tempInputDirPath + File.separator + name);
                     if (confFile.createNewFile()) {
-                        writeValueToFile((String) param.get(Parameter.VALUE), confFile);
+                        writeValueToFile((String) param.get(MessageParameter.VALUE), confFile);
                         return confFile;
                     } else {
                         return null;
@@ -393,7 +393,7 @@ public class Consumer extends DefaultConsumer {
     private File getTopology(JSONArray parameters, String tempInputDirPath, int level) throws JSONException, IOException {
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
+            String name = (String) param.get(MessageParameter.NAME);
             if (name.equals("topology")) {
                 JSONObject attributes = param.getJSONObject("attributes");
                 int fileLevel = Integer.valueOf((String) attributes.get("level"));
@@ -408,7 +408,7 @@ public class Consumer extends DefaultConsumer {
                 if (fileLevel == level) {
                     File topologyFile = new File(tempInputDirPath + File.separator + fileName);
                     if (topologyFile.createNewFile()) {
-                        String val = (String) param.get(Parameter.VALUE);
+                        String val = (String) param.get(MessageParameter.VALUE);
                         //Replace '{' with indentation otherwise we get 'End of document execption'
 //                        val = val.replaceAll("- \\{", "  - ").replaceAll(", ", "\n    ").replaceAll("}", "");
 
@@ -427,13 +427,13 @@ public class Consumer extends DefaultConsumer {
         Map<String, File> files = new HashMap<>();
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
+            String name = (String) param.get(MessageParameter.NAME);
             if (name.equals("certificate")) {
                 JSONObject attribute = param.getJSONObject("attributes");
                 String fileName = (String) attribute.get("filename");
                 File certificate = new File(tempInputDirPath + File.separator + fileName + ".pem");
                 if (certificate.createNewFile()) {
-                    writeValueToFile((String) param.get(Parameter.VALUE), certificate);
+                    writeValueToFile((String) param.get(MessageParameter.VALUE), certificate);
                     files.put(fileName, certificate);
                 }
             }
@@ -444,9 +444,9 @@ public class Consumer extends DefaultConsumer {
     private String getLogDirPath(JSONArray parameters, String tempInputDirPath) throws JSONException {
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
+            String name = (String) param.get(MessageParameter.NAME);
             if (name.equals("logdir")) {
-                return (String) param.get(Parameter.VALUE);
+                return (String) param.get(MessageParameter.VALUE);
             }
         }
         return System.getProperty("java.io.tmpdir");
@@ -455,9 +455,9 @@ public class Consumer extends DefaultConsumer {
     private File getSSHKey(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
+            String name = (String) param.get(MessageParameter.NAME);
             if (name.equals("sshkey")) {
-                String sshKeyContent = (String) param.get(Parameter.VALUE);
+                String sshKeyContent = (String) param.get(MessageParameter.VALUE);
                 File sshKeyFile = new File(tempInputDirPath + File.separator + "user.pem");
                 if (sshKeyFile.createNewFile()) {
                     writeValueToFile(sshKeyContent, sshKeyFile);
@@ -471,9 +471,9 @@ public class Consumer extends DefaultConsumer {
     private File getSciptFile(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(Parameter.NAME);
+            String name = (String) param.get(MessageParameter.NAME);
             if (name.equals("guiscript")) {
-                String scriptContent = (String) param.get(Parameter.VALUE);
+                String scriptContent = (String) param.get(MessageParameter.VALUE);
                 File scriptFile = new File(tempInputDirPath + File.separator + "guiscipt.sh");
                 if (scriptFile.createNewFile()) {
                     writeValueToFile(scriptContent, scriptFile);

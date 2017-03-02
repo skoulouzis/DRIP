@@ -112,14 +112,14 @@ public class TypesJUnitTest {
     private static void initMessages() throws IOException {
         message1 = new Message();
         message1.setCreationDate((System.currentTimeMillis()));
-        List<Parameter> parameters = new ArrayList();
-        Parameter numParam = new Parameter();
+        List<MessageParameter> parameters = new ArrayList();
+        MessageParameter numParam = new MessageParameter();
         String numParamName = "input";
         numParam.setName(numParamName);
         numParam.setValue("33000");
         parameters.add(numParam);
 
-        Parameter fileParamContents = new Parameter();
+        MessageParameter fileParamContents = new MessageParameter();
         fileParamContentsName = "someInputFile";
         fileParamContents.setName(fileParamContentsName);
         byte[] bytes = Files.readAllBytes(Paths.get(tempFile1.getAbsolutePath()));
@@ -128,7 +128,7 @@ public class TypesJUnitTest {
         fileParamContents.setEncoding(charset);
         parameters.add(fileParamContents);
 
-        Parameter fileParamRef = new Parameter();
+        MessageParameter fileParamRef = new MessageParameter();
         fileParamRef.setName("theNameOfTheParamater");
         fileParamRef.setURL("http://www.gutenberg.org/cache/epub/3160/pg3160.txt");
         parameters.add(fileParamRef);
@@ -158,11 +158,11 @@ public class TypesJUnitTest {
 
 //            System.err.println(jsonInString);
             Message request = mapper.readValue(jsonInString, Message.class);
-            List<Parameter> params = request.getParameters();
+            List<MessageParameter> params = request.getParameters();
 
             assertEquals(message1.getParameters().size(), params.size());
             fileParam = new File(fileParamContentsName);
-            for (Parameter param : params) {
+            for (MessageParameter param : params) {
                 if (param.getName().equals(fileParamContentsName)) {
                     String value = param.getValue();
                     try (PrintWriter out = new PrintWriter(fileParam)) {
@@ -195,9 +195,9 @@ public class TypesJUnitTest {
             fileParam = new File(fileParamContentsName);
             for (int i = 0; i < parameters.length(); i++) {
                 JSONObject param = (JSONObject) parameters.get(i);
-                String name = (String) param.get(Parameter.NAME);
+                String name = (String) param.get(MessageParameter.NAME);
                 if (name.equals(fileParamContentsName)) {
-                    String value = (String) param.get(Parameter.VALUE);
+                    String value = (String) param.get(MessageParameter.VALUE);
                     try (PrintWriter out = new PrintWriter(fileParam)) {
                         out.print(value);
                     }
@@ -223,7 +223,7 @@ public class TypesJUnitTest {
         List parameters = new ArrayList();
         String charset = "UTF-8";
         for (File f : files) {
-            Parameter fileParam = new Parameter();
+            MessageParameter fileParam = new MessageParameter();
             byte[] bytes = Files.readAllBytes(Paths.get(f.getAbsolutePath()));
             fileParam.setValue(new String(bytes, charset));
             fileParam.setEncoding(charset);
