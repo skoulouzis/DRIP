@@ -6,6 +6,8 @@ import time
 
 from vm_info import VmInfo
 import docker_kubernetes
+import docker_engine
+import docker_swarm
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.3'))
 channel = connection.channel()
@@ -19,32 +21,43 @@ def handleDelivery(message):
     node_num = 0
     vm_list = []
     for param in params:
-        value = param["value"]
-        ip = param["attributes"]["IP"]
-        user = param["attributes"]["user"]
-        role = param["attributes"]["role"]
-        node_num += 1
-        key = path + "%d.txt" % (node_num)
-        fo = open(key, "w")
-        fo.write(value)
-        fo.close()
-        vm = VmInfo(ip, user, key, role)
-        vm_list.append(vm)
-    return docker_kubernetes.run(vm_list)
+        name = param["name"]
+        if name == "cluster":
+            cluster_type = param["value"]
+        else:
+            value = param["value"]
+            ip = param["attributes"]["IP"]
+            user = param["attributes"]["user"]
+            role = param["attributes"]["role"]
+            node_num += 1
+            key = path + "%d.txt" % (node_num)
+            fo = open(key, "w")
+            fo.write(value)
+            fo.close()
+            vm = VmInfo(ip, user, key, role)
+            vm_list.append(vm)
+
+    if cluster_type == "kubernetes":
+        ret = docker_kubernetes.run(vm_list)
+        return ret
+    elif cluster_type == "swarm":
+        ret = docker_engine.run(vm_list)
+        if "ERROR" in ret: return ret
+        ret = docker_swarm.run(vm_list)
+        return ret
+    else:
+        return "ERROR: invalid cluster"
+
     
 
 def on_request(ch, method, props, body):
     ret = handleDelivery(body)
     print ret
     if "ERROR" in ret:
-        kuber_string = ret
         res_name = "error"
-    #print(" Message %s" % body)
     else:
         res_name = "credential"
-        kuber_file = open(path + "admin.conf", "r")
-        kuber_string = kuber_file.read()
-        kuber_file.close()
+
 
     response = {}
     outcontent = {}
@@ -55,7 +68,7 @@ def on_request(ch, method, props, body):
     par["url"] = "null"
     par["encoding"] = "UTF-8"
     par["name"] = res_name
-    par["value"] = kuber_string
+    par["value"] = ret
     par["attributes"] = "null"
     response["parameters"].append(par)
 
