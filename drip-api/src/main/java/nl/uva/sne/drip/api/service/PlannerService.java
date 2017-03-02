@@ -24,7 +24,7 @@ import java.util.concurrent.TimeoutException;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.types.Message;
-import nl.uva.sne.drip.commons.types.Parameter;
+import nl.uva.sne.drip.commons.types.MessageParameter;
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONException;
@@ -51,8 +51,8 @@ public class PlannerService {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);
 
             Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
-            List<Parameter> parameters = plannerReturnedMessage.getParameters();
-            for (Parameter param : parameters) {
+            List<MessageParameter> parameters = plannerReturnedMessage.getParameters();
+            for (MessageParameter param : parameters) {
 
             }
             ToscaRepresentation tr = new ToscaRepresentation();
@@ -75,7 +75,7 @@ public class PlannerService {
 
         Message invokationMessage = new Message();
         List parameters = new ArrayList();
-        Parameter jsonArgument = new Parameter();
+        MessageParameter jsonArgument = new MessageParameter();
         String charset = "UTF-8";
         jsonArgument.setValue(new String(bytes, charset));
         jsonArgument.setEncoding(charset);

@@ -30,7 +30,7 @@ import nl.uva.sne.drip.api.dao.PlanDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.types.Message;
-import nl.uva.sne.drip.commons.types.Parameter;
+import nl.uva.sne.drip.commons.types.MessageParameter;
 import nl.uva.sne.drip.commons.types.Plan;
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
@@ -62,14 +62,14 @@ public class SimplePlannerService {
         Plan topLevel;
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
-            List<Parameter> planFiles = plannerReturnedMessage.getParameters();
+            List<MessageParameter> planFiles = plannerReturnedMessage.getParameters();
             topLevel = new Plan();
             Set<String> ids = topLevel.getLoweLevelPlanIDs();
             if (ids == null) {
                 ids = new HashSet<>();
             }
             Plan lowerLevelPlan = null;
-            for (Parameter p : planFiles) {
+            for (MessageParameter p : planFiles) {
                 //Should have levels in attributes
                 Map<String, String> attributess = p.getAttributes();
                 if (attributess != null) {
@@ -108,7 +108,7 @@ public class SimplePlannerService {
 
         Message invokationMessage = new Message();
         List parameters = new ArrayList();
-        Parameter fileArgument = new Parameter();
+        MessageParameter fileArgument = new MessageParameter();
 
         String charset = "UTF-8";
         fileArgument.setValue(new String(bytes, charset));
@@ -116,7 +116,7 @@ public class SimplePlannerService {
         fileArgument.setName("input");
         parameters.add(fileArgument);
 
-        fileArgument = new Parameter();
+        fileArgument = new MessageParameter();
         bytes = Files.readAllBytes(Paths.get(System.getProperty("user.home") + File.separator + "Downloads/DRIP/example_a.yml"));
         fileArgument.setValue(new String(bytes, charset));
         fileArgument.setEncoding(charset);

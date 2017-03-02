@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.commons.types.Message;
-import nl.uva.sne.drip.commons.types.Parameter;
+import nl.uva.sne.drip.commons.types.MessageParameter;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,9 +104,9 @@ public class ProvisionController {
 
             Message response = provisioner.call(provisionerInvokationMessage);
 //            Message response = generateFakeResponse();
-            List<Parameter> params = response.getParameters();
+            List<MessageParameter> params = response.getParameters();
 
-            for (Parameter p : params) {
+            for (MessageParameter p : params) {
                 String name = p.getName();
                 if (!name.equals("kubernetes")) {
                     String value = p.getValue();
@@ -147,29 +147,29 @@ public class ProvisionController {
 
     private Message buildProvisionerMessage(ProvisionInfo pReq) throws JSONException, IOException {
         Message invokationMessage = new Message();
-        List<Parameter> parameters = new ArrayList();
+        List<MessageParameter> parameters = new ArrayList();
         CloudCredentials cred = cloudCredentialsDao.findOne(pReq.getCloudConfID());
         if (cred == null) {
             throw new NotFoundException("Cloud credentials :" + pReq.getCloudConfID() + " not found");
         }
-        Parameter conf = buildCloudConfParam(cred);
+        MessageParameter conf = buildCloudConfParam(cred);
         parameters.add(conf);
 
-        List<Parameter> certs = buildCertificatesParam(cred);
+        List<MessageParameter> certs = buildCertificatesParam(cred);
         parameters.addAll(certs);
 
-        List<Parameter> topologies = buildTopologyParams(pReq.getPlanID());
+        List<MessageParameter> topologies = buildTopologyParams(pReq.getPlanID());
         parameters.addAll(topologies);
 
         String scriptID = pReq.getUserScriptID();
         if (scriptID != null) {
-            List<Parameter> userScripts = buildScriptParams(scriptID);
+            List<MessageParameter> userScripts = buildScriptParams(scriptID);
             parameters.addAll(userScripts);
         }
 
         String userKeyID = pReq.getUserKeyID();
         if (userKeyID != null) {
-            List<Parameter> userKeys = buildKeysParams(userKeyID);
+            List<MessageParameter> userKeys = buildKeysParams(userKeyID);
             parameters.addAll(userKeys);
         }
 
@@ -178,8 +178,8 @@ public class ProvisionController {
         return invokationMessage;
     }
 
-    private Parameter buildCloudConfParam(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
-        Parameter conf = null;
+    private MessageParameter buildCloudConfParam(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
+        MessageParameter conf = null;
         String provider = cred.getCloudProviderName();
         if (provider == null) {
             throw new BadRequestException("Provider name can't be null. Check the cloud credentials: " + cred.getId());
@@ -192,18 +192,18 @@ public class ProvisionController {
         return conf;
     }
 
-    private List<Parameter> buildCertificatesParam(CloudCredentials cred) {
+    private List<MessageParameter> buildCertificatesParam(CloudCredentials cred) {
         List<LoginKey> loginKeys = cred.getLoginKeys();
         if (loginKeys == null || loginKeys.isEmpty()) {
             throw new BadRequestException("Log in keys can't be empty");
         }
-        List<Parameter> parameters = new ArrayList<>();
+        List<MessageParameter> parameters = new ArrayList<>();
         for (LoginKey lk : loginKeys) {
             String domainName = lk.getAttributes().get("domain_name");
             if (domainName == null) {
                 domainName = lk.getAttributes().get("domain_name ");
             }
-            Parameter cert = new Parameter();
+            MessageParameter cert = new MessageParameter();
             cert.setName("certificate");
             cert.setValue(lk.getKey());
             Map<String, String> attributes = new HashMap<>();
@@ -214,13 +214,13 @@ public class ProvisionController {
         return parameters;
     }
 
-    private List<Parameter> buildTopologyParams(String planID) throws JSONException {
+    private List<MessageParameter> buildTopologyParams(String planID) throws JSONException {
         Plan plan = planService.getDao().findOne(planID);
         if (plan == null) {
             throw new NotFoundException();
         }
-        List<Parameter> parameters = new ArrayList();
-        Parameter topology = new Parameter();
+        List<MessageParameter> parameters = new ArrayList();
+        MessageParameter topology = new MessageParameter();
         topology.setName("topology");
         topology.setValue(Converter.map2YmlString(plan.getKvMap()));
         Map<String, String> attributes = new HashMap<>();
@@ -232,7 +232,7 @@ public class ProvisionController {
         Set<String> ids = plan.getLoweLevelPlanIDs();
         for (String lowID : ids) {
             Plan lowPlan = planService.getDao().findOne(lowID);
-            topology = new Parameter();
+            topology = new MessageParameter();
             topology.setName("topology");
             topology.setValue(Converter.map2YmlString(lowPlan.getKvMap()));
             attributes = new HashMap<>();
@@ -244,13 +244,13 @@ public class ProvisionController {
         return parameters;
     }
 
-    private Parameter buildEC2Conf(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
+    private MessageParameter buildEC2Conf(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
 
         Properties prop = Converter.getEC2Properties(cred);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         prop.store(baos, null);
         byte[] bytes = baos.toByteArray();
-        Parameter conf = new Parameter();
+        MessageParameter conf = new MessageParameter();
         conf.setName("ec2.conf");
         String charset = "UTF-8";
         conf.setValue(new String(bytes, charset));
@@ -258,13 +258,13 @@ public class ProvisionController {
 
     }
 
-    private List<Parameter> buildScriptParams(String userScriptID) {
+    private List<MessageParameter> buildScriptParams(String userScriptID) {
         UserScript script = userScriptService.getDao().findOne(userScriptID);
         if (script == null) {
             throw new BadRequestException("User script: " + userScriptID + " was not found");
         }
-        List<Parameter> parameters = new ArrayList();
-        Parameter scriptParameter = new Parameter();
+        List<MessageParameter> parameters = new ArrayList();
+        MessageParameter scriptParameter = new MessageParameter();
         scriptParameter.setName("guiscript");
         scriptParameter.setValue(script.getContents());
         scriptParameter.setEncoding("UTF-8");
@@ -272,13 +272,13 @@ public class ProvisionController {
         return parameters;
     }
 
-    private List<Parameter> buildKeysParams(String userKeyID) {
+    private List<MessageParameter> buildKeysParams(String userKeyID) {
         LoginKey key = userKeysService.get(userKeyID, LoginKey.Type.PUBLIC);
         if (key == null) {
             throw new BadRequestException("User key: " + userKeyID + " was not found");
         }
-        List<Parameter> parameters = new ArrayList();
-        Parameter keyParameter = new Parameter();
+        List<MessageParameter> parameters = new ArrayList();
+        MessageParameter keyParameter = new MessageParameter();
         keyParameter.setName("sshkey");
         keyParameter.setValue(key.getKey());
         keyParameter.setEncoding("UTF-8");

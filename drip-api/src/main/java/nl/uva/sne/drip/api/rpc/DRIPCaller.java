@@ -16,7 +16,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 import nl.uva.sne.drip.commons.types.Message;
-import nl.uva.sne.drip.commons.types.Parameter;
+import nl.uva.sne.drip.commons.types.MessageParameter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -118,7 +118,8 @@ public abstract class DRIPCaller implements AutoCloseable {
             }
         });
         String strResponse = response.take();
-
+        strResponse = strResponse.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
+        System.err.println(strResponse);
 //        return unMarshallWithSimpleJson(strResponse);
         return mapper.readValue(strResponse, Message.class);
     }
@@ -130,12 +131,12 @@ public abstract class DRIPCaller implements AutoCloseable {
         Message responseMessage = new Message();
         responseMessage.setCreationDate((Long) jsonObj.get("creationDate"));
         JSONArray jsonParams = (JSONArray) jsonObj.get("parameters");
-        List<Parameter> parameters = new ArrayList<>();
+        List<MessageParameter> parameters = new ArrayList<>();
 
         for (int i = 0; i < jsonParams.length(); i++) {
             JSONObject jsonParam = (JSONObject) jsonParams.get(i);
 
-            Parameter parameter = new Parameter();
+            MessageParameter parameter = new MessageParameter();
             parameter.setName(jsonParam.getString("name"));
             parameter.setValue(jsonParam.getString("value"));
             parameters.add(parameter);
