@@ -15,7 +15,6 @@
  */
 package nl.uva.sne.drip.commons.types;
 
-import java.util.Map;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -27,7 +26,7 @@ public class ClusterCredentials {
     @Id
     private String id;
 
-    private Map<String, Object> kvMap;
+    private String contents;
 
     /**
      * @return the id
@@ -44,17 +43,17 @@ public class ClusterCredentials {
     }
 
     /**
-     * @return the kvMap
+     * @return the contents
      */
-    public Map<String, Object> getKvMap() {
-        return kvMap;
+    public String getContents() {
+        return contents;
     }
 
     /**
-     * @param kvMap the kvMap to set
+     * @param contents the contents to set
      */
-    public void setKvMap(Map<String, Object> kvMap) {
-        this.kvMap = kvMap;
+    public void setContents(String contents) {
+        this.contents = contents;
     }
 
 }

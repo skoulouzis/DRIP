@@ -15,17 +15,23 @@
  */
 package nl.uva.sne.drip.api.service;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import nl.uva.sne.drip.api.dao.PlanDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.MessageParameter;
 import nl.uva.sne.drip.commons.types.Plan;
+import nl.uva.sne.drip.commons.types.SimplePlanContainer;
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONException;
@@ -43,6 +49,9 @@ public class PlannerService {
     @Autowired
     private ToscaService toscaService;
 
+    @Autowired
+    private PlanDao planDao;
+
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
@@ -52,15 +61,30 @@ public class PlannerService {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);
 
             Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
-            List<MessageParameter> parameters = plannerReturnedMessage.getParameters();
-            for (MessageParameter param : parameters) {
-
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+            String jsonString = mapper.writeValueAsString(plannerReturnedMessage);
+            SimplePlanContainer simplePlan = Converter.plannerOutput2SimplePlanContainer(jsonString);
+            Plan topLevel = new Plan();
+            topLevel.setLevel(0);
+            topLevel.setToscaID(toscaId);
+            topLevel.setName("planner_output_all.yml");
+            topLevel.setKvMap(Converter.ymlString2Map(simplePlan.getTopLevel()));
+            Map<String, String> map = simplePlan.getLowerLevels();
+            Set<String> loweLevelPlansIDs = new HashSet<>();
+            for (String lowLevelNames : map.keySet()) {
+                Plan lowLevelPlan = new Plan();
+                lowLevelPlan.setLevel(1);
+                lowLevelPlan.setToscaID(toscaId);
+                lowLevelPlan.setName(lowLevelNames);
+                lowLevelPlan.setKvMap(Converter.ymlString2Map(map.get(lowLevelNames)));
+                planDao.save(lowLevelPlan);
+                loweLevelPlansIDs.add(lowLevelPlan.getId());
             }
-            ToscaRepresentation tr = new ToscaRepresentation();
-            Map<String, Object> kvMap = null;
-            tr.setKvMap(kvMap);
 
-            return null;
+            topLevel.setLoweLevelPlansIDs(loweLevelPlansIDs);
+            planDao.save(topLevel);
+            return topLevel;
         }
     }
 
