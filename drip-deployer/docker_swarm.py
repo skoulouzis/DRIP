@@ -14,59 +14,35 @@
  # See the License for the specific language governing permissions and
  # limitations under the License.
  
+
 __author__ = 'Yang Hu'
 
 import paramiko, os
 from vm_info import VmInfo
 def install_manager(vm):
 	try:
-		print "%s: ====== Start Kubernetes Master Installing ======" % (vm.ip)
+		print "%s: ====== Start Swarm Manager Installing ======" % (vm.ip)
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
-		sftp = ssh.open_sftp()
-		file_path = os.path.dirname(os.path.abspath(__file__))
-		sftp.chdir('/tmp/')
-		install_script = file_path + "/" + "docker_kubernetes.sh"
-		sftp.put(install_script, "kubernetes_setup.sh")
-		stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.','-')))
-		stdout.read()
-		stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/kubernetes_setup.sh")
-		stdout.read()
-		stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init --api-advertise-addresses=%s" % (vm.ip))
+		stdin, stdout, stderr = ssh.exec_command("sudo docker swarm init --advertise-addr eth0")
 		retstr = stdout.readlines()
-		stdin, stdout, stderr = ssh.exec_command("sudo cp /etc/kubernetes/admin.conf /tmp/")
-		stdout.read()
-		stdin, stdout, stderr = ssh.exec_command("sudo chown %s /tmp/admin.conf" % (vm.user))
-		stdout.read()
-		stdin, stdout, stderr = ssh.exec_command("sudo chgrp %s /tmp/admin.conf" % (vm.user))
-		stdout.read()
-		sftp.get("/tmp/admin.conf", file_path+"/admin.conf")
-		print "%s: ========= Kubernetes Master Installed =========" % (vm.ip)
+		print "%s: ========= Swarm Manager Installed =========" % (vm.ip)
 	except Exception as e:
 		print '%s: %s' % (vm.ip, e)
 		return "ERROR:"+vm.ip+" "+str(e)
 	ssh.close()
-	return retstr[-1]
+	return retstr[4] + retstr[5] + retstr[6]
 
 def install_worker(join_cmd, vm):
 	try:
-		print "%s: ====== Start Kubernetes Slave Installing ======" % (vm.ip)
+		print "%s: ====== Start Swarm Worker Installing ======" % (vm.ip)
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
-		sftp = ssh.open_sftp()
-		sftp.chdir('/tmp/')
-		file_path = os.path.dirname(os.path.abspath(__file__))
-		install_script = file_path + "/" + "docker_kubernetes.sh"
-		sftp.put(install_script, "kubernetes_setup.sh")
-		stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.','-')))
-		stdout.read()
-		stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/kubernetes_setup.sh")
-		stdout.read()
 		stdin, stdout, stderr = ssh.exec_command("sudo %s" % (join_cmd))
 		stdout.read()
-		print "%s: ========= Kubernetes Slave Installed =========" % (vm.ip)
+		print "%s: ========= Swarm Worker Installed =========" % (vm.ip)
 	except Exception as e:
 		print '%s: %s' % (vm.ip, e)
 		return "ERROR:"+vm.ip+" "+str(e)
@@ -81,16 +57,18 @@ def run(vm_list):
 				return join_cmd
 			else:
 				join_cmd = join_cmd.encode()
+				join_cmd = join_cmd.replace("\n" , "")
+				join_cmd = join_cmd.replace("\\" , "")
 				join_cmd = join_cmd.strip()
+				swarm_file = open(i.key)
+				swarm_string = swarm_file.read()
+				swarm_file.close()
 			break
-
+    
 	for i in vm_list:
 		if i.role == "slave": 
 			worker_cmd = install_worker(join_cmd, i)
 			if "ERROR" in worker_cmd:
 				return worker_cmd
 
-	kuber_file = open(file_path + "/admin.conf", "r")
-	kuber_string = kuber_file.read()
-	kuber_file.close()
-	return kuber_string
+	return swarm_string
