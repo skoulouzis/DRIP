@@ -22,11 +22,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author S. Koulouzis
  */
-@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "MMMMMMMMMMMMMMMMMM")
-public class BadRequestException extends RuntimeException {
+@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "User already exists")
+public class PasswordNullException extends RuntimeException {
 
-    public BadRequestException(String massage) {
-        super(massage);
+    public PasswordNullException() {
+        super();
+    }
+
+    public PasswordNullException(String string) {
+        super(string);
     }
 
 }

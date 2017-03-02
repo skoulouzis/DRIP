@@ -71,11 +71,10 @@ public class Converter {
         return jsonObject2Map(jsonObject);
     }
 
-    public static SimplePlanContainer plannerOutput2SimplePlanContainer(String jsonString) throws JSONException {
-        
-        return null;
-    }
-
+//    public static SimplePlanContainer plannerOutput2SimplePlanContainer(String jsonString) throws JSONException {
+//        
+//        return null;
+//    }
     public static Map<String, Object> jsonObject2Map(JSONObject object) throws JSONException {
         Map<String, Object> map = new HashMap();
 

@@ -22,6 +22,10 @@ import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.api.exception.PasswordNullException;
+import nl.uva.sne.drip.api.exception.UserExistsException;
+import nl.uva.sne.drip.api.exception.UserNotFoundException;
+import nl.uva.sne.drip.api.exception.UserNullException;
 import nl.uva.sne.drip.commons.types.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -62,14 +66,14 @@ public class UserController {
     public @ResponseBody
     String register(@RequestBody User user) {
         if (user.getUsername() == null) {
-            throw new BadRequestException("Username can't be null");
+            throw new UserNullException();
         }
         if (user.getPassword() == null) {
-            throw new BadRequestException("Password can't be null");
+            throw new PasswordNullException();
         }
         UserDetails registeredUser = service.loadUserByUsername(user.getUsername());
         if (registeredUser != null) {
-            throw new BadRequestException("Username " + user.getUsername() + " is used");
+            throw new UserExistsException("Username " + user.getUsername() + " is used");
         }
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         service.getDao().save(user);
@@ -82,7 +86,7 @@ public class UserController {
     String modify(@RequestBody User user) {
         UserDetails registeredUser = service.loadUserByUsername(user.getUsername());
         if (registeredUser == null) {
-            throw new NotFoundException("User " + user.getUsername() + " not found");
+            throw new UserNotFoundException("User " + user.getUsername() + " not found");
         }
         return this.register(user);
     }
@@ -94,7 +98,7 @@ public class UserController {
         try {
             User user = service.getDao().findOne(id);
             if (user == null) {
-                throw new NotFoundException();
+                throw new UserNotFoundException("User " + id + " not found");
             }
             return user;
         } catch (Exception ex) {
@@ -110,7 +114,7 @@ public class UserController {
         try {
             User user = service.getDao().findOne(id);
             if (user == null) {
-                throw new NotFoundException();
+                throw new UserNotFoundException("User " + id + " not found");
             }
             service.getDao().delete(user);
             return "Deleted used :" + id;

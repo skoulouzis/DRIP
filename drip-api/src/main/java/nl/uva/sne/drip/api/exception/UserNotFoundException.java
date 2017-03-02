@@ -22,11 +22,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author S. Koulouzis
  */
-@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "MMMMMMMMMMMMMMMMMM")
-public class BadRequestException extends RuntimeException {
+@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "User not found")
+public class UserNotFoundException extends RuntimeException {
 
-    public BadRequestException(String massage) {
-        super(massage);
+    public UserNotFoundException(String string) {
+        super(string);
+    }
+
+    public UserNotFoundException() {
+        super();
     }
 
 }

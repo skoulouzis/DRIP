@@ -31,7 +31,6 @@ import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.MessageParameter;
 import nl.uva.sne.drip.commons.types.Plan;
-import nl.uva.sne.drip.commons.types.SimplePlanContainer;
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONException;
@@ -64,23 +63,23 @@ public class PlannerService {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
             String jsonString = mapper.writeValueAsString(plannerReturnedMessage);
-            SimplePlanContainer simplePlan = Converter.plannerOutput2SimplePlanContainer(jsonString);
+//            SimplePlanContainer simplePlan = Converter.plannerOutput2SimplePlanContainer(jsonString);
             Plan topLevel = new Plan();
             topLevel.setLevel(0);
             topLevel.setToscaID(toscaId);
             topLevel.setName("planner_output_all.yml");
-            topLevel.setKvMap(Converter.ymlString2Map(simplePlan.getTopLevel()));
-            Map<String, String> map = simplePlan.getLowerLevels();
+//            topLevel.setKvMap(Converter.ymlString2Map(simplePlan.getTopLevel()));
+//            Map<String, String> map = simplePlan.getLowerLevels();
             Set<String> loweLevelPlansIDs = new HashSet<>();
-            for (String lowLevelNames : map.keySet()) {
-                Plan lowLevelPlan = new Plan();
-                lowLevelPlan.setLevel(1);
-                lowLevelPlan.setToscaID(toscaId);
-                lowLevelPlan.setName(lowLevelNames);
-                lowLevelPlan.setKvMap(Converter.ymlString2Map(map.get(lowLevelNames)));
-                planDao.save(lowLevelPlan);
-                loweLevelPlansIDs.add(lowLevelPlan.getId());
-            }
+//            for (String lowLevelNames : map.keySet()) {
+//                Plan lowLevelPlan = new Plan();
+//                lowLevelPlan.setLevel(1);
+//                lowLevelPlan.setToscaID(toscaId);
+//                lowLevelPlan.setName(lowLevelNames);
+//                lowLevelPlan.setKvMap(Converter.ymlString2Map(map.get(lowLevelNames)));
+//                planDao.save(lowLevelPlan);
+//                loweLevelPlansIDs.add(lowLevelPlan.getId());
+//            }
 
             topLevel.setLoweLevelPlansIDs(loweLevelPlansIDs);
             planDao.save(topLevel);

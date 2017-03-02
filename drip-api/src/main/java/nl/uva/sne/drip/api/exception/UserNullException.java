@@ -22,11 +22,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author S. Koulouzis
  */
-@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "MMMMMMMMMMMMMMMMMM")
-public class BadRequestException extends RuntimeException {
+@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "User name can't be null")
+public class UserNullException extends RuntimeException {
 
-    public BadRequestException(String massage) {
+    public UserNullException(String massage) {
         super(massage);
+    }
+
+    public UserNullException() {
+        super();
     }
 
 }
