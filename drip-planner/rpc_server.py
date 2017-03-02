@@ -17,27 +17,24 @@ import json
 
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.2'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.3'))
 channel = connection.channel()
 channel.queue_declare(queue='planner_queue')
 
 
 
 def handleDelivery(message):
-    parsed_json = json.loads(message)
-    params = parsed_json["parameters"]
-    for param in params:
-        name = param["name"]
-        value = param["value"]
-        
+    parsed_json_message = json.loads(message)
+    params = parsed_json_message["parameters"]
+    param = params[0]
+    value = param["value"]
     
-
-def on_request(ch, method, props, body):
-    handleDelivery(body)
-
-    print(" Message %s" % body)
-    response = "AAAAAAAAAAAAAAAAAAAAAA"
-    json1 = response.get('parameters')[0].get('value').get('topology_template').get('node_templates')
+    parsed_json_value = json.loads(value)
+    topology_template = parsed_json_value['topology_template']
+    node_templates = topology_template["node_templates"]
+    
+    
+    json1 = node_templates
     deadline = 0
 
     for j in json1:
@@ -122,9 +119,13 @@ def on_request(ch, method, props, body):
     par1["value"] = res1
     par1["attributes"] = "null"
     outcontent["parameters"].append(par1)
+    
     return outcontent
     
-    response = outcontent
+
+def on_request(ch, method, props, body):
+    response = handleDelivery(body)
+
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
                      properties=pika.BasicProperties(correlation_id = \

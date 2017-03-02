@@ -25,6 +25,7 @@ import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.MessageParameter;
+import nl.uva.sne.drip.commons.types.Plan;
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONException;
@@ -45,7 +46,7 @@ public class PlannerService {
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-    public ToscaRepresentation getPlan(String toscaId) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
+    public Plan getPlan(String toscaId) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
 
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);

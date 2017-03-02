@@ -48,9 +48,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PlannerController {
 
     @Autowired
-    private ToscaService toscaService;
-
-    @Autowired
     private SimplePlannerService simplePlannerService;
 
     @Autowired
@@ -62,8 +59,8 @@ public class PlannerController {
     String plan(@PathVariable("tosca_id") String toscaId) {
 
         try {
-            Plan plan = simplePlannerService.getPlan(toscaId);
-//            Plan plan = plannerService.getPlan(toscaId);
+//            Plan plan = simplePlannerService.getPlan(toscaId);
+            Plan plan = plannerService.getPlan(toscaId);
             if (plan == null) {
                 throw new NotFoundException("Could not make plan");
             }
