@@ -48,6 +48,7 @@ import nl.uva.sne.drip.commons.types.DeployParameter;
 import nl.uva.sne.drip.commons.types.LoginKey;
 import nl.uva.sne.drip.commons.types.ProvisionInfo;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -96,6 +97,13 @@ public class DeployController {
             Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    ClusterCredentials get(@PathVariable("id") String id) {
+        return clusterCredentialService.getDao().findOne(id);
     }
 
     private Message buildDeployerMessage(String provisionID) {
