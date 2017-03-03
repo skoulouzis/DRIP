@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.PlannerService;
-import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.types.Plan;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,7 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Component
 public class PlannerController {
 
-    @Autowired
+//    @Autowired
     private SimplePlannerService simplePlannerService;
 
     @Autowired
@@ -76,7 +75,7 @@ public class PlannerController {
     public @ResponseBody
     String get(@PathVariable("id") String id, @RequestParam(value = "format") String format) {
         try {
-            return simplePlannerService.get(id, format);
+            return plannerService.get(id, format);
         } catch (JSONException ex) {
             Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
         }

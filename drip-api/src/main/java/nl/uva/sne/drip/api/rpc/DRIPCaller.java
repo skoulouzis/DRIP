@@ -17,6 +17,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.MessageParameter;
+import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +47,7 @@ public abstract class DRIPCaller implements AutoCloseable {
     private final Channel channel;
     private final String replyQueueName;
     private final String requestQeueName;
+    private final ObjectMapper mapper;
 
     public DRIPCaller(String messageBrokerHost, String requestQeueName) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
@@ -59,6 +61,8 @@ public abstract class DRIPCaller implements AutoCloseable {
         // create a single callback queue per client not per requests. 
         replyQueueName = channel.queueDeclare().getQueue();
         this.requestQeueName = requestQeueName;
+        this.mapper = new ObjectMapper();
+        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
     }
 
     /**
@@ -94,8 +98,6 @@ public abstract class DRIPCaller implements AutoCloseable {
 
     public Message call(Message r) throws IOException, TimeoutException, InterruptedException, JSONException {
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         String jsonInString = mapper.writeValueAsString(r);
 
         //Build a correlation ID to distinguish responds 
@@ -117,11 +119,13 @@ public abstract class DRIPCaller implements AutoCloseable {
                 }
             }
         });
-        String strResponse = response.take();
-        strResponse = strResponse.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
-        System.err.println(strResponse);
-//        return unMarshallWithSimpleJson(strResponse);
-        return mapper.readValue(strResponse, Message.class);
+        String resp = response.take();
+        String clean = resp.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
+
+        if (clean.contains("\"value\":{\"")) {
+            return Converter.string2Message(clean);
+        }
+        return mapper.readValue(clean, Message.class);
     }
 
     private Message unMarshallWithSimpleJson(String strResponse) throws JSONException {
@@ -147,4 +151,11 @@ public abstract class DRIPCaller implements AutoCloseable {
 
     }
 
+//    public Message unmarshall(String strResponse) throws IOException {
+//
+//        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+//        strResponse = strResponse.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
+////        return unMarshallWithSimpleJson(strResponse);
+//        return mapper.readValue(strResponse, Message.class);
+//    }
 }

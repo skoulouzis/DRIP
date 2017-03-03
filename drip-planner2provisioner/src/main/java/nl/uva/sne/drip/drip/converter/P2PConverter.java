@@ -1,5 +1,6 @@
 package nl.uva.sne.drip.drip.converter;
 
+import nl.uva.sne.drip.drip.converter.planner.out.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +11,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import java.util.List;
 
-import nl.uva.sne.drip.drip.converter.planner.out.Parameter;
-import nl.uva.sne.drip.drip.converter.planner.out.PlannerOutput;
-import nl.uva.sne.drip.drip.converter.planner.out.Value;
 import nl.uva.sne.drip.drip.converter.provisioner.in.Eth;
 import nl.uva.sne.drip.drip.converter.provisioner.in.SubTopology;
 import nl.uva.sne.drip.drip.converter.provisioner.in.SubTopologyInfo;
@@ -24,9 +24,9 @@ import nl.uva.sne.drip.drip.converter.provisioner.in.VM;
 
 public class P2PConverter {
 
-    public static SimplePlanContainer transfer(String plannerOutputJson, String userName, String OStype, String clusterType) throws JsonParseException, JsonMappingException, IOException {
+    public static SimplePlanContainer convert(String plannerOutputJson, String userName, String OStype, String clusterType) throws JsonParseException, JsonMappingException, IOException {
 
-        Parameter plannerOutput = getInfoFromPlanner(plannerOutputJson);
+        List<Component> components = getInfoFromPlanner(plannerOutputJson);
 
         TopTopology topTopology = new TopTopology();
         SubTopology subTopology = new SubTopology();
@@ -35,7 +35,7 @@ public class P2PConverter {
         sti.cloudProvider = "EC2";
         sti.topology = UUID.randomUUID().toString();
 
-        subTopology.publicKeyPath = null;
+        subTopology.publicKeyPath = "~/.ssh/id_dsa.pub";
         subTopology.userName = userName;
 
         Subnet s = new Subnet();
@@ -43,40 +43,32 @@ public class P2PConverter {
         s.subnet = "192.168.10.0";
         s.netmask = "255.255.255.0";
 
-        subTopology.subnets = new ArrayList<Subnet>();
+        subTopology.subnets = new ArrayList<>();
         subTopology.subnets.add(s);
 
-        subTopology.components = new ArrayList<VM>();
+        subTopology.components = new ArrayList<>();
 
         boolean firstVM = true;
-        for (int vi = 0; vi < plannerOutput.value.size(); vi++) {
-            Value curValue = plannerOutput.value.get(vi);
+        int count = 0;
+        for (Component cmp : components) {
+
             VM curVM = new VM();
-            curVM.name = curValue.name;
+            curVM.name = cmp.getName();
             curVM.type = "Switch.nodes.Compute";
             curVM.OStype = OStype;
             curVM.domain = "ec2.us-east-1.amazonaws.com";
             curVM.clusterType = clusterType;
-            curVM.dockers = curValue.docker;
-            curVM.public_address = curValue.name;
-
-            if (curValue.size.trim().toLowerCase().equals("small")) {
-                curVM.nodeType = "t2.small";
-            } else if (curValue.size.trim().toLowerCase().equals("medium")) {
-                curVM.nodeType = "t2.medium";
-            } else if (curValue.size.trim().toLowerCase().equals("large")) {
-                curVM.nodeType = "t2.large";
-            } else {
-                throw new IllegalArgumentException("Invalid value for field 'size' in input JSON String");
-            }
+            curVM.dockers = cmp.getDocker();
+            curVM.public_address = cmp.getName();
+            curVM.nodeType = "t2" + cmp.getSize().toLowerCase();
 
             Eth eth = new Eth();
             eth.name = "p1";
             eth.subnet_name = "s1";
-            int hostNum = 10 + vi;
+            int hostNum = 10 + count++;
             String priAddress = "192.168.10." + hostNum;
             eth.address = priAddress;
-            curVM.ethernet_port = new ArrayList<Eth>();
+            curVM.ethernet_port = new ArrayList<>();
             curVM.ethernet_port.add(eth);
             if (firstVM) {
                 curVM.role = "master";
@@ -89,7 +81,7 @@ public class P2PConverter {
 
         sti.subTopology = subTopology;
 
-        topTopology.topologies = new ArrayList<SubTopologyInfo>();
+        topTopology.topologies = new ArrayList<>();
         topTopology.topologies.add(sti);
 
         SimplePlanContainer spc = generateInfo(topTopology);
@@ -97,11 +89,12 @@ public class P2PConverter {
         return spc;
     }
 
-    private static Parameter getInfoFromPlanner(String json) throws JsonParseException, JsonMappingException, IOException {
+    private static List<Component> getInfoFromPlanner(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        PlannerOutput po = mapper.readValue(json, PlannerOutput.class);
-        System.out.println("");
-        return po.parameters.get(0);
+        TypeReference<List<Component>> mapType = new TypeReference<List<Component>>() {
+        };
+        List<Component> components = mapper.readValue(json, mapType);
+        return components;
     }
 
     private static SimplePlanContainer generateInfo(TopTopology topTopology) throws JsonProcessingException {
@@ -111,7 +104,7 @@ public class P2PConverter {
         String yamlString = mapper.writeValueAsString(topTopology);
         spc.topLevelContents = yamlString.substring(4);
 
-        Map<String, String> output = new HashMap<String, String>();
+        Map<String, String> output = new HashMap<>();
         for (int i = 0; i < topTopology.topologies.size(); i++) {
             String key = topTopology.topologies.get(i).topology;
             String value = mapper.writeValueAsString(topTopology.topologies.get(i).subTopology);

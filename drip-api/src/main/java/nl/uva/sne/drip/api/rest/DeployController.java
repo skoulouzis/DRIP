@@ -80,7 +80,7 @@ public class DeployController {
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             Message deployerInvokationMessage = buildDeployerMessage(provisionID, clusterType.toLowerCase());
 
-//            Message response = deployer.call(deployerInvokationMessage);
+//            Message response = deployer.unmarshall(deployer.call(deployerInvokationMessage));
             Message response = generateFakeResponse();
             List<MessageParameter> params = response.getParameters();
             ClusterCredentials clusterCred = new ClusterCredentials();

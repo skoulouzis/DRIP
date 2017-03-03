@@ -61,7 +61,7 @@ public class SimplePlannerService {
 
         Plan topLevel;
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
-            Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
+            Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
             List<MessageParameter> planFiles = plannerReturnedMessage.getParameters();
             topLevel = new Plan();
             Set<String> ids = topLevel.getLoweLevelPlanIDs();

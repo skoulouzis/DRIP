@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import nl.uva.sne.drip.api.dao.PlanDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
+import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.MessageParameter;
@@ -60,12 +61,24 @@ public class PlannerService {
 
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);
-
-            Message plannerReturnedMessage = planner.call(plannerInvokationMessage);
+            Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
+//            Message plannerReturnedMessage = (planner.generateFakeResponse(plannerInvokationMessage));
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            String jsonString = mapper.writeValueAsString(plannerReturnedMessage);
-            SimplePlanContainer simplePlan = P2PConverter.transfer(jsonString, "zh9314", "Ubuntu 16.04", "swarm");
+            List<MessageParameter> messageParams = plannerReturnedMessage.getParameters();
+            StringBuilder jsonArrayString = new StringBuilder();
+            jsonArrayString.append("[");
+            String prefix = "";
+            for (MessageParameter mp : messageParams) {
+                String value = mp.getValue();
+                jsonArrayString.append(prefix);
+                prefix = ",";
+                String jsonValue = value.replaceAll("\\\"", "\"");
+                jsonArrayString.append(jsonValue);
+            }
+            jsonArrayString.append("]");
+
+            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "zh9314", "Ubuntu 16.04", "swarm");
             Plan topLevel = new Plan();
             topLevel.setLevel(0);
             topLevel.setToscaID(toscaId);
@@ -111,6 +124,34 @@ public class PlannerService {
         invokationMessage.setParameters(parameters);
         invokationMessage.setCreationDate((System.currentTimeMillis()));
         return invokationMessage;
+    }
+
+    public String get(String id, String fromat) throws JSONException {
+        Plan plan = planDao.findOne(id);
+        if (plan == null) {
+            throw new NotFoundException();
+        }
+
+        Map<String, Object> map = plan.getKvMap();
+        Set<String> ids = plan.getLoweLevelPlanIDs();
+        for (String lowID : ids) {
+            Map<String, Object> lowLevelMap = planDao.findOne(lowID).getKvMap();
+            map.putAll(lowLevelMap);
+        }
+
+        if (fromat != null && fromat.equals("yml")) {
+            String ymlStr = Converter.map2YmlString(map);
+            ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+            return ymlStr;
+        }
+        if (fromat != null && fromat.equals("json")) {
+            String jsonStr = Converter.map2JsonString(map);
+            jsonStr = jsonStr.replaceAll("\\uff0E", "\\.");
+            return jsonStr;
+        }
+        String ymlStr = Converter.map2YmlString(map);
+        ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+        return ymlStr;
     }
 
 }

@@ -102,7 +102,7 @@ public class ProvisionController {
         try (DRIPCaller provisioner = new ProvisionerCaller(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisionerMessage(req);
 
-            Message response = provisioner.call(provisionerInvokationMessage);
+            Message response = (provisioner.call(provisionerInvokationMessage));
 //            Message response = generateFakeResponse();
             List<MessageParameter> params = response.getParameters();
 

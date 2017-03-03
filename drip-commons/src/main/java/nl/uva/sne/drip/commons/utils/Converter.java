@@ -16,7 +16,6 @@
 package nl.uva.sne.drip.commons.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import nl.uva.sne.drip.commons.types.CloudCredentials;
-import nl.uva.sne.drip.drip.converter.P2PConverter;
-import nl.uva.sne.drip.drip.converter.SimplePlanContainer;
+import nl.uva.sne.drip.commons.types.Message;
+import nl.uva.sne.drip.commons.types.MessageParameter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -141,6 +140,38 @@ public class Converter {
     private static void initEC2_NAME_MAP() {
         EC2_NAME_MAP.put("keyIdAlias", "AWSAccessKeyId");
         EC2_NAME_MAP.put("key", "AWSSecretKey");
+    }
+
+    public static Message string2Message(String clean) throws JSONException, IOException {
+        Message mess = new Message();
+        JSONObject jsonObj = new JSONObject(clean);
+        long creationDate = jsonObj.getLong("creationDate");
+        mess.setCreationDate(creationDate);
+        JSONArray jsonParams = (JSONArray) jsonObj.get("parameters");
+        List<MessageParameter> params = new ArrayList<>();
+        for (int i = 0; i < jsonParams.length(); i++) {
+            MessageParameter p = new MessageParameter();
+            JSONObject jsonParam = (JSONObject) jsonParams.get(i);
+            String url;
+            if (!jsonObj.isNull("url")) {
+                p.setURL((String) jsonObj.get("url"));
+            }
+            if (!jsonObj.isNull("encoding")) {
+                p.setEncoding(jsonObj.getString("encoding"));
+
+            }
+            if (!jsonObj.isNull("attributes")) {
+                Map<String, String> attributes = new ObjectMapper().readValue("", Map.class);
+                p.setAttributes(attributes);
+
+            }
+            String val = jsonParam.getString("value");
+            val = val.replaceAll("\"", "\\\"");
+            p.setValue(val);
+            params.add(p);
+        }
+        mess.setParameters(params);
+        return mess;
     }
 
 }

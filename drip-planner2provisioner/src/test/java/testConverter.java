@@ -23,7 +23,7 @@ public class testConverter {
 		}
 		
 		try {
-			SimplePlanContainer spc = P2PConverter.transfer(json, "zh9314", "Ubuntu 16.04", "kubernetes");
+			SimplePlanContainer spc = P2PConverter.convert(json, "zh9314", "Ubuntu 16.04", "kubernetes");
 			System.out.println("--topLevel:\n"+spc.topLevelContents);
 			System.out.println("--lowLevel:");
 			for (Map.Entry<String, String> entry : spc.lowerLevelContents.entrySet()){
