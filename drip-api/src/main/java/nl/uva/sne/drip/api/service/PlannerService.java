@@ -33,6 +33,8 @@ import nl.uva.sne.drip.commons.types.MessageParameter;
 import nl.uva.sne.drip.commons.types.Plan;
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.drip.converter.P2PConverter;
+import nl.uva.sne.drip.drip.converter.SimplePlanContainer;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,13 +65,13 @@ public class PlannerService {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
             String jsonString = mapper.writeValueAsString(plannerReturnedMessage);
-            SimplePlanContainer simplePlan = Converter.plannerOutput2SimplePlanContainer(jsonString);
+            SimplePlanContainer simplePlan = P2PConverter.transfer(jsonString, "zh9314", "Ubuntu 16.04", "swarm");
             Plan topLevel = new Plan();
             topLevel.setLevel(0);
             topLevel.setToscaID(toscaId);
             topLevel.setName("planner_output_all.yml");
-            topLevel.setKvMap(Converter.ymlString2Map(simplePlan.getTopLevel()));
-            Map<String, String> map = simplePlan.getLowerLevels();
+            topLevel.setKvMap(Converter.ymlString2Map(simplePlan.topLevelContents));
+            Map<String, String> map = simplePlan.lowerLevelContents;
             Set<String> loweLevelPlansIDs = new HashSet<>();
             for (String lowLevelNames : map.keySet()) {
                 Plan lowLevelPlan = new Plan();
@@ -90,7 +92,7 @@ public class PlannerService {
     private Message buildPlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException {
         ToscaRepresentation t2 = toscaService.getDao().findOne(toscaId);
         if (t2 == null) {
-            throw new BadRequestException("The description: " + toscaId + " is a plan. Cannot be used as planner input");
+            throw new BadRequestException();
         }
         Map<String, Object> map = t2.getKvMap();
         String json = Converter.map2JsonString(map);

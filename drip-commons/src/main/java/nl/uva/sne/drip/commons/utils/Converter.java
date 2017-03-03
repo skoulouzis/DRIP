@@ -16,7 +16,9 @@
 package nl.uva.sne.drip.commons.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -26,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import nl.uva.sne.drip.commons.types.CloudCredentials;
+import nl.uva.sne.drip.drip.converter.P2PConverter;
+import nl.uva.sne.drip.drip.converter.SimplePlanContainer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,10 +73,6 @@ public class Converter {
     public static Map<String, Object> jsonString2Map(String jsonString) throws JSONException {
         JSONObject jsonObject = new JSONObject(jsonString);
         return jsonObject2Map(jsonObject);
-    }
-
-    public static SimplePlanContainer plannerOutput2SimplePlanContainer(String jsonString) throws JSONException {
-        return null;
     }
 
     public static Map<String, Object> jsonObject2Map(JSONObject object) throws JSONException {

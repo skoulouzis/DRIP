@@ -22,11 +22,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author S. Koulouzis
  */
-@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "MMMMMMMMMMMMMMMMMM")
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class BadRequestException extends RuntimeException {
 
     public BadRequestException(String massage) {
         super(massage);
+    }
+
+    public BadRequestException() {
+        super();
     }
 
 }
