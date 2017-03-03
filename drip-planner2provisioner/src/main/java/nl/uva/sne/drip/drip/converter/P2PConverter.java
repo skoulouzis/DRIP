@@ -1,3 +1,5 @@
+package nl.uva.sne.drip.drip.converter;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,15 +13,15 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-import plannerOut.Parameter;
-import plannerOut.PlannerOutput;
-import plannerOut.Value;
-import provisionerIn.Eth;
-import provisionerIn.SubTopology;
-import provisionerIn.SubTopologyInfo;
-import provisionerIn.Subnet;
-import provisionerIn.TopTopology;
-import provisionerIn.VM;
+import nl.uva.sne.drip.drip.converter.planner.out.Parameter;
+import nl.uva.sne.drip.drip.converter.planner.out.PlannerOutput;
+import nl.uva.sne.drip.drip.converter.planner.out.Value;
+import nl.uva.sne.drip.drip.converter.provisioner.in.Eth;
+import nl.uva.sne.drip.drip.converter.provisioner.in.SubTopology;
+import nl.uva.sne.drip.drip.converter.provisioner.in.SubTopologyInfo;
+import nl.uva.sne.drip.drip.converter.provisioner.in.Subnet;
+import nl.uva.sne.drip.drip.converter.provisioner.in.TopTopology;
+import nl.uva.sne.drip.drip.converter.provisioner.in.VM;
 
 
 public class P2PConverter {
