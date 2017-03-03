@@ -37,7 +37,7 @@ import org.yaml.snakeyaml.Yaml;
  */
 public class Converter {
 
-    private static Map<String, String> EC2_NAME_MAP = new HashMap();
+    private static final Map<String, String> EC2_NAME_MAP = new HashMap();
 
     public static String ymlString2Json(String yamlString) {
         JSONObject jsonObject = new JSONObject(ymlString2Map(yamlString));
@@ -71,10 +71,10 @@ public class Converter {
         return jsonObject2Map(jsonObject);
     }
 
-//    public static SimplePlanContainer plannerOutput2SimplePlanContainer(String jsonString) throws JSONException {
-//        
-//        return null;
-//    }
+    public static SimplePlanContainer plannerOutput2SimplePlanContainer(String jsonString) throws JSONException {
+        return null;
+    }
+
     public static Map<String, Object> jsonObject2Map(JSONObject object) throws JSONException {
         Map<String, Object> map = new HashMap();
 
