@@ -397,26 +397,26 @@ public class Consumer extends DefaultConsumer {
             if (name.equals("topology")) {
                 JSONObject attributes = param.getJSONObject("attributes");
                 int fileLevel = Integer.valueOf((String) attributes.get("level"));
-                String[] parts = ((String) attributes.get("filename")).split("_");
-                String fileName = "";
-                String prefix = "";
-                //Clear date part form file name
-                for (int j = 1; j < parts.length; j++) {
-                    fileName += prefix + parts[j];
-                    prefix = "_";
-                }
                 if (fileLevel == level) {
-                    File topologyFile = new File(tempInputDirPath + File.separator + fileName);
-                    if (topologyFile.createNewFile()) {
-                        String val = (String) param.get(MessageParameter.VALUE);
-                        //Replace '{' with indentation otherwise we get 'End of document execption'
-//                        val = val.replaceAll("- \\{", "  - ").replaceAll(", ", "\n    ").replaceAll("}", "");
+                    String originalFilename = (String) attributes.get("filename");
+                    String fileName = "";
+//                    String[] parts = originalFilename.split("_");
+//                    String prefix = "";
+//                    //Clear date part form file name
+//                    if (isNumeric(parts[0])) {
+//                        for (int j = 1; j < parts.length; j++) {
+//                            fileName += prefix + parts[j];
+//                            prefix = "_";
+//                        }
+//                    } else {
+                    fileName = originalFilename;
+//                    }
 
-                        writeValueToFile(val, topologyFile);
-                        return topologyFile;
-                    } else {
-                        return null;
-                    }
+                    File topologyFile = new File(tempInputDirPath + File.separator + fileName);
+                    topologyFile.createNewFile();
+                    String val = (String) param.get(MessageParameter.VALUE);
+                    writeValueToFile(val, topologyFile);
+                    return topologyFile;
                 }
             }
         }
@@ -482,6 +482,10 @@ public class Consumer extends DefaultConsumer {
             }
         }
         return null;
+    }
+
+    private static boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");
     }
 
 }

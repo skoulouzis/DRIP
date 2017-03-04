@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
+import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.MessageParameter;
 import org.json.JSONException;
@@ -105,6 +106,30 @@ public class DeployController {
     public @ResponseBody
     ClusterCredentials get(@PathVariable("id") String id) {
         return clusterCredentialService.getDao().findOne(id);
+    }
+
+    @RequestMapping(value = "/ids", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    List<String> getIds() {
+        List<ClusterCredentials> all = clusterCredentialService.getDao().findAll();
+        List<String> ids = new ArrayList<>(all.size());
+        for (ClusterCredentials pi : all) {
+            ids.add(pi.getId());
+        }
+        return ids;
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String delete(@PathVariable("id") String id) {
+        ClusterCredentials cred = clusterCredentialService.getDao().findOne(id);
+        if (cred != null) {
+            provisionService.getDao().delete(id);
+            return "Deleted : " + id;
+        }
+        throw new NotFoundException();
     }
 
     private Message buildDeployerMessage(String provisionID, String clusterType) {

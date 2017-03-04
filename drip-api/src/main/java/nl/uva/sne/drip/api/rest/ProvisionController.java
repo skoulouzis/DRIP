@@ -44,7 +44,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.BadRequestException;
+import nl.uva.sne.drip.api.exception.CloudCredentialsNotFoundException;
+import nl.uva.sne.drip.api.exception.InternalServerErrorException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.api.exception.PlanNotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
 import nl.uva.sne.drip.api.service.ProvisionService;
@@ -95,6 +98,30 @@ public class ProvisionController {
         return provisionService.getDao().findOne(id);
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String delete(@PathVariable("id") String id) {
+        ProvisionInfo provPlan = provisionService.getDao().findOne(id);
+        if (provPlan != null) {
+            provisionService.getDao().delete(id);
+            return "Deleted : " + id;
+        }
+        throw new NotFoundException();
+    }
+
+    @RequestMapping(value = "/ids", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    List<String> getIds() {
+        List<ProvisionInfo> all = provisionService.getDao().findAll();
+        List<String> ids = new ArrayList<>(all.size());
+        for (ProvisionInfo pi : all) {
+            ids.add(pi.getId());
+        }
+        return ids;
+    }
+
     @RequestMapping(value = "/provision", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -108,6 +135,9 @@ public class ProvisionController {
 
             for (MessageParameter p : params) {
                 String name = p.getName();
+                if (name.toLowerCase().contains("exception")) {
+                    throw new InternalServerErrorException(name + ". " + p.getValue());
+                }
                 if (!name.equals("kubernetes")) {
                     String value = p.getValue();
                     Map<String, Object> kvMap = Converter.ymlString2Map(value);
@@ -150,7 +180,7 @@ public class ProvisionController {
         List<MessageParameter> parameters = new ArrayList();
         CloudCredentials cred = cloudCredentialsDao.findOne(pReq.getCloudConfID());
         if (cred == null) {
-            throw new NotFoundException("Cloud credentials :" + pReq.getCloudConfID() + " not found");
+            throw new CloudCredentialsNotFoundException();
         }
         MessageParameter conf = buildCloudConfParam(cred);
         parameters.add(conf);
@@ -217,7 +247,7 @@ public class ProvisionController {
     private List<MessageParameter> buildTopologyParams(String planID) throws JSONException {
         Plan plan = planService.getDao().findOne(planID);
         if (plan == null) {
-            throw new NotFoundException();
+            throw new PlanNotFoundException();
         }
         List<MessageParameter> parameters = new ArrayList();
         MessageParameter topology = new MessageParameter();

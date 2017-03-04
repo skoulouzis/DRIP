@@ -117,7 +117,7 @@ public class UserController {
                 throw new UserNotFoundException("User " + id + " not found");
             }
             service.getDao().delete(user);
-            return "Deleted used :" + id;
+             return "Deleted : " + id;
         } catch (Exception ex) {
             Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
         }

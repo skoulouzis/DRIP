@@ -154,4 +154,23 @@ public class PlannerService {
         return ymlStr;
     }
 
+    public String getToscaID(String id) {
+        return planDao.findOne(id).getToscaID();
+    }
+
+    public PlanDao getDao() {
+        return this.planDao;
+    }
+
+    public List<Plan> findAll() {
+        List<Plan> all = planDao.findAll();
+        List<Plan> topLevel = new ArrayList<>();
+        for (Plan p : all) {
+            if (p.getLevel() == 0) {
+                topLevel.add(p);
+            }
+        }
+        return topLevel;
+    }
+
 }

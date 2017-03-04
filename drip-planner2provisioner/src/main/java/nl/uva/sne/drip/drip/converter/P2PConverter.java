@@ -60,7 +60,7 @@ public class P2PConverter {
             curVM.clusterType = clusterType;
             curVM.dockers = cmp.getDocker();
             curVM.public_address = cmp.getName();
-            curVM.nodeType = "t2" + cmp.getSize().toLowerCase();
+            curVM.nodeType = "t2." + cmp.getSize().toLowerCase();
 
             Eth eth = new Eth();
             eth.name = "p1";

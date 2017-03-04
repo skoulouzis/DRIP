@@ -82,7 +82,7 @@ public class ToscaController {
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
         toscaService.delete(id);
-        return "Deleted tosca :" + id;
+         return "Deleted : " + id;
     }
 
 //    http://localhost:8080/drip-api/tosca/ids

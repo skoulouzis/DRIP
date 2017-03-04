@@ -15,7 +15,6 @@
  */
 package nl.uva.sne.drip.api.rest;
 
-import nl.uva.sne.drip.api.service.SimplePlannerService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PlannerController {
 
 //    @Autowired
-    private SimplePlannerService simplePlannerService;
-
+//    private SimplePlannerService simplePlannerService;
     @Autowired
     private PlannerService plannerService;
 
@@ -86,22 +84,22 @@ public class PlannerController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String getToscaID(@PathVariable("id") String id) {
-        return simplePlannerService.getToscaID(id);
+        return plannerService.getToscaID(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        simplePlannerService.getDao().delete(id);
-        return "Deleted tosca :" + id;
+        plannerService.getDao().delete(id);
+        return "Deleted : " + id;
     }
 
     @RequestMapping(value = "/ids")
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {
-        List<Plan> all = simplePlannerService.findAll();
+        List<Plan> all = plannerService.findAll();
         List<String> ids = new ArrayList<>();
         for (Plan tr : all) {
             ids.add(tr.getId());
