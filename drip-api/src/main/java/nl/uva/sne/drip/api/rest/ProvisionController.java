@@ -130,7 +130,7 @@ public class ProvisionController {
         try (DRIPCaller provisioner = new ProvisionerCaller(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisionerMessage(req);
 
-            Message response = (provisioner.call(provisionerInvokationMessage));           
+            Message response = (provisioner.call(provisionerInvokationMessage));
 
 //            Message response = generateFakeResponse();
             List<MessageParameter> params = response.getParameters();
@@ -138,7 +138,9 @@ public class ProvisionController {
             for (MessageParameter p : params) {
                 String name = p.getName();
                 if (name.toLowerCase().contains("exception")) {
-                    throw ExceptionHandler.generateException(name, p.getValue());
+                    RuntimeException ex = ExceptionHandler.generateException(name, p.getValue());
+                    Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
+                    throw ex;
                 }
                 if (!name.equals("kubernetes")) {
                     String value = p.getValue();

@@ -22,10 +22,12 @@ package nl.uva.sne.drip.api.exception;
 public class ExceptionHandler {
 
     public static RuntimeException generateException(String name, String value) {
+        if (value == null) {
+            return new InternalServerErrorExeption();
+        }
         if (value.contains("The maximum number of VPCs has been reached")) {
             return new VMLimitException(name + "." + value);
-        }
-        else{
+        } else {
             return new InternalServerErrorExeption();
         }
     }
