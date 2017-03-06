@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.CloudCredentialsNotFoundException;
+import nl.uva.sne.drip.api.exception.ExceptionHandler;
 import nl.uva.sne.drip.api.exception.InternalServerErrorException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.exception.PlanNotFoundException;
@@ -129,14 +130,15 @@ public class ProvisionController {
         try (DRIPCaller provisioner = new ProvisionerCaller(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisionerMessage(req);
 
-            Message response = (provisioner.call(provisionerInvokationMessage));
+            Message response = (provisioner.call(provisionerInvokationMessage));           
+
 //            Message response = generateFakeResponse();
             List<MessageParameter> params = response.getParameters();
 
             for (MessageParameter p : params) {
                 String name = p.getName();
                 if (name.toLowerCase().contains("exception")) {
-                    throw new InternalServerErrorException(name + ". " + p.getValue());
+                    throw ExceptionHandler.generateException(name, p.getValue());
                 }
                 if (!name.equals("kubernetes")) {
                     String value = p.getValue();
