@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
+import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.MessageParameter;
 import org.json.JSONException;
@@ -80,8 +81,8 @@ public class DeployController {
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             Message deployerInvokationMessage = buildDeployerMessage(provisionID, clusterType.toLowerCase());
 
-//            Message response = deployer.call(deployerInvokationMessage);
-            Message response = generateFakeResponse();
+            Message response = (deployer.call(deployerInvokationMessage));
+//            Message response = generateFakeResponse();
             List<MessageParameter> params = response.getParameters();
             ClusterCredentials clusterCred = new ClusterCredentials();
             for (MessageParameter p : params) {
@@ -104,11 +105,42 @@ public class DeployController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     ClusterCredentials get(@PathVariable("id") String id) {
-        return clusterCredentialService.getDao().findOne(id);
+        ClusterCredentials clusterC = clusterCredentialService.getDao().findOne(id);
+        if (clusterC == null) {
+            throw new NotFoundException();
+        }
+        return clusterC;
+    }
+
+    @RequestMapping(value = "/ids", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    List<String> getIds() {
+        List<ClusterCredentials> all = clusterCredentialService.getDao().findAll();
+        List<String> ids = new ArrayList<>(all.size());
+        for (ClusterCredentials pi : all) {
+            ids.add(pi.getId());
+        }
+        return ids;
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String delete(@PathVariable("id") String id) {
+        ClusterCredentials cred = clusterCredentialService.getDao().findOne(id);
+        if (cred != null) {
+            provisionService.getDao().delete(id);
+            return "Deleted : " + id;
+        }
+        throw new NotFoundException();
     }
 
     private Message buildDeployerMessage(String provisionID, String clusterType) {
         ProvisionInfo pro = provisionService.getDao().findOne(provisionID);
+        if (pro == null) {
+            throw new NotFoundException();
+        }
         String cloudConfID = pro.getCloudConfID();
         CloudCredentials cCred = cloudCredentialsDao.findOne(cloudConfID);
         List<LoginKey> loginKeys = cCred.getLoginKeys();

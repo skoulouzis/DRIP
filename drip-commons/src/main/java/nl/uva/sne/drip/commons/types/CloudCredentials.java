@@ -30,7 +30,6 @@ public class CloudCredentials {
     private String id;
 
     private String key;
-
     
     private String keyIdAlias;
     

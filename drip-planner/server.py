@@ -33,7 +33,7 @@ def main(argv):
             SDI_file = arg
     
     data = {}
-    print workflow_file
+    #print workflow_file
     with open(workflow_file) as data_file:    
         data = json.load(data_file)     
         #print data         
@@ -58,13 +58,14 @@ def main(argv):
     #get the nodes from the json
     nodeDic = {}
     nodeDic1 = {}
+    
     i = 1
     for j in json1:
         if not json1[j]['type'] == "Switch.nodes.Application.Connection":
             print j, json1[j]
-        nodeDic[j] = i
-        nodeDic1[i] = j
-        i = i + 1
+            nodeDic[j] = i
+            nodeDic1[i] = j
+            i = i + 1
 
     #get the links from the json
     links = []
@@ -118,7 +119,11 @@ def main(argv):
     res1 = {}
     for key, value in sorted_nodeDic:
         print value, res[str(value)]
-        res1[nodeDic1[value]] = res[str(value)]
+        
+        res1_value = {}
+        res1_value["size"] = res[str(value)]
+        res1_value["docker"] = json1[nodeDic1[value]].get('artifacts').get('docker_image').get('file')
+        res1[str(nodeDic1[value])] = res1_value
     print res1
     # generate the json files in the corresponding format as the 
     outcontent = {}
@@ -130,6 +135,7 @@ def main(argv):
     par1["value"] = res1
     par1["attributes"] = "null"
     outcontent["parameters"].append(par1)
+    #print outcontent
     return outcontent
  
     

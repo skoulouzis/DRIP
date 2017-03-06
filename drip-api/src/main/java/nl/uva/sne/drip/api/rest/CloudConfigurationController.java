@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.api.exception.NullKeyException;
+import nl.uva.sne.drip.api.exception.NullKeyIDException;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.types.LoginKey;
 import org.apache.commons.io.FilenameUtils;
@@ -60,10 +62,10 @@ public class CloudConfigurationController {
     public @ResponseBody
     String postConf(@RequestBody CloudCredentials cc) {
         if (cc.getKey() == null) {
-            throw new BadRequestException("key can't be null");
+            throw new NullKeyException();
         }
         if (cc.getKeyIdAlias() == null) {
-            throw new BadRequestException("keyIdAlias can't be null");
+            throw new NullKeyIDException();
         }
         cloudCredentialsDao.save(cc);
         return cc.getId();

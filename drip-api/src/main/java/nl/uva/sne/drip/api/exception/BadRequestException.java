@@ -29,4 +29,8 @@ public class BadRequestException extends RuntimeException {
         super(massage);
     }
 
+    public BadRequestException() {
+        super();
+    }
+
 }

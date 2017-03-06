@@ -48,17 +48,17 @@ def handleDelivery(message):
     i = 1
     for j in json1:
         if not json1[j]['type'] == "Switch.nodes.Application.Connection":
-            print j, json1[j]
-        nodeDic[j] = i
-        nodeDic1[i] = j
-        i = i + 1
+            #print j, json1[j]
+            nodeDic[j] = i
+            nodeDic1[i] = j
+            i = i + 1
 
     #get the links from the json
     links = []
     for j in json1:
         if json1[j]['type'] == "Switch.nodes.Application.Connection":
-            print json1[j]['properties']['source']['component_name']
-            print json1[j]['properties']['target']['component_name']
+            #print json1[j]['properties']['source']['component_name']
+            #print json1[j]['properties']['target']['component_name']
             link= {}
             link['source'] = nodeDic[json1[j]['properties']['source']['component_name']]
             link['target'] = nodeDic[json1[j]['properties']['target']['component_name']]
@@ -88,7 +88,7 @@ def handleDelivery(message):
         performance[str(value)] = "1,2,3"
     wfJson['performance'] = performance
     
-    print wfJson
+    #print wfJson
 
     #send request to the server
     start = time.time()
@@ -100,32 +100,34 @@ def handleDelivery(message):
     res = wf.generateJSON()
     
     end = time.time()
-    print (end - start)
+    #print (end - start)
     
     # convert the json to the file required
     res1 = {}
-    for key, value in sorted_nodeDic:
-        print value, res[str(value)]
-        res1[nodeDic1[value]] = res[str(value)]
-    print res1
-    # generate the json files in the corresponding format as the 
     outcontent = {}
     current_milli_time = lambda: int(round(time.time() * 1000))
     outcontent["creationDate"] = current_milli_time()   
     outcontent["parameters"] = []
-    par1 = {}
-    par1["url"] = "null"
-    par1["encoding"] = "UTF-8"
-    par1["value"] = res1
-    par1["attributes"] = "null"
-    outcontent["parameters"].append(par1)
+    for key, value in sorted_nodeDic:        
+        par = {}
+        par["url"] = "null"
+        par["encoding"] = "UTF-8"
+        docker = json1[nodeDic1[value]].get('artifacts').get('docker_image').get('file')
+        res1["name"] = str(nodeDic1[value])
+        res1["size"] = res[str(value)]
+        res1["docker"] = str(docker)
+        
+        #v = str("{\\'name\\':\\'"+str(nodeDic1[value])+"\\',\\'size\\':\\'"+res[str(value)]+"\\',\\'docker\\':\\'"+docker+"\\'}")  
+        par["value"] = res1
+        par["attributes"] = "null"
+        outcontent["parameters"].append(par)
     
     return outcontent
     
 
 def on_request(ch, method, props, body):
     response = handleDelivery(body)
-
+    
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
                      properties=pika.BasicProperties(correlation_id = \

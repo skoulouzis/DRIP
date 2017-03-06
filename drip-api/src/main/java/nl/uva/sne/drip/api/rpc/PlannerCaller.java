@@ -15,20 +15,52 @@
  */
 package nl.uva.sne.drip.api.rpc;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 
 import java.util.concurrent.TimeoutException;
+import nl.uva.sne.drip.commons.types.Message;
 
 /**
  *
  * @author S. Koulouzis.
  */
-public class PlannerCaller extends DRIPCaller  {
+public class PlannerCaller extends DRIPCaller {
 
     private static final String REQUEST_QUEUE_NAME = "planner_queue";
 
     public PlannerCaller(String messageBrokerHost) throws IOException, TimeoutException {
         super(messageBrokerHost, REQUEST_QUEUE_NAME);
+    }
+
+    public String generateFakeResponse(Message plannerInvokationMessage) throws IOException {
+        return "{\n"
+                + "  \"creationDate\": 1487002029722,\n"
+                + "  \"parameters\": [\n"
+                + "    {\n"
+                + "      \"url\": null,\n"
+                + "      \"encoding\": \"UTF-8\",\n"
+                + "      \"value\": \"{\\\"name\\\":\\\"2d13d708e3a9441ab8336ce874e08dd1\\\",\\\"size\\\":\\\"Small\\\",\\\"docker\\\":\\\"mogswitch/InputDistributor\\\"}\",\n"
+                + "      \"name\": \"component\",\n"
+                + "      \"attributes\": null\n"
+                + "    },\n"
+                + "    {\n"
+                + "      \"url\": null,\n"
+                + "      \"encoding\": \"UTF-8\",\n"
+                + "      \"value\": \"{\\\"name\\\":\\\"8fcc1788d9ee462c826572c79fdb2a6a\\\",\\\"size\\\":\\\"Small\\\",\\\"docker\\\":\\\"mogswitch/InputDistributor\\\"}\",\n"
+                + "      \"name\": \"component\",\n"
+                + "      \"attributes\": null\n"
+                + "    },\n"
+                + "    {\n"
+                + "      \"url\": null,\n"
+                + "      \"encoding\": \"UTF-8\",\n"
+                + "      \"value\": \"{\\\"name\\\":\\\"5e0add703c8a43938a39301f572e46c0\\\",\\\"size\\\":\\\"Small\\\",\\\"docker\\\":\\\"mogswitch/InputDistributor\\\"}\",\n"
+                + "      \"name\": \"component\",\n"
+                + "      \"attributes\": null\n"
+                + "    }\n"
+                + "  ]\n"
+                + "}";
     }
 
 }
