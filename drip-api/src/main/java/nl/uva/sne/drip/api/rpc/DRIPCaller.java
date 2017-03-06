@@ -15,6 +15,8 @@ import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.MessageParameter;
 import nl.uva.sne.drip.commons.utils.Converter;
@@ -125,6 +127,7 @@ public abstract class DRIPCaller implements AutoCloseable {
         if (clean.contains("\"value\":{\"")) {
             return Converter.string2Message(clean);
         }
+        Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", clean);
         return mapper.readValue(clean, Message.class);
     }
 
