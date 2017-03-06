@@ -8,6 +8,8 @@ from vm_info import VmInfo
 import docker_kubernetes
 import docker_engine
 import docker_swarm
+import control_agent
+
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.3'))
 channel = connection.channel()
@@ -44,10 +46,12 @@ def handleDelivery(message):
         ret = docker_engine.run(vm_list)
         if "ERROR" in ret: return ret
         ret = docker_swarm.run(vm_list)
+        if "ERROR" in ret: return ret
+        ret1 = control_agent.run(vm_list)
+        if "ERROR" in ret1: ret = ret1
         return ret
     else:
         return "ERROR: invalid cluster"
-
     
 
 def on_request(ch, method, props, body):
