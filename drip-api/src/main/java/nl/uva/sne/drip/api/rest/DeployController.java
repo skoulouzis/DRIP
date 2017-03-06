@@ -81,8 +81,8 @@ public class DeployController {
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             Message deployerInvokationMessage = buildDeployerMessage(provisionID, clusterType.toLowerCase());
 
-//            Message response = deployer.unmarshall(deployer.call(deployerInvokationMessage));
-            Message response = generateFakeResponse();
+            Message response = (deployer.call(deployerInvokationMessage));
+//            Message response = generateFakeResponse();
             List<MessageParameter> params = response.getParameters();
             ClusterCredentials clusterCred = new ClusterCredentials();
             for (MessageParameter p : params) {
@@ -105,7 +105,11 @@ public class DeployController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     ClusterCredentials get(@PathVariable("id") String id) {
-        return clusterCredentialService.getDao().findOne(id);
+        ClusterCredentials clusterC = clusterCredentialService.getDao().findOne(id);
+        if (clusterC == null) {
+            throw new NotFoundException();
+        }
+        return clusterC;
     }
 
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
@@ -134,6 +138,9 @@ public class DeployController {
 
     private Message buildDeployerMessage(String provisionID, String clusterType) {
         ProvisionInfo pro = provisionService.getDao().findOne(provisionID);
+        if (pro == null) {
+            throw new NotFoundException();
+        }
         String cloudConfID = pro.getCloudConfID();
         CloudCredentials cCred = cloudCredentialsDao.findOne(cloudConfID);
         List<LoginKey> loginKeys = cCred.getLoginKeys();

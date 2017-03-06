@@ -122,8 +122,10 @@ public abstract class DRIPCaller implements AutoCloseable {
             }
         });
         String resp = response.take();
-        String clean = resp.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
-
+        String clean = resp;
+        if (resp.contains("'null'")) {
+            clean = resp.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
+        }
         if (clean.contains("\"value\":{\"")) {
             return Converter.string2Message(clean);
         }

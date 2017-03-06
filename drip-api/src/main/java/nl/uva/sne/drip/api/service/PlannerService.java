@@ -78,7 +78,7 @@ public class PlannerService {
             }
             jsonArrayString.append("]");
 
-            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "zh9314", "Ubuntu 16.04", "swarm");
+            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", "swarm");
             Plan topLevel = new Plan();
             topLevel.setLevel(0);
             topLevel.setToscaID(toscaId);
