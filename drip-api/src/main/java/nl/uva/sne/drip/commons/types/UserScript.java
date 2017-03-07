@@ -15,18 +15,24 @@
  */
 package nl.uva.sne.drip.commons.types;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
+ * This class represents a simple script that can run on a provisioned VM.
  *
  * @author S. Koulouzis
  */
-public class ClusterCredentials {
+@Document
+public class UserScript {
 
     @Id
     private String id;
 
     private String contents;
+
+    private String name;
 
     /**
      * @return the id
@@ -43,8 +49,28 @@ public class ClusterCredentials {
     }
 
     /**
+     * The name of the script
+     *
+     * @return the name
+     */
+    @DocumentationExample("client.py")
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * The contents of the script
+     *
      * @return the contents
      */
+    @DocumentationExample("config.sh")
     public String getContents() {
         return contents;
     }
@@ -52,8 +78,14 @@ public class ClusterCredentials {
     /**
      * @param contents the contents to set
      */
+    @DocumentationExample("    #!/bin/bash\n"
+            + "echo \"Reading system-wide config....\" >&2\\n"
+            + ". /etc/cool.cfg\n"
+            + "if [ -r ~/.coolrc ]; then\n"
+            + "  echo \"Reading user config....\" >&2\\n"
+            + "  . ~/.coolrc\\n"
+            + "fi")
     public void setContents(String contents) {
         this.contents = contents;
     }
-
 }

@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.rest;
+package nl.uva.sne.drip.api.v1.rest;
 
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,6 +69,9 @@ public class CloudConfigurationController {
      */
     @RequestMapping(method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+        @StatusCodes({
+        @ResponseCode(code = 400, condition = "Key or KeyIdAlias can't be empty")
+    })
     public @ResponseBody
     String postConf(@RequestBody CloudCredentials cloudCredentials) {
         if (cloudCredentials.getKey() == null) {

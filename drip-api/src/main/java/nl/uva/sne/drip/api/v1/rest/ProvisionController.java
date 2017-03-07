@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.rest;
+package nl.uva.sne.drip.api.v1.rest;
 
 import com.fasterxml.jackson.core.JsonParser;
 import nl.uva.sne.drip.commons.types.ProvisionInfo;
@@ -36,7 +36,6 @@ import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.commons.types.Message;
 import nl.uva.sne.drip.commons.types.MessageParameter;
 import nl.uva.sne.drip.commons.utils.Converter;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -63,6 +62,7 @@ import nl.uva.sne.drip.commons.types.Plan;
 import nl.uva.sne.drip.commons.types.UserScript;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.json.JSONException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 

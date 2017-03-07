@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.commons.types;
 
+import java.util.Map;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -22,37 +24,48 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
-public class UserRole {
+public class ToscaRepresentation {
 
-    private Integer userRoleId;
-    private String role;
+    @Id
+    private String id;
 
-    /**
-     * @return the userRoleId
-     */
-    public Integer getUserRoleId() {
-        return userRoleId;
+    private String name;
+
+    private Map<String, Object> kvMap;
+    
+    public final String getId() {
+        return id;
+    }
+
+    public final void setId(final String id) {
+        this.id = id;
     }
 
     /**
-     * @param userRoleId the userRoleId to set
+     * @return the kvMap
      */
-    public void setUserRoleId(Integer userRoleId) {
-        this.userRoleId = userRoleId;
+    public Map<String, Object> getKvMap() {
+        return kvMap;
     }
 
     /**
-     * @return the role
+     * @param kvMap the kvMap to set
      */
-    public String getRole() {
-        return role;
+    public void setKvMap(Map<String, Object> kvMap) {
+        this.kvMap = kvMap;
     }
 
     /**
-     * @param role the role to set
+     * @return the name
      */
-    public void setRole(String role) {
-        this.role = role;
+    public String getName() {
+        return name;
     }
 
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 }

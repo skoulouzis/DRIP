@@ -18,6 +18,7 @@ package nl.uva.sne.drip.commons.types;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.Collection;
 import java.util.HashSet;
 import org.springframework.data.annotation.Id;
@@ -28,6 +29,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
+ * This class represents a user.
  *
  * @author S. Koulouzis
  */
@@ -83,27 +85,57 @@ public class User implements UserDetails {
         return this.password;
     }
 
+    /**
+     * The username
+     *
+     * @return
+     */
     @Override
+    @DocumentationExample("user")
     public String getUsername() {
         return this.username;
     }
 
+    /**
+     * If the account is not expired
+     *
+     * @return
+     */
     @Override
+    @DocumentationExample("true")
     public boolean isAccountNonExpired() {
         return this.accountNonExpired;
     }
 
+    /**
+     * If the account is not locked
+     *
+     * @return
+     */
     @Override
+    @DocumentationExample("true")
     public boolean isAccountNonLocked() {
         return this.accountNonLocked;
     }
 
+    /**
+     * If the credentials are not expired
+     *
+     * @return
+     */
     @Override
+    @DocumentationExample("true")
     public boolean isCredentialsNonExpired() {
         return this.credentialsNonExpired;
     }
 
+    /**
+     * If the account is enabled
+     *
+     * @return
+     */
     @Override
+    @DocumentationExample("true")
     public boolean isEnabled() {
         return this.enabled;
     }
@@ -151,8 +183,11 @@ public class User implements UserDetails {
     }
 
     /**
+     * The roles assigned to this user.
+     *
      * @return the roles
      */
+    @DocumentationExample("[\"ADMIN\",\"USER\"]")
     public Collection<String> getRoles() {
         return roles;
     }

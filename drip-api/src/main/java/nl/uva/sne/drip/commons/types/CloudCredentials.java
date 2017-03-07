@@ -15,11 +15,14 @@
  */
 package nl.uva.sne.drip.commons.types;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
+ * This class represents the cloud credentials for a cloud. They are used by the
+ * provisoner to request for resources.
  *
  * @author S. Koulouzis
  */
@@ -28,27 +31,34 @@ public class CloudCredentials {
 
     @Id
     private String id;
-
+    
     private String key;
-    
+
     private String keyIdAlias;
-    
+
+    /**
+     * A list of login keys that can be used to log in to the deployed VMs. All
+     * new lines in the 'key' field have to be replaced with the '\n'
+     */
     private List<LoginKey> loginKeys;
-    
-    
+
     private String cloudProviderName;
+
 
     public final String getId() {
         return id;
     }
 
+    
     public final void setId(final String id) {
         this.id = id;
     }
 
     /**
+     * The key for the cloud provider.
      * @return the key
      */
+    @DocumentationExample("6J7uo99ifrff45126Gsy5vgb3bmrtwY6hBxtYt9y")
     public String getKey() {
         return key;
     }
@@ -61,8 +71,10 @@ public class CloudCredentials {
     }
 
     /**
+     * The key id for the cloud provider or the key alias.
      * @return the keyIdAlias
      */
+    @DocumentationExample("AKIAITY3K5ZUQ6M7YBSQ")
     public String getKeyIdAlias() {
         return keyIdAlias;
     }
@@ -75,6 +87,7 @@ public class CloudCredentials {
     }
 
     /**
+     * The login keys
      * @return the loginKeys
      */
     public List<LoginKey> getLoginKeys() {
@@ -89,8 +102,10 @@ public class CloudCredentials {
     }
 
     /**
+     * The name of the cloud provider
      * @return the cloudProviderName
      */
+    @DocumentationExample("ec2")
     public String getCloudProviderName() {
         return cloudProviderName;
     }

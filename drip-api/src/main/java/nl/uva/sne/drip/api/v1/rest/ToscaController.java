@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.rest;
+package nl.uva.sne.drip.api.v1.rest;
 
 import nl.uva.sne.drip.commons.types.ToscaRepresentation;
 import java.io.IOException;

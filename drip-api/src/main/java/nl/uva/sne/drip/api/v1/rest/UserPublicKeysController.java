@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.rest;
+package nl.uva.sne.drip.api.v1.rest;
 
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import nl.uva.sne.drip.commons.types.LoginKey;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -97,12 +99,15 @@ public class UserPublicKeysController {
      */
     @RequestMapping(method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 400, condition = "Key can't be empty")
+    })
     public @ResponseBody
     String postKey(@RequestBody LoginKey key) {
         LoginKey.Type type = key.getType();
-        if (type != null && type.equals(LoginKey.Type.PRIVATE)) {
-            throw new BadRequestException("Key can't be private");
-        }
+//        if (type != null && type.equals(LoginKey.Type.PRIVATE)) {
+//            throw new BadRequestException("Key can't be private");
+//        }
         if (key.getKey() == null) {
             throw new BadRequestException("Key can't be empty");
         }
