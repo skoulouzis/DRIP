@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.dao;
+package nl.uva.sne.drip.commons.v0.types;
 
-import nl.uva.sne.drip.commons.v1.types.UserScript;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface UserScriptDao extends MongoRepository<UserScript, String> {
+@XmlRootElement
+public class Result {
 
 }

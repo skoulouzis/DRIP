@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.api.dao.UserDao;
-import nl.uva.sne.drip.commons.types.User;
+import nl.uva.sne.drip.commons.v1.types.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

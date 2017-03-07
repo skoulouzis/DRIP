@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.api.dao.ToscaDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.commons.types.ToscaRepresentation;
+import nl.uva.sne.drip.commons.v1.types.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,7 +16,7 @@
 package nl.uva.sne.drip.api.v1.rest;
 
 import com.fasterxml.jackson.core.JsonParser;
-import nl.uva.sne.drip.commons.types.ProvisionInfo;
+import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
@@ -33,8 +33,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
-import nl.uva.sne.drip.commons.types.Message;
-import nl.uva.sne.drip.commons.types.MessageParameter;
+import nl.uva.sne.drip.commons.v1.types.Message;
+import nl.uva.sne.drip.commons.v1.types.MessageParameter;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,11 +55,11 @@ import nl.uva.sne.drip.api.service.SimplePlannerService;
 import nl.uva.sne.drip.api.service.UserKeyService;
 import nl.uva.sne.drip.api.service.UserScriptService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.types.CloudCredentials;
-import nl.uva.sne.drip.commons.types.DeployParameter;
-import nl.uva.sne.drip.commons.types.LoginKey;
-import nl.uva.sne.drip.commons.types.Plan;
-import nl.uva.sne.drip.commons.types.UserScript;
+import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
+import nl.uva.sne.drip.commons.v1.types.DeployParameter;
+import nl.uva.sne.drip.commons.v1.types.LoginKey;
+import nl.uva.sne.drip.commons.v1.types.Plan;
+import nl.uva.sne.drip.commons.v1.types.UserScript;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONException;
@@ -72,7 +72,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/provisioner")
+@RequestMapping("/user/v1.0/provisioner")
 @Component
 public class ProvisionController {
 

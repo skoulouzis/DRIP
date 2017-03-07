@@ -15,7 +15,7 @@
  */
 package nl.uva.sne.drip.api.dao;
 
-import nl.uva.sne.drip.commons.types.ToscaRepresentation;
+import nl.uva.sne.drip.commons.v1.types.ToscaRepresentation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**

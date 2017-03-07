@@ -7,8 +7,10 @@
     </facets>
 
     <api-classes>
-        <include pattern="nl.uva.sne.drip.api.rest.*" />
-        <include pattern="nl.uva.sne.drip.commons.types.*" />
+        <include pattern="nl.uva.sne.drip.api.v1.rest.*" />
+        <include pattern="nl.uva.sne.drip.api.v0.rest.*" />
+        <include pattern="nl.uva.sne.drip.commons.v1.types.*" />
+        <include pattern="nl.uva.sne.drip.commons.v0.types.*" />
     </api-classes>
 
 

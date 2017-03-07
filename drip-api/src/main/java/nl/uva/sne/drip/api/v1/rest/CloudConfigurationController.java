@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
-import nl.uva.sne.drip.commons.types.CloudCredentials;
+import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +38,7 @@ import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.exception.NullKeyIDException;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.types.LoginKey;
+import nl.uva.sne.drip.commons.v1.types.LoginKey;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,7 +54,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/configuration/cloud")
+@RequestMapping("/user/v1.0/configuration/cloud")
 @Component
 public class CloudConfigurationController {
 

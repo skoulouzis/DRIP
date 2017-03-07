@@ -15,7 +15,7 @@
  */
 package nl.uva.sne.drip.api.dao;
 
-import nl.uva.sne.drip.commons.types.CloudCredentials;
+import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**

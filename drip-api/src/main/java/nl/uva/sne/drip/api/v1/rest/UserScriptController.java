@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import nl.uva.sne.drip.api.dao.UserScriptDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.commons.types.UserScript;
+import nl.uva.sne.drip.commons.v1.types.UserScript;
 import org.springframework.web.bind.annotation.PathVariable;
 
 /**
@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/user_script")
+@RequestMapping("/user/v1.0/user_script")
 @Component
 public class UserScriptController {
 

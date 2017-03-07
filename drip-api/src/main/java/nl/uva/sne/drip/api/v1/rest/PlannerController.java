@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.types.Plan;
+import nl.uva.sne.drip.commons.v1.types.Plan;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/planner")
+@RequestMapping("/user/v1.0/planner")
 @Component
 public class PlannerController {
 

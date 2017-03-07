@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 
 import java.util.concurrent.TimeoutException;
-import nl.uva.sne.drip.commons.types.Message;
+import nl.uva.sne.drip.commons.v1.types.Message;
 
 /**
  *

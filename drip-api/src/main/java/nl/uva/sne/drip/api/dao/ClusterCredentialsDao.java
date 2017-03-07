@@ -15,7 +15,7 @@
  */
 package nl.uva.sne.drip.api.dao;
 
-import nl.uva.sne.drip.commons.types.ClusterCredentials;
+import nl.uva.sne.drip.commons.v1.types.ClusterCredentials;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**

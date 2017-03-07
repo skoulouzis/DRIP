@@ -15,7 +15,7 @@
  */
 package nl.uva.sne.drip.api.v1.rest;
 
-import nl.uva.sne.drip.commons.types.ToscaRepresentation;
+import nl.uva.sne.drip.commons.v1.types.ToscaRepresentation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ import nl.uva.sne.drip.api.service.UserService;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/tosca")
+@RequestMapping("/user/v1.0/tosca")
 @Component
 public class ToscaController {
 

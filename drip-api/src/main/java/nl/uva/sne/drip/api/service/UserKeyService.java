@@ -18,7 +18,7 @@ package nl.uva.sne.drip.api.service;
 import java.util.ArrayList;
 import java.util.List;
 import nl.uva.sne.drip.api.dao.UserKeyDao;
-import nl.uva.sne.drip.commons.types.LoginKey;
+import nl.uva.sne.drip.commons.v1.types.LoginKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

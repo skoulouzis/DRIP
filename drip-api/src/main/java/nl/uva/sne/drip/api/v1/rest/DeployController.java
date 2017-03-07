@@ -29,8 +29,8 @@ import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.commons.types.Message;
-import nl.uva.sne.drip.commons.types.MessageParameter;
+import nl.uva.sne.drip.commons.v1.types.Message;
+import nl.uva.sne.drip.commons.v1.types.MessageParameter;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,11 +44,11 @@ import nl.uva.sne.drip.api.rpc.DeployerCaller;
 import nl.uva.sne.drip.api.service.ClusterCredentialService;
 import nl.uva.sne.drip.api.service.ProvisionService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.types.CloudCredentials;
-import nl.uva.sne.drip.commons.types.ClusterCredentials;
-import nl.uva.sne.drip.commons.types.DeployParameter;
-import nl.uva.sne.drip.commons.types.LoginKey;
-import nl.uva.sne.drip.commons.types.ProvisionInfo;
+import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
+import nl.uva.sne.drip.commons.v1.types.ClusterCredentials;
+import nl.uva.sne.drip.commons.v1.types.DeployParameter;
+import nl.uva.sne.drip.commons.v1.types.LoginKey;
+import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -58,7 +58,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/deployer")
+@RequestMapping("/user/v1.0/deployer")
 @Component
 public class DeployController {
 

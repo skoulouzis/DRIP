@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.dao;
+package nl.uva.sne.drip.api.conf;
 
-import nl.uva.sne.drip.commons.v1.types.UserScript;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  *
- * @author S. Koulouzis
+ * @author alogo
  */
-public interface UserScriptDao extends MongoRepository<UserScript, String> {
-
+@EnableWebMvc
+@Configuration
+@ComponentScan({ "nl.uva.sne.drip.api" })
+public class ConverterConfig extends WebMvcConfigurerAdapter {
+    
 }
