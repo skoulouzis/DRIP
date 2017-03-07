@@ -103,13 +103,14 @@ def handleDelivery(message):
     #print (end - start)
     
     # convert the json to the file required
-    res1 = {}
+    
     outcontent = {}
     current_milli_time = lambda: int(round(time.time() * 1000))
     outcontent["creationDate"] = current_milli_time()   
     outcontent["parameters"] = []
     for key, value in sorted_nodeDic:        
         par = {}
+        res1 = {}
         par["url"] = "null"
         par["encoding"] = "UTF-8"
         docker = json1[nodeDic1[value]].get('artifacts').get('docker_image').get('file')
