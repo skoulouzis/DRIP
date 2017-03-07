@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,10 +29,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import nl.uva.sne.drip.api.dao.UserScriptDao;
+import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.types.UserScript;
 import org.springframework.web.bind.annotation.PathVariable;
 
 /**
+ * This controller is responsible for handling user scripts. These user can be
+ * used by the provisoner to run on the created VMs.
  *
  * @author S. Koulouzis
  */
@@ -46,9 +48,15 @@ public class UserScriptController {
     private UserScriptDao dao;
 
 //    curl -v -X POST -F "file=@script.sh" localhost:8080/drip-api/rest/user_script/upload
+    /**
+     * Uploads a script
+     *
+     * @param file. The file of the script
+     * @return the ID of the stopred script
+     */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public @ResponseBody
-    String uploadUserScript(@RequestParam("file") MultipartFile file) throws JSONException {
+    String uploadUserScript(@RequestParam("file") MultipartFile file) {
         if (!file.isEmpty()) {
             try {
                 String originalFileName = file.getOriginalFilename();
@@ -70,19 +78,33 @@ public class UserScriptController {
         return null;
     }
 
-//    @RequestMapping(method = RequestMethod.POST)
-//    public @ResponseBody
-//    String postConf(UserScript us) {
-//        String name = System.currentTimeMillis() + "_" + us.getName();
-//        us.setName(name);
-//        dao.save(us);
-//        return us.getId();
-//    }
+    /**
+     * Gets a script
+     *
+     * @param id. The ID of the script to return
+     * @return the script
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public UserScript get(@PathVariable("id") String id) {
+    public @ResponseBody
+    UserScript get(@PathVariable("id") String id) {
         return dao.findOne(id);
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public String delete(@PathVariable("id") String id) {
+        UserScript script = dao.findOne(id);
+        if (script == null) {
+            throw new NotFoundException();
+        }
+        dao.delete(id);
+        return "Deleted: " + id;
+    }
+
+    /**
+     * Gets the IDs of all the stored scripts
+     *
+     * @return a list of all the IDs
+     */
     @RequestMapping(value = "/ids")
     public @ResponseBody
     List<String> getIds() {

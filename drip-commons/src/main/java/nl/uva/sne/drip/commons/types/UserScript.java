@@ -1,4 +1,4 @@
-/*
+@ResponseBody/*
  * Copyright 2017 S. Koulouzis, Wang Junchao, Huan Zhou, Yang Hu 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

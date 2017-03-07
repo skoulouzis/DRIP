@@ -149,7 +149,7 @@ public class Consumer extends DefaultConsumer {
         File ec2ConfFile = null;
         File geniConfFile = null;
         //loop through the parameters in a message to find the input files
-        String logDir, mainTopologyPath, sshKeyFilePath, scriptPath;
+        String logDir, mainTopologyPath, sshKeyFilePath = null, scriptPath = null;
         ArrayList<TopologyElement> topologyInfoArray = new ArrayList();
         List<String> certificateNames = new ArrayList();
 
@@ -180,10 +180,14 @@ public class Consumer extends DefaultConsumer {
         logDir = getLogDirPath(parameters, tempInputDirPath);
 
         File sshKey = getSSHKey(parameters, tempInputDirPath);
-        sshKeyFilePath = sshKey.getAbsolutePath();
+        if (sshKey != null) {
+            sshKeyFilePath = sshKey.getAbsolutePath();
+        }
 
         File scriptFile = getSciptFile(parameters, tempInputDirPath);
-        scriptPath = scriptFile.getAbsolutePath();
+        if (scriptFile != null) {
+            scriptPath = scriptFile.getAbsolutePath();
+        }
 
         File curDir = new File(tempInputDirPath);
         for (File f : curDir.listFiles()) {

@@ -37,7 +37,8 @@ import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
 
 /**
- *
+ * This controller is responsible for storing TOSCA descriptions that can be used 
+ * by the planner. 
  * @author S. Koulouzis
  */
 @RestController
@@ -48,7 +49,11 @@ public class ToscaController {
     @Autowired
     private ToscaService toscaService;
 
-//    curl -X POST -F "file=@DRIP/input.yaml" localhost:8080/drip-api/upload
+    /**
+     * Uploads and stores a TOSCA description file
+     * @param file. The TOSCA description file 
+     * @return the ID of the TOSCA description
+     */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -64,7 +69,13 @@ public class ToscaController {
         return null;
     }
 
-//    curl http://localhost:8080/drip-api/tosca/589e1160d9925f9dc127e882/?fromat=yaml
+
+    /**
+     * Gets the TOSCA description. 
+     * @param id the ID TOSCA description.
+     * @param format. the format to display the TOSCA description.
+     * @return the TOSCA description.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"format"})
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -77,6 +88,11 @@ public class ToscaController {
         return null;
     }
 
+    /**
+     * Deletes the TOSCA description.
+     * @param id. The ID of TOSCA description to delete.
+     * @return The ID of the deleted TOSCA description.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -85,7 +101,11 @@ public class ToscaController {
          return "Deleted : " + id;
     }
 
-//    http://localhost:8080/drip-api/tosca/ids
+
+    /**
+     * Gets the IDs of all the stored TOSCA descriptionss.
+     * @return a list of all the IDs 
+     */
     @RequestMapping(value = "/ids")
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody

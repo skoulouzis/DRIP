@@ -53,7 +53,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- *
+ * This controller is responsible for deploying a cluster on provisoned resources. 
+ * 
  * @author S. Koulouzis
  */
 @RestController
@@ -73,6 +74,12 @@ public class DeployController {
     @Autowired
     private ClusterCredentialService clusterCredentialService;
 
+    /**
+     * Deploys a cluster on a provisioned resources. 
+     * @param provisionID 
+     * @param clusterType
+     * @return the id of the cluster credentials 
+     */
     @RequestMapping(value = "/deploy/{id}/", method = RequestMethod.GET, params = {"cluster"})
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -101,6 +108,11 @@ public class DeployController {
         return null;
     }
 
+    /**
+     * Gets the cluster credentials. 
+     * @param id
+     * @return the cluster credentials
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -112,6 +124,10 @@ public class DeployController {
         return clusterC;
     }
 
+    /**
+     * Gets the IDs of all the stored cluster credentials
+     * @return a list of all the IDs 
+     */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -124,6 +140,11 @@ public class DeployController {
         return ids;
     }
 
+    /**
+     * Deletes a cluster credential  
+     * @param id. The id of the  cluster credential   
+     * @return the id f the deleted  cluster credential  
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody

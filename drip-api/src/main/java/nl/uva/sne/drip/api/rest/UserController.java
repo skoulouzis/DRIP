@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
-import nl.uva.sne.drip.api.exception.BadRequestException;
-import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.exception.PasswordNullException;
 import nl.uva.sne.drip.api.exception.UserExistsException;
 import nl.uva.sne.drip.api.exception.UserNotFoundException;
@@ -40,6 +38,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
+ * This controller is responsible for handling user accounts
  *
  * @author S. Koulouzis
  */
@@ -55,7 +54,7 @@ public class UserController {
      * Register new user. A normal user cannot create accounts, only the user
      * with the 'ADMIN' role can do that.
      *
-     * @param user
+     * @param user. The user to register
      * @return Response on success: The ID of the newly register user. Response
      * on fail: If the user name already exists, or the user name is 'null' or
      * the password is 'null' there will be a 'BadRequestException'
@@ -91,6 +90,12 @@ public class UserController {
         return this.register(user);
     }
 
+    /**
+     * Gets the user.
+     *
+     * @param id. The ID of the user to retrive
+     * @return the requested user.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
@@ -107,6 +112,12 @@ public class UserController {
         return null;
     }
 
+    /**
+     * Deletes a user
+     *
+     * @param id. The ID of the user to delete
+     * @return The ID of the deleted user
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
@@ -117,13 +128,18 @@ public class UserController {
                 throw new UserNotFoundException("User " + id + " not found");
             }
             service.getDao().delete(user);
-             return "Deleted : " + id;
+            return "Deleted : " + id;
         } catch (Exception ex) {
             Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
+    /**
+     * Gets the IDs of all the stored users
+     *
+     * @return a list of all the IDs
+     */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
