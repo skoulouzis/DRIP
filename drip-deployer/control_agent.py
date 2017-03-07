@@ -40,7 +40,7 @@ def install_agent(vm, vm_list):
         sftp.put(file_path + "/control_agent.sh", "control_agent.sh")
         stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/control_agent.sh")
         stdout.read()
-        stdin, stdout, stderr = ssh.exec_command("nohup python /root/Swarm-Agent/run.py>/dev/null 2>&1 &")
+        stdin, stdout, stderr = ssh.exec_command("nohup sudo python /root/Swarm-Agent/run.py>/dev/null 2>&1 &")
         stdout.read()
         print "%s: ========= Control Agent Installed =========" % (vm.ip)
     except Exception as e:

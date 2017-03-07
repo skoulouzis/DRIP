@@ -1,0 +1,98 @@
+version: '3'
+
+services:
+  input:
+    container_name: InputDistributor
+    ports:
+      - "2000:2000/udp"
+    environment:
+      - inPort=2000
+      - multicastAddrIP=225.2.2.0
+      - multicastAddrPort=3000
+      - waitingTime=1000
+      - videoWidth=176
+      - videoHeight=100
+    image: 145.100.133.241:5000/mogswitch/inputdistributor
+
+  input2:
+    container_name: InputDistributor2
+    ports:
+      - "2002:2002/udp"
+    environment:
+      - inPort=2002
+      - multicastAddrIP=225.2.2.2
+      - multicastAddrPort=3002
+      - waitingTime=1000
+      - videoWidth=176
+      - videoHeight=100
+    image: 145.100.133.241:5000/mogswitch/inputdistributor
+
+  proxy:
+    container_name: ProxyTranscoder
+    ports:
+      - "8081:80"
+    environment:
+      - multicastAddrIP=225.2.2.0
+      - multicastAddrPort=3000
+      - videoWidth=176
+      - videoHeight=100
+    image: 145.100.133.241:5000/mogswitch/proxytranscoder
+    privileged: true
+
+  proxy2:
+    container_name: ProxyTranscoder2
+    ports:
+      - "8082:80"
+    environment:
+      - multicastAddrIP=225.2.2.2
+      - multicastAddrPort=3002
+      - videoWidth=176
+      - videoHeight=100
+    image: 145.100.133.241:5000/mogswitch/proxytranscoder
+    privileged: true
+
+  proxyOut:
+    container_name: ProxyTranscoderOut
+    ports:
+      - "8085:80"
+    environment:
+      - multicastAddrIP=226.2.2.2
+      - multicastAddrPort=6000
+      - videoWidth=176
+      - videoHeight=100
+    image: 145.100.133.241:5000/mogswitch/proxytranscoder
+    privileged: true
+
+  switcher:
+    container_name: VideoSwitcher
+    ports:
+      - "8008:8008"
+    environment:
+      # PROXY 1
+      - multicastAddrIP=225.2.2.0
+      - multicastAddrPort=3000
+      # PROXY 2
+      - multicastAddrIP2=225.2.2.2
+      - multicastAddrPort2=3002
+      # SWITCHER SETTINGS
+      - switcherOutAddrIP=226.2.2.2
+      - switcherOutAddrPort=6000
+      - switcherREST=8008
+      - waitingTime=1000
+      - videoWidth=176
+      - videoHeight=100
+    image: 145.100.133.241:5000/mogswitch/videoswitcher
+
+  output:
+    container_name: OutputTranscoder
+    ports:
+      - "4000:4000"
+    environment:
+      - multicastAddrIP=226.2.2.2
+      - multicastAddrPort=6000
+      - videoWidth=176
+      - videoHeight=100
+      - OutIP=192.168.1.194
+      - OutPort=4000
+    image: 145.100.133.241:5000/mogswitch/outputtranscoder
+    privileged: true

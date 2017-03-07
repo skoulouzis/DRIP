@@ -113,15 +113,17 @@ def handleDelivery(message):
         par["url"] = "null"
         par["encoding"] = "UTF-8"
         docker = json1[nodeDic1[value]].get('artifacts').get('docker_image').get('file')
+        name = str(nodeDic1[value])
+        #print("Name: %s Docker: %s" % (name, docker))
         res1["name"] = str(nodeDic1[value])
         res1["size"] = res[str(value)]
         res1["docker"] = str(docker)
-        
-        #v = str("{\\'name\\':\\'"+str(nodeDic1[value])+"\\',\\'size\\':\\'"+res[str(value)]+"\\',\\'docker\\':\\'"+docker+"\\'}")  
         par["value"] = res1
         par["attributes"] = "null"
+        print ("Parameter: %s" % par)
         outcontent["parameters"].append(par)
     
+    print ("Output message: %s" % outcontent)
     return outcontent
     
 
