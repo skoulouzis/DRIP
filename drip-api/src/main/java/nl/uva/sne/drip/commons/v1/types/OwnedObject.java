@@ -17,7 +17,6 @@ package nl.uva.sne.drip.commons.v1.types;
 
 import javax.validation.constraints.NotNull;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.stereotype.Component;
 
 /**
  *
@@ -28,23 +27,6 @@ public class OwnedObject {
 
     @NotNull
     private String owner;
-
-    @NotNull
-    private Permissions permissions;
-
-    /**
-     * @return the permissions
-     */
-    public Permissions getPermissions() {
-        return permissions;
-    }
-
-    /**
-     * @param permissions the permissions to set
-     */
-    public void setPermissions(Permissions permissions) {
-        this.permissions = permissions;
-    }
 
     /**
      * @return the owner

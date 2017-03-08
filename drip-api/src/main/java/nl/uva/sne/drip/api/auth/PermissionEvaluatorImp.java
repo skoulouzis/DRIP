@@ -15,23 +15,27 @@
  */
 package nl.uva.sne.drip.api.auth;
 
-import nl.uva.sne.drip.commons.v1.types.OwnedObject;
-import nl.uva.sne.drip.commons.v1.types.User;
-import org.springframework.stereotype.Component;
+import java.io.Serializable;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.core.Authentication;
 
 /**
  *
  * @author S. Koulouzis
  */
-@Component("PermissionChecker")
-public class PermissionChecker {
+public class PermissionEvaluatorImp implements PermissionEvaluator {
 
-    public boolean canRead(OwnedObject obj, User user) {
+    @Override
+    public boolean hasPermission(Authentication a, Object o, Object o1) {
+        if (!a.isAuthenticated()) {
+            return false;
+        }
         return false;
     }
 
-    public boolean isOwner(OwnedObject obj, User user) {
-        String ownerid = obj.getOwner();
-        return user.getId().equals(ownerid);
+    @Override
+    public boolean hasPermission(Authentication a, Serializable srlzbl, String string, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }
