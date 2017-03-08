@@ -16,6 +16,7 @@
 package nl.uva.sne.drip.api.auth;
 
 import java.io.Serializable;
+import nl.uva.sne.drip.commons.v1.types.User;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 
@@ -30,7 +31,15 @@ public class PermissionEvaluatorImp implements PermissionEvaluator {
         if (!a.isAuthenticated()) {
             return false;
         }
-        return false;
+        if (!(a.getPrincipal() instanceof User)) {
+            return false;
+        } else {
+            User user = (User) a.getPrincipal();
+            
+            return true;
+
+        }
+//        return false;
     }
 
     @Override
