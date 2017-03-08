@@ -75,6 +75,19 @@ public class ToscaService {
         return t.getId();
     }
 
+    public String save(String yamlString, String name) throws IOException {
+        if (name == null) {
+            name = System.currentTimeMillis() + "_" + "tosca.yaml";
+        }
+        yamlString = yamlString.replaceAll("\\.", "\uff0E");
+        Map<String, Object> map = Converter.ymlString2Map(yamlString);
+        ToscaRepresentation t = new ToscaRepresentation();
+        t.setName(name);
+        t.setKvMap(map);
+        dao.save(t);
+        return t.getId();
+    }
+
     public void delete(String id) {
         dao.delete(id);
     }

@@ -53,7 +53,7 @@ public class UserScript {
      *
      * @return the name
      */
-    @DocumentationExample("client.py")
+    @DocumentationExample("config.sh")
     public String getName() {
         return name;
     }
@@ -70,14 +70,6 @@ public class UserScript {
      *
      * @return the contents
      */
-    @DocumentationExample("config.sh")
-    public String getContents() {
-        return contents;
-    }
-
-    /**
-     * @param contents the contents to set
-     */
     @DocumentationExample("    #!/bin/bash\n"
             + "echo \"Reading system-wide config....\" >&2\\n"
             + ". /etc/cool.cfg\n"
@@ -85,6 +77,13 @@ public class UserScript {
             + "  echo \"Reading user config....\" >&2\\n"
             + "  . ~/.coolrc\\n"
             + "fi")
+    public String getContents() {
+        return contents;
+    }
+
+    /**
+     * @param contents the contents to set
+     */
     public void setContents(String contents) {
         this.contents = contents;
     }

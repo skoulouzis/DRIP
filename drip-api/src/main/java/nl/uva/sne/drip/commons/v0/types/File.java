@@ -15,53 +15,21 @@
  */
 package nl.uva.sne.drip.commons.v0.types;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlValue;
 
 /**
  *
  * @author S. Koulouzis
  */
-@XmlRootElement
-public class Result {
+public class File {
 
-    private status status;
-    private String info;
-    
-    
-    public List<File> file;
+    @XmlAttribute
+    public String name;
+    @XmlAttribute
+    public String level;
 
-    /**
-     * @return the type
-     */
-    public status getStatus() {
-        return status;
-    }
-
-    public void setStatus(status status) {
-        this.status = status;
-    }
-
-    public static enum status {
-        Success,
-        Fail
-    }
-
-    /**
-     * @return the info
-     */
-    public String getInfo() {
-        return info;
-    }
-
-    /**
-     * @param info the info to set
-     */
-    public void setInfo(String info) {
-        this.info = info;
-    }
+    @XmlValue
+    public String content;
 
 }

@@ -17,7 +17,6 @@ package nl.uva.sne.drip.commons.v0.types;
 
 import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.io.Serializable;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**

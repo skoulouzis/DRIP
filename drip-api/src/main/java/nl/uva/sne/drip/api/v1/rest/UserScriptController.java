@@ -105,7 +105,7 @@ public class UserScriptController {
      *
      * @return a list of all the IDs
      */
-    @RequestMapping(value = "/ids")
+    @RequestMapping(value = "/ids", method = RequestMethod.GET)
     public @ResponseBody
     List<String> getIds() {
         List<UserScript> all = dao.findAll();
