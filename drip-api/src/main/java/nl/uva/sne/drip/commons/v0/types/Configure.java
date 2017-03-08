@@ -33,5 +33,14 @@ public class Configure {
 
     @XmlElement(name = "loginKey")
     public List<LoginKey0> loginKey;
+    public String geniKey;
+    public String geniKeyAlias;
+
+    @XmlElement(name = "loginPubKey")
+    public List<LoginKey0> loginPubKey;
+
+    public String geniKeyPass;
+    @XmlElement(name = "loginPriKey")
+    public List<LoginKey0> loginPriKey;
 
 }
