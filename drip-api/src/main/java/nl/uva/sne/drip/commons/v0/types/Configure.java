@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.commons.v0.types;
 
+import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -22,9 +24,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author S. Koulouzis
  */
 @XmlRootElement
-public class Register {
+public class Configure {
 
     public String user;
     public String pwd;
+    public String keyid;
+    public String key;
+
+    @XmlElement(name = "loginKey")
+    public List<LoginKey0> loginKey;
 
 }

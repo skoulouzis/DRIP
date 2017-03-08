@@ -63,14 +63,14 @@ public class PlannerController0 {
     Result plan(@RequestBody Plan plan0) {
 
         try {
-            String yaml = plan0.getFile();
+            String yaml = plan0.file;
             yaml = yaml.replaceAll("\\\\n", "\n");
             String id = toscaService.save(yaml, null);
             nl.uva.sne.drip.commons.v1.types.Plan plan1 = plannerService.getPlan(id);
 
             Result r = new Result();
-            r.setInfo("INFO");
-            r.setStatus(Result.status.Success);
+            r.info = ("INFO");
+            r.status = ("Success");
             List<File> files = new ArrayList<>();
             File e = new File();
             e.level = String.valueOf(plan1.getLevel());
@@ -109,23 +109,4 @@ public class PlannerController0 {
         }
         return null;
     }
-
-    @RequestMapping(value = "/get", method = RequestMethod.GET, produces = MediaType.TEXT_XML_VALUE)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    Result plan() {
-        Result r = new Result();
-        r.setInfo("INFO");
-        r.setStatus(Result.status.Success);
-        List<File> files = new ArrayList<>();
-        File e = new File();
-        e.level = "0";
-        e.name = "Planned_tosca_file_a.yaml";
-        e.content = "$Planned_tosca_file_a";
-        files.add(e);
-        r.file = files;
-        return r;
-
-    }
-
 }

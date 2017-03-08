@@ -15,16 +15,19 @@
  */
 package nl.uva.sne.drip.commons.v0.types;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlValue;
 
 /**
  *
  * @author S. Koulouzis
  */
-@XmlRootElement
-public class Register {
+public class LoginKey0 {
 
-    public String user;
-    public String pwd;
+    @XmlAttribute(name="domain_name")
+    public String domain_name;
+
+    @XmlValue
+    public String content;
 
 }

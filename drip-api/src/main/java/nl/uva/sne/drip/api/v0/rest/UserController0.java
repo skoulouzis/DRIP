@@ -15,20 +15,13 @@
  */
 package nl.uva.sne.drip.api.v0.rest;
 
-import nl.uva.sne.drip.api.v1.rest.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.exception.PasswordNullException;
 import nl.uva.sne.drip.api.exception.UserExistsException;
-import nl.uva.sne.drip.api.exception.UserNotFoundException;
 import nl.uva.sne.drip.api.exception.UserNullException;
 import nl.uva.sne.drip.commons.v1.types.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -57,19 +50,19 @@ public class UserController0 {
     @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
     String register(@RequestBody Register register) {
-        if (register.getUser() == null) {
+        if (register.user == null) {
             throw new UserNullException();
         }
-        if (register.getPwd() == null) {
+        if (register.pwd == null) {
             throw new PasswordNullException();
         }
-        UserDetails registeredUser = service.loadUserByUsername(register.getUser());
+        UserDetails registeredUser = service.loadUserByUsername(register.user);
         if (registeredUser != null) {
-            throw new UserExistsException("Username " + register.getUser() + " is used");
+            throw new UserExistsException("Username " + register.user + " is used");
         }
         User user = new User();
-        user.setUsername(register.getUser());
-        user.setPassword(new BCryptPasswordEncoder().encode(register.getPwd()));
+        user.setUsername(register.user);
+        user.setPassword(new BCryptPasswordEncoder().encode(register.pwd));
         service.getDao().save(user);
         return "Success: " + user.getId();
     }
