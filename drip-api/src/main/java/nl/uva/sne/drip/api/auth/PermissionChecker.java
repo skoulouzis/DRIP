@@ -13,15 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.dao;
+package nl.uva.sne.drip.api.auth;
 
-import nl.uva.sne.drip.commons.v1.types.Script;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import nl.uva.sne.drip.commons.v1.types.OwnedObject;
+import nl.uva.sne.drip.commons.v1.types.User;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface UserScriptDao extends MongoRepository<Script, String> {
+@Component("PermissionChecker")
+public class PermissionChecker {
 
+    public boolean canRead(OwnedObject obj, User user) {
+        return false;
+    }
+
+    public boolean isOwner(OwnedObject obj, User user) {
+        String ownerid = obj.getOwner();
+        return user.getId().equals(ownerid);
+    }
 }

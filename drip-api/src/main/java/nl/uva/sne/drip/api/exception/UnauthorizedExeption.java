@@ -13,15 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.dao;
+package nl.uva.sne.drip.api.exception;
 
-import nl.uva.sne.drip.commons.v1.types.Script;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface UserScriptDao extends MongoRepository<Script, String> {
+@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+public class UnauthorizedExeption extends RuntimeException {
 
+    public UnauthorizedExeption(String string) {
+        super(string);
+    }
+
+    public UnauthorizedExeption() {
+        super();
+    }
 }

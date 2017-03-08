@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.dao;
+package nl.uva.sne.drip.commons.v0.types;
 
-import nl.uva.sne.drip.commons.v1.types.Script;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import java.util.List;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface UserScriptDao extends MongoRepository<Script, String> {
+public class Upload {
+
+    public String user;
+    public String pwd;
+
+    List<File> file;
 
 }

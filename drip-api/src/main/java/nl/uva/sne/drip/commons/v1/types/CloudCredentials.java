@@ -27,7 +27,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
-public class CloudCredentials {
+public class CloudCredentials extends OwnedObject{
 
     @Id
     private String id;

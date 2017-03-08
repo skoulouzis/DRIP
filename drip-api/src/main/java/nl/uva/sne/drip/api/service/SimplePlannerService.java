@@ -101,7 +101,7 @@ public class SimplePlannerService {
         if (t2 == null) {
             throw new NotFoundException();
         }
-        Map<String, Object> map = t2.getKvMap();
+        Map<String, Object> map = t2.getKeyValue();
         String ymlStr = Converter.map2YmlString(map);
         ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
         byte[] bytes = ymlStr.getBytes();
@@ -134,10 +134,10 @@ public class SimplePlannerService {
             throw new NotFoundException();
         }
 
-        Map<String, Object> map = plan.getKvMap();
+        Map<String, Object> map = plan.getKeyValue();
         Set<String> ids = plan.getLoweLevelPlanIDs();
         for (String lowID : ids) {
-            Map<String, Object> lowLevelMap = planDao.findOne(lowID).getKvMap();
+            Map<String, Object> lowLevelMap = planDao.findOne(lowID).getKeyValue();
             map.putAll(lowLevelMap);
         }
 

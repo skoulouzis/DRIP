@@ -43,7 +43,7 @@ public class ToscaService {
             throw new NotFoundException();
         }
 
-        Map<String, Object> map = tosca.getKvMap();
+        Map<String, Object> map = tosca.getKeyValue();
 
         if (fromat != null && fromat.equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);

@@ -24,4 +24,15 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface CloudCredentialsDao extends MongoRepository<CloudCredentials, String> {
 
+    @Override
+    CloudCredentials findOne(String id);
+//
+//    @PreAuthorize(ALLOWED_FOR_ADMINISTRATOR)
+//    @Override
+//    void delete(String id);
+//
+//    @PreAuthorize(ALLOWED_FOR_OWNER + " or " + ALLOWED_FOR_ADMINISTRATOR)
+//    @Override
+//    List<CloudCredentials> findAll();
+
 }

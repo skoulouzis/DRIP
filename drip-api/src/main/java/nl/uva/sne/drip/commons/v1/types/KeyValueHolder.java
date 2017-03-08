@@ -24,21 +24,39 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
-public class ToscaRepresentation extends KeyValueHolder {
+public class KeyValueHolder {
 
-    private String name;
+    @Id
+    private String id;
+
+    private Map<String, Object> keyValue;
 
     /**
-     * @return the name
+     * @return the keyValue
      */
-    public String getName() {
-        return name;
+    public Map<String, Object> getKeyValue() {
+        return keyValue;
     }
 
     /**
-     * @param name the name to set
+     * @param keyValue the keyValue to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setKvMap(Map<String, Object> keyValue) {
+        this.keyValue = keyValue;
     }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
 }

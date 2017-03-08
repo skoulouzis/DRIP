@@ -49,6 +49,7 @@ import nl.uva.sne.drip.commons.v1.types.ClusterCredentials;
 import nl.uva.sne.drip.commons.v1.types.DeployParameter;
 import nl.uva.sne.drip.commons.v1.types.LoginKey;
 import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -59,7 +60,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @RestController
 @RequestMapping("/user/v1.0/deployer")
-@Component
+@Controller
 public class DeployController {
 
     @Value("${message.broker.host}")
@@ -162,7 +163,7 @@ public class DeployController {
         if (pro == null) {
             throw new NotFoundException();
         }
-        String cloudConfID = pro.getCloudConfID();
+        String cloudConfID = pro.getCloudcloudCredentialsID();
         CloudCredentials cCred = cloudCredentialsDao.findOne(cloudConfID);
         List<LoginKey> loginKeys = cCred.getLoginKeys();
         List<DeployParameter> deployParams = pro.getDeployParameters();

@@ -16,41 +16,37 @@
 package nl.uva.sne.drip.commons.v1.types;
 
 import java.util.List;
-import java.util.Map;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  *
  * @author S. Koulouzis
  */
-public class ProvisionInfo {
-
-    @Id
-    private String id;
-
-    private String cloudConfID;
+@Document
+public class ProvisionInfo extends KeyValueHolder {
+    
+    private String cloudCredentialsID;
 
     private String planID;
 
-    private String userScriptID;
+    private String scriptID;
 
     private String userKeyID;
 
-    private Map<String, Object> kvMap;
     private List<DeployParameter> deployParameters;
 
     /**
-     * @return the cloudConfID
+     * @return the cloudCredentialsID
      */
-    public String getCloudConfID() {
-        return cloudConfID;
+    public String getCloudcloudCredentialsID() {
+        return cloudCredentialsID;
     }
 
     /**
-     * @param cloudConfID the cloudConfID to set
+     * @param cloudConfID the cloudCredentialsID to set
      */
-    public void setCloudConfID(String cloudConfID) {
-        this.cloudConfID = cloudConfID;
+    public void setCloudcloudCredentialsID(String cloudConfID) {
+        this.cloudCredentialsID = cloudConfID;
     }
 
     /**
@@ -68,17 +64,17 @@ public class ProvisionInfo {
     }
 
     /**
-     * @return the userScriptID
+     * @return the scriptID
      */
-    public String getUserScriptID() {
-        return userScriptID;
+    public String getscriptID() {
+        return scriptID;
     }
 
     /**
-     * @param userScriptID the userScriptID to set
+     * @param scriptID the scriptID to set
      */
-    public void setUserScriptID(String userScriptID) {
-        this.userScriptID = userScriptID;
+    public void setScriptID(String scriptID) {
+        this.scriptID = scriptID;
     }
 
     /**
@@ -95,33 +91,7 @@ public class ProvisionInfo {
         this.userKeyID = userKeyID;
     }
 
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the kvMap
-     */
-    public Map<String, Object> getKvMap() {
-        return kvMap;
-    }
-
-    /**
-     * @param kvMap the kvMap to set
-     */
-    public void setKvMap(Map<String, Object> kvMap) {
-        this.kvMap = kvMap;
-    }
+   
 
     public void setDeployParameters(List<DeployParameter> deployParameters) {
         this.deployParameters = deployParameters;

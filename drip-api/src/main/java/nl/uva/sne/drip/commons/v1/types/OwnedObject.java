@@ -15,30 +15,49 @@
  */
 package nl.uva.sne.drip.commons.v1.types;
 
-import java.util.Map;
-import org.springframework.data.annotation.Id;
+import javax.validation.constraints.NotNull;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author S. Koulouzis
  */
 @Document
-public class ToscaRepresentation extends KeyValueHolder {
+public class OwnedObject {
 
-    private String name;
+    @NotNull
+    private String owner;
+
+    @NotNull
+    private Permissions permissions;
 
     /**
-     * @return the name
+     * @return the permissions
      */
-    public String getName() {
-        return name;
+    public Permissions getPermissions() {
+        return permissions;
     }
 
     /**
-     * @param name the name to set
+     * @param permissions the permissions to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setPermissions(Permissions permissions) {
+        this.permissions = permissions;
     }
+
+    /**
+     * @return the owner
+     */
+    public String getOwner() {
+        return owner;
+    }
+
+    /**
+     * @param owner the ownerID to set
+     */
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
 }

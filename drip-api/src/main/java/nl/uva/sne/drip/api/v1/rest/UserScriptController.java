@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import nl.uva.sne.drip.api.dao.UserScriptDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.commons.v1.types.UserScript;
+import nl.uva.sne.drip.commons.v1.types.Script;
 import org.springframework.web.bind.annotation.PathVariable;
 
 /**
@@ -64,7 +64,7 @@ public class UserScriptController {
                 byte[] bytes = file.getBytes();
                 String conents = new String(bytes, "UTF-8");
 
-                UserScript us = new UserScript();
+                Script us = new Script();
                 us.setContents(conents);
                 us.setName(name);
 
@@ -86,13 +86,13 @@ public class UserScriptController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody
-    UserScript get(@PathVariable("id") String id) {
+    Script get(@PathVariable("id") String id) {
         return dao.findOne(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public String delete(@PathVariable("id") String id) {
-        UserScript script = dao.findOne(id);
+        Script script = dao.findOne(id);
         if (script == null) {
             throw new NotFoundException();
         }
@@ -108,9 +108,9 @@ public class UserScriptController {
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     public @ResponseBody
     List<String> getIds() {
-        List<UserScript> all = dao.findAll();
+        List<Script> all = dao.findAll();
         List<String> ids = new ArrayList<>();
-        for (UserScript us : all) {
+        for (Script us : all) {
             ids.add(us.getId());
         }
         return ids;

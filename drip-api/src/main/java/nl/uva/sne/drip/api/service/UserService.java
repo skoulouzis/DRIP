@@ -15,8 +15,6 @@
  */
 package nl.uva.sne.drip.api.service;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.api.dao.UserDao;
@@ -25,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,7 +36,7 @@ public class UserService implements UserDetailsService {
     public static final String USER = "USER";
 
     @Autowired
-    UserDao dao;
+    private UserDao dao;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

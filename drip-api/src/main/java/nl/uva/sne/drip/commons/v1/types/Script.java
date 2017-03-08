@@ -25,7 +25,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
-public class UserScript {
+public class Script {
 
     @Id
     private String id;

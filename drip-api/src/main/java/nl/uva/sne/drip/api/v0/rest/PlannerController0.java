@@ -82,7 +82,7 @@ public class PlannerController0 {
             }
 
             e.name = p1Name;
-            e.content = Converter.map2YmlString(plan1.getKvMap()).replaceAll("\n", "\\n");
+            e.content = Converter.map2YmlString(plan1.getKeyValue()).replaceAll("\n", "\\n");
             files.add(e);
 
             for (String lowiID : plan1.getLoweLevelPlanIDs()) {
@@ -97,7 +97,7 @@ public class PlannerController0 {
                 }
 
                 e.name = p1Name;
-                e.content = Converter.map2YmlString(lowPlan1.getKvMap()).replaceAll("\n", "\\n");;
+                e.content = Converter.map2YmlString(lowPlan1.getKeyValue()).replaceAll("\n", "\\n");;
                 files.add(e);
             }
 

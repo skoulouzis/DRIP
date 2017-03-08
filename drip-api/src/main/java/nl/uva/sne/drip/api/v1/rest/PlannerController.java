@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v1.types.Plan;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -44,7 +45,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @RestController
 @RequestMapping("/user/v1.0/planner")
-@Component
+@Controller
 public class PlannerController {
 
 //    @Autowired

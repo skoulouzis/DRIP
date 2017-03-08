@@ -32,14 +32,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.exception.NullKeyIDException;
+import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v1.types.LoginKey;
+import nl.uva.sne.drip.commons.v1.types.User;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,19 +49,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
- * This controller is responsible for handling CloudCredentials. 
- * CloudCredentials are a represntation of the credentials that are used by the 
- * provisoner to request for resources (VMs) 
- * 
+ * This controller is responsible for handling CloudCredentials.
+ * CloudCredentials are a represntation of the credentials that are used by the
+ * provisoner to request for resources (VMs)
+ *
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/v1.0/configuration/cloud")
+@RequestMapping("/user/v1.0/credentials/cloud")
 @Component
-public class CloudConfigurationController {
+public class CloudCredentialsController {
 
     @Autowired
-    private CloudCredentialsDao cloudCredentialsDao;
+    private CloudCredentialsService cloudCredentialsService;
 
     /**
      * Post the cloud credentials.
@@ -69,7 +71,7 @@ public class CloudConfigurationController {
      */
     @RequestMapping(method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
-        @StatusCodes({
+    @StatusCodes({
         @ResponseCode(code = 400, condition = "Key or KeyIdAlias can't be empty")
     })
     public @ResponseBody
@@ -80,7 +82,8 @@ public class CloudConfigurationController {
         if (cloudCredentials.getKeyIdAlias() == null) {
             throw new NullKeyIDException();
         }
-        cloudCredentialsDao.save(cloudCredentials);
+//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        cloudCredentials = cloudCredentialsService.save(cloudCredentials);
         return cloudCredentials.getId();
     }
 
@@ -97,8 +100,9 @@ public class CloudConfigurationController {
     public @ResponseBody
     String addLogineKey(@RequestParam("file") MultipartFile file, @PathVariable("id") String id) {
         try {
-            CloudCredentials cc = cloudCredentialsDao.findOne(id);
-            if (cc == null) {
+
+            CloudCredentials cloudCredentials = cloudCredentialsService.findOne(id);
+            if (cloudCredentials == null) {
                 throw new NotFoundException();
             }
             if (file.isEmpty()) {
@@ -106,23 +110,24 @@ public class CloudConfigurationController {
             }
             String originalFileName = file.getOriginalFilename();
             byte[] bytes = file.getBytes();
-            List<LoginKey> logInKeys = cc.getLoginKeys();
+            List<LoginKey> logInKeys = cloudCredentials.getLoginKeys();
             if (logInKeys == null) {
                 logInKeys = new ArrayList<>();
             }
             LoginKey key = new LoginKey();
             key.setKey(new String(bytes, "UTF-8"));
-            if (cc.getCloudProviderName().toLowerCase().equals("ec2")) {
+            if (cloudCredentials.getCloudProviderName().toLowerCase().equals("ec2")) {
                 Map<String, String> attributes = new HashMap<>();
                 attributes.put("domain_name", FilenameUtils.removeExtension(originalFileName));
                 key.setAttributes(attributes);
             }
             logInKeys.add(key);
-            cc.setLogineKeys(logInKeys);
-            cloudCredentialsDao.save(cc);
-            return cloudCredentialsDao.findOne(id).getId();
+            cloudCredentials.setLogineKeys(logInKeys);
+//            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            cloudCredentials = cloudCredentialsService.save(cloudCredentials);
+            return cloudCredentials.getId();
         } catch (IOException ex) {
-            Logger.getLogger(CloudConfigurationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CloudCredentialsController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -137,7 +142,8 @@ public class CloudConfigurationController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     CloudCredentials get(@PathVariable("id") String id) {
-        CloudCredentials cc = cloudCredentialsDao.findOne(id);
+//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CloudCredentials cc = cloudCredentialsService.findOne(id);
         if (cc == null) {
             throw new NotFoundException();
         }
@@ -154,20 +160,20 @@ public class CloudConfigurationController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        cloudCredentialsDao.delete(id);
+        cloudCredentialsService.delete(id);
         return "Deleted :" + id;
     }
 
     /**
      * Gets all the IDs of the stored cloud credentials
      *
-     * @return a list of stored IDs 
+     * @return a list of stored IDs
      */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {
-        List<CloudCredentials> all = cloudCredentialsDao.findAll();
+        List<CloudCredentials> all = cloudCredentialsService.findAll();
         List<String> ids = new ArrayList<>();
         for (CloudCredentials tr : all) {
             ids.add(tr.getId());

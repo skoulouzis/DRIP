@@ -77,7 +77,8 @@ public class CloudConfigurationController0 {
         }
         cloudCredentials.setLogineKeys(loginKeys);
         cloudCredentials.setCloudProviderName("ec2");
-        cloudCredentialsDao.save(cloudCredentials);
+        
+        cloudCredentials = cloudCredentialsDao.save(cloudCredentials);
         return "Success: " + cloudCredentials.getId();
     }
 

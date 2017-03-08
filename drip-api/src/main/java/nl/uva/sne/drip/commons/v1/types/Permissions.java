@@ -15,8 +15,8 @@
  */
 package nl.uva.sne.drip.commons.v1.types;
 
-import java.util.Map;
-import org.springframework.data.annotation.Id;
+import java.util.Set;
+import javax.validation.constraints.NotNull;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -24,21 +24,38 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
-public class ToscaRepresentation extends KeyValueHolder {
+public class Permissions {
 
-    private String name;
+    private Set<String> read;
+    private Set<String> write;
 
     /**
-     * @return the name
+     * @return the read
      */
-    public String getName() {
-        return name;
+    public Set<String> getRead() {
+        return read;
     }
 
     /**
-     * @param name the name to set
+     * @param read the read to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setRead(Set<String> read) {
+        this.read = read;
     }
+
+    /**
+     * @return the write
+     */
+    public Set<String> getWrite() {
+        return write;
+    }
+
+    /**
+     * @param write the write to set
+     */
+    public void setWrite(Set<String> write) {
+        this.write = write;
+    }
+
+ 
 }
