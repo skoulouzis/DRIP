@@ -15,11 +15,12 @@
  */
 package nl.uva.sne.drip.api.v0.rest;
 
-import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
 import java.io.IOException;
+import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -27,7 +28,6 @@ import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,7 +39,9 @@ import nl.uva.sne.drip.api.service.ProvisionService;
 import nl.uva.sne.drip.api.service.UserKeyService;
 import nl.uva.sne.drip.api.service.UserScriptService;
 import nl.uva.sne.drip.api.service.UserService;
+import nl.uva.sne.drip.commons.v0.types.Execute;
 import nl.uva.sne.drip.commons.v0.types.File;
+import nl.uva.sne.drip.commons.v0.types.Result;
 import nl.uva.sne.drip.commons.v0.types.Upload;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import nl.uva.sne.drip.commons.v1.types.LoginKey;
@@ -134,6 +136,35 @@ public class ProvisionController0 {
         provInfo = provisionService.save(provInfo);
         return "Success: Infrastructure files are uploaded! Action number: "
                 + provInfo.getId();
+    }
+
+    @RequestMapping(value = "/execute", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    Result execute(@RequestBody Execute exc) {
+
+        try {
+            ProvisionInfo req = provisionService.findOne(exc.action);
+            req = provisionService.provisionResources(req);
+            Map<String, Object> map = req.getKeyValue();
+            String yaml = Converter.map2YmlString(map);
+            yaml = yaml.replaceAll("\n", "\\\\n");
+
+            Result res = new Result();
+            List<File> files = new ArrayList<>();
+            File e = new File();
+            e.content = yaml;
+            e.level = "0";
+            e.name = "provisioned_" + exc.action;
+            files.add(e);
+            res.info = "INFO";
+            res.status = "Success";
+            res.file = files;
+            return res;
+        } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {
+            Logger.getLogger(ProvisionController0.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }

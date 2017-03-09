@@ -15,10 +15,13 @@
  */
 package nl.uva.sne.drip.commons.v0.types;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author S. Koulouzis
  */
+@XmlRootElement
 public class Execute {
 
     public String user;
