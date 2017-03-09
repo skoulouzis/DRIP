@@ -24,7 +24,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
-public class KeyValueHolder {
+public class KeyValueHolder extends OwnedObject{
 
     @Id
     private String id;

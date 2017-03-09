@@ -28,10 +28,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import nl.uva.sne.drip.api.dao.UserScriptDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.v1.types.Script;
 import org.springframework.web.bind.annotation.PathVariable;
+import nl.uva.sne.drip.api.dao.ScriptDao;
 
 /**
  * This controller is responsible for handling user scripts. These user can be
@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class UserScriptController {
 
     @Autowired
-    private UserScriptDao dao;
+    private ScriptDao dao;
 
 //    curl -v -X POST -F "file=@script.sh" localhost:8080/drip-api/rest/user_script/upload
     /**

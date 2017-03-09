@@ -35,7 +35,6 @@ import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.v0.types.File;
 import nl.uva.sne.drip.commons.v0.types.Plan;
-import org.apache.commons.io.FilenameUtils;
 import org.json.JSONException;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,44 +64,26 @@ public class PlannerController0 {
         try {
             String yaml = plan0.file;
             yaml = yaml.replaceAll("\\\\n", "\n");
-            String id = toscaService.save(yaml, null);
+            String id = toscaService.saveYamlString(yaml, null);
             nl.uva.sne.drip.commons.v1.types.Plan plan1 = plannerService.getPlan(id);
 
             Result r = new Result();
             r.info = ("INFO");
             r.status = ("Success");
             List<File> files = new ArrayList<>();
-            File e = new File();
-            e.level = String.valueOf(plan1.getLevel());
-            String p1Name = FilenameUtils.getBaseName(plan1.getName());
-            if (p1Name == null) {
-                p1Name = "Planned_tosca_file_" + plan1.getLevel();
-                plan1.setName(p1Name);
-                plannerService.getDao().save(plan1);
-            }
+            File e = Converter.plan1toFile(plan1);
 
-            e.name = p1Name;
-            e.content = Converter.map2YmlString(plan1.getKeyValue()).replaceAll("\n", "\\n");
             files.add(e);
 
             for (String lowiID : plan1.getLoweLevelPlanIDs()) {
-                nl.uva.sne.drip.commons.v1.types.Plan lowPlan1 = plannerService.getDao().findOne(lowiID);
-                e = new File();
-                e.level = String.valueOf(lowPlan1.getLevel());
-                p1Name = lowPlan1.getName();
-                if (p1Name == null) {
-                    p1Name = "Planned_tosca_file_" + lowPlan1.getLevel();
-                    plan1.setName(p1Name);
-                    plannerService.getDao().save(lowPlan1);
-                }
-
-                e.name = p1Name;
-                e.content = Converter.map2YmlString(lowPlan1.getKeyValue()).replaceAll("\n", "\\n");;
+                nl.uva.sne.drip.commons.v1.types.Plan lowPlan1 = plannerService.findOne(lowiID);
+                e = Converter.plan1toFile(lowPlan1);
                 files.add(e);
+                //Don't save them cause they will be re-uploaded in the provision step
+                plannerService.delete(lowPlan1.getId());
             }
-
             r.file = files;
-
+            plannerService.delete(plan1.getId());
             return r;
         } catch (IOException | JSONException | TimeoutException | InterruptedException ex) {
             Logger.getLogger(PlannerController0.class.getName()).log(Level.SEVERE, null, ex);

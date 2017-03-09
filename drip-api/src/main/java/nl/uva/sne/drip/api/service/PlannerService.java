@@ -34,11 +34,14 @@ import nl.uva.sne.drip.commons.v1.types.MessageParameter;
 import nl.uva.sne.drip.commons.v1.types.Plan;
 import nl.uva.sne.drip.commons.v1.types.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.commons.v1.types.User;
 import nl.uva.sne.drip.drip.converter.P2PConverter;
 import nl.uva.sne.drip.drip.converter.SimplePlanContainer;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -46,6 +49,7 @@ import org.springframework.stereotype.Service;
  * @author S. Koulouzis
  */
 @Service
+@PreAuthorize("isAuthenticated()")
 public class PlannerService {
 
     @Autowired
@@ -92,18 +96,18 @@ public class PlannerService {
                 lowLevelPlan.setToscaID(toscaId);
                 lowLevelPlan.setName(lowLevelNames);
                 lowLevelPlan.setKvMap(Converter.ymlString2Map(map.get(lowLevelNames)));
-                planDao.save(lowLevelPlan);
+                save(lowLevelPlan);
                 loweLevelPlansIDs.add(lowLevelPlan.getId());
             }
 
             topLevel.setLoweLevelPlansIDs(loweLevelPlansIDs);
-            planDao.save(topLevel);
+            save(topLevel);
             return topLevel;
         }
     }
 
     private Message buildPlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException {
-        ToscaRepresentation t2 = toscaService.getDao().findOne(toscaId);
+        ToscaRepresentation t2 = toscaService.findOne(toscaId);
         if (t2 == null) {
             throw new BadRequestException();
         }
@@ -136,7 +140,9 @@ public class PlannerService {
         Set<String> ids = plan.getLoweLevelPlanIDs();
         for (String lowID : ids) {
             Map<String, Object> lowLevelMap = planDao.findOne(lowID).getKeyValue();
-            map.putAll(lowLevelMap);
+            if (lowLevelMap != null) {
+                map.putAll(lowLevelMap);
+            }
         }
 
         if (fromat != null && fromat.equals("yml")) {
@@ -158,10 +164,6 @@ public class PlannerService {
         return planDao.findOne(id).getToscaID();
     }
 
-    public PlanDao getDao() {
-        return this.planDao;
-    }
-
     public List<Plan> findAll() {
         List<Plan> all = planDao.findAll();
         List<Plan> topLevel = new ArrayList<>();
@@ -171,6 +173,23 @@ public class PlannerService {
             }
         }
         return topLevel;
+    }
+
+    public Plan save(Plan plan) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String owner = user.getUsername();
+        plan.setOwner(owner);
+        return planDao.save(plan);
+    }
+
+    public Plan findOne(String lowiID) {
+        return planDao.findOne(lowiID);
+    }
+
+    public Plan delete(String id) {
+        Plan plan = planDao.findOne(id);
+        planDao.delete(plan);
+        return plan;
     }
 
 }

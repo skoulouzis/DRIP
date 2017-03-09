@@ -26,9 +26,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import nl.uva.sne.drip.commons.v0.types.File;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import nl.uva.sne.drip.commons.v1.types.Message;
 import nl.uva.sne.drip.commons.v1.types.MessageParameter;
+import nl.uva.sne.drip.commons.v1.types.Plan;
+import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -172,6 +175,31 @@ public class Converter {
         }
         mess.setParameters(params);
         return mess;
+    }
+
+    public static File plan1toFile(Plan plan1) throws JSONException {
+        File e = new File();
+        e.level = String.valueOf(plan1.getLevel());
+        String p1Name = FilenameUtils.getBaseName(plan1.getName());
+        if (p1Name == null) {
+            p1Name = "Planned_tosca_file_" + plan1.getLevel();
+            plan1.setName(p1Name);
+        }
+
+        e.name = p1Name;
+        String ymlString = Converter.map2YmlString(plan1.getKeyValue());
+        e.content = ymlString.replaceAll("\n", "\\\\n");
+        return e;
+    }
+
+    public static Plan File2Plan1(File p0) {
+        Plan p1 = new Plan();
+        p1.setLevel(Integer.valueOf(p0.level));
+        p1.setName(p0.name);
+        String yaml = p0.content.replaceAll("\\\\n", "\n");
+        p1.setKvMap(ymlString2Map(yaml));
+
+        return p1;
     }
 
 }

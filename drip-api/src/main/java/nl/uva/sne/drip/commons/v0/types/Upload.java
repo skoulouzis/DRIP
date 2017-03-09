@@ -16,16 +16,18 @@
 package nl.uva.sne.drip.commons.v0.types;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author S. Koulouzis
  */
+@XmlRootElement
 public class Upload {
 
     public String user;
     public String pwd;
 
-    List<File> file;
+    public List<File> file;
 
 }

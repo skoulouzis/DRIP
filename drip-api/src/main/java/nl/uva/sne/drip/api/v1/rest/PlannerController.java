@@ -25,7 +25,6 @@ import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -117,7 +116,7 @@ public class PlannerController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        plannerService.getDao().delete(id);
+        plannerService.delete(id);
         return "Deleted : " + id;
     }
 

@@ -15,24 +15,16 @@
  */
 package nl.uva.sne.drip.api.v0.rest;
 
-import com.fasterxml.jackson.core.JsonParser;
 import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
-import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
-import nl.uva.sne.drip.commons.v1.types.Message;
-import nl.uva.sne.drip.commons.v1.types.MessageParameter;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,21 +33,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.exception.BadRequestException;
-import nl.uva.sne.drip.api.exception.CloudCredentialsNotFoundException;
-import nl.uva.sne.drip.api.exception.PlanNotFoundException;
+import nl.uva.sne.drip.api.service.CloudCredentialsService;
+import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.ProvisionService;
-import nl.uva.sne.drip.api.service.SimplePlannerService;
 import nl.uva.sne.drip.api.service.UserKeyService;
 import nl.uva.sne.drip.api.service.UserScriptService;
 import nl.uva.sne.drip.api.service.UserService;
+import nl.uva.sne.drip.commons.v0.types.File;
 import nl.uva.sne.drip.commons.v0.types.Upload;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import nl.uva.sne.drip.commons.v1.types.LoginKey;
 import nl.uva.sne.drip.commons.v1.types.Plan;
 import nl.uva.sne.drip.commons.v1.types.Script;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.json.JSONException;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,9 +60,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Component
 public class ProvisionController0 {
 
-    @Value("${message.broker.host}")
-    private String messageBrokerHost;
-
     @Autowired
     private UserScriptService userScriptService;
 
@@ -81,13 +67,34 @@ public class ProvisionController0 {
     private UserKeyService userKeysService;
 
     @Autowired
-    private CloudCredentialsDao cloudCredentialsDao;
+    private CloudCredentialsService cloudCredentialsService;
 
     @Autowired
     private ProvisionService provisionService;
 
     @Autowired
-    private SimplePlannerService planService;
+    private PlannerService planService;
+
+    @RequestMapping(value = "/get", method = RequestMethod.GET, produces = MediaType.TEXT_XML_VALUE)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    Upload provision() {
+        try {
+            Upload up = new Upload();
+            up.user = "user";
+            up.pwd = "123";
+            List<File> files = new ArrayList<>();
+            Plan plan1 = planService.findAll().get(0);
+            File f = Converter.plan1toFile(plan1);
+            files.add(f);
+            up.file = files;
+
+            return up;
+        } catch (JSONException ex) {
+            Logger.getLogger(ProvisionController0.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -95,185 +102,38 @@ public class ProvisionController0 {
     String provision(@RequestBody Upload upload) {
 
         ProvisionInfo provInfo = new ProvisionInfo();
-        String cloudCredID = null;
+        CloudCredentials cloudCred = cloudCredentialsService.findAll().get(0);
+        String cloudCredID = cloudCred.getId();
         provInfo.setCloudcloudCredentialsID(cloudCredID);
-        String planID = null;
+        List<nl.uva.sne.drip.commons.v0.types.File> plans = upload.file;
+        nl.uva.sne.drip.commons.v1.types.Plan topLevelPlan = null;
+        Set<String> loweLevelPlansIDs = new HashSet<>();
+        for (nl.uva.sne.drip.commons.v0.types.File p : plans) {
+            nl.uva.sne.drip.commons.v1.types.Plan plan1 = Converter.File2Plan1(p);
+            if (plan1.getLevel() == 0) {
+                topLevelPlan = plan1;
+            } else {
+                loweLevelPlansIDs.add(plan1.getId());
+                planService.save(plan1);
+            }
+        }
+        topLevelPlan.setLoweLevelPlansIDs(loweLevelPlansIDs);
+        topLevelPlan = planService.save(topLevelPlan);
+        String planID = topLevelPlan.getId();
         provInfo.setPlanID(planID);
-        String userKeyID = null;
-        provInfo.setUserKeyID(userKeyID);
-        String scriptID = null;
-        provInfo.setScriptID(scriptID);
-
-        provisionService.getDao().save(provInfo);
-
+        List<LoginKey> allKeys = userKeysService.findAll();
+        if (allKeys != null && !allKeys.isEmpty()) {
+            String userKeyID = allKeys.get(0).getId();
+            provInfo.setUserKeyID(userKeyID);
+        }
+        List<Script> allScripts = userScriptService.findAll();
+        if (allScripts != null && !allScripts.isEmpty()) {
+            String scriptID = allScripts.get(0).getId();
+            provInfo.setScriptID(scriptID);
+        }
+        provInfo = provisionService.save(provInfo);
         return "Success: Infrastructure files are uploaded! Action number: "
                 + provInfo.getId();
     }
 
-    private Message buildProvisionerMessage(ProvisionInfo pReq) throws JSONException, IOException {
-        Message invokationMessage = new Message();
-        List<MessageParameter> parameters = new ArrayList();
-        CloudCredentials cred = cloudCredentialsDao.findOne(pReq.getCloudcloudCredentialsID());
-        if (cred == null) {
-            throw new CloudCredentialsNotFoundException();
-        }
-        MessageParameter conf = buildCloudConfParam(cred);
-        parameters.add(conf);
-
-        List<MessageParameter> certs = buildCertificatesParam(cred);
-        parameters.addAll(certs);
-
-        List<MessageParameter> topologies = buildTopologyParams(pReq.getPlanID());
-        parameters.addAll(topologies);
-
-        String scriptID = pReq.getscriptID();
-        if (scriptID != null) {
-            List<MessageParameter> userScripts = buildScriptParams(scriptID);
-            parameters.addAll(userScripts);
-        }
-
-        String userKeyID = pReq.getUserKeyID();
-        if (userKeyID != null) {
-            List<MessageParameter> userKeys = buildKeysParams(userKeyID);
-            parameters.addAll(userKeys);
-        }
-
-        invokationMessage.setParameters(parameters);
-        invokationMessage.setCreationDate((System.currentTimeMillis()));
-        return invokationMessage;
-    }
-
-    private MessageParameter buildCloudConfParam(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
-        MessageParameter conf = null;
-        String provider = cred.getCloudProviderName();
-        if (provider == null) {
-            throw new BadRequestException("Provider name can't be null. Check the cloud credentials: " + cred.getId());
-        }
-        switch (cred.getCloudProviderName().toLowerCase()) {
-            case "ec2":
-                conf = buildEC2Conf(cred);
-                break;
-        }
-        return conf;
-    }
-
-    private List<MessageParameter> buildCertificatesParam(CloudCredentials cred) {
-        List<LoginKey> loginKeys = cred.getLoginKeys();
-        if (loginKeys == null || loginKeys.isEmpty()) {
-            throw new BadRequestException("Log in keys can't be empty");
-        }
-        List<MessageParameter> parameters = new ArrayList<>();
-        for (LoginKey lk : loginKeys) {
-            String domainName = lk.getAttributes().get("domain_name");
-            if (domainName == null) {
-                domainName = lk.getAttributes().get("domain_name ");
-            }
-            MessageParameter cert = new MessageParameter();
-            cert.setName("certificate");
-            cert.setValue(lk.getKey());
-            Map<String, String> attributes = new HashMap<>();
-            attributes.put("filename", domainName);
-            cert.setAttributes(attributes);
-            parameters.add(cert);
-        }
-        return parameters;
-    }
-
-    private List<MessageParameter> buildTopologyParams(String planID) throws JSONException {
-        Plan plan = planService.getDao().findOne(planID);
-        if (plan == null) {
-            throw new PlanNotFoundException();
-        }
-        List<MessageParameter> parameters = new ArrayList();
-        MessageParameter topology = new MessageParameter();
-        topology.setName("topology");
-        topology.setValue(Converter.map2YmlString(plan.getKeyValue()));
-        Map<String, String> attributes = new HashMap<>();
-        attributes.put("level", String.valueOf(plan.getLevel()));
-        attributes.put("filename", FilenameUtils.removeExtension(plan.getName()));
-        topology.setAttributes(attributes);
-        parameters.add(topology);
-
-        Set<String> ids = plan.getLoweLevelPlanIDs();
-        for (String lowID : ids) {
-            Plan lowPlan = planService.getDao().findOne(lowID);
-            topology = new MessageParameter();
-            topology.setName("topology");
-            topology.setValue(Converter.map2YmlString(lowPlan.getKeyValue()));
-            attributes = new HashMap<>();
-            attributes.put("level", String.valueOf(lowPlan.getLevel()));
-            attributes.put("filename", FilenameUtils.removeExtension(lowPlan.getName()));
-            topology.setAttributes(attributes);
-            parameters.add(topology);
-        }
-        return parameters;
-    }
-
-    private MessageParameter buildEC2Conf(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
-
-        Properties prop = Converter.getEC2Properties(cred);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        prop.store(baos, null);
-        byte[] bytes = baos.toByteArray();
-        MessageParameter conf = new MessageParameter();
-        conf.setName("ec2.conf");
-        String charset = "UTF-8";
-        conf.setValue(new String(bytes, charset));
-        return conf;
-
-    }
-
-    private List<MessageParameter> buildScriptParams(String userScriptID) {
-        Script script = userScriptService.getDao().findOne(userScriptID);
-        if (script == null) {
-            throw new BadRequestException("User script: " + userScriptID + " was not found");
-        }
-        List<MessageParameter> parameters = new ArrayList();
-        MessageParameter scriptParameter = new MessageParameter();
-        scriptParameter.setName("guiscript");
-        scriptParameter.setValue(script.getContents());
-        scriptParameter.setEncoding("UTF-8");
-        parameters.add(scriptParameter);
-        return parameters;
-    }
-
-    private List<MessageParameter> buildKeysParams(String userKeyID) {
-        LoginKey key = userKeysService.get(userKeyID, LoginKey.Type.PUBLIC);
-        if (key == null) {
-            throw new BadRequestException("User key: " + userKeyID + " was not found");
-        }
-        List<MessageParameter> parameters = new ArrayList();
-        MessageParameter keyParameter = new MessageParameter();
-        keyParameter.setName("sshkey");
-        keyParameter.setValue(key.getKey());
-        keyParameter.setEncoding("UTF-8");
-        parameters.add(keyParameter);
-        return parameters;
-
-    }
-
-    private Message generateFakeResponse(String path) throws IOException, TimeoutException, InterruptedException, JSONException {
-//        String strResponse = "{\"creationDate\":1488368936945,\"parameters\":["
-//                + "{\"name\":\"f293ff03-4b82-49e2-871a-899aadf821ce\","
-//                + "\"encoding\":\"UTF-8\",\"value\":"
-//                + "\"publicKeyPath: /tmp/Input-4007028381500/user.pem\\nuserName: "
-//                + "zh9314\\nsubnets:\\n- {name: s1, subnet: 192.168.10.0, "
-//                + "netmask: 255.255.255.0}\\ncomponents:\\n- "
-//                + "name: faab6756-61b6-4800-bffa-ae9d859a9d6c\\n  "
-//                + "type: Switch.nodes.Compute\\n  nodetype: t2.medium\\n  "
-//                + "OStype: Ubuntu 16.04\\n  domain: ec2.us-east-1.amazonaws.com\\n  "
-//                + "script: /tmp/Input-4007028381500/guiscipt.sh\\n  "
-//                + "installation: null\\n  role: master\\n  "
-//                + "dockers: mogswitch/InputDistributor\\n  "
-//                + "public_address: 54.144.0.91\\n  instanceId: i-0e78cbf853328b820\\n  "
-//                + "ethernet_port:\\n  - {name: p1, subnet_name: s1, "
-//                + "address: 192.168.10.10}\\n- name: 1c75eedf-8497-46fe-aeb8-dab6a62154cb\\n  "
-//                + "type: Switch.nodes.Compute\\n  nodetype: t2.medium\\n  OStype: Ubuntu 16.04\\n  domain: ec2.us-east-1.amazonaws.com\\n  script: /tmp/Input-4007028381500/guiscipt.sh\\n  installation: null\\n  role: slave\\n  dockers: mogswitch/ProxyTranscoder\\n  public_address: 34.207.254.160\\n  instanceId: i-0a99ea18fcc77ed7a\\n  ethernet_port:\\n  - {name: p1, subnet_name: s1, address: 192.168.10.11}\\n\"},{\"name\":\"kubernetes\",\"encoding\":\"UTF-8\",\"value\":\"54.144.0.91 ubuntu /tmp/Input-4007028381500/Virginia.pem master\\n34.207.254.160 ubuntu /tmp/Input-4007028381500/Virginia.pem slave\\n\"}]}";
-//        String strResponse = "{\"creationDate\":1488805337447,\"parameters\":[{\"name\":\"2e5dafb6-5a1c-4a66-9dca-5841f99ea735\",\"encoding\":\"UTF-8\",\"value\":\"publicKeyPath: /tmp/Input-11594765342486/user.pem\\nuserName: zh9314\\nsubnets:\\n- {name: s1, subnet: 192.168.10.0, netmask: 255.255.255.0}\\ncomponents:\\n- name: 8fcc1788d9ee462c826572c79fdb2a6a\\n  type: Switch.nodes.Compute\\n  nodeType: t2.medium\\n  OStype: Ubuntu 16.04\\n  script: /tmp/Input-11594765342486/guiscipt.sh\\n  domain: ec2.us-east-1.amazonaws.com\\n  installation: null\\n  clusterType: swarm\\n  role: master\\n  dockers: mogswitch/ProxyTranscoder:1.0\\n  public_address: 34.207.73.18\\n  instanceId: i-0e82b5624a0df99b1\\n  ethernet_port:\\n  - {name: p1, subnet_name: s1, address: 192.168.10.10}\\n- name: 8fcc1788d9ee462c826572c79fdb2a6a\\n  type: Switch.nodes.Compute\\n  nodeType: t2.medium\\n  OStype: Ubuntu 16.04\\n  script: /tmp/Input-11594765342486/guiscipt.sh\\n  domain: ec2.us-east-1.amazonaws.com\\n  installation: null\\n  clusterType: swarm\\n  role: slave\\n  dockers: mogswitch/ProxyTranscoder:1.0\\n  public_address: 34.207.73.18\\n  instanceId: i-0e82b5624a0df99b1\\n  ethernet_port:\\n  - {name: p1, subnet_name: s1, address: 192.168.10.11}\\n\"},{\"name\":\"kubernetes\",\"encoding\":\"UTF-8\",\"value\":\"34.207.73.18 ubuntu /tmp/Input-11594765342486/Virginia.pem master\\n34.207.73.18 ubuntu /tmp/Input-11594765342486/Virginia.pem slave\\n\"}]}";
-        String strResponse = FileUtils.readFileToString(new File(path));
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-
-        return mapper.readValue(strResponse, Message.class);
-    }
 }

@@ -22,6 +22,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  *
  * @author S. Koulouzis
  */
-public interface UserScriptDao extends MongoRepository<Script, String> {
+public interface ScriptDao extends MongoRepository<Script, String> {
 
 }
