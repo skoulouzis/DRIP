@@ -49,6 +49,7 @@ import nl.uva.sne.drip.commons.v1.types.Plan;
 import nl.uva.sne.drip.commons.v1.types.Script;
 import org.json.JSONException;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
@@ -60,6 +61,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/user/v0.0/switch/provision/")
 @Component
+@PreAuthorize("isAuthenticated()")
 public class ProvisionController0 {
 
     @Autowired
