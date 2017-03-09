@@ -110,13 +110,14 @@ public class ProvisionController0 {
         List<nl.uva.sne.drip.commons.v0.types.File> plans = upload.file;
         nl.uva.sne.drip.commons.v1.types.Plan topLevelPlan = null;
         Set<String> loweLevelPlansIDs = new HashSet<>();
+
         for (nl.uva.sne.drip.commons.v0.types.File p : plans) {
             nl.uva.sne.drip.commons.v1.types.Plan plan1 = Converter.File2Plan1(p);
             if (plan1.getLevel() == 0) {
                 topLevelPlan = plan1;
             } else {
+                plan1 = planService.save(plan1);
                 loweLevelPlansIDs.add(plan1.getId());
-                planService.save(plan1);
             }
         }
         topLevelPlan.setLoweLevelPlansIDs(loweLevelPlansIDs);

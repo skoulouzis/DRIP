@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.exception.NullKeyIDException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
