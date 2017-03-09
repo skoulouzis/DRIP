@@ -62,7 +62,7 @@ public class ToscaController {
             throw new BadRequestException("Must uplaod a file");
         }
         try {
-            return toscaService.save(file);
+            return toscaService.saveFile(file);
         } catch (IOException | IllegalStateException ex) {
             Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
         }

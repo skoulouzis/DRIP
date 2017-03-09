@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.exception.NullKeyIDException;
+import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.Configure;
 import nl.uva.sne.drip.commons.v1.types.LoginKey;
@@ -49,7 +50,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class CloudConfigurationController0 {
 
     @Autowired
-    private CloudCredentialsDao cloudCredentialsDao;
+    private CloudCredentialsService cloudCredentialsDao;
 
     @RequestMapping(value = "/ec2", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -77,7 +78,7 @@ public class CloudConfigurationController0 {
         }
         cloudCredentials.setLogineKeys(loginKeys);
         cloudCredentials.setCloudProviderName("ec2");
-        
+
         cloudCredentials = cloudCredentialsDao.save(cloudCredentials);
         return "Success: " + cloudCredentials.getId();
     }

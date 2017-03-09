@@ -26,7 +26,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
-import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.v1.types.Message;
@@ -34,13 +33,13 @@ import nl.uva.sne.drip.commons.v1.types.MessageParameter;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.DeployerCaller;
+import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.ClusterCredentialService;
 import nl.uva.sne.drip.api.service.ProvisionService;
 import nl.uva.sne.drip.api.service.UserService;
@@ -67,7 +66,7 @@ public class DeployController {
     private String messageBrokerHost;
 
     @Autowired
-    private CloudCredentialsDao cloudCredentialsDao;
+    private CloudCredentialsService cloudCredentialsService;
 
     @Autowired
     private ProvisionService provisionService;
@@ -152,19 +151,19 @@ public class DeployController {
     String delete(@PathVariable("id") String id) {
         ClusterCredentials cred = clusterCredentialService.getDao().findOne(id);
         if (cred != null) {
-            provisionService.getDao().delete(id);
+            provisionService.delete(id);
             return "Deleted : " + id;
         }
         throw new NotFoundException();
     }
 
     private Message buildDeployerMessage(String provisionID, String clusterType) {
-        ProvisionInfo pro = provisionService.getDao().findOne(provisionID);
+        ProvisionInfo pro = provisionService.findOne(provisionID);
         if (pro == null) {
             throw new NotFoundException();
         }
         String cloudConfID = pro.getCloudcloudCredentialsID();
-        CloudCredentials cCred = cloudCredentialsDao.findOne(cloudConfID);
+        CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfID);
         List<LoginKey> loginKeys = cCred.getLoginKeys();
         List<DeployParameter> deployParams = pro.getDeployParameters();
         List<MessageParameter> parameters = new ArrayList<>();

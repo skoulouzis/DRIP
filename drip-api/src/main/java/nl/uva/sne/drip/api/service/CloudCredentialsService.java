@@ -18,10 +18,12 @@ package nl.uva.sne.drip.api.service;
 import java.util.List;
 import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
+import nl.uva.sne.drip.commons.v1.types.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.access.prepost.PreFilter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,33 +31,35 @@ import org.springframework.stereotype.Service;
  * @author S. Koulouzis
  */
 @Service
+@PreAuthorize("isAuthenticated()")
 public class CloudCredentialsService {
 
     @Autowired
     private CloudCredentialsDao dao;
 
-//    @PreFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public CloudCredentials save(CloudCredentials cloudCredentials) {
-
-//        String owner = user.getUsername();
-//        cloudCredentials.setOwner(owner);
-        System.err.println(cloudCredentials.getOwner());
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String owner = user.getUsername();
+        cloudCredentials.setOwner(owner);
         return dao.save(cloudCredentials);
     }
 
-//    @PreAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    @PreAuthorize("hasPermission(#returnObject, 'read')")
+    @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public CloudCredentials findOne(String id) {
         CloudCredentials creds = dao.findOne(id);
         return creds;
     }
 
-    public void delete(String id) {
-        dao.delete(id);
+    @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
+    public CloudCredentials delete(String id) {
+        CloudCredentials creds = dao.findOne(id);
+        dao.delete(creds);
+        return creds;
     }
 
 //    @PreAuthorize(" (hasRole('ROLE_ADMIN')) or (hasRole('ROLE_USER'))")
-//    @PostFilter("(filterObject.owner == authentication.name)")
+    @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
+//    @PostFilter("hasPermission(filterObject, 'read') or hasPermission(filterObject, 'admin')")
     public List<CloudCredentials> findAll() {
         return dao.findAll();
     }

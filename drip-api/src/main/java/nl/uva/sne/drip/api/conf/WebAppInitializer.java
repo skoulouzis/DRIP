@@ -28,7 +28,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
         ctx.register(MultipartConfig.class);
         ctx.register(MongoConfig.class);
         ctx.register(SecurityConfig.class);
-        ctx.register(MethodSecurityConfig.class);
+//        ctx.register(MethodSecurityConfig.class);
 
         ctx.setServletContext(servletContext);
 

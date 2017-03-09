@@ -77,7 +77,7 @@ public class UserPublicKeysController {
                 upk.setName(name);
                 upk.setType(LoginKey.Type.PUBLIC);
 
-                service.getDao().save(upk);
+                service.save(upk);
 
                 return upk.getId();
             } catch (IOException | IllegalStateException ex) {
@@ -119,7 +119,7 @@ public class UserPublicKeysController {
         key.setName(name);
         key.setType(LoginKey.Type.PUBLIC);
 
-        service.getDao().save(key);
+        service.save(key);
         return key.getId();
     }
 

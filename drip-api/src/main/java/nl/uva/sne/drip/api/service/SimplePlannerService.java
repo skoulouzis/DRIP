@@ -56,7 +56,7 @@ public class SimplePlannerService {
     private PlanDao planDao;
 
     public Plan getPlan(String toscaId) throws JSONException, IOException, TimeoutException, InterruptedException {
-        ToscaRepresentation tosca = toscaService.getDao().findOne(toscaId);
+        ToscaRepresentation tosca = toscaService.findOne(toscaId);
         Message plannerInvokationMessage = buildSimplePlannerMessage(tosca);
 
         Plan topLevel;

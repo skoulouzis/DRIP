@@ -15,8 +15,6 @@
  */
 package nl.uva.sne.drip.commons.v1.types;
 
-import java.util.Map;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**

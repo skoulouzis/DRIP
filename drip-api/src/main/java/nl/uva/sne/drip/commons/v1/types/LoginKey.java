@@ -28,7 +28,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
-public class LoginKey {
+public class LoginKey extends OwnedObject {
 
     @Id
     private String id;

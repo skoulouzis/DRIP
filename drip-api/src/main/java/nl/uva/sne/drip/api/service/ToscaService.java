@@ -22,8 +22,13 @@ import nl.uva.sne.drip.api.dao.ToscaDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.v1.types.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.commons.v1.types.User;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,13 +37,14 @@ import org.springframework.web.multipart.MultipartFile;
  * @author S. Koulouzis
  */
 @Service
+@PreAuthorize("isAuthenticated()")
 public class ToscaService {
 
     @Autowired
     private ToscaDao dao;
 
     public String get(String id, String fromat) throws JSONException {
-        ToscaRepresentation tosca = dao.findOne(id);
+        ToscaRepresentation tosca = findOne(id);
         if (tosca == null) {
             throw new NotFoundException();
         }
@@ -60,7 +66,7 @@ public class ToscaService {
         return ymlStr;
     }
 
-    public String save(MultipartFile file) throws IOException {
+    public String saveFile(MultipartFile file) throws IOException {
         String originalFileName = file.getOriginalFilename();
         String name = System.currentTimeMillis() + "_" + originalFileName;
         byte[] bytes = file.getBytes();
@@ -71,11 +77,11 @@ public class ToscaService {
         ToscaRepresentation t = new ToscaRepresentation();
         t.setName(name);
         t.setKvMap(map);
-        dao.save(t);
+        save(t);
         return t.getId();
     }
 
-    public String save(String yamlString, String name) throws IOException {
+    public String saveYamlString(String yamlString, String name) throws IOException {
         if (name == null) {
             name = System.currentTimeMillis() + "_" + "tosca.yaml";
         }
@@ -84,27 +90,31 @@ public class ToscaService {
         ToscaRepresentation t = new ToscaRepresentation();
         t.setName(name);
         t.setKvMap(map);
-        dao.save(t);
+        save(t);
         return t.getId();
     }
 
-    public void delete(String id) {
-        dao.delete(id);
+    @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
+    public ToscaRepresentation delete(String id) {
+        ToscaRepresentation tr = dao.findOne(id);
+        dao.delete(tr);
+        return tr;
     }
 
+    @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public List<ToscaRepresentation> findAll() {
         return dao.findAll();
     }
 
-    public ToscaDao getDao() {
-        return dao;
+    @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
+    public ToscaRepresentation findOne(String id) {
+        return dao.findOne(id);
     }
 
-    public ToscaRepresentation get(String planID) {
-        ToscaRepresentation tosca = dao.findOne(planID);
-        if (tosca == null) {
-            throw new NotFoundException();
-        }
-        return tosca;
+    private ToscaRepresentation save(ToscaRepresentation t) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String owner = user.getUsername();
+        t.setOwner(owner);
+        return dao.save(t);
     }
 }
