@@ -1,0 +1,3 @@
+#-------------------------Dockers--------------------------------------------
+docker run -d --hostname my-rabbit --name some-rabbit rabbitmq:3-management 
+docker run --name mongo-inst -p 127.0.0.1:27017:27017 -d mongo:3
