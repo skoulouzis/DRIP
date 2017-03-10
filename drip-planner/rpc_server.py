@@ -17,7 +17,7 @@ import json
 
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.17.0.3'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='127.0.0.1'))
 channel = connection.channel()
 channel.queue_declare(queue='planner_queue')
 
