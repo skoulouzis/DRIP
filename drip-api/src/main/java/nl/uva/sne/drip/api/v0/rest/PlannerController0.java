@@ -56,7 +56,7 @@ public class PlannerController0 {
     @Autowired
     private ToscaService toscaService;
 
-    @RequestMapping(value = "/planning", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
+    @RequestMapping(value = "/planning", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result plan(@RequestBody Plan plan0) {

@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/v0.0/switch/account/configure/")
+@RequestMapping("/user/v0.0/switch/account/configure")
 @Component
 public class CloudConfigurationController0 {
 

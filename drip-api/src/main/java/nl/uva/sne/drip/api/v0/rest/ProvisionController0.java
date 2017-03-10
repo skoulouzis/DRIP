@@ -58,7 +58,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/v0.0/switch/provision/")
+@RequestMapping("/user/v0.0/switch/provision")
 @Component
 @PreAuthorize("isAuthenticated()")
 public class ProvisionController0 {
@@ -78,8 +78,6 @@ public class ProvisionController0 {
     @Autowired
     private PlannerService planService;
 
-  
-    
     @RequestMapping(value = "/upload", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -121,7 +119,7 @@ public class ProvisionController0 {
                 + provInfo.getId();
     }
 
-    @RequestMapping(value = "/execute", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
+    @RequestMapping(value = "/execute", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result execute(@RequestBody Execute exc) {

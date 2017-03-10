@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/v0.0/switch/provision/")
+@RequestMapping("/user/v0.0/switch/provision")
 @Component
 public class UserScriptController0 {
 

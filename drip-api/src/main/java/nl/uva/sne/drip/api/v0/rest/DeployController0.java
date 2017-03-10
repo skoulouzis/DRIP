@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/v0.0/switch/deploy/")
+@RequestMapping("/user/v0.0/switch/deploy")
 @Component
 @PreAuthorize("isAuthenticated()")
 public class DeployController0 {
@@ -49,14 +49,14 @@ public class DeployController0 {
     @Autowired
     private DeployClusterService deployService;
 
-    @RequestMapping(value = "/kubernetes", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
+    @RequestMapping(value = "/kubernetes", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result deployKubernetes(@RequestBody Deploy deploy) {
         return deploy(deploy, "kubernetes");
     }
 
-    @RequestMapping(value = "/swarm", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
+    @RequestMapping(value = "/swarm", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result deploySwarm(@RequestBody Deploy deploy) {

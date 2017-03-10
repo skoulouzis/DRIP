@@ -15,8 +15,6 @@
  */
 package nl.uva.sne.drip.api.v0.rest;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.service.ProvisionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.UserKeyService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.ConfUserKey;
-import nl.uva.sne.drip.commons.v0.types.Attribute;
 import nl.uva.sne.drip.commons.v1.types.LoginKey;
 import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
 import org.springframework.http.MediaType;

@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.commons.v0.types;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -24,8 +25,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Execute {
 
+    /**
+     * Not used. It's there for backwards compatibility.
+     */
+    @DocumentationExample("user")
     public String user;
+    /**
+     * Not used. It's there for backwards compatibility.
+     */
+    @DocumentationExample("123")
     public String pwd;
+
+    /**
+     * A referance id used from the servcie to do the provisioning
+     */
+    @DocumentationExample("58c2c2f3a8d4b56889878d03")
     public String action;
 
 }

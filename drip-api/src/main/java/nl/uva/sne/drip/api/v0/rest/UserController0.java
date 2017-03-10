@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/manager/v0.0/switch/account/")
+@RequestMapping("/manager/v0.0/switch/account")
 @Component
 public class UserController0 {
 

@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.commons.v0.types;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -24,7 +25,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Register {
 
+    /**
+     * The user name
+     */
+    @DocumentationExample("user")
     public String user;
+
+    /**
+     * The user password
+     */
+    @DocumentationExample("123abc")
     public String pwd;
 
 }

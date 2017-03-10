@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.commons.v0.types;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
@@ -24,8 +25,23 @@ import javax.xml.bind.annotation.XmlValue;
  */
 public class Attribute {
 
+    /**
+     * Name of the file/public key. 
+     */
+    @DocumentationExample("planner_output_all")
     @XmlAttribute
     public String name;
+    
+        /**
+     * There are two levels of description files for topologies designed by users. 
+     * If the level attribute for the element file is 1, then this file is the top-level description, 
+     * which defines how the sub-topologies are connected to each other. 
+     * If the level attribute is 0, then the file is the low-level description, 
+     * which describes the topology in one data center in detail. 
+     * On the other hand, the name of low-level description file must be the 
+     * sub-topology name appeared in the high-level description file. (For example, here should be zh_a and zh_b.)
+     */
+    @DocumentationExample("0")
     @XmlAttribute
     public String level;
 

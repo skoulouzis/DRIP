@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.commons.v0.types;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -24,10 +25,19 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class Result {
-
+    /**
+     * The status of the response
+     */
+    @DocumentationExample("Success")
     public String status;
+    
+    /**
+     * Not used. Not used. It's there for backwards compatibility.
+     */
+    @DocumentationExample("INFO")
     public String info;
 
+    
     public List<Attribute> file;
 
 }
