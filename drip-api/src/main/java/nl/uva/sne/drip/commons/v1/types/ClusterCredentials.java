@@ -24,7 +24,7 @@ import org.springframework.data.annotation.Id;
   * 
  * @author S. Koulouzis
  */
-public class ClusterCredentials {
+public class ClusterCredentials extends OwnedObject{
 
     @Id
     private String id;

@@ -36,6 +36,7 @@ import nl.uva.sne.drip.api.dao.ProvisionInfoDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.CloudCredentialsNotFoundException;
 import nl.uva.sne.drip.api.exception.ExceptionHandler;
+import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.exception.PlanNotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
@@ -95,6 +96,9 @@ public class ProvisionService {
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public ProvisionInfo findOne(String id) {
         ProvisionInfo provisionInfo = dao.findOne(id);
+        if (provisionInfo == null) {
+            throw new NotFoundException();
+        }
         return provisionInfo;
     }
 

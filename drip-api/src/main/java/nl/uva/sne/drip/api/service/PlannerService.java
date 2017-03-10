@@ -40,6 +40,8 @@ import nl.uva.sne.drip.drip.converter.SimplePlanContainer;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -131,7 +133,7 @@ public class PlannerService {
     }
 
     public String get(String id, String fromat) throws JSONException {
-        Plan plan = planDao.findOne(id);
+        Plan plan = findOne(id);
         if (plan == null) {
             throw new NotFoundException();
         }
@@ -139,7 +141,7 @@ public class PlannerService {
         Map<String, Object> map = plan.getKeyValue();
         Set<String> ids = plan.getLoweLevelPlanIDs();
         for (String lowID : ids) {
-            Map<String, Object> lowLevelMap = planDao.findOne(lowID).getKeyValue();
+            Map<String, Object> lowLevelMap = findOne(lowID).getKeyValue();
             if (lowLevelMap != null) {
                 map.putAll(lowLevelMap);
             }
@@ -161,9 +163,10 @@ public class PlannerService {
     }
 
     public String getToscaID(String id) {
-        return planDao.findOne(id).getToscaID();
+        return findOne(id).getToscaID();
     }
 
+    @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public List<Plan> findAll() {
         List<Plan> all = planDao.findAll();
         List<Plan> topLevel = new ArrayList<>();
@@ -182,12 +185,17 @@ public class PlannerService {
         return planDao.save(plan);
     }
 
+    @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public Plan findOne(String lowiID) {
         return planDao.findOne(lowiID);
     }
 
+    @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public Plan delete(String id) {
         Plan plan = planDao.findOne(id);
+        if (plan == null) {
+            throw new NotFoundException();
+        }
         planDao.delete(plan);
         return plan;
     }

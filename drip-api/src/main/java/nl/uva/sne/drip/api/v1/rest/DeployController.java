@@ -53,8 +53,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * This controller is responsible for deploying a cluster on provisoned resources. 
- * 
+ * This controller is responsible for deploying a cluster on provisoned
+ * resources.
+ *
  * @author S. Koulouzis
  */
 @RestController
@@ -75,10 +76,11 @@ public class DeployController {
     private ClusterCredentialService clusterCredentialService;
 
     /**
-     * Deploys a cluster on a provisioned resources. 
-     * @param provisionID 
+     * Deploys a cluster on a provisioned resources.
+     *
+     * @param provisionID
      * @param clusterType
-     * @return the id of the cluster credentials 
+     * @return the id of the cluster credentials
      */
     @RequestMapping(value = "/deploy/{id}/", method = RequestMethod.GET, params = {"cluster"})
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -97,7 +99,7 @@ public class DeployController {
                 if (name.equals("credential")) {
                     String value = p.getValue();
                     clusterCred.setContents(value);
-                    clusterCredentialService.getDao().save(clusterCred);
+                    clusterCredentialService.save(clusterCred);
                     return clusterCred.getId();
                 }
             }
@@ -109,7 +111,8 @@ public class DeployController {
     }
 
     /**
-     * Gets the cluster credentials. 
+     * Gets the cluster credentials.
+     *
      * @param id
      * @return the cluster credentials
      */
@@ -117,7 +120,7 @@ public class DeployController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     ClusterCredentials get(@PathVariable("id") String id) {
-        ClusterCredentials clusterC = clusterCredentialService.getDao().findOne(id);
+        ClusterCredentials clusterC = clusterCredentialService.findOne(id);
         if (clusterC == null) {
             throw new NotFoundException();
         }
@@ -126,13 +129,14 @@ public class DeployController {
 
     /**
      * Gets the IDs of all the stored cluster credentials
-     * @return a list of all the IDs 
+     *
+     * @return a list of all the IDs
      */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {
-        List<ClusterCredentials> all = clusterCredentialService.getDao().findAll();
+        List<ClusterCredentials> all = clusterCredentialService.findAll();
         List<String> ids = new ArrayList<>(all.size());
         for (ClusterCredentials pi : all) {
             ids.add(pi.getId());
@@ -141,17 +145,18 @@ public class DeployController {
     }
 
     /**
-     * Deletes a cluster credential  
-     * @param id. The id of the  cluster credential   
-     * @return the id f the deleted  cluster credential  
+     * Deletes a cluster credential
+     *
+     * @param id. The id of the cluster credential
+     * @return the id f the deleted cluster credential
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        ClusterCredentials cred = clusterCredentialService.getDao().findOne(id);
+        ClusterCredentials cred = clusterCredentialService.findOne(id);
         if (cred != null) {
-            provisionService.delete(id);
+            clusterCredentialService.delete(id);
             return "Deleted : " + id;
         }
         throw new NotFoundException();
