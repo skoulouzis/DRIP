@@ -18,6 +18,7 @@ package nl.uva.sne.drip.api.service;
 import java.util.ArrayList;
 import java.util.List;
 import nl.uva.sne.drip.api.dao.UserKeyDao;
+import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.v1.types.LoginKey;
 import nl.uva.sne.drip.commons.v1.types.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,11 @@ public class UserKeyService {
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public LoginKey findOne(String id) {
-        return dao.findOne(id);
+        LoginKey key = dao.findOne(id);
+        if (key == null) {
+            throw new NotFoundException();
+        }
+        return key;
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")

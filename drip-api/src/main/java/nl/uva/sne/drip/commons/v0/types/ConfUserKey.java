@@ -16,6 +16,7 @@
 package nl.uva.sne.drip.commons.v0.types;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -23,11 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author S. Koulouzis
  */
 @XmlRootElement
-public class Upload {
+public class ConfUserKey extends Execute {
 
-    public String user;
-    public String pwd;
-
+    @XmlElement(name = "userKey")
     public List<Attribute> file;
-
 }

@@ -28,6 +28,6 @@ public class Result {
     public String status;
     public String info;
 
-    public List<File> file;
+    public List<Attribute> file;
 
 }

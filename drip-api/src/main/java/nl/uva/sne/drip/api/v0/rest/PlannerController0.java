@@ -33,7 +33,7 @@ import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.utils.Converter;
-import nl.uva.sne.drip.commons.v0.types.File;
+import nl.uva.sne.drip.commons.v0.types.Attribute;
 import nl.uva.sne.drip.commons.v0.types.Plan;
 import org.json.JSONException;
 import org.springframework.http.MediaType;
@@ -70,8 +70,8 @@ public class PlannerController0 {
             Result r = new Result();
             r.info = ("INFO");
             r.status = ("Success");
-            List<File> files = new ArrayList<>();
-            File e = Converter.plan1toFile(plan1);
+            List<Attribute> files = new ArrayList<>();
+            Attribute e = Converter.plan1toFile(plan1);
 
             files.add(e);
 

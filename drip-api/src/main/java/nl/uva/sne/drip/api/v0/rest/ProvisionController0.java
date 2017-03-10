@@ -40,12 +40,11 @@ import nl.uva.sne.drip.api.service.UserKeyService;
 import nl.uva.sne.drip.api.service.UserScriptService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.Execute;
-import nl.uva.sne.drip.commons.v0.types.File;
+import nl.uva.sne.drip.commons.v0.types.Attribute;
 import nl.uva.sne.drip.commons.v0.types.Result;
 import nl.uva.sne.drip.commons.v0.types.Upload;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import nl.uva.sne.drip.commons.v1.types.LoginKey;
-import nl.uva.sne.drip.commons.v1.types.Plan;
 import nl.uva.sne.drip.commons.v1.types.Script;
 import org.json.JSONException;
 import org.springframework.http.MediaType;
@@ -90,11 +89,11 @@ public class ProvisionController0 {
         CloudCredentials cloudCred = cloudCredentialsService.findAll().get(0);
         String cloudCredID = cloudCred.getId();
         provInfo.setCloudcloudCredentialsID(cloudCredID);
-        List<nl.uva.sne.drip.commons.v0.types.File> plans = upload.file;
+        List<nl.uva.sne.drip.commons.v0.types.Attribute> plans = upload.file;
         nl.uva.sne.drip.commons.v1.types.Plan topLevelPlan = null;
         Set<String> loweLevelPlansIDs = new HashSet<>();
 
-        for (nl.uva.sne.drip.commons.v0.types.File p : plans) {
+        for (nl.uva.sne.drip.commons.v0.types.Attribute p : plans) {
             nl.uva.sne.drip.commons.v1.types.Plan plan1 = Converter.File2Plan1(p);
             if (plan1.getLevel() == 0) {
                 topLevelPlan = plan1;
@@ -135,8 +134,8 @@ public class ProvisionController0 {
             yaml = yaml.replaceAll("\n", "\\\\n");
 
             Result res = new Result();
-            List<File> files = new ArrayList<>();
-            File e = new File();
+            List<Attribute> files = new ArrayList<>();
+            Attribute e = new Attribute();
             e.content = yaml;
             e.level = "0";
             e.name = "provisioned_" + exc.action;

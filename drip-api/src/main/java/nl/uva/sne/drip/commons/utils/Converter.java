@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import nl.uva.sne.drip.commons.v0.types.File;
+import nl.uva.sne.drip.commons.v0.types.Attribute;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import nl.uva.sne.drip.commons.v1.types.Message;
 import nl.uva.sne.drip.commons.v1.types.MessageParameter;
@@ -177,8 +177,8 @@ public class Converter {
         return mess;
     }
 
-    public static File plan1toFile(Plan plan1) throws JSONException {
-        File e = new File();
+    public static Attribute plan1toFile(Plan plan1) throws JSONException {
+        Attribute e = new Attribute();
         e.level = String.valueOf(plan1.getLevel());
         String p1Name = FilenameUtils.getBaseName(plan1.getName());
         if (p1Name == null) {
@@ -192,7 +192,7 @@ public class Converter {
         return e;
     }
 
-    public static Plan File2Plan1(File p0) {
+    public static Plan File2Plan1(Attribute p0) {
         Plan p1 = new Plan();
         p1.setLevel(Integer.valueOf(p0.level));
         p1.setName(p0.name);

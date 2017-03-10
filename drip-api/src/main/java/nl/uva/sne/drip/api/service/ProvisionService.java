@@ -120,11 +120,11 @@ public class ProvisionService {
         try (DRIPCaller provisioner = new ProvisionerCaller(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisionerMessage(req);
 
-//            Message response = (provisioner.call(provisionerInvokationMessage));
-            Message response = generateFakeResponse(System.getProperty("user.home")
-                    + File.separator + "workspace" + File.separator + "DRIP"
-                    + File.separator + "doc" + File.separator + "json_samples"
-                    + File.separator + "ec2_provisioner_provisoned2.json");
+            Message response = (provisioner.call(provisionerInvokationMessage));
+//            Message response = generateFakeResponse(System.getProperty("user.home")
+//                    + File.separator + "workspace" + File.separator + "DRIP"
+//                    + File.separator + "doc" + File.separator + "json_samples"
+//                    + File.separator + "ec2_provisioner_provisoned2.json");
             List<MessageParameter> params = response.getParameters();
 
             for (MessageParameter p : params) {

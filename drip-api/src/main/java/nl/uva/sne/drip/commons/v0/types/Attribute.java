@@ -15,19 +15,21 @@
  */
 package nl.uva.sne.drip.commons.v0.types;
 
-import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlValue;
 
 /**
  *
  * @author S. Koulouzis
  */
-@XmlRootElement
-public class Upload {
+public class Attribute {
 
-    public String user;
-    public String pwd;
+    @XmlAttribute
+    public String name;
+    @XmlAttribute
+    public String level;
 
-    public List<Attribute> file;
+    @XmlValue
+    public String content;
 
 }

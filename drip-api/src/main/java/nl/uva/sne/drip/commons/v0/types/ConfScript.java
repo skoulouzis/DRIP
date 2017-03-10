@@ -15,21 +15,14 @@
  */
 package nl.uva.sne.drip.commons.v0.types;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author S. Koulouzis
  */
-public class File {
+@XmlRootElement
+public class ConfScript extends Execute {
 
-    @XmlAttribute
-    public String name;
-    @XmlAttribute
-    public String level;
-
-    @XmlValue
-    public String content;
-
+    public String script;
 }

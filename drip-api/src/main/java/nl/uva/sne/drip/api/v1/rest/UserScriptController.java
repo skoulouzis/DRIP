@@ -32,6 +32,7 @@ import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.v1.types.Script;
 import org.springframework.web.bind.annotation.PathVariable;
 import nl.uva.sne.drip.api.dao.ScriptDao;
+import nl.uva.sne.drip.api.service.UserScriptService;
 
 /**
  * This controller is responsible for handling user scripts. These user can be
@@ -45,7 +46,7 @@ import nl.uva.sne.drip.api.dao.ScriptDao;
 public class UserScriptController {
 
     @Autowired
-    private ScriptDao dao;
+    private UserScriptService userScriptService;
 
 //    curl -v -X POST -F "file=@script.sh" localhost:8080/drip-api/rest/user_script/upload
     /**
@@ -68,7 +69,7 @@ public class UserScriptController {
                 us.setContents(conents);
                 us.setName(name);
 
-                dao.save(us);
+                userScriptService.save(us);
 
                 return us.getId();
             } catch (IOException | IllegalStateException ex) {
@@ -87,16 +88,16 @@ public class UserScriptController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody
     Script get(@PathVariable("id") String id) {
-        return dao.findOne(id);
+        return userScriptService.findOne(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public String delete(@PathVariable("id") String id) {
-        Script script = dao.findOne(id);
+        Script script = userScriptService.findOne(id);
         if (script == null) {
             throw new NotFoundException();
         }
-        dao.delete(id);
+        userScriptService.delete(id);
         return "Deleted: " + id;
     }
 
@@ -108,7 +109,7 @@ public class UserScriptController {
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     public @ResponseBody
     List<String> getIds() {
-        List<Script> all = dao.findAll();
+        List<Script> all = userScriptService.findAll();
         List<String> ids = new ArrayList<>();
         for (Script us : all) {
             ids.add(us.getId());
