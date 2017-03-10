@@ -79,27 +79,8 @@ public class ProvisionController0 {
     @Autowired
     private PlannerService planService;
 
-    @RequestMapping(value = "/get", method = RequestMethod.GET, produces = MediaType.TEXT_XML_VALUE)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    Upload provision() {
-        try {
-            Upload up = new Upload();
-            up.user = "user";
-            up.pwd = "123";
-            List<File> files = new ArrayList<>();
-            Plan plan1 = planService.findAll().get(0);
-            File f = Converter.plan1toFile(plan1);
-            files.add(f);
-            up.file = files;
-
-            return up;
-        } catch (JSONException ex) {
-            Logger.getLogger(ProvisionController0.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
+  
+    
     @RequestMapping(value = "/upload", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
