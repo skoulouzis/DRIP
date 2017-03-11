@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.Register;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
