@@ -27,7 +27,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -54,7 +53,7 @@ import org.json.JSONObject;
 public class Consumer extends DefaultConsumer {
 
     private final Channel channel;
-    private final String propertiesPath = "etc/consumer.properties";
+//    private final String propertiesPath = "etc/consumer.properties";
 
     Map<String, String> em = new HashMap<>();
 
@@ -68,10 +67,10 @@ public class Consumer extends DefaultConsumer {
     public Consumer(Channel channel) throws IOException {
         super(channel);
         this.channel = channel;
-        Properties prop = new Properties();
-        try (InputStream in = new FileInputStream(propertiesPath)) {
-            prop.load(in);
-        }
+//        Properties prop = new Properties();
+//        try (InputStream in = new FileInputStream(propertiesPath)) {
+//            prop.load(in);
+//        }
 //        jarFilePath = prop.getProperty("jar.file.path", "/root/SWITCH/bin/ProvisioningCore.jar");
 //        File jarFile = new File(jarFilePath);
 //        if (!jarFile.exists()) {
