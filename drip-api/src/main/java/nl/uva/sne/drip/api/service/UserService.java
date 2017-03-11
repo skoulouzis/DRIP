@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.api.service;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.api.dao.UserDao;
@@ -49,7 +50,23 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public UserDao getDao() {
-        return dao;
+    public User save(User user) {
+        return dao.save(user);
+    }
+
+    public User findOne(String id) {
+        return dao.findOne(id);
+    }
+
+    public void delete(User user) {
+        dao.delete(user);
+    }
+
+    public List<User> findAll() {
+        return dao.findAll();
+    }
+
+    public void deleteAll() {
+        dao.deleteAll();
     }
 }

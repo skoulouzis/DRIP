@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.UserService;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,7 +76,7 @@ public class UserController {
             throw new UserExistsException("Username " + user.getUsername() + " is used");
         }
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        service.getDao().save(user);
+        user = service.save(user);
         return user.getId();
     }
 
@@ -101,7 +102,7 @@ public class UserController {
     public @ResponseBody
     User get(@PathVariable("id") String id) {
         try {
-            User user = service.getDao().findOne(id);
+            User user = service.findOne(id);
             if (user == null) {
                 throw new UserNotFoundException("User " + id + " not found");
             }
@@ -123,11 +124,11 @@ public class UserController {
     public @ResponseBody
     String remove(@PathVariable("id") String id) {
         try {
-            User user = service.getDao().findOne(id);
+            User user = service.findOne(id);
             if (user == null) {
                 throw new UserNotFoundException("User " + id + " not found");
             }
-            service.getDao().delete(user);
+            service.delete(user);
             return "Deleted : " + id;
         } catch (Exception ex) {
             Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
@@ -145,7 +146,7 @@ public class UserController {
     public @ResponseBody
     List<String> getIds() {
         try {
-            List<User> all = service.getDao().findAll();
+            List<User> all = service.findAll();
             List<String> ids = new ArrayList<>();
             for (User tr : all) {
                 ids.add(tr.getId());
@@ -162,7 +163,7 @@ public class UserController {
     public @ResponseBody
     List<User> getAll() {
         try {
-            return service.getDao().findAll();
+            return service.findAll();
         } catch (Exception ex) {
             Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
         }

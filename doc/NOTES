@@ -4,4 +4,4 @@ docker run --name mongo-inst -p 127.0.0.1:27017:27017 -d mongo:3
 
 
 #--------Add admin-----------------
-docker exec -t mongo-inst mongo -eval 'db.user.insert({"password":"1234","roles":["USER,ADMIN"],"username":"user","accountNonExpired":true,"accountNonLocked":true,"credentialsNonExpired":true,"enabled":true})' localhost/drip
+docker exec -t mongo-inst mongo -eval 'db.user.insert({"password":"$2a$10$QdysFgsH0sl6Y4BD84UhGO7yyNfoDPXjjEHkDJ3pX6cRfHDj2Q0BO","roles":["ADMIN"],"username":"admin","accountNonExpired":true,"accountNonLocked":true,"credentialsNonExpired":true,"enabled":true})' localhost/drip

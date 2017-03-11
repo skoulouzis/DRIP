@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.api.v0.rest;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.exception.PasswordNullException;
 import nl.uva.sne.drip.api.exception.UserExistsException;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.Register;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,8 +65,15 @@ public class UserController0 {
         }
         User user = new User();
         user.setUsername(register.user);
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setEnabled(true);
+        user.setCredentialsNonExpired(true);
+        Collection<String> roles = new ArrayList<>();
+        roles.add("USER");
+        user.setRoles(roles);
         user.setPassword(new BCryptPasswordEncoder().encode(register.pwd));
-        service.getDao().save(user);
+        user = service.save(user);
         return "Success: " + user.getId();
     }
 }
