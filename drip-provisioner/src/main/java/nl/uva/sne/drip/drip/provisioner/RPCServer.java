@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public class RPCServer {
 
     private static final String RPC_QUEUE_NAME = "provisioner_queue";
-    private static final String HOST = "172.17.0.3";
+    private static final String HOST = "127.0.0.1";
 
     public static void main(String[] argv) {
         start();

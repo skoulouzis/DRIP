@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.api.v0.rest;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.exception.PasswordNullException;
 import nl.uva.sne.drip.api.exception.UserExistsException;
@@ -62,8 +64,15 @@ public class UserController0 {
         }
         User user = new User();
         user.setUsername(register.user);
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setEnabled(true);
+        user.setCredentialsNonExpired(true);
+        Collection<String> roles = new ArrayList<>();
+        roles.add("USER");
+        user.setRoles(roles);
         user.setPassword(new BCryptPasswordEncoder().encode(register.pwd));
-        service.getDao().save(user);
+        user = service.save(user);
         return "Success: " + user.getId();
     }
 }

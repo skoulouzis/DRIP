@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.commons.types.MessageParameter;
-import nl.uva.sne.drip.commons.types.Message;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,9 +75,9 @@ public class Consumer extends DefaultConsumer {
                 throw new FileNotFoundException("Could not create output directory: " + tempDir.getAbsolutePath());
             }
             //We need to extact the call parameters form the json message. 
-            inputFiles = jacksonUnmarshalExample(message);
+//            inputFiles = jacksonUnmarshalExample(message);
             //Call the method with the extracted parameters 
-            List<File> files = panner.plan(inputFiles[0].getAbsolutePath(), inputFiles[1].getAbsolutePath(), tempDir.getAbsolutePath());
+//            List<File> files = panner.plan(inputFiles[0].getAbsolutePath(), inputFiles[1].getAbsolutePath(), tempDir.getAbsolutePath());
 
             //Here we do the same as above with a different API
 //            inputFiles = simpleJsonUnmarshalExample(message);
@@ -87,7 +85,7 @@ public class Consumer extends DefaultConsumer {
 //            files = panner.plan(inputFiles[0].getAbsolutePath(), inputFiles[1].getAbsolutePath(), tempDir.getAbsolutePath());
             //Now we need to put the result of the call to a message and respond 
             //Example 1
-            response = jacksonMarshalExample(files);
+//            response = jacksonMarshalExample(files);
 
             //Example 2
 //            response = simpleJsonMarshalExample(files);
@@ -102,35 +100,35 @@ public class Consumer extends DefaultConsumer {
 
     }
 
-    private File[] jacksonUnmarshalExample(String message) throws IOException {
-        //Use the Jackson API to convert json to Object 
-        File[] files = new File[2];
-        ObjectMapper mapper = new ObjectMapper();
-        Message request = mapper.readValue(message, Message.class);
-
-        List<MessageParameter> params = request.getParameters();
-
-        //Create tmp input files 
-        File inputFile = File.createTempFile("input-", Long.toString(System.nanoTime()));
-        File exampleFile = File.createTempFile("example-", Long.toString(System.nanoTime()));
-        //loop through the parameters in a message to find the input files
-        for (MessageParameter param : params) {
-            if (param.getName().equals("input")) {
-                try (PrintWriter out = new PrintWriter(inputFile)) {
-                    out.print(param.getValue());
-                }
-                files[0] = inputFile;
-            }
-            if (param.getName().equals("example")) {
-                try (PrintWriter out = new PrintWriter(exampleFile)) {
-                    out.print(param.getValue());
-                }
-                files[1] = exampleFile;
-            }
-        }
-        //Return the array with input files 
-        return files;
-    }
+//    private File[] jacksonUnmarshalExample(String message) throws IOException {
+//        //Use the Jackson API to convert json to Object 
+//        File[] files = new File[2];
+//        ObjectMapper mapper = new ObjectMapper();
+//        Message request = mapper.readValue(message, Message.class);
+//
+//        List<MessageParameter> params = request.getParameters();
+//
+//        //Create tmp input files 
+//        File inputFile = File.createTempFile("input-", Long.toString(System.nanoTime()));
+//        File exampleFile = File.createTempFile("example-", Long.toString(System.nanoTime()));
+//        //loop through the parameters in a message to find the input files
+//        for (MessageParameter param : params) {
+//            if (param.getName().equals("input")) {
+//                try (PrintWriter out = new PrintWriter(inputFile)) {
+//                    out.print(param.getValue());
+//                }
+//                files[0] = inputFile;
+//            }
+//            if (param.getName().equals("example")) {
+//                try (PrintWriter out = new PrintWriter(exampleFile)) {
+//                    out.print(param.getValue());
+//                }
+//                files[1] = exampleFile;
+//            }
+//        }
+//        //Return the array with input files 
+//        return files;
+//    }
 
     private File[] simpleJsonUnmarshalExample(String message) throws JSONException, FileNotFoundException, IOException {
         //Use the JSONObject API to convert json to Object (Message)
@@ -141,16 +139,16 @@ public class Consumer extends DefaultConsumer {
         File exampleFile = File.createTempFile("example-", Long.toString(System.nanoTime()));
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get(MessageParameter.NAME);
+            String name = (String) param.get("name");
             if (name.equals("input")) {
                 try (PrintWriter out = new PrintWriter(inputFile)) {
-                    out.print(param.get(MessageParameter.VALUE));
+                    out.print(param.get("value"));
                 }
                 files[0] = inputFile;
             }
             if (name.equals("example")) {
                 try (PrintWriter out = new PrintWriter(exampleFile)) {
-                    out.print(param.get(MessageParameter.VALUE));
+                    out.print(param.get("value"));
                 }
                 files[1] = exampleFile;
             }
@@ -158,26 +156,26 @@ public class Consumer extends DefaultConsumer {
         return files;
     }
 
-    private String jacksonMarshalExample(List<File> files) throws UnsupportedEncodingException, IOException {
-        //Use the jackson API to convert Object (Message) to json
-        Message responseMessage = new Message();
-        List parameters = new ArrayList();
-        String charset = "UTF-8";
-        for (File f : files) {
-            MessageParameter fileParam = new MessageParameter();
-            byte[] bytes = Files.readAllBytes(Paths.get(f.getAbsolutePath()));
-            fileParam.setValue(new String(bytes, charset));
-            fileParam.setEncoding(charset);
-            fileParam.setName(f.getName());
-            parameters.add(fileParam);
-        }
-        responseMessage.setParameters(parameters);
-        //The creationDate is the only filed that has to be there 
-        responseMessage.setCreationDate((System.currentTimeMillis()));
-
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(responseMessage);
-    }
+//    private String jacksonMarshalExample(List<File> files) throws UnsupportedEncodingException, IOException {
+//        //Use the jackson API to convert Object (Message) to json
+//        Message responseMessage = new Message();
+//        List parameters = new ArrayList();
+//        String charset = "UTF-8";
+//        for (File f : files) {
+//            MessageParameter fileParam = new MessageParameter();
+//            byte[] bytes = Files.readAllBytes(Paths.get(f.getAbsolutePath()));
+//            fileParam.setValue(new String(bytes, charset));
+//            fileParam.setEncoding(charset);
+//            fileParam.setName(f.getName());
+//            parameters.add(fileParam);
+//        }
+//        responseMessage.setParameters(parameters);
+//        //The creationDate is the only filed that has to be there 
+//        responseMessage.setCreationDate((System.currentTimeMillis()));
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//        return mapper.writeValueAsString(responseMessage);
+//    }
 
     private String simpleJsonMarshalExample(List<File> files) throws JSONException, IOException {
         //Use the JSONObject API to convert Object (Message) to json
