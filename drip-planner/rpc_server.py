@@ -17,9 +17,9 @@ import json
 
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='127.0.0.1'))
-channel = connection.channel()
-channel.queue_declare(queue='planner_queue')
+#connection = pika.BlockingConnection(pika.ConnectionParameters(host='127.0.0.1'))
+#channel = connection.channel()
+#channel.queue_declare(queue='planner_queue')
 
 
 
@@ -38,16 +38,23 @@ def handleDelivery(message):
     deadline = 0
 
     for j in json1:
-        #print json[j]
-        if not json1[j]['type'] == "Switch.nodes.Application.Connection":
-            deadline = int(re.search(r'\d+', json1[j]['properties']['QoS']['response_time']).group())
+        if json[j]['type'] == "Switch.nodes.Application.Container.Docker.MOG_ProxyTranscoder" \
+        or json[j]['type']== "Switch.nodes.Application.Container.Docker.MOG_InputDistributor":
+            deadline = int(json[j]['properties']['QoS']['response_time'])
+            
+         #if json[j]['type'] == "Switch.nodes.Application.Container.Docker.MOG_ProxyTranscoder" or json[j]['type']== "Switch.nodes.Application.Container.Docker.MOG_InputDistributor":
+            #response_time = json1[j]['properties']['QoS']['response_time']
+            #reg_ex = re.search(r'\d+', response_time)
+            #gr = reg_ex.group();
+            #deadline = int(gr)
 
     #get the nodes from the json
     nodeDic = {}
     nodeDic1 = {}
     i = 1
     for j in json1:
-        if not json1[j]['type'] == "Switch.nodes.Application.Connection":
+        if json[j]['type'] == "Switch.nodes.Application.Container.Docker.MOG_ProxyTranscoder" \
+        or json[j]['type']== "Switch.nodes.Application.Container.Docker.MOG_InputDistributor":
             #print j, json1[j]
             nodeDic[j] = i
             nodeDic1[i] = j
@@ -87,7 +94,6 @@ def handleDelivery(message):
     for key, value in sorted_nodeDic:
         performance[str(value)] = "1,2,3"
     wfJson['performance'] = performance
-    
     #print wfJson
 
     #send request to the server
@@ -121,10 +127,10 @@ def handleDelivery(message):
         res1["docker"] = str(docker)
         par["value"] = res1
         par["attributes"] = "null"
-        print ("Parameter: %s" % par)
+        ##print ("Parameter: %s" % par)
         outcontent["parameters"].append(par)
     
-    print ("Output message: %s" % outcontent)
+    #print ("Output message: %s" % outcontent)
     return outcontent
     
 
@@ -138,8 +144,13 @@ def on_request(ch, method, props, body):
                      body=str(response))
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
-channel.basic_qos(prefetch_count=1)
-channel.basic_consume(on_request, queue='planner_queue')
+#channel.basic_qos(prefetch_count=1)
+#channel.basic_consume(on_request, queue='planner_queue')
 
-print(" [x] Awaiting RPC requests")
-channel.start_consuming()
+#print(" [x] Awaiting RPC requests")
+#channel.start_consuming()
+
+f = open("../doc/json_samples/plannerInput2.json","r")
+body=f.read()
+response = handleDelivery(body)
+
