@@ -8,6 +8,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import com.sun.xml.internal.fastinfoset.tools.StAX2SAXReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,6 +131,9 @@ public abstract class DRIPCaller implements AutoCloseable {
             return Converter.string2Message(clean);
         }
         Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", clean);
+        
+        
+        
         return mapper.readValue(clean, Message.class);
     }
 

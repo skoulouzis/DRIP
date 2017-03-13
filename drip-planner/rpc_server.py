@@ -17,9 +17,9 @@ import json
 
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='127.0.0.1'))
-channel = connection.channel()
-channel.queue_declare(queue='planner_queue')
+#connection = pika.BlockingConnection(pika.ConnectionParameters(host='127.0.0.1'))
+#channel = connection.channel()
+#channel.queue_declare(queue='planner_queue')
 
 
 
@@ -145,8 +145,13 @@ def on_request(ch, method, props, body):
                      body=str(response))
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
-channel.basic_qos(prefetch_count=1)
-channel.basic_consume(on_request, queue='planner_queue')
+#channel.basic_qos(prefetch_count=1)
+#channel.basic_consume(on_request, queue='planner_queue')
 
-print(" [x] Awaiting RPC requests")
-channel.start_consuming()
+#print(" [x] Awaiting RPC requests")
+#channel.start_consuming()
+
+f = open("../doc/json_samples/plannerInput2.json","r")
+body=f.read()
+response = handleDelivery(body)
+
