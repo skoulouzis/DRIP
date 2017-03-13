@@ -30,11 +30,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -437,6 +440,9 @@ public class Consumer extends DefaultConsumer {
                 File certificate = new File(tempInputDirPath + File.separator + fileName + ".pem");
                 if (certificate.createNewFile()) {
                     writeValueToFile((String) param.get("value"), certificate);
+                    Set<PosixFilePermission> perms = new HashSet<>();
+                    perms.add(PosixFilePermission.OWNER_READ);
+                    Files.setPosixFilePermissions(Paths.get(certificate.getAbsolutePath()), perms);
                     files.put(fileName, certificate);
                 }
             }
