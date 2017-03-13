@@ -24,7 +24,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document
 public class ProvisionInfo extends KeyValueHolder {
-    
+
     private String cloudCredentialsID;
 
     private String planID;
@@ -38,15 +38,15 @@ public class ProvisionInfo extends KeyValueHolder {
     /**
      * @return the cloudCredentialsID
      */
-    public String getCloudcloudCredentialsID() {
+    public String getCloudCredentialsID() {
         return cloudCredentialsID;
     }
 
     /**
-     * @param cloudConfID the cloudCredentialsID to set
+     * @param cloudCredentialsID the cloudCredentialsID to set
      */
-    public void setCloudcloudCredentialsID(String cloudConfID) {
-        this.cloudCredentialsID = cloudConfID;
+    public void setCloudCredentialsID(String cloudCredentialsID) {
+        this.cloudCredentialsID = cloudCredentialsID;
     }
 
     /**
@@ -90,8 +90,6 @@ public class ProvisionInfo extends KeyValueHolder {
     public void setUserKeyID(String userKeyID) {
         this.userKeyID = userKeyID;
     }
-
-   
 
     public void setDeployParameters(List<DeployParameter> deployParameters) {
         this.deployParameters = deployParameters;

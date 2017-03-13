@@ -23,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
+import nl.uva.sne.drip.api.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,12 +48,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Component
 public class ProvisionController {
 
-
-
     @Autowired
     private ProvisionService provisionService;
-
-
 
     /**
      * Gets the ProvisionInfo
@@ -113,7 +110,12 @@ public class ProvisionController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String provision(@RequestBody ProvisionInfo req) {
-
+        if (req.getCloudCredentialsID() == null) {
+            throw new BadRequestException();
+        }
+        if (req.getPlanID() == null) {
+            throw new BadRequestException();
+        }
         try {
             req = provisionService.provisionResources(req);
 
@@ -123,6 +125,23 @@ public class ProvisionController {
             Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    /**
+     * Returns a sample ProvisionInfo request
+     *
+     * @return
+     */
+    @RequestMapping(value = "/sample", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    ProvisionInfo getSample() {
+        ProvisionInfo info = new ProvisionInfo();
+        info.setCloudCredentialsID("58c6a6556dd4bd2f0d71e6fb");
+        info.setPlanID("58c6b17b65d4d03b29e7db0e");
+        info.setScriptID("58c6a6556dd4bd2f0d71e6fb");
+        info.setUserKeyID("58c6b12b65d4d03b29e7db0c");
+        return info;
     }
 
 }

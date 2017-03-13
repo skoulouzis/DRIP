@@ -51,12 +51,12 @@
     <div class="row">
       <div class="col-sm-3 col-md-2 sidebar" id="apinav">
         <ul class="nav nav-sidebar">
-          <li><a href="#resource_UserController_getAll_GET">GET /manager/v1.0/user//all</a></li>
-          <li><a href="#resource_UserController_getIds_GET">GET /manager/v1.0/user//ids</a></li>
-          <li><a href="#resource_UserController_modify_POST"><abbr title="POST /manager/v1.0/user//modify">POST /manager/v1.0/user//modif...</abbr></a></li>
-          <li><a href="#resource_UserController_register_POST"><abbr title="POST /manager/v1.0/user//register">POST /manager/v1.0/user//regis...</abbr></a></li>
-          <li><a href="#resource_UserController_remove_DELETE"><abbr title="DELETE /manager/v1.0/user//{id}">DELETE /manager/v1.0/user//{id...</abbr></a></li>
-          <li><a href="#resource_UserController_get_GET">GET /manager/v1.0/user//{id}</a></li>
+          <li><a href="#resource_UserController_getAll_GET">GET /manager/v1.0/user/all</a></li>
+          <li><a href="#resource_UserController_getIds_GET">GET /manager/v1.0/user/ids</a></li>
+          <li><a href="#resource_UserController_modify_POST">POST /manager/v1.0/user/modify</a></li>
+          <li><a href="#resource_UserController_register_POST"><abbr title="POST /manager/v1.0/user/register">POST /manager/v1.0/user/regist...</abbr></a></li>
+          <li><a href="#resource_UserController_remove_DELETE">DELETE /manager/v1.0/user/{id}</a></li>
+          <li><a href="#resource_UserController_get_GET">GET /manager/v1.0/user/{id}</a></li>
           <li class="divider"></li>
           <li class="text-right"><a href="#top"><small>Back to Top</small></a></li>
         </ul>
@@ -74,7 +74,7 @@
       <p>This controller is responsible for handling user accounts</p>
 
       <div id="resource_UserController_getAll_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/manager/v1.0/user//all <a href="../manager/v1.0/user//all" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/manager/v1.0/user/all <a href="../manager/v1.0/user/all" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p></p>
 
@@ -111,7 +111,7 @@
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-GET /manager/v1.0/user//all
+GET /manager/v1.0/user/all
 Accept: application/json
 
               </pre>
@@ -141,7 +141,7 @@ Content-Type: application/json
       </div>
 
       <div id="resource_UserController_getIds_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/manager/v1.0/user//ids <a href="../manager/v1.0/user//ids" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/manager/v1.0/user/ids <a href="../manager/v1.0/user/ids" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p>Gets the IDs of all the stored users</p>
 
@@ -180,7 +180,7 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-GET /manager/v1.0/user//ids
+GET /manager/v1.0/user/ids
 Accept: application/json
 
               </pre>
@@ -201,7 +201,7 @@ Content-Type: application/json
       </div>
 
       <div id="resource_UserController_modify_POST">
-        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/manager/v1.0/user//modify <a href="../manager/v1.0/user//modify" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/manager/v1.0/user/modify <a href="../manager/v1.0/user/modify" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p></p>
 
@@ -260,7 +260,7 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-POST /manager/v1.0/user//modify
+POST /manager/v1.0/user/modify
 Content-Type: application/json
 Accept: application/json
 
@@ -294,7 +294,7 @@ Content-Type: application/json
       </div>
 
       <div id="resource_UserController_register_POST">
-        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/manager/v1.0/user//register <a href="../manager/v1.0/user//register" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/manager/v1.0/user/register <a href="../manager/v1.0/user/register" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p>Register new user. A normal user cannot create accounts, only the user
 with the 'ADMIN' role can do that.</p>
@@ -358,7 +358,7 @@ the password is 'null' there will be a 'BadRequestException'</span></td>
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-POST /manager/v1.0/user//register
+POST /manager/v1.0/user/register
 Content-Type: application/json
 Accept: application/json
 
@@ -392,7 +392,7 @@ Content-Type: application/json
       </div>
 
       <div id="resource_UserController_remove_DELETE">
-        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/manager/v1.0/user//{id} <a href="../manager/v1.0/user//{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/manager/v1.0/user/{id} <a href="../manager/v1.0/user/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p>Deletes a user</p>
 
@@ -449,7 +449,7 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-DELETE /manager/v1.0/user//{id}
+DELETE /manager/v1.0/user/{id}
 Accept: application/json
 
               </pre>
@@ -470,7 +470,7 @@ Content-Type: application/json
       </div>
 
       <div id="resource_UserController_get_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/manager/v1.0/user//{id} <a href="../manager/v1.0/user//{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/manager/v1.0/user/{id} <a href="../manager/v1.0/user/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p>Gets the user.</p>
 
@@ -527,7 +527,7 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-GET /manager/v1.0/user//{id}
+GET /manager/v1.0/user/{id}
 Accept: application/json
 
               </pre>

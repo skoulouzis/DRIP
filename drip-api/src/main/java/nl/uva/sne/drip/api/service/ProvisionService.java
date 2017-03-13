@@ -171,7 +171,7 @@ public class ProvisionService {
     private Message buildProvisionerMessage(ProvisionInfo pReq) throws JSONException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
-        CloudCredentials cred = cloudCredentialsService.findOne(pReq.getCloudcloudCredentialsID());
+        CloudCredentials cred = cloudCredentialsService.findOne(pReq.getCloudCredentialsID());
         if (cred == null) {
             throw new CloudCredentialsNotFoundException();
         }

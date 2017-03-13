@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/manager/v1.0/user/")
+@RequestMapping("/manager/v1.0/user")
 @Component
 public class UserController {
 

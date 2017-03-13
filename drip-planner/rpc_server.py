@@ -38,7 +38,7 @@ def handleDelivery(message):
     deadline = 0
 
     for j in json1:
-        #print json[j]
+        print json1[j]['type']
         if not json1[j]['type'] == "Switch.nodes.Application.Connection":
             deadline = int(re.search(r'\d+', json1[j]['properties']['QoS']['response_time']).group())
 

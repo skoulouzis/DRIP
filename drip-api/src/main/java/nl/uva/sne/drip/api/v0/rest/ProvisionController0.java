@@ -86,7 +86,7 @@ public class ProvisionController0 {
         ProvisionInfo provInfo = new ProvisionInfo();
         CloudCredentials cloudCred = cloudCredentialsService.findAll().get(0);
         String cloudCredID = cloudCred.getId();
-        provInfo.setCloudcloudCredentialsID(cloudCredID);
+        provInfo.setCloudCredentialsID(cloudCredID);
         List<nl.uva.sne.drip.commons.v0.types.Attribute> plans = upload.file;
         nl.uva.sne.drip.commons.v1.types.Plan topLevelPlan = null;
         Set<String> loweLevelPlansIDs = new HashSet<>();

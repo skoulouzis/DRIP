@@ -120,7 +120,7 @@ public class DeployClusterService {
         if (pro == null) {
             throw new NotFoundException();
         }
-        String cloudConfID = pro.getCloudcloudCredentialsID();
+        String cloudConfID = pro.getCloudCredentialsID();
         CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfID);
         List<LoginKey> loginKeys = cCred.getLoginKeys();
         List<DeployParameter> deployParams = pro.getDeployParameters();

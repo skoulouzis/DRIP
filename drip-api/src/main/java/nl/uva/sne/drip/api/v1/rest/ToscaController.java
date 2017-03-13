@@ -37,8 +37,9 @@ import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
 
 /**
- * This controller is responsible for storing TOSCA descriptions that can be used 
- * by the planner. 
+ * This controller is responsible for storing TOSCA descriptions that can be
+ * used by the planner.
+ *
  * @author S. Koulouzis
  */
 @RestController
@@ -51,7 +52,8 @@ public class ToscaController {
 
     /**
      * Uploads and stores a TOSCA description file
-     * @param file. The TOSCA description file 
+     *
+     * @param file. The TOSCA description file
      * @return the ID of the TOSCA description
      */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
@@ -69,9 +71,9 @@ public class ToscaController {
         return null;
     }
 
-
     /**
-     * Gets the TOSCA description. 
+     * Gets the TOSCA description.
+     *
      * @param id the ID TOSCA description.
      * @param format. the format to display the TOSCA description.
      * @return the TOSCA description.
@@ -90,6 +92,7 @@ public class ToscaController {
 
     /**
      * Deletes the TOSCA description.
+     *
      * @param id. The ID of TOSCA description to delete.
      * @return The ID of the deleted TOSCA description.
      */
@@ -98,15 +101,15 @@ public class ToscaController {
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
         toscaService.delete(id);
-         return "Deleted : " + id;
+        return "Deleted : " + id;
     }
-
 
     /**
      * Gets the IDs of all the stored TOSCA descriptionss.
-     * @return a list of all the IDs 
+     *
+     * @return a list of all the IDs
      */
-    @RequestMapping(value = "/ids")
+    @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {

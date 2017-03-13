@@ -53,6 +53,7 @@
         <ul class="nav nav-sidebar">
           <li><a href="#resource_ProvisionController_getIds_GET">GET /user/v1.0/provisioner/ids</a></li>
           <li><a href="#resource_ProvisionController_provision_POST"><abbr title="POST /user/v1.0/provisioner/provision">POST /user/v1.0/provisioner/pr...</abbr></a></li>
+          <li><a href="#resource_ProvisionController_getSample_GET"><abbr title="GET /user/v1.0/provisioner/sample">GET /user/v1.0/provisioner/sam...</abbr></a></li>
           <li><a href="#resource_ProvisionController_delete_DELETE"><abbr title="DELETE /user/v1.0/provisioner/{id}">DELETE /user/v1.0/provisioner/...</abbr></a></li>
           <li><a href="#resource_ProvisionController_get_GET"><abbr title="GET /user/v1.0/provisioner/{id}">GET /user/v1.0/provisioner/{id...</abbr></a></li>
           <li class="divider"></li>
@@ -200,7 +201,7 @@ Accept: application/json
 
                 <code class="prettyprint language-js">
 {
-  &quot;cloudcloudCredentialsID&quot; : &quot;...&quot;,
+  &quot;cloudCredentialsID&quot; : &quot;...&quot;,
   &quot;planID&quot; : &quot;...&quot;,
   &quot;scriptID&quot; : &quot;...&quot;,
   &quot;userKeyID&quot; : &quot;...&quot;,
@@ -233,6 +234,86 @@ Content-Type: application/json
 
                 <code class="prettyprint language-txt">
 ...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resource_ProvisionController_getSample_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/provisioner/sample <a href="../user/v1.0/provisioner/sample" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Returns a sample ProvisionInfo request</p>
+
+        <dl class="dl-horizontal">
+          <dt>Security Roles Allowed</dt>
+          <dd>ADMIN, USER</dd>
+        </dl>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_ProvisionInfo.html">ProvisionInfo</a>
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_provisionInfo.html">provisionInfo</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /user/v1.0/provisioner/sample
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 Looks Good
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;cloudCredentialsID&quot; : &quot;...&quot;,
+  &quot;planID&quot; : &quot;...&quot;,
+  &quot;scriptID&quot; : &quot;...&quot;,
+  &quot;userKeyID&quot; : &quot;...&quot;,
+  &quot;deployParameters&quot; : [ {
+    &quot;cloudCertificateName&quot; : &quot;...&quot;,
+    &quot;IP&quot; : &quot;...&quot;,
+    &quot;user&quot; : &quot;...&quot;,
+    &quot;role&quot; : &quot;...&quot;
+  }, {
+    &quot;cloudCertificateName&quot; : &quot;...&quot;,
+    &quot;IP&quot; : &quot;...&quot;,
+    &quot;user&quot; : &quot;...&quot;,
+    &quot;role&quot; : &quot;...&quot;
+  } ],
+  &quot;keyValue&quot; : {
+    &quot;property1&quot; : { },
+    &quot;property2&quot; : { }
+  },
+  &quot;id&quot; : &quot;...&quot;,
+  &quot;owner&quot; : &quot;...&quot;
+}
                 </code>
               </pre>
             </div>
@@ -389,7 +470,7 @@ Content-Type: application/json
 
                 <code class="prettyprint language-js">
 {
-  &quot;cloudcloudCredentialsID&quot; : &quot;...&quot;,
+  &quot;cloudCredentialsID&quot; : &quot;...&quot;,
   &quot;planID&quot; : &quot;...&quot;,
   &quot;scriptID&quot; : &quot;...&quot;,
   &quot;userKeyID&quot; : &quot;...&quot;,
