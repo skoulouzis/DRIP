@@ -47,7 +47,7 @@ class Workflow():
                 if key == 'links' :
                     for link in value:
                         self.G.add_weighted_edges_from([(link['source'], link['target'], link['weight'])])
-        print self.G.nodes
+        #print self.G.nodes
         
         #parse the performance matrix
         p = []
@@ -58,7 +58,7 @@ class Workflow():
             for i in value.split(','):
                 row.append(int(i))
             row.append(0)
-            print row
+            #print row
             p.append(row)
         self.p_table = np.matrix(p)
         #parse the price vector

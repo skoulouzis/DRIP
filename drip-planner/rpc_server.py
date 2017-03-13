@@ -38,9 +38,17 @@ def handleDelivery(message):
     deadline = 0
 
     for j in json1:
-        print json1[j]['type']
-        if not json1[j]['type'] == "Switch.nodes.Application.Connection":
-            deadline = int(re.search(r'\d+', json1[j]['properties']['QoS']['response_time']).group())
+        if "Switch.nodes.Application.Container.Docker." in json1[j]['type'] and "QoS" in str(json1[j]['properties']) and "response_time" in str(json1[j]['properties']):
+            response_time = json1[j]['properties']['QoS']['response_time']
+            reg_ex = re.search(r'\d+', str(response_time))
+            gr = reg_ex.group()
+            deadline = int(gr)
+            
+         #if json[j]['type'] == "Switch.nodes.Application.Container.Docker.MOG_ProxyTranscoder" or json[j]['type']== "Switch.nodes.Application.Container.Docker.MOG_InputDistributor":
+            #response_time = json1[j]['properties']['QoS']['response_time']
+            #reg_ex = re.search(r'\d+', response_time)
+            #gr = reg_ex.group();
+            #deadline = int(gr)
 
     #get the nodes from the json
     nodeDic = {}
@@ -87,7 +95,6 @@ def handleDelivery(message):
     for key, value in sorted_nodeDic:
         performance[str(value)] = "1,2,3"
     wfJson['performance'] = performance
-    
     #print wfJson
 
     #send request to the server
@@ -121,10 +128,10 @@ def handleDelivery(message):
         res1["docker"] = str(docker)
         par["value"] = res1
         par["attributes"] = "null"
-        print ("Parameter: %s" % par)
+        ##print ("Parameter: %s" % par)
         outcontent["parameters"].append(par)
     
-    print ("Output message: %s" % outcontent)
+    #print ("Output message: %s" % outcontent)
     return outcontent
     
 
