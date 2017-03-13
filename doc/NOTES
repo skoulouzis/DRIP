@@ -1,7 +1,7 @@
 #-------------------------Dockers--------------------------------------------
-docker run --hostname my-rabbit --name some-rabbit -p 127.0.0.1:15672:15672 -d rabbitmq:3-management 
+docker run --hostname my-rabbit --name some-rabbit -p 127.0.0.1:15672:15672 -p 127.0.0.1:4369:4369 -p 127.0.0.1:5671-5672:5671-5672 -p 127.0.0.1:15671:15671-d rabbitmq:3-management 
 docker run --name mongo-inst -p 127.0.0.1:27017:27017 -d mongo:3
-
+docker run --name drip-inst -p 127.0.0.1:8080:8080 -d drip-manager
 
 #--------Add admin-----------------
 docker exec -t mongo-inst mongo -eval 'db.user.insert({"password":"$2a$10$QdysFgsH0sl6Y4BD84UhGO7yyNfoDPXjjEHkDJ3pX6cRfHDj2Q0BO","roles":["ADMIN"],"username":"admin","accountNonExpired":true,"accountNonLocked":true,"credentialsNonExpired":true,"enabled":true})' localhost/drip
