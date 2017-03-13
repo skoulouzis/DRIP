@@ -127,21 +127,5 @@ public class ProvisionController {
         return null;
     }
 
-    /**
-     * Returns a sample ProvisionInfo request
-     *
-     * @return
-     */
-    @RequestMapping(value = "/sample", method = RequestMethod.GET)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    ProvisionInfo getSample() {
-        ProvisionInfo info = new ProvisionInfo();
-        info.setCloudCredentialsID("58c6a6556dd4bd2f0d71e6fb");
-        info.setPlanID("58c6b17b65d4d03b29e7db0e");
-        info.setScriptID("58c6a6556dd4bd2f0d71e6fb");
-        info.setUserKeyID("58c6b12b65d4d03b29e7db0c");
-        return info;
-    }
-
+ 
 }
