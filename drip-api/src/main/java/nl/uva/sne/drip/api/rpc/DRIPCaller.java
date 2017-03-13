@@ -108,7 +108,7 @@ public abstract class DRIPCaller implements AutoCloseable {
                 .correlationId(corrId)
                 .replyTo(getReplyQueueName())
                 .build();
-
+        Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Sending: {0}", jsonInString);
         getChannel().basicPublish("", requestQeueName, props, jsonInString.getBytes("UTF-8"));
 
         final BlockingQueue<String> response = new ArrayBlockingQueue(1);
