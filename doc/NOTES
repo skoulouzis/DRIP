@@ -1,5 +1,5 @@
 #-------------------------Dockers--------------------------------------------
-docker run --hostname my-rabbit --name some-rabbit -p 127.0.0.1:15672:15672 -p 127.0.0.1:4369:4369 -p 127.0.0.1:5671-5672:5671-5672 -p 127.0.0.1:15671:1567115671 -d rabbitmq:3-management 
+docker run --hostname my-rabbit --name some-rabbit -p 127.0.0.1:15672:15672 -p 127.0.0.1:4369:4369 -p 127.0.0.1:5671-5672:5671-5672 -p 127.0.0.1:15671:15671-d rabbitmq:3-management 
 docker run --name mongo-inst -p 127.0.0.1:27017:27017 -d mongo:3
 docker run --name drip-inst -p 127.0.0.1:8080:8080 -d drip-manager
 
