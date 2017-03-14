@@ -19,7 +19,10 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,9 +34,26 @@ import java.util.logging.Logger;
 public class RPCServer {
 
     private static final String RPC_QUEUE_NAME = "provisioner_queue";
-    private static final String HOST = "127.0.0.1";
+    private static String HOST = "127.0.0.1";
 
     public static void main(String[] argv) {
+        Properties prop = new Properties();
+        if (argv.length >= 1) {
+            try {
+                prop.load(new FileInputStream(argv[0]));
+            } catch (IOException ex) {
+                Logger.getLogger(RPCServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            String resourceName = "provisioner.properies";
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            try (InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
+                prop.load(resourceStream);
+            } catch (IOException ex) {
+                Logger.getLogger(RPCServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        HOST = prop.getProperty("rabbitmq.host", "127.0.0.1");
         start();
     }
 
