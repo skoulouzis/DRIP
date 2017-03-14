@@ -187,7 +187,12 @@ public class PlannerService {
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public Plan findOne(String lowiID) {
-        return planDao.findOne(lowiID);
+        Plan plan = planDao.findOne(lowiID);
+        if (plan == null) {
+            throw new NotFoundException();
+        }
+
+        return plan;
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")

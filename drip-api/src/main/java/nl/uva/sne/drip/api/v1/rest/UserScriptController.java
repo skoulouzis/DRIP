@@ -31,7 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.v1.types.Script;
 import org.springframework.web.bind.annotation.PathVariable;
-import nl.uva.sne.drip.api.dao.ScriptDao;
 import nl.uva.sne.drip.api.service.UserScriptService;
 
 /**

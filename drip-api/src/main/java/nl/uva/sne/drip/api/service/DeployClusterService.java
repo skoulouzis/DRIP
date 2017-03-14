@@ -69,7 +69,11 @@ public class DeployClusterService {
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public ClusterCredentials findOne(String id) {
-        return dao.findOne(id);
+        ClusterCredentials creds = dao.findOne(id);
+        if (creds == null) {
+            throw new NotFoundException();
+        }
+        return creds;
     }
 
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
@@ -79,9 +83,12 @@ public class DeployClusterService {
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public ClusterCredentials delete(String id) {
-        ClusterCredentials cred = dao.findOne(id);
-        dao.delete(cred);
-        return cred;
+        ClusterCredentials creds = dao.findOne(id);
+        if (creds == null) {
+            throw new NotFoundException();
+        }
+        dao.delete(creds);
+        return creds;
     }
 
     public ClusterCredentials save(ClusterCredentials clusterCred) {

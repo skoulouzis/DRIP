@@ -17,6 +17,7 @@ package nl.uva.sne.drip.api.service;
 
 import java.util.List;
 import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
+import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import nl.uva.sne.drip.commons.v1.types.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +48,18 @@ public class CloudCredentialsService {
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public CloudCredentials findOne(String id) {
         CloudCredentials creds = dao.findOne(id);
+        if (creds == null) {
+            throw new NotFoundException();
+        }
         return creds;
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public CloudCredentials delete(String id) {
         CloudCredentials creds = dao.findOne(id);
+                if (creds == null) {
+            throw new NotFoundException();
+        }
         dao.delete(creds);
         return creds;
     }

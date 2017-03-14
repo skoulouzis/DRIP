@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.ScriptDao;
+import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.v1.types.Script;
 import nl.uva.sne.drip.commons.v1.types.User;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -47,12 +48,18 @@ public class UserScriptService {
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public Script findOne(String id) {
         Script script = dao.findOne(id);
+        if (script == null) {
+            throw new NotFoundException();
+        }
         return script;
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public Script delete(String id) {
         Script script = dao.findOne(id);
+        if (script == null) {
+            throw new NotFoundException();
+        }
         dao.delete(script);
         return script;
     }
