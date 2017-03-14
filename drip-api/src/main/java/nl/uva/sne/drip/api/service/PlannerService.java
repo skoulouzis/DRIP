@@ -200,4 +200,9 @@ public class PlannerService {
         return plan;
     }
 
+    @PostAuthorize("(hasRole('ROLE_ADMIN'))")
+    public void deleteAll() {
+        planDao.deleteAll();
+    }
+
 }

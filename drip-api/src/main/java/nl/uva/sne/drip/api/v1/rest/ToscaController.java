@@ -120,5 +120,18 @@ public class ToscaController {
         }
         return ids;
     }
+    
+     /**
+     * Gets the IDs of all the stored TOSCA descriptionss.
+     *
+     * @return a list of all the IDs
+     */
+    @RequestMapping(value = "/all", method = RequestMethod.DELETE)
+    @RolesAllowed({UserService.ADMIN})
+    public @ResponseBody
+    String deleteAll() {
+        toscaService.deleteAll();
+        return "Done";
+    }
 
 }

@@ -51,6 +51,7 @@
     <div class="row">
       <div class="col-sm-3 col-md-2 sidebar" id="apinav">
         <ul class="nav nav-sidebar">
+          <li><a href="#resource_ToscaController_deleteAll_DELETE">DELETE /user/v1.0/tosca/all</a></li>
           <li><a href="#resource_ToscaController_getIds_GET">GET /user/v1.0/tosca/ids</a></li>
           <li><a href="#resource_ToscaController_toscaUpload_POST">POST /user/v1.0/tosca/upload</a></li>
           <li><a href="#resource_ToscaController_delete_DELETE">DELETE /user/v1.0/tosca/{id}</a></li>
@@ -71,6 +72,66 @@
 
       <p>This controller is responsible for storing TOSCA descriptions that can be
 used by the planner.</p>
+
+      <div id="resource_ToscaController_deleteAll_DELETE">
+        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/tosca/all <a href="../user/v1.0/tosca/all" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p>Gets the IDs of all the stored TOSCA descriptionss.</p>
+
+        <dl class="dl-horizontal">
+          <dt>Security Roles Allowed</dt>
+          <dd>ADMIN</dd>
+        </dl>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+            <th>description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">string
+ (JSON)</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">a list of all the IDs</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">string
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+DELETE /user/v1.0/tosca/all
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 204 Looks Good
+Content-Type: application/json
+
+                <code class="prettyprint language-txt">
+...
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div id="resource_ToscaController_getIds_GET">
         <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/tosca/ids <a href="../user/v1.0/tosca/ids" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>

@@ -117,4 +117,9 @@ public class ToscaService {
         t.setOwner(owner);
         return dao.save(t);
     }
+
+    @PostAuthorize("(hasRole('ROLE_ADMIN'))")
+    public void deleteAll() {
+        dao.deleteAll();
+    }
 }

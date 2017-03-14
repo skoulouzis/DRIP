@@ -37,9 +37,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * This controller is responsible for planing the type of resources to be provisopned 
- * based on a TOSCA description.
- * 
+ * This controller is responsible for planing the type of resources to be
+ * provisopned based on a TOSCA description.
+ *
  * @author S. Koulouzis
  */
 @RestController
@@ -52,10 +52,10 @@ public class PlannerController {
     @Autowired
     private PlannerService plannerService;
 
-    
     /**
-     * Plans resources (number, size of VMs etc). 
-     * @param toscaId. The id of the TOSCA description 
+     * Plans resources (number, size of VMs etc).
+     *
+     * @param toscaId. The id of the TOSCA description
      * @return the id of the created plan
      */
     @RequestMapping(value = "/plan/{tosca_id}", method = RequestMethod.GET)
@@ -77,10 +77,11 @@ public class PlannerController {
     }
 
     /**
-     * Gets a plan  
+     * Gets a plan
+     *
      * @param id. The id iof the plan
      * @param format. The format (yml,json)
-     * @return the plan 
+     * @return the plan
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"format"})
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -95,9 +96,10 @@ public class PlannerController {
     }
 
     /**
-     * Gets the ID of the TOSCA description that was used to generate the plan. 
+     * Gets the ID of the TOSCA description that was used to generate the plan.
      * The plan is represented by its ID
-     * @param id. The plan id 
+     *
+     * @param id. The plan id
      * @return the TOSCA description ID
      */
     @RequestMapping(value = "/tosca/{id}", method = RequestMethod.GET)
@@ -108,7 +110,8 @@ public class PlannerController {
     }
 
     /**
-     * Deletes the plan. 
+     * Deletes the plan.
+     *
      * @param id . The ID of the plan
      * @return The ID of the deleted plan
      */
@@ -120,10 +123,18 @@ public class PlannerController {
         return "Deleted : " + id;
     }
 
-    
+    @RequestMapping(value = "/all", method = RequestMethod.DELETE)
+    @RolesAllowed({UserService.ADMIN})
+    public @ResponseBody
+    String deleteAll() {
+        plannerService.deleteAll();
+        return "Done";
+    }
+
     /**
-     * Gets the IDs of all the stored plans 
-     * @return a list of IDs 
+     * Gets the IDs of all the stored plans
+     *
+     * @return a list of IDs
      */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
