@@ -9,6 +9,9 @@ import docker_kubernetes
 import docker_engine
 import docker_swarm
 import control_agent
+import sys, argparse
+from threading import Thread
+from time import sleep
 
 print sys.argv
 if len(sys.argv) > 1:
@@ -22,6 +25,13 @@ channel = connection.channel()
 channel.queue_declare(queue='deployer_queue')
 
 path = os.path.dirname(os.path.abspath(__file__)) + "/"
+
+
+def threaded_function(args):
+    while True:
+        #print "processing data events"
+        connection.process_data_events()
+        sleep(30)
 
 def handleDelivery(message):
     parsed_json = json.loads(message)
@@ -82,6 +92,8 @@ def on_request(ch, method, props, body):
     par["attributes"] = "null"
     response["parameters"].append(par)
 
+    print "Response: %s " % response
+    
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
                      properties=pika.BasicProperties(correlation_id = \
@@ -92,5 +104,10 @@ def on_request(ch, method, props, body):
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(on_request, queue='deployer_queue')
 
+
+thread = Thread(target = threaded_function, args = (1, ))
+thread.start()
+
 print(" [x] Awaiting RPC requests")
 channel.start_consuming()
+thread.stop()
