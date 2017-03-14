@@ -334,4 +334,9 @@ public class ProvisionService {
 
         return mapper.readValue(strResponse, Message.class);
     }
+
+    @PostFilter("(hasRole('ROLE_ADMIN'))")
+    public void deleteAll() {
+        dao.deleteAll();
+    }
 }

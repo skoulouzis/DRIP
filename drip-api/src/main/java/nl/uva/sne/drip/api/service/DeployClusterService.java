@@ -195,4 +195,9 @@ public class DeployClusterService {
 
         return mapper.readValue(strResponse, Message.class);
     }
+
+    @PostAuthorize("(hasRole('ROLE_ADMIN'))")
+    public void deleteAll() {
+        dao.deleteAll();
+    }
 }

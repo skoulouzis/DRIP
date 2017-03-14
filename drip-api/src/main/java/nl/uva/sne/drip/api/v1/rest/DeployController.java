@@ -115,6 +115,14 @@ public class DeployController {
         }
         throw new NotFoundException();
     }
+    
+        @RequestMapping(value = "/all", method = RequestMethod.DELETE)
+    @RolesAllowed({UserService.ADMIN})
+    public @ResponseBody
+    String deleteAll() {
+        deployService.deleteAll();
+        return "Done";
+    }
 
   
 
