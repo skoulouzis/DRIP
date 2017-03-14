@@ -22,6 +22,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -54,6 +55,7 @@ public class RPCServer {
             }
         }
         HOST = prop.getProperty("rabbitmq.host", "127.0.0.1");
+        Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, MessageFormat.format("rabbitmq.host: {0}", HOST));
         start();
     }
 
@@ -63,6 +65,7 @@ public class RPCServer {
         factory.setPassword("guest");
         factory.setUsername("guest");
         factory.setPort(AMQP.PROTOCOL.PORT);
+        Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, "Trying to connect to: {0}", HOST);
         try (Connection connection = factory.newConnection()) {
             Channel channel = connection.createChannel();
             //We define the queue name 

@@ -24,7 +24,7 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 
 /**
  *
- * @author alogo
+ * @author S. Koulouzis
  */
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
