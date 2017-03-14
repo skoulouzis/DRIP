@@ -8,7 +8,6 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
-import com.sun.xml.internal.fastinfoset.tools.StAX2SAXReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

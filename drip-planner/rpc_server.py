@@ -17,9 +17,9 @@ import json
 
 
 
-#connection = pika.BlockingConnection(pika.ConnectionParameters(host='127.0.0.1'))
-#channel = connection.channel()
-#channel.queue_declare(queue='planner_queue')
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='127.0.0.1'))
+channel = connection.channel()
+channel.queue_declare(queue='planner_queue')
 
 
 
@@ -43,20 +43,13 @@ def handleDelivery(message):
             reg_ex = re.search(r'\d+', str(response_time))
             gr = reg_ex.group()
             deadline = int(gr)
-            
-         #if json[j]['type'] == "Switch.nodes.Application.Container.Docker.MOG_ProxyTranscoder" or json[j]['type']== "Switch.nodes.Application.Container.Docker.MOG_InputDistributor":
-            #response_time = json1[j]['properties']['QoS']['response_time']
-            #reg_ex = re.search(r'\d+', response_time)
-            #gr = reg_ex.group();
-            #deadline = int(gr)
 
     #get the nodes from the json
     nodeDic = {}
     nodeDic1 = {}
     i = 1
     for j in json1:
-        if not json1[j]['type'] == "Switch.nodes.Application.Connection":
-            #print j, json1[j]
+        if "Switch.nodes.Application.Container.Docker." in json1[j]['type']:
             nodeDic[j] = i
             nodeDic1[i] = j
             i = i + 1
@@ -65,8 +58,6 @@ def handleDelivery(message):
     links = []
     for j in json1:
         if json1[j]['type'] == "Switch.nodes.Application.Connection":
-            #print json1[j]['properties']['source']['component_name']
-            #print json1[j]['properties']['target']['component_name']
             link= {}
             link['source'] = nodeDic[json1[j]['properties']['source']['component_name']]
             link['target'] = nodeDic[json1[j]['properties']['target']['component_name']]
@@ -115,23 +106,41 @@ def handleDelivery(message):
     current_milli_time = lambda: int(round(time.time() * 1000))
     outcontent["creationDate"] = current_milli_time()   
     outcontent["parameters"] = []
-    for key, value in sorted_nodeDic:        
-        par = {}
-        res1 = {}
-        par["url"] = "null"
-        par["encoding"] = "UTF-8"
-        docker = json1[nodeDic1[value]].get('artifacts').get('docker_image').get('file')
-        name = str(nodeDic1[value])
-        #print("Name: %s Docker: %s" % (name, docker))
-        res1["name"] = str(nodeDic1[value])
-        res1["size"] = res[str(value)]
-        res1["docker"] = str(docker)
-        par["value"] = res1
-        par["attributes"] = "null"
-        ##print ("Parameter: %s" % par)
-        outcontent["parameters"].append(par)
     
-    #print ("Output message: %s" % outcontent)
+    for key, value in sorted_nodeDic:
+        if "docker_image." not in json1[nodeDic1[value]].get('artifacts'):
+            keys = json1[nodeDic1[value]].get('artifacts').keys()
+            for k in keys:
+                docker = json1[nodeDic1[value]].get('artifacts').get(k).get('file')
+                par = {}
+                res1 = {}
+                par["url"] = "null"
+                par["encoding"] = "UTF-8"
+                name = str(nodeDic1[value])
+                res1["name"] = str(nodeDic1[value])
+                res1["size"] = res[str(value)]
+                res1["docker"] = str(docker)
+                par["value"] = res1
+                par["attributes"] = "null"
+                ##print ("Parameter: %s" % par)
+                outcontent["parameters"].append(par)
+        else:
+            for key, value in sorted_nodeDic:        
+                par = {}
+                res1 = {}
+                par["url"] = "null"
+                par["encoding"] = "UTF-8"
+                name = str(nodeDic1[value])
+                docker = json1[nodeDic1[value]].get('artifacts').get('docker_image').get('file')
+                res1["name"] = str(nodeDic1[value])
+                res1["size"] = res[str(value)]
+                res1["docker"] = str(docker)
+                par["value"] = res1
+                par["attributes"] = "null"
+                ##print ("Parameter: %s" % par)
+                outcontent["parameters"].append(par)
+    
+    print ("Output message: %s" % outcontent)
     return outcontent
     
 
@@ -145,13 +154,13 @@ def on_request(ch, method, props, body):
                      body=str(response))
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
-#channel.basic_qos(prefetch_count=1)
-#channel.basic_consume(on_request, queue='planner_queue')
+channel.basic_qos(prefetch_count=1)
+channel.basic_consume(on_request, queue='planner_queue')
 
-#print(" [x] Awaiting RPC requests")
-#channel.start_consuming()
+print(" [x] Awaiting RPC requests")
+channel.start_consuming()
 
-f = open("../doc/json_samples/plannerInput2.json","r")
-body=f.read()
-response = handleDelivery(body)
+#f = open("../doc/json_samples/plannerInput2.json","r")
+#body=f.read()
+#response = handleDelivery(body)
 
