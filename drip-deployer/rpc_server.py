@@ -10,8 +10,14 @@ import docker_engine
 import docker_swarm
 import control_agent
 
+print sys.argv
+if len(sys.argv) > 1:
+    rabbitmq_host = sys.argv[1]
+else:
+    rabbitmq_host = '127.0.0.1'
+    
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='127.0.0.1'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
 channel = connection.channel()
 channel.queue_declare(queue='deployer_queue')
 

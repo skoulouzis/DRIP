@@ -40,6 +40,8 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
     @Value("${db.name}")
     private String dbName;
+    @Value("${db.host}")
+    private String dbHost;
     @Value("${db.username}")
     private String dbUsername;
     @Value("${db.password}")
@@ -56,7 +58,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
     @Override
     public Mongo mongo() throws Exception {
-        return new MongoClient("127.0.0.1", 27017);
+        return new MongoClient(dbHost, 27017);
     }
 
     @Override
