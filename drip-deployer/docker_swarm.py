@@ -27,7 +27,7 @@ def install_manager(vm):
 		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
 		stdin, stdout, stderr = ssh.exec_command("sudo docker swarm leave --force")
 		stdout.read()
-		stdin, stdout, stderr = ssh.exec_command("sudo docker swarm init --advertise-addr eth0")
+		stdin, stdout, stderr = ssh.exec_command("sudo docker swarm init --advertise-addr %s" % (vm.ip))
 		retstr = stdout.readlines()
 		print "%s: ========= Swarm Manager Installed =========" % (vm.ip)
 	except Exception as e:
