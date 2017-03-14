@@ -15,9 +15,14 @@ import random
 import time
 import json
 
+print "---------"
+if len(sys.argv) > 1:
+    rabbitmq_host = sys.argv[1]
+else:
+    rabbitmq_host = '127.0.0.1'
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='127.0.0.1'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
 channel = connection.channel()
 channel.queue_declare(queue='planner_queue')
 
@@ -154,11 +159,17 @@ def on_request(ch, method, props, body):
                      body=str(response))
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
+
+
+
+
+
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(on_request, queue='planner_queue')
 
 print(" [x] Awaiting RPC requests")
 channel.start_consuming()
+
 
 #f = open("../doc/json_samples/plannerInput2.json","r")
 #body=f.read()
