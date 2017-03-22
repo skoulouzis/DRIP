@@ -25,12 +25,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ *This class is responsible for receiving and sending message to the DRIP manager 
+ * via RabbitMQ.
+ * 
  * @author S. Koulouzis
  */
 public class RPCServer {
 
+    /**
+     *The name of the queue to send and receive massages  
+     */
     private static final String RPC_QUEUE_NAME = "planner_queue";
+    /**
+     * The IP or host name of the RabbitMQ server 
+     */
     private static final String HOST = "172.17.0.3";
 
     public static void main(String[] argv) {
