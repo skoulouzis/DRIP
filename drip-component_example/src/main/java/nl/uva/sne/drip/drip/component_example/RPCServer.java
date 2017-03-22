@@ -13,36 +13,72 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.drip.planner;
+package nl.uva.sne.drip.drip.component_example;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.MessageFormat;
+import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *This class is responsible for receiving and sending message to the DRIP manager 
- * via RabbitMQ.
- * 
+ * This class is responsible for receiving and sending message to the DRIP
+ * manager via RabbitMQ.
+ *
  * @author S. Koulouzis
  */
 public class RPCServer {
 
     /**
-     *The name of the queue to send and receive massages  
+     * The name of the queue to send and receive massages
      */
     private static final String RPC_QUEUE_NAME = "planner_queue";
     /**
-     * The IP or host name of the RabbitMQ server 
+     * The IP or host name of the RabbitMQ server
      */
-    private static final String HOST = "172.17.0.3";
+    private static String HOST = "127.0.0.1";
 
-    public static void main(String[] argv) {
-        start();
+    public static void main(String[] args) {
+        if (args.length > 1 && args[0].equals("test")) {
+            try {
+                Consumer c = new Consumer();
+                byte[] encoded = Files.readAllBytes(Paths.get(args[1]));
+                String response = c.handleDelivery(new String(encoded, "UTF-8"));
+                Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, MessageFormat.format("Response: {0}", response));
+            } catch (IOException ex) {
+                Logger.getLogger(RPCServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            Properties prop = new Properties();
+            if (args.length >= 1 && !args[0].equals("test")) {
+                try {
+                    prop.load(new FileInputStream(args[0]));
+                } catch (IOException ex) {
+                    Logger.getLogger(RPCServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                String resourceName = "provisioner.properies";
+                ClassLoader loader = Thread.currentThread().getContextClassLoader();
+                try (InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
+                    prop.load(resourceStream);
+                } catch (IOException ex) {
+                    Logger.getLogger(RPCServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            HOST = prop.getProperty("rabbitmq.host", "127.0.0.1");
+            Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, MessageFormat.format("rabbitmq.host: {0}", HOST));
+            start();
+        }
+
     }
 
     private static void start() {
