@@ -57,7 +57,7 @@ public class CloudCredentialsService {
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public CloudCredentials delete(String id) {
         CloudCredentials creds = dao.findOne(id);
-                if (creds == null) {
+        if (creds == null) {
             throw new NotFoundException();
         }
         dao.delete(creds);
@@ -69,5 +69,10 @@ public class CloudCredentialsService {
 //    @PostFilter("hasPermission(filterObject, 'read') or hasPermission(filterObject, 'admin')")
     public List<CloudCredentials> findAll() {
         return dao.findAll();
+    }
+
+    @PostFilter("(hasRole('ROLE_ADMIN'))")
+    public void deleteAll() {
+        dao.deleteAll();
     }
 }

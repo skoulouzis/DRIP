@@ -93,4 +93,9 @@ public class UserKeyService {
         upk.setOwner(owner);
         return dao.save(upk);
     }
+
+    @PostAuthorize("(hasRole('ROLE_ADMIN'))")
+    public void deleteAll() {
+        dao.deleteAll();
+    }
 }

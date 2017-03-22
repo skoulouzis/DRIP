@@ -81,16 +81,15 @@ public class ProvisionController {
         }
         throw new NotFoundException();
     }
-    
-        @RequestMapping(value = "all", method = RequestMethod.DELETE)
+
+    @RequestMapping(value = "/all", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
     String deleteAll() {
         provisionService.deleteAll();
         return "Done";
-        
-    }
 
+    }
 
     /**
      * Gets the IDs of all the stored ProvisionInfo
@@ -137,5 +136,4 @@ public class ProvisionController {
         return null;
     }
 
- 
 }

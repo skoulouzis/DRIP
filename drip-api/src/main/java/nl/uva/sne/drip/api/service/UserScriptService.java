@@ -70,4 +70,9 @@ public class UserScriptService {
     public List<Script> findAll() {
         return dao.findAll();
     }
+
+    @PostFilter("(hasRole('ROLE_ADMIN'))")
+    public void deleteAll() {
+        dao.deleteAll();
+    }
 }
