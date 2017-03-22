@@ -162,6 +162,14 @@ public class CloudCredentialsController {
         return "Deleted :" + id;
     }
 
+    @RequestMapping(value = "/all", method = RequestMethod.DELETE)
+    @RolesAllowed({UserService.ADMIN})
+    public @ResponseBody
+    String deleteAll() {
+        cloudCredentialsService.deleteAll();
+        return "Done";
+    }
+
     /**
      * Gets all the IDs of the stored cloud credentials
      *

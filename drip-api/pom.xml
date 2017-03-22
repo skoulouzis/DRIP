@@ -201,7 +201,7 @@
                             <goal>docs</goal>
                         </goals>
                         <configuration>
-                            <docsDir>${project.basedir}/doc</docsDir>
+                            <docsDir>${project.basedir}/../doc</docsDir>
                             <configFile>enunciate.xml</configFile>
                         </configuration>
                     </execution>

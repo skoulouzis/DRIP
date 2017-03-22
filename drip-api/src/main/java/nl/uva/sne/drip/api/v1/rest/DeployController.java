@@ -43,8 +43,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class DeployController {
 
-
-
     @Autowired
     private DeployClusterService deployService;
 
@@ -115,16 +113,14 @@ public class DeployController {
         }
         throw new NotFoundException();
     }
-    
-        @RequestMapping(value = "/all", method = RequestMethod.DELETE)
+
+    @RequestMapping(value = "/all", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
     String deleteAll() {
         deployService.deleteAll();
         return "Done";
     }
-
-  
 
     private void checkClusterType(String clusterType) {
         switch (clusterType.toLowerCase()) {

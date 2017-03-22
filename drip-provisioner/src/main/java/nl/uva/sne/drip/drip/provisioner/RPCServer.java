@@ -65,7 +65,7 @@ public class RPCServer {
         factory.setPassword("guest");
         factory.setUsername("guest");
         factory.setPort(AMQP.PROTOCOL.PORT);
-        Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, "Trying to connect to: {0}", HOST);
+        Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, "Connected to: {0}", HOST);
         try (Connection connection = factory.newConnection()) {
             Channel channel = connection.createChannel();
             //We define the queue name 

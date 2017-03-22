@@ -22,8 +22,6 @@ if len(sys.argv) > 1:
 else:
     rabbitmq_host = '127.0.0.1'
 
-print "Trying to connect to: %s" %rabbitmq_host
-
 connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
 channel = connection.channel()
 channel.queue_declare(queue='planner_queue')

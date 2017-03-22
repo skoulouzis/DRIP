@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.v1.types.Script;
 import org.springframework.web.bind.annotation.PathVariable;
 import nl.uva.sne.drip.api.service.UserScriptService;
+import nl.uva.sne.drip.api.service.UserService;
 
 /**
  * This controller is responsible for handling user scripts. These user can be
@@ -55,6 +57,7 @@ public class UserScriptController {
      * @return the ID of the stopred script
      */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
+     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String uploadUserScript(@RequestParam("file") MultipartFile file) {
         if (!file.isEmpty()) {
@@ -85,13 +88,15 @@ public class UserScriptController {
      * @return the script
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Script get(@PathVariable("id") String id) {
         return userScriptService.findOne(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public String delete(@PathVariable("id") String id) {
+     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody String delete(@PathVariable("id") String id) {
         Script script = userScriptService.findOne(id);
         if (script == null) {
             throw new NotFoundException();
@@ -100,6 +105,14 @@ public class UserScriptController {
         return "Deleted: " + id;
     }
 
+    
+     @RequestMapping(value = "/all", method = RequestMethod.DELETE)
+     @RolesAllowed({UserService.ADMIN})
+    public @ResponseBody String deleteAll() {
+        userScriptService.deleteAll();
+        return "Done";
+    }
+    
     /**
      * Gets the IDs of all the stored scripts
      *

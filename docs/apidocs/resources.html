@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-  <title>drip-api</title>
+  <title>drip-api: Resources</title>
 
   <!-- Mobile viewport optimized: j.mp/bplateviewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,7 +35,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.html">drip-api</a>
+        <a class="navbar-brand" href="index.html">drip-api: Resources</a>
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right">
@@ -51,22 +51,15 @@
     <div class="row">
       <div class="col-sm-3 col-md-2 sidebar" id="apinav">
         <ul class="nav nav-sidebar">
-          <li><a href="#resources">Resources</a></li>
-          <li><a href="#syntax_json">JSON</a></li>
-          <li><a href="#syntax_xml">XML</a></li>
-          <li class="divider"></li>
           <li class="text-right"><a href="#top"><small>Back to Top</small></a></li>
         </ul>
       </div>
 
       <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <ol class="breadcrumb" id="top">
-          <li class="dropdown"><a href="index.html">Home</a></li>
+          <li class="active dropdown"><a href="index.html">Home</a></li>
+          <li class="dropdown"><a href="resources.html">Resources</a></li>
         </ol>
-
-  <div class="page-header">
-    <h1>drip-api</h1>
-  </div>
 
   <h1 class="page-header" id="resources">Resources</h1>
 
@@ -74,7 +67,6 @@
     The resources use a data model that is supported by a set of client-side libraries that are made available on the
     <a href="downloads.html">files and libraries</a> page.
   </p>
-
   <table class="table table-hover resources">
     <thead>
     <tr>
@@ -102,11 +94,13 @@ provisoner to request for resources (VMs).</span>
       <td>  <span class="resource-name">CloudCredentialsController</span>
 </td>
       <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/credentials/cloud</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/credentials/cloud/all</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/credentials/cloud/ids</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/credentials/cloud/{id}</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/credentials/cloud/upload/{id}</span>
 </samp></li></ul></td>
       <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
@@ -179,7 +173,7 @@ provisopned based on a TOSCA description.</span>
     <tr class="clickable-row" data-href="resource_ProvisionController.html">
       <td>  <span class="resource-name">ProvisionController</span>
 </td>
-      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/provisionerall</span>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/provisioner/all</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/provisioner/ids</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/provisioner/provision</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/provisioner/{id}</span>
@@ -284,11 +278,13 @@ machine the keys correspond to.</span>
     <tr class="clickable-row" data-href="resource_UserScriptController.html">
       <td>  <span class="resource-name">UserScriptController</span>
 </td>
-      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/user_script/ids</span>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/user_script/all</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/user_script/ids</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/user_script/upload</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/user_script/{id}</span>
 </samp></li></ul></td>
-      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">GET</span> 
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">DELETE</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> 
 </samp></li></ul></td>
@@ -305,247 +301,6 @@ used by the provisoner to run on the created VMs.</span>
 </samp></li></ul></td>
       <td>  <span class="resource-description">This controller is responsible for handling user scripts. These user can be
 used by the provisoner to run on the created VMs.</span>
-</td>
-    </tr>
-    </tbody>
-  </table>
-
-  <h1 class="page-header" id="data">Data Types</h1>
-
-  <h3 id="syntax_json"><span class="syntax-name">JSON</span></h3>
-
-  <table class="table table-hover datatypes">
-    <thead>
-      <tr>
-        <th align="center">type</th>
-        <th align="center">description</th>
-      </tr>
-    </thead>
-    <tbody data-link="row" class="rowlink">
-    <tr class="clickable-row" data-href="json_CloudCredentials.html">
-      <td>  <span class="datatype-name">CloudCredentials</span>
-</td>
-      <td>  <span class="datatype-description">This class represents the cloud credentials for a cloud. They are used by the
-provisoner to request for resources.</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="json_ClusterCredentials.html">
-      <td>  <span class="datatype-name">ClusterCredentials</span>
-</td>
-      <td>  <span class="datatype-description">This class represents the cluster credentials for a cloud. They can used to
-login to the cluster created by the deployer</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="json_DeployParameter.html">
-      <td>  <span class="datatype-name">DeployParameter</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="json_KeyValueHolder.html">
-      <td>  <span class="datatype-name">KeyValueHolder</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="json_LoginKey.html">
-      <td>  <span class="datatype-name">LoginKey</span>
-</td>
-      <td>  <span class="datatype-description">This class represents a login key. This key can be used to either login to a
-VM created by the provisiner or by the VM to allow the user to login to the
-VMs from the machine the keys correspond to.</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="json_OwnedObject.html">
-      <td>  <span class="datatype-name">OwnedObject</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="json_Plan.html">
-      <td>  <span class="datatype-name">Plan</span>
-</td>
-      <td>  <span class="datatype-description">This class represents a plan generated by the planner.</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="json_ProvisionInfo.html">
-      <td>  <span class="datatype-name">ProvisionInfo</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="json_Script.html">
-      <td>  <span class="datatype-name">Script</span>
-</td>
-      <td>  <span class="datatype-description">This class represents a simple script that can run on a provisioned VM.</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="json_ToscaRepresentation.html">
-      <td>  <span class="datatype-name">ToscaRepresentation</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="json_Type.html">
-      <td>  <span class="datatype-name">Type</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="json_User.html">
-      <td>  <span class="datatype-name">User</span>
-</td>
-      <td>  <span class="datatype-description">This class represents a user.</span>
-</td>
-    </tr>
-    </tbody>
-  </table>
-
-  <h3 id="syntax_xml"><span class="syntax-name">XML</span></h3>
-
-  <table class="table table-hover datatypes">
-    <caption>Default Namespace  (<a href="ns0.xsd">schema</a>)</caption>
-    <thead>
-      <tr>
-        <th align="center">type</th>
-        <th align="center">description</th>
-      </tr>
-    </thead>
-    <tbody data-link="row" class="rowlink">
-    <tr class="clickable-row" data-href="xml_ns0_attribute.html">
-      <td>  <span class="datatype-name">attribute</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_confScript.html">
-      <td>  <span class="datatype-name">confScript</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_confUserKey.html">
-      <td>  <span class="datatype-name">confUserKey</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_configure.html">
-      <td>  <span class="datatype-name">configure</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_deploy.html">
-      <td>  <span class="datatype-name">deploy</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_execute.html">
-      <td>  <span class="datatype-name">execute</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_loginKey0.html">
-      <td>  <span class="datatype-name">loginKey0</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_plan.html">
-      <td>  <span class="datatype-name">plan</span>
-</td>
-      <td>  <span class="datatype-description">This class represents a plan to be provided to the planner.</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_register.html">
-      <td>  <span class="datatype-name">register</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_result.html">
-      <td>  <span class="datatype-name">result</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_upload.html">
-      <td>  <span class="datatype-name">upload</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_cloudCredentials.html">
-      <td>  <span class="datatype-name">cloudCredentials</span>
-</td>
-      <td>  <span class="datatype-description">This class represents the cloud credentials for a cloud. They are used by the
-provisoner to request for resources.</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_clusterCredentials.html">
-      <td>  <span class="datatype-name">clusterCredentials</span>
-</td>
-      <td>  <span class="datatype-description">This class represents the cluster credentials for a cloud. They can used to
-login to the cluster created by the deployer</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_deployParameter.html">
-      <td>  <span class="datatype-name">deployParameter</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_keyValueHolder.html">
-      <td>  <span class="datatype-name">keyValueHolder</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_loginKey.html">
-      <td>  <span class="datatype-name">loginKey</span>
-</td>
-      <td>  <span class="datatype-description">This class represents a login key. This key can be used to either login to a
-VM created by the provisiner or by the VM to allow the user to login to the
-VMs from the machine the keys correspond to.</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_type.html">
-      <td>  <span class="datatype-name">type</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_ownedObject.html">
-      <td>  <span class="datatype-name">ownedObject</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_provisionInfo.html">
-      <td>  <span class="datatype-name">provisionInfo</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_script.html">
-      <td>  <span class="datatype-name">script</span>
-</td>
-      <td>  <span class="datatype-description">This class represents a simple script that can run on a provisioned VM.</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_toscaRepresentation.html">
-      <td>  <span class="datatype-name">toscaRepresentation</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_user.html">
-      <td>  <span class="datatype-name">user</span>
-</td>
-      <td>  <span class="datatype-description">This class represents a user.</span>
 </td>
     </tr>
     </tbody>

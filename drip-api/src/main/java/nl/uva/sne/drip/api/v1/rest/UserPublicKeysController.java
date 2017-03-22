@@ -169,7 +169,15 @@ public class UserPublicKeysController {
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
         service.delete(id, LoginKey.Type.PUBLIC);
-        return "Deleteed: " + id;
+        return "Deleted: " + id;
+    }
+    
+     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RolesAllowed({UserService.ADMIN})
+    public @ResponseBody
+    String deleteAll() {
+        service.deleteAll();
+        return "Done";
     }
 
 }
