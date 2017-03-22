@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONException;
 
 /**
  * This class is responsible for receiving and sending message to the DRIP
@@ -52,9 +53,9 @@ public class RPCServer {
             try {
                 Consumer c = new Consumer();
                 byte[] encoded = Files.readAllBytes(Paths.get(args[1]));
-                String response = c.handleDelivery(new String(encoded, "UTF-8"));
+                String response = c.invokeComponent(new String(encoded, "UTF-8"));
                 Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, MessageFormat.format("Response: {0}", response));
-            } catch (IOException ex) {
+            } catch (IOException | JSONException ex) {
                 Logger.getLogger(RPCServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {

@@ -15,10 +15,30 @@
  */
 package nl.uva.sne.drip.drip.component_example;
 
+import java.io.File;
+
 /**
+ * This is an example components. It is a dumy components to demonstrate a
+ * simple application logic
  *
- * @author S. Koulouzis
+ * @author S. Koulouziss
  */
 public class Component {
+
+    private final int input;
+    private final File inputTextFile;
+    private final File inputBinFile;
+    private final ExamplePOJO book;
+
+    public Component(int input, File inputTextFile, File inputBinFile, ExamplePOJO book) {
+        this.input = input;
+        this.inputTextFile = inputTextFile;
+        this.inputBinFile = inputBinFile;
+        this.book = book;
+    }
+
+    String run() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

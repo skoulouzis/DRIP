@@ -19,16 +19,19 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.StandardOpenOption;
+import java.util.Base64;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
@@ -45,18 +48,15 @@ import org.json.JSONObject;
 public class Consumer extends DefaultConsumer {
 
     private final Channel channel;
-    private final Component component;
 
     public Consumer(Channel channel) {
         super(channel);
         this.channel = channel;
-        this.component = new Component();
     }
 
     public Consumer() {
         super(null);
         this.channel = null;
-        this.component = new Component();
     }
 
     @Override
@@ -72,22 +72,8 @@ public class Consumer extends DefaultConsumer {
         try {
             //The queue only moves bytes so we need to convert them to stting 
             String message = new String(body, "UTF-8");
-            
-            //We need to extact the call parameters form the json message. 
-//            inputFiles = jacksonUnmarshalExample(message);
-            //Call the method with the extracted parameters 
-//            List<File> files = panner.plan(inputFiles[0].getAbsolutePath(), inputFiles[1].getAbsolutePath(), tempDir.getAbsolutePath());
-
-            //Here we do the same as above with a different API
-//            inputFiles = simpleJsonUnmarshalExample(message);
-            //Call the method with the extracted parameters  
-//            files = panner.plan(inputFiles[0].getAbsolutePath(), inputFiles[1].getAbsolutePath(), tempDir.getAbsolutePath());
-            //Now we need to put the result of the call to a message and respond 
-            //Example 1
-//            response = jacksonMarshalExample(files);
-            //Example 2
-//            response = simpleJsonMarshalExample(files);
-        } catch (Exception ex) {
+            response = invokeComponent(message);
+        } catch (JSONException | IOException ex) {
             response = ex.getMessage();
             Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -98,101 +84,147 @@ public class Consumer extends DefaultConsumer {
 
     }
 
-//    private File[] jacksonUnmarshalExample(String message) throws IOException {
-//        //Use the Jackson API to convert json to Object 
-//        File[] files = new File[2];
-//        ObjectMapper mapper = new ObjectMapper();
-//        Message request = mapper.readValue(message, Message.class);
-//
-//        List<MessageParameter> params = request.getParameters();
-//
-//        //Create tmp input files 
-//        File inputFile = File.createTempFile("input-", Long.toString(System.nanoTime()));
-//        File exampleFile = File.createTempFile("example-", Long.toString(System.nanoTime()));
-//        //loop through the parameters in a message to find the input files
-//        for (MessageParameter param : params) {
-//            if (param.getName().equals("input")) {
-//                try (PrintWriter out = new PrintWriter(inputFile)) {
-//                    out.print(param.getValue());
-//                }
-//                files[0] = inputFile;
-//            }
-//            if (param.getName().equals("example")) {
-//                try (PrintWriter out = new PrintWriter(exampleFile)) {
-//                    out.print(param.getValue());
-//                }
-//                files[1] = exampleFile;
-//            }
-//        }
-//        //Return the array with input files 
-//        return files;
-//    }
-    private File[] simpleJsonUnmarshalExample(String message) throws JSONException, FileNotFoundException, IOException {
-        //Use the JSONObject API to convert json to Object (Message)
-        File[] files = new File[2];
-        JSONObject jo = new JSONObject(message);
-        JSONArray parameters = jo.getJSONArray("parameters");
-        File inputFile = File.createTempFile("input-", Long.toString(System.nanoTime()));
-        File exampleFile = File.createTempFile("example-", Long.toString(System.nanoTime()));
+    /**
+     * This method is extracts the parammeters from incoming JSON message.
+     *
+     * @param message
+     * @return
+     * @throws JSONException
+     * @throws IOException
+     */
+    public String invokeComponent(String message) throws JSONException, IOException {
+        JSONObject messageJson = new JSONObject(message);
+        Date creationDate = getMessageCreationDate(messageJson);
+        Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Message was created at: {0}", creationDate);
+
+        JSONArray parameters = messageJson.getJSONArray("parameters");
+        int input = getInputInteger(parameters);
+        Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Input parameter is: {0}", input);
+
+        File inputTextFile = getInputFile(parameters, System.getProperty("java.io.tmpdir") + File.separator + "delete-me.txt");
+        Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Input file is at: {0}. With size: {1}", new Object[]{inputTextFile.getAbsolutePath(), inputTextFile.length()});
+
+        File inputBinFile = getInputImageFile(parameters, System.getProperty("java.io.tmpdir"));
+        Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Input image file is at: {0}. With size: {1}", new Object[]{inputBinFile.getAbsolutePath(), inputBinFile.length()});
+
+        ExamplePOJO book = getExamplePOJO(parameters);
+
+        Integer wordcount = book.getContent().trim().split("\\s+").length;
+
+        Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Created  book object. Author:  {0}. Langunage: {1}. Number of words: {2}", new Object[]{book.getAuthor(), book.getLanguage(), wordcount});
+
+        Component component = new Component(input, inputTextFile, inputBinFile, book);
+        String response;
+        try {
+            response = component.run();
+        } catch (Exception ex) {
+            response = ex.getMessage();
+            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return response;
+    }
+
+    private Date getMessageCreationDate(JSONObject messageJson) throws JSONException {
+        return new Date(messageJson.getLong("creationDate"));
+    }
+
+    private Integer getInputInteger(JSONArray parameters) throws JSONException {
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get("name");
-            if (name.equals("input")) {
-                try (PrintWriter out = new PrintWriter(inputFile)) {
-                    out.print(param.get("value"));
-                }
-                files[0] = inputFile;
-            }
-            if (name.equals("example")) {
-                try (PrintWriter out = new PrintWriter(exampleFile)) {
-                    out.print(param.get("value"));
-                }
-                files[1] = exampleFile;
+            if (param.has("name") && param.getString("name").equals("input")) {
+                return param.getInt("value");
             }
         }
-        return files;
+        return null;
     }
 
-//    private String jacksonMarshalExample(List<File> files) throws UnsupportedEncodingException, IOException {
-//        //Use the jackson API to convert Object (Message) to json
-//        Message responseMessage = new Message();
-//        List parameters = new ArrayList();
-//        String charset = "UTF-8";
-//        for (File f : files) {
-//            MessageParameter fileParam = new MessageParameter();
-//            byte[] bytes = Files.readAllBytes(Paths.get(f.getAbsolutePath()));
-//            fileParam.setValue(new String(bytes, charset));
-//            fileParam.setEncoding(charset);
-//            fileParam.setName(f.getName());
-//            parameters.add(fileParam);
-//        }
-//        responseMessage.setParameters(parameters);
-//        //The creationDate is the only filed that has to be there 
-//        responseMessage.setCreationDate((System.currentTimeMillis()));
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        return mapper.writeValueAsString(responseMessage);
-//    }
-    private String simpleJsonMarshalExample(List<File> files) throws JSONException, IOException {
-        //Use the JSONObject API to convert Object (Message) to json
-        JSONObject jo = new JSONObject();
-        jo.put("creationDate", (System.currentTimeMillis()));
-        List parameters = new ArrayList();
-        String charset = "UTF-8";
-        for (File f : files) {
-            Map<String, String> fileArguments = new HashMap<>();
-            fileArguments.put("encoding", charset);
-            fileArguments.put("name", f.getName());
-            byte[] bytes = Files.readAllBytes(Paths.get(f.getAbsolutePath()));
-            fileArguments.put("value", new String(bytes, charset));
-            parameters.add(fileArguments);
+    private File getInputFile(JSONArray parameters, String filePath) throws JSONException, IOException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            if (param.has("name") && param.getString("name").equals("input-file")) {
+                OpenOption[] options = new OpenOption[1];
+                options[0] = StandardOpenOption.CREATE_NEW;
+                String value = param.getString("value");
+                String encoding = param.getString("encoding");
+
+                File file = new File(filePath);
+                file.delete();
+                byte[] bytes = null;
+                if (encoding.equals("UTF-8")) {
+                    bytes = value.getBytes();
+                }
+                if (encoding.equals("Base64")) {
+                    bytes = Base64.getDecoder().decode(value);
+                }
+                Files.write(Paths.get(file.getAbsolutePath()), bytes, options);
+                return file;
+            }
         }
-        jo.put("parameters", parameters);
-        return jo.toString();
+        return null;
     }
 
-    public String handleDelivery(String message) {
-        return message;
+    private File getInputImageFile(JSONArray parameters, String filePath) throws IOException, JSONException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            if (param.has("name") && param.getString("name").equals("input_image")) {
+                OpenOption[] options = new OpenOption[1];
+                options[0] = StandardOpenOption.CREATE_NEW;
+                String value = param.getString("value");
+                String encoding = param.getString("encoding");
+                JSONObject attributes = param.getJSONObject("attributes");
+                String fileName = attributes.getString("filename");
+                File file = new File(filePath + File.separator + fileName);
+                file.delete();
+                byte[] bytes = null;
+                if (encoding.equals("UTF-8")) {
+                    bytes = value.getBytes();
+                }
+                if (encoding.equals("Base64")) {
+                    bytes = Base64.getDecoder().decode(value);
+                }
+                Files.write(Paths.get(file.getAbsolutePath()), bytes, options);
+                return file;
+            }
+        }
+        return null;
+
+    }
+
+    private ExamplePOJO getExamplePOJO(JSONArray parameters) throws JSONException, MalformedURLException, IOException {
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            if (param.has("name") && param.getString("name").equals("text")) {
+                URL url = new URL(param.getString("url"));
+
+                String content = getContent(url);
+
+                JSONObject attributes = param.getJSONObject("attributes");
+                String author = attributes.getString("Author");
+
+                String translator = attributes.getString("Translator");
+
+                String language = attributes.getString("Language");
+                ExamplePOJO book = new ExamplePOJO(author, content, translator, language);
+
+                return book;
+            }
+        }
+        return null;
+
+    }
+
+    private String getContent(URL url) throws IOException {
+        URLConnection conn = url.openConnection();
+        StringBuilder cont = null;
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(conn.getInputStream()))) {
+            String inputLine;
+            cont = new StringBuilder();
+            while ((inputLine = br.readLine()) != null) {
+                cont.append(inputLine);
+            }
+        }
+        return cont.toString();
     }
 
 }
