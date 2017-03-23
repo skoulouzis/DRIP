@@ -67,7 +67,7 @@ public class RPCServer {
                     Logger.getLogger(RPCServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-                String resourceName = "provisioner.properies";
+                String resourceName = "provisioner.properties";
                 ClassLoader loader = Thread.currentThread().getContextClassLoader();
                 try (InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
                     prop.load(resourceStream);

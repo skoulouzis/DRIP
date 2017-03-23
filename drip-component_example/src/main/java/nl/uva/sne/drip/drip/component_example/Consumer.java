@@ -49,7 +49,7 @@ import org.json.JSONObject;
  *
  * @author S. Koulouzis
  */
-public class Consumer extends DefaultConsumer {
+    public class Consumer extends DefaultConsumer {
 
     private final Channel channel;
 
@@ -72,7 +72,6 @@ public class Consumer extends DefaultConsumer {
                 .build();
 
         String response = "";
-
         try {
             //The queue only moves bytes so we need to convert them to stting 
             String message = new String(body, "UTF-8");
@@ -85,7 +84,6 @@ public class Consumer extends DefaultConsumer {
             channel.basicPublish("", properties.getReplyTo(), replyProps, response.getBytes("UTF-8"));
             channel.basicAck(envelope.getDeliveryTag(), false);
         }
-
     }
 
     /**
