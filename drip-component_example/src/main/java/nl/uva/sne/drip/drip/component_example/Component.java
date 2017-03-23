@@ -16,6 +16,8 @@
 package nl.uva.sne.drip.drip.component_example;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This is an example components. It is a dumy components to demonstrate a
@@ -25,7 +27,7 @@ import java.io.File;
  */
 public class Component {
 
-    private final int input;
+    private int input;
     private final File inputTextFile;
     private final File inputBinFile;
     private final ExamplePOJO book;
@@ -37,8 +39,14 @@ public class Component {
         this.book = book;
     }
 
-    String run() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    ExampleResult run() throws Exception {
+
+        ExampleResult res = new ExampleResult();
+        res.output = input++;
+        res.inputTextFile = inputTextFile;
+        res.inputBinFile = inputBinFile;
+        res.book = book;
+        return res;
     }
 
 }

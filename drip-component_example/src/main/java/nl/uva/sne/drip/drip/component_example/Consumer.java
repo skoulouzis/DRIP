@@ -30,8 +30,12 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
@@ -99,24 +103,18 @@ public class Consumer extends DefaultConsumer {
 
         JSONArray parameters = messageJson.getJSONArray("parameters");
         int input = getInputInteger(parameters);
-        Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Input parameter is: {0}", input);
 
         File inputTextFile = getInputFile(parameters, System.getProperty("java.io.tmpdir") + File.separator + "delete-me.txt");
-        Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Input file is at: {0}. With size: {1}", new Object[]{inputTextFile.getAbsolutePath(), inputTextFile.length()});
 
         File inputBinFile = getInputImageFile(parameters, System.getProperty("java.io.tmpdir"));
-        Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Input image file is at: {0}. With size: {1}", new Object[]{inputBinFile.getAbsolutePath(), inputBinFile.length()});
 
         ExamplePOJO book = getExamplePOJO(parameters);
-
-        Integer wordcount = book.getContent().trim().split("\\s+").length;
-
-        Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Created  book object. Author:  {0}. Langunage: {1}. Number of words: {2}", new Object[]{book.getAuthor(), book.getLanguage(), wordcount});
 
         Component component = new Component(input, inputTextFile, inputBinFile, book);
         String response;
         try {
-            response = component.run();
+            ExampleResult result = component.run();
+            response = createMessage(result);
         } catch (Exception ex) {
             response = ex.getMessage();
             Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
@@ -215,7 +213,7 @@ public class Consumer extends DefaultConsumer {
 
     private String getContent(URL url) throws IOException {
         URLConnection conn = url.openConnection();
-        StringBuilder cont = null;
+        StringBuilder cont;
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(conn.getInputStream()))) {
             String inputLine;
@@ -227,4 +225,55 @@ public class Consumer extends DefaultConsumer {
         return cont.toString();
     }
 
+    private String createMessage(ExampleResult result) throws JSONException, IOException {
+        JSONObject message = new JSONObject();
+        message.put("creationDate", (System.currentTimeMillis()));
+        List parameters = new ArrayList();
+        //JSON objects must be added as values with "" and escape all ". For the 
+        //message it's just a string
+        JSONObject bookJSON = examplePOJOtoJson(result.book);
+        String bookJSONString = bookJSON.toString().replaceAll("\"", "\\\"");
+        bookJSONString = "\"" + bookJSONString + "\"";
+        Map<String, String> bookParam = new HashMap<>();
+        bookParam.put("name", "book");
+        bookParam.put("value", bookJSONString);
+        bookParam.put("encoding", "UTF-8");
+        parameters.add(bookParam);
+
+        //Binarry files must be encoded as base64
+        byte[] bytes = Files.readAllBytes(Paths.get(result.inputBinFile.getAbsolutePath()));
+        byte[] encoded = Base64.getEncoder().encode(bytes);
+        String cont = new String(encoded, "US-ASCII");
+        Map<String, String> binFileParam = new HashMap<>();
+        binFileParam.put("name", "image");
+        binFileParam.put("value", cont);
+        binFileParam.put("encoding", "Base64");
+        parameters.add(binFileParam);
+
+        //Text files canh be encoded as to UTF-8
+        bytes = Files.readAllBytes(Paths.get(result.inputTextFile.getAbsolutePath()));
+        cont = new String(bytes, "UTF-8");
+        Map<String, String> textFileParam = new HashMap<>();
+        textFileParam.put("name", "text");
+        textFileParam.put("value", cont);
+        textFileParam.put("encoding", "UTF-8");
+        parameters.add(textFileParam);
+
+        Map<String, String> intParam = new HashMap<>();
+        intParam.put("name", "output");
+        intParam.put("value", String.valueOf(result.output));
+        parameters.add(intParam);
+
+        message.put("parameters", parameters);
+        return message.toString();
+    }
+
+    private JSONObject examplePOJOtoJson(ExamplePOJO book) throws JSONException {
+        JSONObject bookJSON = new JSONObject();
+        bookJSON.append("Author", book.getAuthor());
+        bookJSON.append("Content", book.getContent());
+        bookJSON.append("Language", book.getLanguage());
+        bookJSON.append("Translator", book.getTranslator());
+        return bookJSON;
+    }
 }
