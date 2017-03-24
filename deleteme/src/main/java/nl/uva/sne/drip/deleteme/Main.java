@@ -35,7 +35,5 @@ public class Main {
             prevChar = (int) array[i];
         }
 
-        System.err.println(tt);
-        System.err.println(sb.toString());
     }
 }

@@ -56,7 +56,7 @@ public class ToscaController {
     public @ResponseBody
     String post(@RequestBody String toscaContents) {
         try {
-            
+
             return toscaService.saveStringContents(toscaContents, String.valueOf(System.currentTimeMillis()));
         } catch (IOException ex) {
             Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);

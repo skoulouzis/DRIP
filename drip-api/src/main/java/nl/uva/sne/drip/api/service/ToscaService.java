@@ -136,7 +136,6 @@ public class ToscaService {
             prevChar = (int) array[i];
         }
         toscaContents = sb.toString();
-        
         toscaContents = toscaContents.replaceAll("(?m)^[ \t]*\r?\n", "");
         for (int i = 0; i < BAD_CHARS.length; i++) {
             int hex = BAD_CHARS[i];

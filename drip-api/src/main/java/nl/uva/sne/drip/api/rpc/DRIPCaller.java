@@ -138,7 +138,6 @@ public abstract class DRIPCaller implements AutoCloseable {
 
     private Message unMarshallWithSimpleJson(String strResponse) throws JSONException {
         strResponse = strResponse.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
-//        System.err.println(strResponse);
         JSONObject jsonObj = new JSONObject(strResponse);
         Message responseMessage = new Message();
         responseMessage.setCreationDate((Long) jsonObj.get("creationDate"));
