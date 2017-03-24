@@ -6,11 +6,6 @@
 package nl.uva.sne.drip.deleteme;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.Base64;
 
 /**
  *
@@ -19,16 +14,28 @@ import java.util.Base64;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        byte[] bytes = Files.readAllBytes(Paths.get("/home/alogo/workspace/DRIP/docs/images/DRIP_arch.png"));
-        byte[] encoded = Base64.getEncoder().encode(bytes);
-        String cont = new String(encoded, "US-ASCII");
-        System.out.println(cont);
+        char[] chars = {(char) 92, (char) 110};
 
-        byte[] decoded = Base64.getDecoder().decode(cont);
-        OpenOption[] options = new OpenOption[1];
-        options[0] = StandardOpenOption.CREATE_NEW;
+        String c1 = String.valueOf(chars);
 
-        Files.write(Paths.get("/home/alogo/Downloads/DRIP_arch.png"), decoded, options);
+        String tt = "v:" + c1 + c1 + c1 + "description:" + c1 + " example file for infrastructu";
 
+        char[] array = tt.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        int prevChar = -1;
+        for (int i = 0; i < array.length; i++) {
+            int currentChar = (int) array[i];
+            if (prevChar > 0 && prevChar == 92 && currentChar == 110) {
+                sb.delete(sb.length() - 1, sb.length());
+                sb.append('\n');
+
+            } else {
+                sb.append((char) currentChar);
+            }
+            prevChar = (int) array[i];
+        }
+
+        System.err.println(tt);
+        System.err.println(sb.toString());
     }
 }

@@ -121,7 +121,7 @@ public class UserController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
-    String remove(@PathVariable("id") String id) {
+    String delete(@PathVariable("id") String id) {
         try {
             User user = service.findOne(id);
             if (user == null) {

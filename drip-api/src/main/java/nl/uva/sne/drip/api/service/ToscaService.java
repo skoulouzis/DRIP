@@ -40,6 +40,8 @@ import org.springframework.web.multipart.MultipartFile;
 @PreAuthorize("isAuthenticated()")
 public class ToscaService {
 
+    private static final int[] BAD_CHARS = {0x80};
+
     @Autowired
     private ToscaDao dao;
 
@@ -71,14 +73,7 @@ public class ToscaService {
         String name = System.currentTimeMillis() + "_" + originalFileName;
         byte[] bytes = file.getBytes();
         String str = new String(bytes, "UTF-8");
-        str = str.replaceAll("\\.", "\uff0E");
-
-        Map<String, Object> map = Converter.ymlString2Map(str);
-        ToscaRepresentation t = new ToscaRepresentation();
-        t.setName(name);
-        t.setKvMap(map);
-        save(t);
-        return t.getId();
+        return saveStringContents(str, name);
     }
 
     public String saveYamlString(String yamlString, String name) throws IOException {
@@ -122,4 +117,39 @@ public class ToscaService {
     public void deleteAll() {
         dao.deleteAll();
     }
+
+    public String saveStringContents(String toscaContents, String name) throws IOException {
+
+        //Remove '\' and 'n' if they are together and replace them with '\n'
+        char[] array = toscaContents.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        int prevChar = -1;
+        for (int i = 0; i < array.length; i++) {
+            int currentChar = (int) array[i];
+            if (prevChar > 0 && prevChar == 92 && currentChar == 110) {
+                sb.delete(sb.length() - 1, sb.length());
+                sb.append('\n');
+
+            } else {
+                sb.append((char) currentChar);
+            }
+            prevChar = (int) array[i];
+        }
+        toscaContents = sb.toString();
+        
+        toscaContents = toscaContents.replaceAll("(?m)^[ \t]*\r?\n", "");
+        for (int i = 0; i < BAD_CHARS.length; i++) {
+            int hex = BAD_CHARS[i];
+            toscaContents = toscaContents.replaceAll(String.valueOf((char) hex), "");
+        }
+
+        toscaContents = toscaContents.replaceAll("\\.", "\uff0E");
+        Map<String, Object> map = Converter.ymlString2Map(toscaContents);
+        ToscaRepresentation t = new ToscaRepresentation();
+        t.setName(name);
+        t.setKvMap(map);
+        save(t);
+        return t.getId();
+    }
+
 }

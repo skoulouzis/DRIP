@@ -66,6 +66,9 @@ def handleDelivery(message):
         ret1 = control_agent.run(vm_list)
         if "ERROR" in ret1: ret = ret1
         return ret
+    elif cluster_type == "ansible":
+        ret = ansible-playbook.run(vm_list)
+        return ret
     else:
         return "ERROR: invalid cluster"
     

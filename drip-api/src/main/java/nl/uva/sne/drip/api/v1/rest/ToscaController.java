@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * This controller is responsible for storing TOSCA descriptions that can be
@@ -49,6 +50,19 @@ public class ToscaController {
 
     @Autowired
     private ToscaService toscaService;
+
+    @RequestMapping(value = "/post", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String post(@RequestBody String toscaContents) {
+        try {
+            
+            return toscaService.saveStringContents(toscaContents, String.valueOf(System.currentTimeMillis()));
+        } catch (IOException ex) {
+            Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     /**
      * Uploads and stores a TOSCA description file
@@ -120,8 +134,8 @@ public class ToscaController {
         }
         return ids;
     }
-    
-     /**
+
+    /**
      * Gets the IDs of all the stored TOSCA descriptionss.
      *
      * @return a list of all the IDs

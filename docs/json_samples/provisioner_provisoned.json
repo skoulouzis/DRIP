@@ -1,1 +1,15 @@
-{"creationDate":1488368936945,"parameters":[{"name":"f293ff03-4b82-49e2-871a-899aadf821ce","encoding":"UTF-8","value":"publicKeyPath: /tmp/Input-4007028381500/user.pem\nuserName: zh9314\nsubnets:\n- {name: s1, subnet: 192.168.10.0, netmask: 255.255.255.0}\ncomponents:\n- name: faab6756-61b6-4800-bffa-ae9d859a9d6c\n  type: Switch.nodes.Compute\n  nodetype: t2.medium\n  OStype: Ubuntu 16.04\n  domain: ec2.us-east-1.amazonaws.com\n  script: /tmp/Input-4007028381500/guiscipt.sh\n  installation: null\n  role: master\n  dockers: mogswitch/InputDistributor\n  public_address: 54.144.0.91\n  instanceId: i-0e78cbf853328b820\n  ethernet_port:\n  - {name: p1, subnet_name: s1, address: 192.168.10.10}\n- name: 1c75eedf-8497-46fe-aeb8-dab6a62154cb\n  type: Switch.nodes.Compute\n  nodetype: t2.medium\n  OStype: Ubuntu 16.04\n  domain: ec2.us-east-1.amazonaws.com\n  script: /tmp/Input-4007028381500/guiscipt.sh\n  installation: null\n  role: slave\n  dockers: mogswitch/ProxyTranscoder\n  public_address: 34.207.254.160\n  instanceId: i-0a99ea18fcc77ed7a\n  ethernet_port:\n  - {name: p1, subnet_name: s1, address: 192.168.10.11}\n"},{"name":"kubernetes","encoding":"UTF-8","value":"54.144.0.91 ubuntu /tmp/Input-4007028381500/Virginia.pem master\n34.207.254.160 ubuntu /tmp/Input-4007028381500/Virginia.pem slave\n"}]}
+{
+  "creationDate": 1488368936945,
+  "parameters": [
+    {
+      "name": "f293ff03-4b82-49e2-871a-899aadf821ce",
+      "encoding": "UTF-8",
+      "value": "publicKeyPath: /tmp/Input-4007028381500/user.pem\nuserName: zh9314\nsubnets:\n- {name: s1, subnet: 192.168.10.0, netmask: 255.255.255.0}\ncomponents:\n- name: faab6756-61b6-4800-bffa-ae9d859a9d6c\n  type: Switch.nodes.Compute\n  nodetype: t2.medium\n  OStype: Ubuntu 16.04\n  domain: ec2.us-east-1.amazonaws.com\n  script: /tmp/Input-4007028381500/guiscipt.sh\n  installation: null\n  role: master\n  dockers: mogswitch/InputDistributor\n  public_address: 54.144.0.91\n  instanceId: i-0e78cbf853328b820\n  ethernet_port:\n  - {name: p1, subnet_name: s1, address: 192.168.10.10}\n- name: 1c75eedf-8497-46fe-aeb8-dab6a62154cb\n  type: Switch.nodes.Compute\n  nodetype: t2.medium\n  OStype: Ubuntu 16.04\n  domain: ec2.us-east-1.amazonaws.com\n  script: /tmp/Input-4007028381500/guiscipt.sh\n  installation: null\n  role: slave\n  dockers: mogswitch/ProxyTranscoder\n  public_address: 34.207.254.160\n  instanceId: i-0a99ea18fcc77ed7a\n  ethernet_port:\n  - {name: p1, subnet_name: s1, address: 192.168.10.11}\n"
+    },
+    {
+      "name": "kubernetes",
+      "encoding": "UTF-8",
+      "value": "54.144.0.91 ubuntu /tmp/Input-4007028381500/Virginia.pem master\n34.207.254.160 ubuntu /tmp/Input-4007028381500/Virginia.pem slave\n"
+    }
+  ]
+}
