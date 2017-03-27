@@ -12,6 +12,5 @@
     <modules>
         <module>drip-api</module>
         <module>drip-planner2provisioner</module>
-        <module>deleteme</module>
     </modules>
 </project>

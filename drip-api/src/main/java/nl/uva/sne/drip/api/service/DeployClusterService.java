@@ -17,6 +17,7 @@ package nl.uva.sne.drip.api.service;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.DeployerCaller;
 import nl.uva.sne.drip.api.v1.rest.DeployController;
+import nl.uva.sne.drip.commons.utils.MessageGenerator;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import nl.uva.sne.drip.commons.v1.types.ClusterCredentials;
 import nl.uva.sne.drip.commons.v1.types.DeployParameter;
@@ -100,7 +102,11 @@ public class DeployClusterService {
 
     public ClusterCredentials deployCluster(String provisionID, String clusterType) {
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
-            Message deployerInvokationMessage = buildDeployerMessage(provisionID, clusterType.toLowerCase());
+//            Message deployerInvokationMessage = buildDeployerMessage(provisionID, clusterType.toLowerCase());
+            Message deployerInvokationMessage = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
+                    + File.separator + "workspace" + File.separator + "DRIP"
+                    + File.separator + "docs" + File.separator + "json_samples"
+                    + File.separator + "deployer_invocation.json");
 
             Message response = (deployer.call(deployerInvokationMessage));
 //            Message response = generateFakeResponse();

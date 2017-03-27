@@ -1,0 +1,15 @@
+{
+  "creationDate": 1490626388289,
+  "parameters": [
+    {
+      "name": "f4ddb15c-77d5-47cc-9260-f4c8b8f051d0",
+      "encoding": "UTF-8",
+      "value": "publicKeyPath: /tmp/Input-13540823997489/user.pem\nuserName: vm_user\nsubnets:\n- {name: s1, subnet: 192.168.10.0, netmask: 255.255.255.0}\ncomponents:\n- name: 2d13d708e3a9441ab8336ce874e08dd1\n  type: Switch.nodes.Compute\n  nodeType: t2.medium\n  OStype: Ubnutu 16.04\n  script: null\n  domain: ec2.us-east-1.amazonaws.com\n  installation: null\n  clusterType: swarm\n  role: master\n  dockers: mogswitch/InputDistributor:1.0\n  public_address: 172.17.0.4\n  instanceId: i-05ac2be78b816b99e\n  ethernet_port:\n  - {name: p1, subnet_name: s1, address: 192.168.10.10}"
+    },
+    {
+      "name": "kubernetes",
+      "encoding": "UTF-8",
+      "value": "172.17.0.4 vm_user /tmp/Input-13540823997489/Virginia.pem master"
+    }
+  ]
+}
