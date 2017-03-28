@@ -15,7 +15,6 @@
  */
 package nl.uva.sne.drip.commons.v1.types;
 
-import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -29,9 +28,7 @@ public class ProvisionRequest extends KeyValueHolder {
 
     private String planID;
 
-    private String scriptID;
-
-    private String userKeyID;
+    private String publicKeyID;
 
     /**
      * @return the cloudCredentialsID
@@ -62,34 +59,16 @@ public class ProvisionRequest extends KeyValueHolder {
     }
 
     /**
-     * @return the scriptID
+     * @return the publicKeyID
      */
-    public String getscriptID() {
-        return scriptID;
+    public String getPublicKeyID() {
+        return publicKeyID;
     }
 
     /**
-     * @param scriptID the scriptID to set
+     * @param userKeyID the publicKeyID to set
      */
-    public void setScriptID(String scriptID) {
-        this.scriptID = scriptID;
-    }
-
-    /**
-     * @return the userKeyID
-     */
-    public String getUserKeyID() {
-        return userKeyID;
-    }
-
-    /**
-     * @param userKeyID the userKeyID to set
-     */
-    public void setUserKeyID(String userKeyID) {
-        this.userKeyID = userKeyID;
-    }
-
-    public void setDeployParameters(List<DeployParameter> deployParameters) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setPublicKeyID(String userKeyID) {
+        this.publicKeyID = userKeyID;
     }
 }

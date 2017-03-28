@@ -280,6 +280,19 @@ to request for resources.]]>
   </xs:complexContent>
 </xs:complexType>
 
+<xs:complexType name="deployParameter">
+       <xs:sequence>
+              <xs:element name="cloudCertificateName" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="IP" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="user" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="role" type="xs:string" minOccurs="0">
+              </xs:element>
+      </xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="deployRequest">
    <xs:complexContent>
     <xs:extension base="ownedObject">
@@ -422,9 +435,7 @@ to specify the domain name for ec2]]>
               </xs:element>
               <xs:element name="planID" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="scriptID" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="userKeyID" type="xs:string" minOccurs="0">
+              <xs:element name="publicKeyID" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
     </xs:extension>
@@ -434,6 +445,10 @@ to specify the domain name for ec2]]>
 <xs:complexType name="provisionResponse">
    <xs:complexContent>
     <xs:extension base="provisionRequest">
+      <xs:sequence>
+              <xs:element name="deployParameters" type="deployParameter" minOccurs="0" maxOccurs="unbounded">
+              </xs:element>
+      </xs:sequence>
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>

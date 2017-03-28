@@ -79,7 +79,7 @@ public class ProvisionService {
     private SimplePlannerService planService;
 
     @Autowired
-    private UserScriptService userScriptService;
+    private ScriptService userScriptService;
 
     @Autowired
     private KeyService userKeysService;
@@ -186,13 +186,7 @@ public class ProvisionService {
         List<MessageParameter> topologies = buildTopologyParams(pReq.getPlanID());
         parameters.addAll(topologies);
 
-        String scriptID = pReq.getscriptID();
-        if (scriptID != null) {
-            List<MessageParameter> userScripts = buildScriptParams(scriptID);
-            parameters.addAll(userScripts);
-        }
-
-        String userKeyID = pReq.getUserKeyID();
+        String userKeyID = pReq.getPublicKeyID();
         if (userKeyID != null) {
             List<MessageParameter> userKeys = buildKeysParams(userKeyID);
             parameters.addAll(userKeys);

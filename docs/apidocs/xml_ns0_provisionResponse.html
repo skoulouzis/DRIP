@@ -86,6 +86,24 @@
         </tr>
         </thead>
         <tbody>
+        <tr>
+          <td>  <span class="property-name">deployParameters</span>
+</td>
+          <td>  <span class="datatype-reference"><a href="xml_ns0_deployParameter.html">deployParameter</a>
+</span>
+</td>
+          <td>  <span class="property-type">element
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo">
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">0/unbounded
+</span>
+</td>
+          <td>  <span class="property-description">the deployParameters</span>
+</td>
+        </tr>
         </tbody>
         <tr>
           <td colspan="6"><h5 class="text-muted">Properties inherited from <a href="xml_ns0_provisionRequest.html">provisionRequest</a></h5></td>
@@ -116,7 +134,7 @@
           <td><span class="property-description">the planID</span></td>
         </tr>
         <tr>
-          <td><span class="property-name">scriptID</span></td>
+          <td><span class="property-name">publicKeyID</span></td>
           <td><span class="datatype-reference">string
 </span></td>
           <td><span class="property-type">element
@@ -125,19 +143,7 @@
 </span></td>
           <td><span class="property-minMaxOccurs">0/1
 </span></td>
-          <td><span class="property-description">the scriptID</span></td>
-        </tr>
-        <tr>
-          <td><span class="property-name">userKeyID</span></td>
-          <td><span class="datatype-reference">string
-</span></td>
-          <td><span class="property-type">element
-</span></td>
-          <td><span class="property-namespaceInfo">
-</span></td>
-          <td><span class="property-minMaxOccurs">0/1
-</span></td>
-          <td><span class="property-description">the userKeyID</span></td>
+          <td><span class="property-description">the publicKeyID</span></td>
         </tr>
         </tbody>
         <tr>
@@ -179,10 +185,15 @@
       <p class="lead">Example</p>
       
       <pre class="prettyprint language-xml example">&lt;p-----&gt;
+  &lt;deployParameters&gt;
+    &lt;cloudCertificateName&gt;...&lt;/cloudCertificateName&gt;
+    &lt;IP&gt;...&lt;/IP&gt;
+    &lt;user&gt;...&lt;/user&gt;
+    &lt;role&gt;...&lt;/role&gt;
+  &lt;/deployParameters&gt;
   &lt;cloudCredentialsID&gt;...&lt;/cloudCredentialsID&gt;
   &lt;planID&gt;...&lt;/planID&gt;
-  &lt;scriptID&gt;...&lt;/scriptID&gt;
-  &lt;userKeyID&gt;...&lt;/userKeyID&gt;
+  &lt;publicKeyID&gt;...&lt;/publicKeyID&gt;
   &lt;id&gt;...&lt;/id&gt;
 &lt;/p-----&gt;
 </pre>

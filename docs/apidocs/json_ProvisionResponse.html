@@ -79,6 +79,15 @@
         </tr>
         </thead>
         <tbody>
+        <tr>
+          <td>  <span class="property-name">deployParameters</span>
+</td>
+          <td>  <span class="datatype-reference">array of <a href="json_DeployParameter.html">DeployParameter</a>
+</span>
+</td>
+          <td>  <span class="property-description"></span>
+</td>
+        </tr>
         </tbody>
         <tr>
           <td colspan="3"><h5 class="text-muted">Properties inherited from <a href="json_ProvisionRequest.html">ProvisionRequest</a></h5></td>
@@ -97,13 +106,7 @@
           <td><span class="property-description"></span></td>
         </tr>
         <tr>
-          <td><span class="property-name">scriptID</span></td>
-          <td><span class="datatype-reference">string
-</span></td>
-          <td><span class="property-description"></span></td>
-        </tr>
-        <tr>
-          <td><span class="property-name">userKeyID</span></td>
+          <td><span class="property-name">publicKeyID</span></td>
           <td><span class="datatype-reference">string
 </span></td>
           <td><span class="property-description"></span></td>
@@ -142,10 +145,20 @@
       <p class="lead">Example</p>
       
       <pre class="prettyprint language-js example">{
+  &quot;deployParameters&quot; : [ {
+    &quot;cloudCertificateName&quot; : &quot;...&quot;,
+    &quot;IP&quot; : &quot;...&quot;,
+    &quot;user&quot; : &quot;...&quot;,
+    &quot;role&quot; : &quot;...&quot;
+  }, {
+    &quot;cloudCertificateName&quot; : &quot;...&quot;,
+    &quot;IP&quot; : &quot;...&quot;,
+    &quot;user&quot; : &quot;...&quot;,
+    &quot;role&quot; : &quot;...&quot;
+  } ],
   &quot;cloudCredentialsID&quot; : &quot;...&quot;,
   &quot;planID&quot; : &quot;...&quot;,
-  &quot;scriptID&quot; : &quot;...&quot;,
-  &quot;userKeyID&quot; : &quot;...&quot;,
+  &quot;publicKeyID&quot; : &quot;...&quot;,
   &quot;keyValue&quot; : {
     &quot;property1&quot; : { },
     &quot;property2&quot; : { }

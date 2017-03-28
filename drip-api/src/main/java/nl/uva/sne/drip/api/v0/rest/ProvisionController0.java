@@ -37,7 +37,7 @@ import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.ProvisionService;
 import nl.uva.sne.drip.api.service.KeyService;
-import nl.uva.sne.drip.api.service.UserScriptService;
+import nl.uva.sne.drip.api.service.ScriptService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.Execute;
 import nl.uva.sne.drip.commons.v0.types.Attribute;
@@ -65,7 +65,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class ProvisionController0 {
 
     @Autowired
-    private UserScriptService userScriptService;
+    private ScriptService userScriptService;
 
     @Autowired
     private KeyService userKeysService;
@@ -108,12 +108,7 @@ public class ProvisionController0 {
         List<Key> allKeys = userKeysService.findAll();
         if (allKeys != null && !allKeys.isEmpty()) {
             String userKeyID = allKeys.get(0).getId();
-            resp.setUserKeyID(userKeyID);
-        }
-        List<Script> allScripts = userScriptService.findAll();
-        if (allScripts != null && !allScripts.isEmpty()) {
-            String scriptID = allScripts.get(0).getId();
-            resp.setScriptID(scriptID);
+            resp.setPublicKeyID(userKeyID);
         }
         resp = provisionService.save(resp);
         return "Success: Infrastructure files are uploaded! Action number: "

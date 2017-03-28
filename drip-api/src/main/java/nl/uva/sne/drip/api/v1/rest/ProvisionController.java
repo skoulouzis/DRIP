@@ -31,8 +31,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.api.service.CloudCredentialsService;
+import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.ProvisionService;
 import nl.uva.sne.drip.api.service.UserService;
+import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
+import nl.uva.sne.drip.commons.v1.types.PlanResponse;
 import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
 import org.json.JSONException;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,6 +55,12 @@ public class ProvisionController {
 
     @Autowired
     private ProvisionService provisionService;
+
+    @Autowired
+    private CloudCredentialsService cloudCredentialService;
+
+    @Autowired
+    private PlannerService plannServcie;
 
     /**
      * Gets the ProvisionRequest
@@ -135,6 +145,18 @@ public class ProvisionController {
             Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    @RequestMapping(value = "/sample", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    ProvisionRequest provision() {
+        ProvisionRequest r = new ProvisionRequest();
+
+        r.setCloudCredentialsID("Cloud_Credentials_ID");
+        r.setPlanID("Plan_ID");
+        r.setPublicKeyID("Public_Key_ID");
+        return r;
     }
 
 }

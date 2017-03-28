@@ -33,7 +33,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 @Service
 @PreAuthorize("isAuthenticated()")
-public class UserScriptService {
+public class ScriptService {
 
     @Autowired
     ScriptDao dao;

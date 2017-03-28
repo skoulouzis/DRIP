@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.service.UserScriptService;
+import nl.uva.sne.drip.api.service.ScriptService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.ConfScript;
 import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
@@ -43,10 +43,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserScriptController0 {
 
     @Autowired
-    private UserScriptService scriptService;
-
-    @Autowired
-    private ProvisionService provisionService;
+    private ScriptService scriptService;
 
     @RequestMapping(value = "/confscript", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -55,11 +52,6 @@ public class UserScriptController0 {
         Script script = new Script();
         script.setContents(confScript.script);
         script = scriptService.save(script);
-
-        ProvisionResponse provPlan = provisionService.findOne(confScript.action);
-        provPlan.setScriptID(script.getId());
-        provisionService.save(provPlan);
-
         return "Success: script for GUI is uploaded: " + script.getId();
     }
 

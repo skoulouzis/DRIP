@@ -141,8 +141,8 @@ public class Converter {
     }
 
     private static void initEC2_NAME_MAP() {
-        EC2_NAME_MAP.put("keyIdAlias", "AWSAccessKeyId");
-        EC2_NAME_MAP.put("key", "AWSSecretKey");
+        EC2_NAME_MAP.put(CloudCredentials.ACCESS_KEY_NAME, "AWSAccessKeyId");
+        EC2_NAME_MAP.put(CloudCredentials.SECRET_KEY_NAME, "AWSSecretKey");
     }
 
     public static Message string2Message(String clean) throws JSONException, IOException {

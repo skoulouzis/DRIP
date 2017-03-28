@@ -32,8 +32,9 @@ import org.springframework.web.multipart.MultipartFile;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.v1.types.Script;
 import org.springframework.web.bind.annotation.PathVariable;
-import nl.uva.sne.drip.api.service.UserScriptService;
+import nl.uva.sne.drip.api.service.ScriptService;
 import nl.uva.sne.drip.api.service.UserService;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * This controller is responsible for handling user scripts. These user can be
@@ -42,12 +43,12 @@ import nl.uva.sne.drip.api.service.UserService;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/v1.0/user_script")
+@RequestMapping("/user/v1.0/script")
 @Component
-public class UserScriptController {
+public class ScriptController {
 
     @Autowired
-    private UserScriptService userScriptService;
+    private ScriptService scriptService;
 
 //    curl -v -X POST -F "file=@script.sh" localhost:8080/drip-api/rest/user_script/upload
     /**
@@ -57,7 +58,7 @@ public class UserScriptController {
      * @return the ID of the stopred script
      */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String uploadUserScript(@RequestParam("file") MultipartFile file) {
         if (!file.isEmpty()) {
@@ -71,13 +72,20 @@ public class UserScriptController {
                 us.setContents(conents);
                 us.setName(name);
 
-                userScriptService.save(us);
+                scriptService.save(us);
 
                 return us.getId();
             } catch (IOException | IllegalStateException ex) {
-                Logger.getLogger(UserScriptController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ScriptController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return null;
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String uploadUserScript(@RequestBody Script script) {
         return null;
     }
 
@@ -88,31 +96,52 @@ public class UserScriptController {
      * @return the script
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Script get(@PathVariable("id") String id) {
-        return userScriptService.findOne(id);
+        return scriptService.findOne(id);
+    }
+
+    @RequestMapping(value = "/sample", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    Script get() {
+        Script script = new Script();
+        script.setContents("#! /bin/bash\n"
+                + " apt-get update\n"
+                + " apt-get -y install linux-image-extra-$(uname -r) linux-image-extra-virtual\n"
+                + " apt-get -y install apt-transport-https ca-certificates curl software-properties-common\n"
+                + " curl -fsSL https://download.docker.com/linux/ubuntu/gpg |  apt-key add -\n"
+                + " apt-key fingerprint 0EBFCD88\n"
+                + " add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\"\n"
+                + " apt-get update\n"
+                + " apt-get -y install docker-ce\n"
+                + " service docker restart");
+        script.setName("setupDocker.sh");
+
+        return script;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-     @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody String delete(@PathVariable("id") String id) {
-        Script script = userScriptService.findOne(id);
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String delete(@PathVariable("id") String id) {
+        Script script = scriptService.findOne(id);
         if (script == null) {
             throw new NotFoundException();
         }
-        userScriptService.delete(id);
+        scriptService.delete(id);
         return "Deleted: " + id;
     }
 
-    
-     @RequestMapping(value = "/all", method = RequestMethod.DELETE)
-     @RolesAllowed({UserService.ADMIN})
-    public @ResponseBody String deleteAll() {
-        userScriptService.deleteAll();
+    @RequestMapping(value = "/all", method = RequestMethod.DELETE)
+    @RolesAllowed({UserService.ADMIN})
+    public @ResponseBody
+    String deleteAll() {
+        scriptService.deleteAll();
         return "Done";
     }
-    
+
     /**
      * Gets the IDs of all the stored scripts
      *
@@ -121,7 +150,7 @@ public class UserScriptController {
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     public @ResponseBody
     List<String> getIds() {
-        List<Script> all = userScriptService.findAll();
+        List<Script> all = scriptService.findAll();
         List<String> ids = new ArrayList<>();
         for (Script us : all) {
             ids.add(us.getId());

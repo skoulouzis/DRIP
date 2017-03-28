@@ -62,7 +62,7 @@ public class UserPublicKeysController0 {
         upk = service.save(upk);
 
         ProvisionResponse provPlan = provisionService.findOne(confUserKey.action);
-        provPlan.setUserKeyID(upk.getId());
+        provPlan.setPublicKeyID(upk.getId());
         provisionService.save(provPlan);
 
         return "Success: " + upk.getId();

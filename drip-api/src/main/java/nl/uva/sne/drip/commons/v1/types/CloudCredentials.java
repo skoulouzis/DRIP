@@ -29,6 +29,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class CloudCredentials extends OwnedObject {
 
+    public static String ACCESS_KEY_NAME = "accessKeyId";
+    public static String SECRET_KEY_NAME = "secretKey";
+
     @Id
     private String id;
 
