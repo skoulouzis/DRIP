@@ -30,7 +30,7 @@ import nl.uva.sne.drip.commons.v0.types.Attribute;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import nl.uva.sne.drip.commons.v1.types.Message;
 import nl.uva.sne.drip.commons.v1.types.MessageParameter;
-import nl.uva.sne.drip.commons.v1.types.Plan;
+import nl.uva.sne.drip.commons.v1.types.PlanResponse;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -177,7 +177,7 @@ public class Converter {
         return mess;
     }
 
-    public static Attribute plan1toFile(Plan plan1) throws JSONException {
+    public static Attribute plan1toFile(PlanResponse plan1) throws JSONException {
         Attribute e = new Attribute();
         e.level = String.valueOf(plan1.getLevel());
         String p1Name = FilenameUtils.getBaseName(plan1.getName());
@@ -192,8 +192,8 @@ public class Converter {
         return e;
     }
 
-    public static Plan File2Plan1(Attribute p0) {
-        Plan p1 = new Plan();
+    public static PlanResponse File2Plan1(Attribute p0) {
+        PlanResponse p1 = new PlanResponse();
         p1.setLevel(Integer.valueOf(p0.level));
         p1.setName(p0.name);
         String yaml = p0.content.replaceAll("\\\\n", "\n");

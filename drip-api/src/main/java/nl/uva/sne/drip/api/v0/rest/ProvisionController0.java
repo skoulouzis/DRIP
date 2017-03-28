@@ -16,7 +16,7 @@
 package nl.uva.sne.drip.api.v0.rest;
 
 import java.io.IOException;
-import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
+import nl.uva.sne.drip.commons.v1.types.ProvisionRequest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.ProvisionService;
-import nl.uva.sne.drip.api.service.UserKeyService;
+import nl.uva.sne.drip.api.service.KeyService;
 import nl.uva.sne.drip.api.service.UserScriptService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.Execute;
@@ -44,7 +44,8 @@ import nl.uva.sne.drip.commons.v0.types.Attribute;
 import nl.uva.sne.drip.commons.v0.types.Result;
 import nl.uva.sne.drip.commons.v0.types.Upload;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
-import nl.uva.sne.drip.commons.v1.types.LoginKey;
+import nl.uva.sne.drip.commons.v1.types.Key;
+import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
 import nl.uva.sne.drip.commons.v1.types.Script;
 import org.json.JSONException;
 import org.springframework.http.MediaType;
@@ -67,7 +68,7 @@ public class ProvisionController0 {
     private UserScriptService userScriptService;
 
     @Autowired
-    private UserKeyService userKeysService;
+    private KeyService userKeysService;
 
     @Autowired
     private CloudCredentialsService cloudCredentialsService;
@@ -83,16 +84,16 @@ public class ProvisionController0 {
     public @ResponseBody
     String provision(@RequestBody Upload upload) {
 
-        ProvisionInfo provInfo = new ProvisionInfo();
+        ProvisionResponse resp = new ProvisionResponse();
         CloudCredentials cloudCred = cloudCredentialsService.findAll().get(0);
         String cloudCredID = cloudCred.getId();
-        provInfo.setCloudCredentialsID(cloudCredID);
+        resp.setCloudCredentialsID(cloudCredID);
         List<nl.uva.sne.drip.commons.v0.types.Attribute> plans = upload.file;
-        nl.uva.sne.drip.commons.v1.types.Plan topLevelPlan = null;
+        nl.uva.sne.drip.commons.v1.types.PlanResponse topLevelPlan = null;
         Set<String> loweLevelPlansIDs = new HashSet<>();
 
         for (nl.uva.sne.drip.commons.v0.types.Attribute p : plans) {
-            nl.uva.sne.drip.commons.v1.types.Plan plan1 = Converter.File2Plan1(p);
+            nl.uva.sne.drip.commons.v1.types.PlanResponse plan1 = Converter.File2Plan1(p);
             if (plan1.getLevel() == 0) {
                 topLevelPlan = plan1;
             } else {
@@ -103,20 +104,20 @@ public class ProvisionController0 {
         topLevelPlan.setLoweLevelPlansIDs(loweLevelPlansIDs);
         topLevelPlan = planService.save(topLevelPlan);
         String planID = topLevelPlan.getId();
-        provInfo.setPlanID(planID);
-        List<LoginKey> allKeys = userKeysService.findAll();
+        resp.setPlanID(planID);
+        List<Key> allKeys = userKeysService.findAll();
         if (allKeys != null && !allKeys.isEmpty()) {
             String userKeyID = allKeys.get(0).getId();
-            provInfo.setUserKeyID(userKeyID);
+            resp.setUserKeyID(userKeyID);
         }
         List<Script> allScripts = userScriptService.findAll();
         if (allScripts != null && !allScripts.isEmpty()) {
             String scriptID = allScripts.get(0).getId();
-            provInfo.setScriptID(scriptID);
+            resp.setScriptID(scriptID);
         }
-        provInfo = provisionService.save(provInfo);
+        resp = provisionService.save(resp);
         return "Success: Infrastructure files are uploaded! Action number: "
-                + provInfo.getId();
+                + resp.getId();
     }
 
     @RequestMapping(value = "/execute", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
@@ -125,7 +126,7 @@ public class ProvisionController0 {
     Result execute(@RequestBody Execute exc) {
 
         try {
-            ProvisionInfo req = provisionService.findOne(exc.action);
+            ProvisionRequest req = provisionService.findOne(exc.action);
             req = provisionService.provisionResources(req);
             Map<String, Object> map = req.getKeyValue();
             String yaml = Converter.map2YmlString(map);

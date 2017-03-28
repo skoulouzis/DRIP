@@ -104,11 +104,13 @@ provisoner to request for resources (VMs).</span>
       <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/credentials/cloud</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/credentials/cloud/all</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/credentials/cloud/ids</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/credentials/cloud/sample</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/credentials/cloud/{id}</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/credentials/cloud/upload/{id}</span>
 </samp></li></ul></td>
       <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">POST</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
@@ -122,14 +124,14 @@ provisoner to request for resources (VMs)</span>
       <td>  <span class="resource-name">DeployController</span>
 </td>
       <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/deployer/all</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/deploy/</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/ids</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/{id}</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/deploy/{id}/</span>
 </samp></li></ul></td>
       <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">DELETE</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> 
-</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
 </samp></li></ul></td>
       <td>  <span class="resource-description">This controller is responsible for deploying a cluster on provisoned
 resources.</span>
@@ -146,6 +148,28 @@ resources.</span>
 </samp></li></ul></td>
       <td>  <span class="resource-description">This controller is responsible for deploying a cluster on provisoned
 resources.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="resource_KeysController.html">
+      <td>  <span class="resource-name">KeysController</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/key</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/key/all</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/key/ids</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/key/sample</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/key/upload</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/key/{id}</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">This controller is responsible for handling user public keys. These keys can
+be used by the provisoner to allow the user to login to the VMs from the
+machine the keys correspond to.</span>
 </td>
     </tr>
     <tr class="clickable-row" data-href="resource_PlannerController.html">
@@ -255,26 +279,6 @@ used by the planner.</span>
       <td>  <span class="resource-description">This controller is responsible for handling user accounts</span>
 </td>
     </tr>
-    <tr class="clickable-row" data-href="resource_UserPublicKeysController.html">
-      <td>  <span class="resource-name">UserPublicKeysController</span>
-</td>
-      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/user_key</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/user_key/all</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/user_key/ids</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/user_key/upload</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/user_key/{id}</span>
-</samp></li></ul></td>
-      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">POST</span> 
-</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> 
-</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
-</samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
-</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> 
-</samp></li></ul></td>
-      <td>  <span class="resource-description">This controller is responsible for handling user public keys. These keys can
-be used by the provisoner to allow the user to login to the VMs from the
-machine the keys correspond to.</span>
-</td>
-    </tr>
     <tr class="clickable-row" data-href="resource_UserPublicKeysController0.html">
       <td>  <span class="resource-name">UserPublicKeysController0</span>
 </td>
@@ -333,21 +337,28 @@ used by the provisoner to run on the created VMs.</span>
     <tr class="clickable-row" data-href="json_CloudCredentials.html">
       <td>  <span class="datatype-name">CloudCredentials</span>
 </td>
-      <td>  <span class="datatype-description">This class represents the cloud credentials for a cloud. They are used by the
-provisoner to request for resources.</span>
+      <td>  <span class="datatype-description">This class represents the cloud credentials. They are used by the provisoner
+to request for resources.</span>
 </td>
     </tr>
-    <tr class="clickable-row" data-href="json_ClusterCredentials.html">
-      <td>  <span class="datatype-name">ClusterCredentials</span>
-</td>
-      <td>  <span class="datatype-description">This class represents the cluster credentials for a cloud. They can used to
-login to the cluster created by the deployer</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="json_DeployParameter.html">
-      <td>  <span class="datatype-name">DeployParameter</span>
+    <tr class="clickable-row" data-href="json_DeployRequest.html">
+      <td>  <span class="datatype-name">DeployRequest</span>
 </td>
       <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_DeployResponse.html">
+      <td>  <span class="datatype-name">DeployResponse</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_Key.html">
+      <td>  <span class="datatype-name">Key</span>
+</td>
+      <td>  <span class="datatype-description">This class represents a key. This key can be used to either login to a VM
+created by the provisiner or by the VM to allow the user to login to the VMs
+from the machine the keys correspond to.</span>
 </td>
     </tr>
     <tr class="clickable-row" data-href="json_KeyValueHolder.html">
@@ -356,28 +367,26 @@ login to the cluster created by the deployer</span>
       <td>  <span class="datatype-description"></span>
 </td>
     </tr>
-    <tr class="clickable-row" data-href="json_LoginKey.html">
-      <td>  <span class="datatype-name">LoginKey</span>
-</td>
-      <td>  <span class="datatype-description">This class represents a login key. This key can be used to either login to a
-VM created by the provisiner or by the VM to allow the user to login to the
-VMs from the machine the keys correspond to.</span>
-</td>
-    </tr>
     <tr class="clickable-row" data-href="json_OwnedObject.html">
       <td>  <span class="datatype-name">OwnedObject</span>
 </td>
       <td>  <span class="datatype-description"></span>
 </td>
     </tr>
-    <tr class="clickable-row" data-href="json_Plan.html">
-      <td>  <span class="datatype-name">Plan</span>
+    <tr class="clickable-row" data-href="json_PlanResponse.html">
+      <td>  <span class="datatype-name">PlanResponse</span>
 </td>
       <td>  <span class="datatype-description">This class represents a plan generated by the planner.</span>
 </td>
     </tr>
-    <tr class="clickable-row" data-href="json_ProvisionInfo.html">
-      <td>  <span class="datatype-name">ProvisionInfo</span>
+    <tr class="clickable-row" data-href="json_ProvisionRequest.html">
+      <td>  <span class="datatype-name">ProvisionRequest</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="json_ProvisionResponse.html">
+      <td>  <span class="datatype-name">ProvisionResponse</span>
 </td>
       <td>  <span class="datatype-description"></span>
 </td>
@@ -489,19 +498,32 @@ VMs from the machine the keys correspond to.</span>
     <tr class="clickable-row" data-href="xml_ns0_cloudCredentials.html">
       <td>  <span class="datatype-name">cloudCredentials</span>
 </td>
-      <td>  <span class="datatype-description">This class represents the cloud credentials for a cloud. They are used by the
-provisoner to request for resources.</span>
+      <td>  <span class="datatype-description">This class represents the cloud credentials. They are used by the provisoner
+to request for resources.</span>
 </td>
     </tr>
-    <tr class="clickable-row" data-href="xml_ns0_clusterCredentials.html">
-      <td>  <span class="datatype-name">clusterCredentials</span>
+    <tr class="clickable-row" data-href="xml_ns0_deployRequest.html">
+      <td>  <span class="datatype-name">deployRequest</span>
 </td>
-      <td>  <span class="datatype-description">This class represents the cluster credentials for a cloud. They can used to
-login to the cluster created by the deployer</span>
+      <td>  <span class="datatype-description"></span>
 </td>
     </tr>
-    <tr class="clickable-row" data-href="xml_ns0_deployParameter.html">
-      <td>  <span class="datatype-name">deployParameter</span>
+    <tr class="clickable-row" data-href="xml_ns0_deployResponse.html">
+      <td>  <span class="datatype-name">deployResponse</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_key.html">
+      <td>  <span class="datatype-name">key</span>
+</td>
+      <td>  <span class="datatype-description">This class represents a key. This key can be used to either login to a VM
+created by the provisiner or by the VM to allow the user to login to the VMs
+from the machine the keys correspond to.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_type.html">
+      <td>  <span class="datatype-name">type</span>
 </td>
       <td>  <span class="datatype-description"></span>
 </td>
@@ -512,28 +534,26 @@ login to the cluster created by the deployer</span>
       <td>  <span class="datatype-description"></span>
 </td>
     </tr>
-    <tr class="clickable-row" data-href="xml_ns0_loginKey.html">
-      <td>  <span class="datatype-name">loginKey</span>
-</td>
-      <td>  <span class="datatype-description">This class represents a login key. This key can be used to either login to a
-VM created by the provisiner or by the VM to allow the user to login to the
-VMs from the machine the keys correspond to.</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="xml_ns0_type.html">
-      <td>  <span class="datatype-name">type</span>
-</td>
-      <td>  <span class="datatype-description"></span>
-</td>
-    </tr>
     <tr class="clickable-row" data-href="xml_ns0_ownedObject.html">
       <td>  <span class="datatype-name">ownedObject</span>
 </td>
       <td>  <span class="datatype-description"></span>
 </td>
     </tr>
-    <tr class="clickable-row" data-href="xml_ns0_provisionInfo.html">
-      <td>  <span class="datatype-name">provisionInfo</span>
+    <tr class="clickable-row" data-href="xml_ns0_planResponse.html">
+      <td>  <span class="datatype-name">planResponse</span>
+</td>
+      <td>  <span class="datatype-description">This class represents a plan generated by the planner.</span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_provisionRequest.html">
+      <td>  <span class="datatype-name">provisionRequest</span>
+</td>
+      <td>  <span class="datatype-description"></span>
+</td>
+    </tr>
+    <tr class="clickable-row" data-href="xml_ns0_provisionResponse.html">
+      <td>  <span class="datatype-name">provisionResponse</span>
 </td>
       <td>  <span class="datatype-description"></span>
 </td>

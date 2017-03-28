@@ -9,20 +9,21 @@ import docker_kubernetes
 import docker_engine
 import docker_swarm
 import control_agent
+import ansible_playbook
 import sys, argparse
 from threading import Thread
 from time import sleep
 
-print sys.argv
+
 if len(sys.argv) > 1:
     rabbitmq_host = sys.argv[1]
 else:
     rabbitmq_host = '127.0.0.1'
     
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
-channel = connection.channel()
-channel.queue_declare(queue='deployer_queue')
+#connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
+#channel = connection.channel()
+#channel.queue_declare(queue='deployer_queue')
 
 path = os.path.dirname(os.path.abspath(__file__)) + "/"
 
@@ -42,7 +43,7 @@ def handleDelivery(message):
         name = param["name"]
         if name == "cluster":
             cluster_type = param["value"]
-        else:
+        elif name == "credential":
             value = param["value"]
             ip = param["attributes"]["IP"]
             user = param["attributes"]["user"]
@@ -54,6 +55,12 @@ def handleDelivery(message):
             fo.close()
             vm = VmInfo(ip, user, key, role)
             vm_list.append(vm)
+        elif name == "playbook":
+            value = param["value"]
+            playbook = path + "playbook.yml"
+            fo = open(playbook, "w")
+            fo.write(value)
+            fo.close()
 
     if cluster_type == "kubernetes":
         ret = docker_kubernetes.run(vm_list)
@@ -67,7 +74,7 @@ def handleDelivery(message):
         if "ERROR" in ret1: ret = ret1
         return ret
     elif cluster_type == "ansible":
-        ret = ansible-playbook.run(vm_list)
+        ret = ansible_playbook.run(vm_list,playbook)
         return ret
     else:
         return "ERROR: invalid cluster"
@@ -104,13 +111,18 @@ def on_request(ch, method, props, body):
                      body=str(response))
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
-channel.basic_qos(prefetch_count=1)
-channel.basic_consume(on_request, queue='deployer_queue')
+#channel.basic_qos(prefetch_count=1)
+#channel.basic_consume(on_request, queue='deployer_queue')
 
 
-thread = Thread(target = threaded_function, args = (1, ))
-thread.start()
+#thread = Thread(target = threaded_function, args = (1, ))
+#thread.start()
 
 print(" [x] Awaiting RPC requests")
-channel.start_consuming()
-thread.stop()
+f = open("../docs/json_samples/deployer_invocation.json","r")
+body=f.read()
+response = handleDelivery(body)
+
+
+#channel.start_consuming()
+#thread.stop()

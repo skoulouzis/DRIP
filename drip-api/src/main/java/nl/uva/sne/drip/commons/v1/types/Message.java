@@ -31,31 +31,24 @@ import java.util.List;
  *
  * @author S. Koulouzis.
  */
-//@Entity
-public class Message implements IMessage, Serializable {
+public class Message implements Serializable {
 
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.S")
-//    @Temporal(TemporalType.DATE)
     private Long creationDate;
 
     private List<MessageParameter> parameters;
 
-    @Override
     public Long getCreationDate() {
         return this.creationDate;
     }
 
-    @Override
     public void setParameters(List<MessageParameter> parameters) {
         this.parameters = parameters;
     }
 
-    @Override
     public List<MessageParameter> getParameters() {
         return this.parameters;
     }
 
-    @Override
     public void setCreationDate(Long creationDate) {
         this.creationDate = creationDate;
     }

@@ -17,63 +17,35 @@ package nl.uva.sne.drip.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import nl.uva.sne.drip.api.dao.UserKeyDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.commons.v1.types.LoginKey;
+import nl.uva.sne.drip.commons.v1.types.Key;
 import nl.uva.sne.drip.commons.v1.types.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import nl.uva.sne.drip.api.dao.KeyDao;
 
 /**
  *
  * @author S. Koulouzis
  */
 @Service
-public class UserKeyService {
+public class KeyService {
 
     @Autowired
-    UserKeyDao dao;
+    KeyDao dao;
 
-    public List<LoginKey> getAll(LoginKey.Type type) {
-        List<LoginKey> all = findAll();
-        if (all != null) {
-            List<LoginKey> allPublic = new ArrayList<>();
-            for (LoginKey tr : all) {
-                if (tr.getType() != null && tr.getType().equals(LoginKey.Type.PUBLIC)) {
-                    allPublic.add(tr);
-                }
-            }
-            return allPublic;
-        }
-        return null;
-    }
-
-    public LoginKey get(String id, LoginKey.Type type) {
-        LoginKey key = findOne(id);
-        if (key.getType().equals(type)) {
-            return key;
-        }
-        return null;
-    }
-
-    public void delete(String id, LoginKey.Type type) {
-        LoginKey k = get(id, type);
-        if (k != null) {
-            delete(k);
-        }
-    }
 
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public List<LoginKey> findAll() {
+    public List<Key> findAll() {
         return dao.findAll();
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public LoginKey findOne(String id) {
-        LoginKey key = dao.findOne(id);
+    public Key findOne(String id) {
+        Key key = dao.findOne(id);
         if (key == null) {
             throw new NotFoundException();
         }
@@ -81,13 +53,13 @@ public class UserKeyService {
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public LoginKey delete(LoginKey k) {
+    public Key delete(Key k) {
         k = dao.findOne(k.getId());
         dao.delete(k);
         return k;
     }
 
-    public LoginKey save(LoginKey upk) {
+    public Key save(Key upk) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         upk.setOwner(owner);

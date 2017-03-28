@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.UserScriptService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.ConfScript;
-import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
+import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
 import nl.uva.sne.drip.commons.v1.types.Script;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,7 +56,7 @@ public class UserScriptController0 {
         script.setContents(confScript.script);
         script = scriptService.save(script);
 
-        ProvisionInfo provPlan = provisionService.findOne(confScript.action);
+        ProvisionResponse provPlan = provisionService.findOne(confScript.action);
         provPlan.setScriptID(script.getId());
         provisionService.save(provPlan);
 

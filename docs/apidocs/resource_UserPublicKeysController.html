@@ -78,7 +78,7 @@ machine the keys correspond to.</p>
       <div id="resource_UserPublicKeysController_postKey_POST">
         <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/user/v1.0/user_key <a href="../user/v1.0/user_key" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Posts the LoginKey and stores it. The LoginKey is a container for public
+        <p>Posts the Key and stores it. The Key is a container for public
 key contents. The public key contents are represented in the 'key' field.
 All new lines in the 'key' field have to be replaced with the '\n'
 character.</p>
@@ -99,12 +99,12 @@ character.</p>
           <tbody>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
-            <td><span class="datatype-reference"><a href="json_LoginKey.html">LoginKey</a>
+            <td><span class="datatype-reference"><a href="json_Key.html">Key</a>
  (JSON)</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
-            <td><span class="datatype-reference"><a href="xml_ns0_loginKey.html">loginKey</a>
+            <td><span class="datatype-reference"><a href="xml_ns0_key.html">key</a>
  (XML)</span></td>
           </tr>
           </tbody>
@@ -140,7 +140,7 @@ character.</p>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
             <td><span class="datatype-reference">string
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">the ID of the LoginKey</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">the ID of the Key</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
@@ -251,7 +251,7 @@ Content-Type: application/json
       <div id="resource_UserPublicKeysController_getIds_GET">
         <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/user_key/ids <a href="../user/v1.0/user_key/ids" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Gets the IDs of all the stored LoginKey</p>
+        <p>Gets the IDs of all the stored Key</p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -389,7 +389,7 @@ Content-Type: application/json
       <div id="resource_UserPublicKeysController_delete_DELETE">
         <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/user_key/{id} <a href="../user/v1.0/user_key/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Deletes a LoginKey</p>
+        <p>Deletes a Key</p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -428,7 +428,7 @@ Content-Type: application/json
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
             <td><span class="datatype-reference">string
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">The ID of the deleted LoginKey</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The ID of the deleted Key</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
@@ -467,7 +467,7 @@ Content-Type: application/json
       <div id="resource_UserPublicKeysController_get_GET">
         <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/user_key/{id} <a href="../user/v1.0/user_key/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Gets the LoginKey.</p>
+        <p>Gets the Key.</p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -487,7 +487,7 @@ Content-Type: application/json
           <tr>
             <td><span class="parameter-name">id</span></td>
             <td>path</td>
-            <td><span class="parameter-description">. The ID of the LoginKey to return</span></td>
+            <td><span class="parameter-description">. The ID of the Key to return</span></td>
           </tr>
           </tbody>
         </table>
@@ -504,13 +504,13 @@ Content-Type: application/json
           <tbody>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
-            <td><span class="datatype-reference"><a href="json_LoginKey.html">LoginKey</a>
+            <td><span class="datatype-reference"><a href="json_Key.html">Key</a>
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">The LoginKey</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The Key</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
-            <td><span class="datatype-reference"><a href="xml_ns0_loginKey.html">loginKey</a>
+            <td><span class="datatype-reference"><a href="xml_ns0_key.html">key</a>
  (XML)</span></td>
           </tr>
           </tbody>

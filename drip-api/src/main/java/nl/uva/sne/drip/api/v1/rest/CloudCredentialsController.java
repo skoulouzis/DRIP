@@ -35,10 +35,10 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.exception.NullKeyException;
-import nl.uva.sne.drip.api.exception.NullKeyIDException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
+import nl.uva.sne.drip.api.service.KeyService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.v1.types.LoginKey;
+import nl.uva.sne.drip.commons.v1.types.Key;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,6 +60,8 @@ public class CloudCredentialsController {
 
     @Autowired
     private CloudCredentialsService cloudCredentialsService;
+    @Autowired
+    private KeyService keyService;
 
     /**
      * Post the cloud credentials.
@@ -70,17 +72,21 @@ public class CloudCredentialsController {
     @RequestMapping(method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 400, condition = "Key or KeyIdAlias can't be empty")
+        @ResponseCode(code = 400, condition = "Key can't be empty")
     })
     public @ResponseBody
-    String postConf(@RequestBody CloudCredentials cloudCredentials) {
-        if (cloudCredentials.getKey() == null) {
+    String postCredentials(@RequestBody CloudCredentials cloudCredentials) {
+        if (cloudCredentials.getAccessKeyId() == null) {
             throw new NullKeyException();
         }
-        if (cloudCredentials.getKeyIdAlias() == null) {
-            throw new NullKeyIDException();
+        List<String> ids = cloudCredentials.getKeyIDs();
+        if (ids != null) {
+            for (String id : ids) {
+                if (keyService.findOne(id) == null) {
+                    throw new NullKeyException();
+                }
+            }
         }
-//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         cloudCredentials = cloudCredentialsService.save(cloudCredentials);
         return cloudCredentials.getId();
     }
@@ -108,20 +114,20 @@ public class CloudCredentialsController {
             }
             String originalFileName = file.getOriginalFilename();
             byte[] bytes = file.getBytes();
-            List<LoginKey> logInKeys = cloudCredentials.getLoginKeys();
-            if (logInKeys == null) {
-                logInKeys = new ArrayList<>();
+            List<String> loginKeyIDs = cloudCredentials.getKeyIDs();
+            if (loginKeyIDs == null) {
+                loginKeyIDs = new ArrayList<>();
             }
-            LoginKey key = new LoginKey();
+            Key key = new Key();
             key.setKey(new String(bytes, "UTF-8"));
             if (cloudCredentials.getCloudProviderName().toLowerCase().equals("ec2")) {
                 Map<String, String> attributes = new HashMap<>();
                 attributes.put("domain_name", FilenameUtils.removeExtension(originalFileName));
                 key.setAttributes(attributes);
+                key = keyService.save(key);
+                loginKeyIDs.add(key.getId());
             }
-            logInKeys.add(key);
-            cloudCredentials.setLogineKeys(logInKeys);
-//            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            cloudCredentials.setKeyIDs(loginKeyIDs);
             cloudCredentials = cloudCredentialsService.save(cloudCredentials);
             return cloudCredentials.getId();
         } catch (IOException ex) {
@@ -185,6 +191,21 @@ public class CloudCredentialsController {
             ids.add(tr.getId());
         }
         return ids;
+    }
+
+    @RequestMapping(value = "/sample", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    CloudCredentials geta() {
+        CloudCredentials c = new CloudCredentials();
+        c.setAccessKeyId("AKIAITY3KHZUQ6M7YBSQ");
+        c.setCloudProviderName("ec2");
+        c.setSecretKey("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");
+        List<String> keyIDs = new ArrayList<>();
+        keyIDs.add("58da4c91f7b43a3282cacdbb");
+        keyIDs.add("58da4d2af7b43a3282cacdbd");
+        c.setKeyIDs(keyIDs);
+        return c;
     }
 
 }

@@ -31,7 +31,7 @@ import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.commons.v1.types.Message;
 import nl.uva.sne.drip.commons.v1.types.MessageParameter;
-import nl.uva.sne.drip.commons.v1.types.Plan;
+import nl.uva.sne.drip.commons.v1.types.PlanResponse;
 import nl.uva.sne.drip.commons.v1.types.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONException;
@@ -55,20 +55,20 @@ public class SimplePlannerService {
     @Autowired
     private PlanDao planDao;
 
-    public Plan getPlan(String toscaId) throws JSONException, IOException, TimeoutException, InterruptedException {
+    public PlanResponse getPlan(String toscaId) throws JSONException, IOException, TimeoutException, InterruptedException {
         ToscaRepresentation tosca = toscaService.findOne(toscaId);
         Message plannerInvokationMessage = buildSimplePlannerMessage(tosca);
 
-        Plan topLevel;
+        PlanResponse topLevel;
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
             List<MessageParameter> planFiles = plannerReturnedMessage.getParameters();
-            topLevel = new Plan();
+            topLevel = new PlanResponse();
             Set<String> ids = topLevel.getLoweLevelPlanIDs();
             if (ids == null) {
                 ids = new HashSet<>();
             }
-            Plan lowerLevelPlan = null;
+            PlanResponse lowerLevelPlan = null;
             for (MessageParameter p : planFiles) {
                 //Should have levels in attributes
                 Map<String, String> attributess = p.getAttributes();
@@ -82,7 +82,7 @@ public class SimplePlannerService {
                     topLevel.setLevel(0);
                     topLevel.setKvMap(Converter.ymlString2Map(p.getValue()));
                 } else {
-                    lowerLevelPlan = new Plan();
+                    lowerLevelPlan = new PlanResponse();
                     lowerLevelPlan.setName(name);
                     lowerLevelPlan.setKvMap(Converter.ymlString2Map(p.getValue()));
                     lowerLevelPlan.setLevel(1);
@@ -129,7 +129,7 @@ public class SimplePlannerService {
     }
 
     public String get(String id, String fromat) throws JSONException {
-        Plan plan = planDao.findOne(id);
+        PlanResponse plan = planDao.findOne(id);
         if (plan == null) {
             throw new NotFoundException();
         }
@@ -164,10 +164,10 @@ public class SimplePlannerService {
         return planDao.findOne(id).getToscaID();
     }
 
-    public List<Plan> findAll() {
-        List<Plan> all = planDao.findAll();
-        List<Plan> topLevel = new ArrayList<>();
-        for (Plan p : all) {
+    public List<PlanResponse> findAll() {
+        List<PlanResponse> all = planDao.findAll();
+        List<PlanResponse> topLevel = new ArrayList<>();
+        for (PlanResponse p : all) {
             if (p.getLevel() == 0) {
                 topLevel.add(p);
             }

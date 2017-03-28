@@ -21,25 +21,38 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * This class represents the cloud credentials for a cloud. They are used by the
- * provisoner to request for resources.
+ * This class represents the cloud credentials. They are used by the provisoner
+ * to request for resources.
  *
  * @author S. Koulouzis
  */
 @Document
-public class CloudCredentials extends OwnedObject{
+public class CloudCredentials extends OwnedObject {
 
     @Id
     private String id;
 
-    private String key;
+    private String secretKey;
 
-    private String keyIdAlias;
+    private String accessKeyId;
 
-    private List<LoginKey> loginKeys;
+    private List<String> keyIDs;
 
     private String cloudProviderName;
-    private String keypass;
+
+    /**
+     * It is the secret key / password for accessing a cloud provider.
+     *
+     * @return the secret key
+     */
+    @DocumentationExample("7A7vo19ffdfa4SAsA6gsF5Fgbfb5rtwY6hBxtYt12")
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
 
     public final String getId() {
         return id;
@@ -47,56 +60,6 @@ public class CloudCredentials extends OwnedObject{
 
     public final void setId(final String id) {
         this.id = id;
-    }
-
-    /**
-     * The key for the cloud provider.
-     *
-     * @return the key
-     */
-    @DocumentationExample("6J7uo99ifrff45126Gsy5vgb3bmrtwY6hBxtYt9y")
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * @param key the key to set
-     */
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    /**
-     * The key id for the cloud provider or the key alias.
-     *
-     * @return the keyIdAlias
-     */
-    @DocumentationExample("AKIAITY3K5ZUQ6M7YBSQ")
-    public String getKeyIdAlias() {
-        return keyIdAlias;
-    }
-
-    /**
-     * @param keyIdAlias the keyIdAlias to set
-     */
-    public void setKeyIdAlias(String keyIdAlias) {
-        this.keyIdAlias = keyIdAlias;
-    }
-
-    /**
-     * The login keys
-     *
-     * @return the loginKeys
-     */
-    public List<LoginKey> getLoginKeys() {
-        return loginKeys;
-    }
-
-    /**
-     * @param loginKeys the loginKeys to set
-     */
-    public void setLogineKeys(List<LoginKey> loginKeys) {
-        this.loginKeys = loginKeys;
     }
 
     /**
@@ -116,16 +79,31 @@ public class CloudCredentials extends OwnedObject{
         this.cloudProviderName = cloudProviderName;
     }
 
-    public void setKeyPass(String keyPass) {
-        this.keypass = keyPass;
+    /**
+     * @return the accessKeyId
+     */
+    public String getAccessKeyId() {
+        return accessKeyId;
     }
 
     /**
-     * The password for key stores
-     * @return the keypass
+     * @param accessKeyId the accessKeyId to set
      */
-    @DocumentationExample("123passwd")
-    public String getKeypass() {
-        return keypass;
+    public void setAccessKeyId(String accessKeyId) {
+        this.accessKeyId = accessKeyId;
+    }
+
+    /**
+     * @return the keyIDs
+     */
+    public List<String> getKeyIDs() {
+        return keyIDs;
+    }
+
+    /**
+     * @param keyIDs the keyIDs to set
+     */
+    public void setKeyIDs(List<String> keyIDs) {
+        this.keyIDs = keyIDs;
     }
 }

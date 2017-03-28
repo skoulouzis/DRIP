@@ -23,7 +23,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
-public class ProvisionInfo extends KeyValueHolder {
+public class ProvisionRequest extends KeyValueHolder {
 
     private String cloudCredentialsID;
 
@@ -32,8 +32,6 @@ public class ProvisionInfo extends KeyValueHolder {
     private String scriptID;
 
     private String userKeyID;
-
-    private List<DeployParameter> deployParameters;
 
     /**
      * @return the cloudCredentialsID
@@ -92,10 +90,6 @@ public class ProvisionInfo extends KeyValueHolder {
     }
 
     public void setDeployParameters(List<DeployParameter> deployParameters) {
-        this.deployParameters = deployParameters;
-    }
-
-    public List<DeployParameter> getDeployParameters() {
-        return deployParameters;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -15,11 +15,8 @@
  */
 package nl.uva.sne.drip.api.service;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,9 +27,9 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.api.dao.KeyDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import nl.uva.sne.drip.api.dao.ProvisionInfoDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.CloudCredentialsNotFoundException;
 import nl.uva.sne.drip.api.exception.ExceptionHandler;
@@ -42,17 +39,16 @@ import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
 import nl.uva.sne.drip.api.v1.rest.ProvisionController;
 import nl.uva.sne.drip.commons.utils.Converter;
-import nl.uva.sne.drip.commons.utils.MessageGenerator;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import nl.uva.sne.drip.commons.v1.types.DeployParameter;
-import nl.uva.sne.drip.commons.v1.types.LoginKey;
+import nl.uva.sne.drip.commons.v1.types.Key;
 import nl.uva.sne.drip.commons.v1.types.Message;
 import nl.uva.sne.drip.commons.v1.types.MessageParameter;
-import nl.uva.sne.drip.commons.v1.types.Plan;
-import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
+import nl.uva.sne.drip.commons.v1.types.PlanResponse;
+import nl.uva.sne.drip.commons.v1.types.ProvisionRequest;
+import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
 import nl.uva.sne.drip.commons.v1.types.Script;
 import nl.uva.sne.drip.commons.v1.types.User;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +56,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import nl.uva.sne.drip.api.dao.ProvisionResponseDao;
 
 /**
  *
@@ -70,7 +67,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class ProvisionService {
 
     @Autowired
-    private ProvisionInfoDao dao;
+    private ProvisionResponseDao provisionDao;
+
+    @Autowired
+    private KeyDao keyDao;
 
     @Autowired
     private CloudCredentialsService cloudCredentialsService;
@@ -82,21 +82,21 @@ public class ProvisionService {
     private UserScriptService userScriptService;
 
     @Autowired
-    private UserKeyService userKeysService;
+    private KeyService userKeysService;
 
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-    public ProvisionInfo save(ProvisionInfo provisionInfo) {
+    public ProvisionResponse save(ProvisionResponse provision) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        provisionInfo.setOwner(owner);
-        return dao.save(provisionInfo);
+        provision.setOwner(owner);
+        return provisionDao.save(provision);
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public ProvisionInfo findOne(String id) {
-        ProvisionInfo provisionInfo = dao.findOne(id);
+    public ProvisionResponse findOne(String id) {
+        ProvisionResponse provisionInfo = provisionDao.findOne(id);
         if (provisionInfo == null) {
             throw new NotFoundException();
         }
@@ -104,22 +104,22 @@ public class ProvisionService {
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public ProvisionInfo delete(String id) {
-        ProvisionInfo provisionInfo = dao.findOne(id);
-        dao.delete(provisionInfo);
+    public ProvisionResponse delete(String id) {
+        ProvisionResponse provisionInfo = provisionDao.findOne(id);
+        provisionDao.delete(provisionInfo);
         return provisionInfo;
     }
 
 //    @PreAuthorize(" (hasRole('ROLE_ADMIN')) or (hasRole('ROLE_USER'))")
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
 //    @PostFilter("hasPermission(filterObject, 'read') or hasPermission(filterObject, 'admin')")
-    public List<ProvisionInfo> findAll() {
-        return dao.findAll();
+    public List<ProvisionResponse> findAll() {
+        return provisionDao.findAll();
     }
 
-    public ProvisionInfo provisionResources(ProvisionInfo req) throws IOException, TimeoutException, JSONException, InterruptedException {
+    public ProvisionResponse provisionResources(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException {
         try (DRIPCaller provisioner = new ProvisionerCaller(messageBrokerHost);) {
-            Message provisionerInvokationMessage = buildProvisionerMessage(req);
+            Message provisionerInvokationMessage = buildProvisionerMessage(provisionRequest);
 
             Message response = (provisioner.call(provisionerInvokationMessage));
 //            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
@@ -127,7 +127,7 @@ public class ProvisionService {
 //                    + File.separator + "docs" + File.separator + "json_samples"
 //                    + File.separator + "ec2_provisioner_provisoned3.json");
             List<MessageParameter> params = response.getParameters();
-
+            ProvisionResponse provisionResponse = new ProvisionResponse();
             for (MessageParameter p : params) {
                 String name = p.getName();
                 if (name.toLowerCase().contains("exception")) {
@@ -135,11 +135,12 @@ public class ProvisionService {
                     Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
                     throw ex;
                 }
+
                 if (!name.equals("kubernetes")) {
                     String value = p.getValue();
                     Map<String, Object> kvMap = Converter.ymlString2Map(value);
-                    req.setKvMap(kvMap);
-                    req.setPlanID(req.getPlanID());
+                    provisionResponse.setKvMap(kvMap);
+                    provisionResponse.setPlanID(provisionRequest.getPlanID());
                 } else {
                     String value = p.getValue();
                     String[] lines = value.split("\n");
@@ -161,15 +162,15 @@ public class ProvisionService {
                         deployParam.setCloudCertificateName(cloudCertificateName);
                         deployParameters.add(deployParam);
                     }
-                    req.setDeployParameters(deployParameters);
+                    provisionResponse.setDeployParameters(deployParameters);
                 }
             }
-            req = save(req);
-            return req;
+            provisionResponse = save(provisionResponse);
+            return provisionResponse;
         }
     }
 
-    private Message buildProvisionerMessage(ProvisionInfo pReq) throws JSONException, IOException {
+    private Message buildProvisionerMessage(ProvisionRequest pReq) throws JSONException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
         CloudCredentials cred = cloudCredentialsService.findOne(pReq.getCloudCredentialsID());
@@ -217,12 +218,18 @@ public class ProvisionService {
     }
 
     private List<MessageParameter> buildCertificatesParam(CloudCredentials cred) {
-        List<LoginKey> loginKeys = cred.getLoginKeys();
+        List<String> loginKeysIDs = cred.getKeyIDs();
+        List<Key> loginKeys = new ArrayList<>();
+        for (String keyID : loginKeysIDs) {
+            Key key = keyDao.findOne(keyID);
+            loginKeys.add(key);
+        }
+
         if (loginKeys == null || loginKeys.isEmpty()) {
             throw new BadRequestException("Log in keys can't be empty");
         }
         List<MessageParameter> parameters = new ArrayList<>();
-        for (LoginKey lk : loginKeys) {
+        for (Key lk : loginKeys) {
             String domainName = lk.getAttributes().get("domain_name");
             if (domainName == null) {
                 domainName = lk.getAttributes().get("domain_name ");
@@ -239,7 +246,7 @@ public class ProvisionService {
     }
 
     private List<MessageParameter> buildTopologyParams(String planID) throws JSONException {
-        Plan plan = planService.getDao().findOne(planID);
+        PlanResponse plan = planService.getDao().findOne(planID);
         if (plan == null) {
             throw new PlanNotFoundException();
         }
@@ -255,7 +262,7 @@ public class ProvisionService {
 
         Set<String> ids = plan.getLoweLevelPlanIDs();
         for (String lowID : ids) {
-            Plan lowPlan = planService.getDao().findOne(lowID);
+            PlanResponse lowPlan = planService.getDao().findOne(lowID);
             topology = new MessageParameter();
             topology.setName("topology");
             topology.setValue(Converter.map2YmlString(lowPlan.getKeyValue()));
@@ -297,7 +304,7 @@ public class ProvisionService {
     }
 
     private List<MessageParameter> buildKeysParams(String userKeyID) {
-        LoginKey key = userKeysService.get(userKeyID, LoginKey.Type.PUBLIC);
+        Key key = userKeysService.findOne(userKeyID);
         if (key == null) {
             throw new BadRequestException("User key: " + userKeyID + " was not found");
         }
@@ -311,10 +318,8 @@ public class ProvisionService {
 
     }
 
-
-
     @PostFilter("(hasRole('ROLE_ADMIN'))")
     public void deleteAll() {
-        dao.deleteAll();
+        provisionDao.deleteAll();
     }
 }

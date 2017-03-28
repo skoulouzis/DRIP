@@ -23,11 +23,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.service.UserKeyService;
+import nl.uva.sne.drip.api.service.KeyService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.ConfUserKey;
-import nl.uva.sne.drip.commons.v1.types.LoginKey;
-import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
+import nl.uva.sne.drip.commons.v1.types.Key;
+import nl.uva.sne.drip.commons.v1.types.ProvisionRequest;
+import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -44,7 +45,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class UserPublicKeysController0 {
 
     @Autowired
-    private UserKeyService service;
+    private KeyService service;
 
     @Autowired
     private ProvisionService provisionService;
@@ -53,14 +54,14 @@ public class UserPublicKeysController0 {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String uploadUserPublicKeys(@RequestBody ConfUserKey confUserKey) {
-        LoginKey upk = new LoginKey();
+        Key upk = new Key();
         upk.setKey(confUserKey.file.get(0).content);
         upk.setName(confUserKey.file.get(0).name);
-        upk.setType(LoginKey.Type.PUBLIC);
+        upk.setType(Key.Type.PUBLIC);
 
         upk = service.save(upk);
 
-        ProvisionInfo provPlan = provisionService.findOne(confUserKey.action);
+        ProvisionResponse provPlan = provisionService.findOne(confUserKey.action);
         provPlan.setUserKeyID(upk.getId());
         provisionService.save(provPlan);
 

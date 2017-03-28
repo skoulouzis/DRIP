@@ -25,6 +25,7 @@ def install_prerequisites(vm):
 		print "Installing ansible prerequisites in: %s" % (vm.ip)
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+		#print "Username : %s" % (vm.user)
 		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
 		sftp = ssh.open_sftp()
 		sftp.chdir('/tmp/')
@@ -40,8 +41,14 @@ def install_prerequisites(vm):
 	ssh.close()
 	return "SUCCESS"
 
-def run(vm_list):
-	for i in vm_list:
-		ret = install_prerequisites(i)
-        if "ERROR" in ret: return ret
-	return "SUCCESS"
+def run(vm_list,playbook):
+    ips=""
+    privatekey=""
+    for vm in vm_list:
+            ret = install_prerequisites(vm)
+            ips+=vm.ip+","
+            privatekey = vm.key
+            user = vm.user
+    if "ERROR" in ret: return ret
+    print ("ansible-playbook " + playbook + "-i "+ips+" --private-key="+privatekey +" --user="+user)
+    return "SUCCESS"

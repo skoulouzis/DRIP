@@ -15,7 +15,14 @@
     {
       "url": null,
       "encoding": "UTF-8",
-      "value": "swarm",
+      "value": "fdsvvvvvvvvv",
+      "name": "playbook",
+      "attributes": null
+    },
+    {
+      "url": null,
+      "encoding": "UTF-8",
+      "value": "ansible",
       "name": "cluster",
       "attributes": null
     }

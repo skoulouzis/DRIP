@@ -65,7 +65,7 @@ public class PlannerController0 {
             String yaml = plan0.file;
             yaml = yaml.replaceAll("\\\\n", "\n");
             String id = toscaService.saveYamlString(yaml, null);
-            nl.uva.sne.drip.commons.v1.types.Plan plan1 = plannerService.getPlan(id);
+            nl.uva.sne.drip.commons.v1.types.PlanResponse plan1 = plannerService.getPlan(id);
 
             Result r = new Result();
             r.info = ("INFO");
@@ -76,7 +76,7 @@ public class PlannerController0 {
             files.add(e);
 
             for (String lowiID : plan1.getLoweLevelPlanIDs()) {
-                nl.uva.sne.drip.commons.v1.types.Plan lowPlan1 = plannerService.findOne(lowiID);
+                nl.uva.sne.drip.commons.v1.types.PlanResponse lowPlan1 = plannerService.findOne(lowiID);
                 e = Converter.plan1toFile(lowPlan1);
                 files.add(e);
                 //Don't save them cause they will be re-uploaded in the provision step

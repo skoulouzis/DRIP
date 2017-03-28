@@ -13,15 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.dao;
+package nl.uva.sne.drip.commons.v1.types;
 
-import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import java.util.List;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface ProvisionInfoDao extends MongoRepository<ProvisionInfo, String> {
+public class ProvisionResponse extends ProvisionRequest{
+    
+    private List<DeployParameter> deployParameters;
 
+    /**
+     * @return the deployParameters
+     */
+    public List<DeployParameter> getDeployParameters() {
+        return deployParameters;
+    }
+
+    /**
+     * @param deployParameters the deployParameters to set
+     */
+    public void setDeployParameters(List<DeployParameter> deployParameters) {
+        this.deployParameters = deployParameters;
+    }
+    
 }

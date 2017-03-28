@@ -35,43 +35,34 @@ public class MessageParameter implements Serializable {
     public static final String VALUE = "value";
     public static final String ENCODING = "encoding";
 
-//    @Override
     public String getURL() {
         return this.url;
     }
 
-//    @Override
     public void setURL(String url) {
         this.url = url;
     }
 
-//    @Override
     public String getEncoding() {
         return this.encoding;
     }
 
-//    @Override
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
 
-//    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-//    @Override
     public String getName() {
         return this.name;
     }
-//
-//    @Override
 
     public String getValue() {
         return this.value;
     }
 
-//    @Override
     public void setValue(String value) {
         this.value = value;
     }

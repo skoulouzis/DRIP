@@ -25,7 +25,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
-public class Plan extends KeyValueHolder {
+public class PlanResponse extends KeyValueHolder {
 
     private String toscaID;
 

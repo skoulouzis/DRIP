@@ -134,7 +134,7 @@ Content-Type: application/json
       <div id="resource_ProvisionController_getIds_GET">
         <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/provisioner/ids <a href="../user/v1.0/provisioner/ids" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Gets the IDs of all the stored ProvisionInfo</p>
+        <p>Gets the IDs of all the stored ProvisionRequest</p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -212,12 +212,12 @@ Content-Type: application/json
           <tbody>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
-            <td><span class="datatype-reference"><a href="json_ProvisionInfo.html">ProvisionInfo</a>
+            <td><span class="datatype-reference"><a href="json_ProvisionRequest.html">ProvisionRequest</a>
  (JSON)</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
-            <td><span class="datatype-reference"><a href="xml_ns0_provisionInfo.html">provisionInfo</a>
+            <td><span class="datatype-reference"><a href="xml_ns0_provisionRequest.html">provisionRequest</a>
  (XML)</span></td>
           </tr>
           </tbody>
@@ -237,7 +237,7 @@ Content-Type: application/json
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
             <td><span class="datatype-reference">string
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">The ID of the provisioned ProvisionInfo</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The ID of the provisioned ProvisionRequest</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
@@ -263,17 +263,6 @@ Accept: application/json
   &quot;planID&quot; : &quot;...&quot;,
   &quot;scriptID&quot; : &quot;...&quot;,
   &quot;userKeyID&quot; : &quot;...&quot;,
-  &quot;deployParameters&quot; : [ {
-    &quot;cloudCertificateName&quot; : &quot;...&quot;,
-    &quot;IP&quot; : &quot;...&quot;,
-    &quot;user&quot; : &quot;...&quot;,
-    &quot;role&quot; : &quot;...&quot;
-  }, {
-    &quot;cloudCertificateName&quot; : &quot;...&quot;,
-    &quot;IP&quot; : &quot;...&quot;,
-    &quot;user&quot; : &quot;...&quot;,
-    &quot;role&quot; : &quot;...&quot;
-  } ],
   &quot;keyValue&quot; : {
     &quot;property1&quot; : { },
     &quot;property2&quot; : { }
@@ -302,7 +291,7 @@ Content-Type: application/json
       <div id="resource_ProvisionController_delete_DELETE">
         <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/provisioner/{id} <a href="../user/v1.0/provisioner/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Deletes the ProvisionInfo</p>
+        <p>Deletes the ProvisionRequest</p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -341,7 +330,7 @@ Content-Type: application/json
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
             <td><span class="datatype-reference">string
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">the ID of the deleted ProvisionInfo</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">the ID of the deleted ProvisionRequest</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
@@ -380,7 +369,7 @@ Content-Type: application/json
       <div id="resource_ProvisionController_get_GET">
         <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/provisioner/{id} <a href="../user/v1.0/provisioner/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Gets the ProvisionInfo</p>
+        <p>Gets the ProvisionRequest</p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -417,13 +406,13 @@ Content-Type: application/json
           <tbody>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
-            <td><span class="datatype-reference"><a href="json_ProvisionInfo.html">ProvisionInfo</a>
+            <td><span class="datatype-reference"><a href="json_ProvisionResponse.html">ProvisionResponse</a>
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">the requested ProvisionInfo</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">the requested ProvisionRequest</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
-            <td><span class="datatype-reference"><a href="xml_ns0_provisionInfo.html">provisionInfo</a>
+            <td><span class="datatype-reference"><a href="xml_ns0_provisionResponse.html">provisionResponse</a>
  (XML)</span></td>
           </tr>
           </tbody>
@@ -452,17 +441,6 @@ Content-Type: application/json
   &quot;planID&quot; : &quot;...&quot;,
   &quot;scriptID&quot; : &quot;...&quot;,
   &quot;userKeyID&quot; : &quot;...&quot;,
-  &quot;deployParameters&quot; : [ {
-    &quot;cloudCertificateName&quot; : &quot;...&quot;,
-    &quot;IP&quot; : &quot;...&quot;,
-    &quot;user&quot; : &quot;...&quot;,
-    &quot;role&quot; : &quot;...&quot;
-  }, {
-    &quot;cloudCertificateName&quot; : &quot;...&quot;,
-    &quot;IP&quot; : &quot;...&quot;,
-    &quot;user&quot; : &quot;...&quot;,
-    &quot;role&quot; : &quot;...&quot;
-  } ],
   &quot;keyValue&quot; : {
     &quot;property1&quot; : { },
     &quot;property2&quot; : { }

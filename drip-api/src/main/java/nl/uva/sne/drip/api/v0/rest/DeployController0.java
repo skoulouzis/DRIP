@@ -28,7 +28,9 @@ import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.Deploy;
 import nl.uva.sne.drip.commons.v0.types.Attribute;
 import nl.uva.sne.drip.commons.v0.types.Result;
-import nl.uva.sne.drip.commons.v1.types.ClusterCredentials;
+import nl.uva.sne.drip.commons.v1.types.DeployRequest;
+import nl.uva.sne.drip.commons.v1.types.DeployResponse;
+import nl.uva.sne.drip.commons.v1.types.Key;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -53,27 +55,32 @@ public class DeployController0 {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result deployKubernetes(@RequestBody Deploy deploy) {
-        return deploy(deploy, "kubernetes");
+        DeployRequest deployReq = new DeployRequest();
+        deployReq.setClusterType("kubernetes");
+        deployReq.setProvisionID(deploy.action);
+        return deploy(deployReq);
     }
 
     @RequestMapping(value = "/swarm", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result deploySwarm(@RequestBody Deploy deploy) {
-        return deploy(deploy, "swarm");
+        DeployRequest deployReq = new DeployRequest();
+        deployReq.setClusterType("swarm");
+        deployReq.setProvisionID(deploy.action);
+        return deploy(deployReq);
     }
 
-    private Result deploy(Deploy deploy, String clusterType) {
-        String provisionID = deploy.action;
+    private Result deploy(DeployRequest deployReq) {
 
-        ClusterCredentials clusterCred = deployService.deployCluster(provisionID, clusterType);
+        DeployResponse key = deployService.deployCluster(deployReq);
 
         Result res = new Result();
         res.info = "INFO";
         res.status = "Success";
         List<Attribute> files = new ArrayList<>();
         Attribute e = new Attribute();
-        e.content = clusterCred.getKey();
+        e.content = key.getKey().getKey();
         files.add(e);
         res.file = files;
         return res;

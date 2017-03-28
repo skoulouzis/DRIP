@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 S. Koulouzis.
+ * Copyright 2017 S. Koulouzis, Wang Junchao, Huan Zhou, Yang Hu 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,41 @@
  */
 package nl.uva.sne.drip.commons.v1.types;
 
-import java.util.Date;
-import java.util.List;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface IMessage {
+@Document
+public class DeployResponse extends DeployRequest {
 
-    public static final String CREATION_DATE = "creationDate";
+    @Id
+    private String id;
 
-    public Long getCreationDate();
+    private Key key;
 
-    public void setCreationDate(Long creationDate);
+    public void setKey(Key key) {
+        this.key = key;
+    }
 
-    public void setParameters(List<MessageParameter> params);
+    public Key getKey() {
+        return key;
+    }
 
-    public List getParameters();
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
 }

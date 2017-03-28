@@ -15,13 +15,14 @@
  */
 package nl.uva.sne.drip.api.dao;
 
-import nl.uva.sne.drip.commons.v1.types.PlanResponse;
+import nl.uva.sne.drip.commons.v1.types.DeployResponse;
+import nl.uva.sne.drip.commons.v1.types.Key;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface PlanDao extends MongoRepository<PlanResponse, String> {
+public interface DeployDao extends MongoRepository<DeployResponse, String> {
 
 }

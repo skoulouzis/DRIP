@@ -248,28 +248,21 @@ sub-topology name appeared in the high-level description file. (For example, her
 <xs:complexType name="cloudCredentials">
   <xs:annotation>
     <xs:documentation>
-      <![CDATA[This class represents the cloud credentials for a cloud. They are used by the
-provisoner to request for resources.]]>
+      <![CDATA[This class represents the cloud credentials. They are used by the provisoner
+to request for resources.]]>
     </xs:documentation>
   </xs:annotation>
    <xs:complexContent>
     <xs:extension base="ownedObject">
       <xs:sequence>
+              <xs:element name="secretKey" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>
+                  <![CDATA[It is the secret key / password for accessing a cloud provider.]]>
+                </xs:documentation>
+              </xs:annotation>
+              </xs:element>
               <xs:element name="id" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="key" type="xs:string" minOccurs="0">
-              <xs:annotation>
-                <xs:documentation>
-                  <![CDATA[The key for the cloud provider.]]>
-                </xs:documentation>
-              </xs:annotation>
-              </xs:element>
-              <xs:element name="keyIdAlias" type="xs:string" minOccurs="0">
-              <xs:annotation>
-                <xs:documentation>
-                  <![CDATA[The key id for the cloud provider or the key alias.]]>
-                </xs:documentation>
-              </xs:annotation>
               </xs:element>
               <xs:element name="cloudProviderName" type="xs:string" minOccurs="0">
               <xs:annotation>
@@ -278,52 +271,36 @@ provisoner to request for resources.]]>
                 </xs:documentation>
               </xs:annotation>
               </xs:element>
-      </xs:sequence>
-    </xs:extension>
-  </xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="clusterCredentials">
-  <xs:annotation>
-    <xs:documentation>
-      <![CDATA[This class represents the cluster credentials for a cloud. They can used to
-login to the cluster created by the deployer]]>
-    </xs:documentation>
-  </xs:annotation>
-   <xs:complexContent>
-    <xs:extension base="ownedObject">
-      <xs:sequence>
-              <xs:element name="id" type="xs:string" minOccurs="0">
+              <xs:element name="accessKeyId" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="key" type="xs:string" minOccurs="0">
-              <xs:annotation>
-                <xs:documentation>
-                  <![CDATA[The key of the login key.]]>
-                </xs:documentation>
-              </xs:annotation>
+              <xs:element name="keyIDs" type="xs:string" minOccurs="0" maxOccurs="unbounded">
               </xs:element>
       </xs:sequence>
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
 
-<xs:complexType name="deployParameter">
-       <xs:sequence>
-              <xs:element name="cloudCertificateName" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="IP" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="user" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="role" type="xs:string" minOccurs="0">
-              </xs:element>
-      </xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="keyValueHolder">
+<xs:complexType name="deployRequest">
    <xs:complexContent>
     <xs:extension base="ownedObject">
       <xs:sequence>
+              <xs:element name="provisionID" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="clusterType" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="configurationID" type="xs:string" minOccurs="0">
+              </xs:element>
+      </xs:sequence>
+    </xs:extension>
+  </xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="deployResponse">
+   <xs:complexContent>
+    <xs:extension base="deployRequest">
+      <xs:sequence>
+              <xs:element name="key" type="key" minOccurs="0">
+              </xs:element>
               <xs:element name="id" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
@@ -331,12 +308,12 @@ login to the cluster created by the deployer]]>
   </xs:complexContent>
 </xs:complexType>
 
-<xs:complexType name="loginKey">
+<xs:complexType name="key">
   <xs:annotation>
     <xs:documentation>
-      <![CDATA[This class represents a login key. This key can be used to either login to a
-VM created by the provisiner or by the VM to allow the user to login to the
-VMs from the machine the keys correspond to.]]>
+      <![CDATA[This class represents a key. This key can be used to either login to a VM
+created by the provisiner or by the VM to allow the user to login to the VMs
+from the machine the keys correspond to.]]>
     </xs:documentation>
   </xs:annotation>
    <xs:complexContent>
@@ -399,6 +376,17 @@ to specify the domain name for ec2]]>
   </xs:restriction>
 </xs:simpleType>
 
+<xs:complexType name="keyValueHolder">
+   <xs:complexContent>
+    <xs:extension base="ownedObject">
+      <xs:sequence>
+              <xs:element name="id" type="xs:string" minOccurs="0">
+              </xs:element>
+      </xs:sequence>
+    </xs:extension>
+  </xs:complexContent>
+</xs:complexType>
+
 <xs:complexType name="ownedObject">
        <xs:sequence>
               <xs:element name="owner" type="xs:string" minOccurs="0">
@@ -406,7 +394,27 @@ to specify the domain name for ec2]]>
       </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="provisionInfo">
+<xs:complexType name="planResponse">
+  <xs:annotation>
+    <xs:documentation>
+      <![CDATA[This class represents a plan generated by the planner.]]>
+    </xs:documentation>
+  </xs:annotation>
+   <xs:complexContent>
+    <xs:extension base="keyValueHolder">
+      <xs:sequence>
+              <xs:element name="name" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="toscaID" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="level" type="xs:int" minOccurs="0">
+              </xs:element>
+      </xs:sequence>
+    </xs:extension>
+  </xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="provisionRequest">
    <xs:complexContent>
     <xs:extension base="keyValueHolder">
       <xs:sequence>
@@ -418,9 +426,14 @@ to specify the domain name for ec2]]>
               </xs:element>
               <xs:element name="userKeyID" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="deployParameters" type="deployParameter" minOccurs="0" maxOccurs="unbounded">
-              </xs:element>
       </xs:sequence>
+    </xs:extension>
+  </xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="provisionResponse">
+   <xs:complexContent>
+    <xs:extension base="provisionRequest">
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>

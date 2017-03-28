@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-  <title>drip-api: CloudCredentials</title>
+  <title>drip-api: ProvisionRequest</title>
 
   <!-- Mobile viewport optimized: j.mp/bplateviewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,7 +35,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.html">drip-api: CloudCredentials</a>
+        <a class="navbar-brand" href="index.html">drip-api: ProvisionRequest</a>
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right">
@@ -59,15 +59,16 @@
         <ol class="breadcrumb" id="top">
           <li class="active dropdown"><a href="index.html">Home</a></li>
           <li class="active dropdown"><a href="syntax_json.html">JSON</a></li>
-          <li class="dropdown"><a href="json_CloudCredentials.html">CloudCredentials</a></li>
+          <li class="dropdown"><a href="json_ProvisionRequest.html">ProvisionRequest</a></li>
         </ol>
 
-      <h1 class="page-header">CloudCredentials <small>Data Type</small></h1>
+      <h1 class="page-header">ProvisionRequest <small>Data Type</small></h1>
 
-      <p>This class represents the cloud credentials. They are used by the provisoner
-to request for resources.</p>
+      <p></p>
 
       <dl class="dl-horizontal">
+        <dt>Subtypes</dt>
+        <dd><a href="json_ProvisionResponse.html">ProvisionResponse</a></dd>
       </dl>
 
       <table class="table datatype-properties">
@@ -81,16 +82,7 @@ to request for resources.</p>
         </thead>
         <tbody>
         <tr>
-          <td>  <span class="property-name">secretKey</span>
-</td>
-          <td>  <span class="datatype-reference">string
-</span>
-</td>
-          <td>  <span class="property-description">It is the secret key / password for accessing a cloud provider.</span>
-</td>
-        </tr>
-        <tr>
-          <td>  <span class="property-name">id</span>
+          <td>  <span class="property-name">cloudCredentialsID</span>
 </td>
           <td>  <span class="datatype-reference">string
 </span>
@@ -99,16 +91,7 @@ to request for resources.</p>
 </td>
         </tr>
         <tr>
-          <td>  <span class="property-name">cloudProviderName</span>
-</td>
-          <td>  <span class="datatype-reference">string
-</span>
-</td>
-          <td>  <span class="property-description">The name of the cloud provider</span>
-</td>
-        </tr>
-        <tr>
-          <td>  <span class="property-name">accessKeyId</span>
+          <td>  <span class="property-name">planID</span>
 </td>
           <td>  <span class="datatype-reference">string
 </span>
@@ -117,13 +100,39 @@ to request for resources.</p>
 </td>
         </tr>
         <tr>
-          <td>  <span class="property-name">keyIDs</span>
+          <td>  <span class="property-name">scriptID</span>
 </td>
-          <td>  <span class="datatype-reference">array of string
+          <td>  <span class="datatype-reference">string
 </span>
 </td>
           <td>  <span class="property-description"></span>
 </td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">userKeyID</span>
+</td>
+          <td>  <span class="datatype-reference">string
+</span>
+</td>
+          <td>  <span class="property-description"></span>
+</td>
+        </tr>
+        </tbody>
+        <tr>
+          <td colspan="3"><h5 class="text-muted">Properties inherited from <a href="json_KeyValueHolder.html">KeyValueHolder</a></h5></td>
+        </tr>
+        <tbody>
+        <tr>
+          <td><span class="property-name">keyValue</span></td>
+          <td><span class="datatype-reference">map of object
+</span></td>
+          <td><span class="property-description"></span></td>
+        </tr>
+        <tr>
+          <td><span class="property-name">id</span></td>
+          <td><span class="datatype-reference">string
+</span></td>
+          <td><span class="property-description"></span></td>
         </tr>
         </tbody>
         <tr>
@@ -142,11 +151,15 @@ to request for resources.</p>
       <p class="lead">Example</p>
       
       <pre class="prettyprint language-js example">{
-  &quot;secretKey&quot; : &quot;7A7vo19ffdfa4SAsA6gsF5Fgbfb5rtwY6hBxtYt12&quot;,
+  &quot;cloudCredentialsID&quot; : &quot;...&quot;,
+  &quot;planID&quot; : &quot;...&quot;,
+  &quot;scriptID&quot; : &quot;...&quot;,
+  &quot;userKeyID&quot; : &quot;...&quot;,
+  &quot;keyValue&quot; : {
+    &quot;property1&quot; : { },
+    &quot;property2&quot; : { }
+  },
   &quot;id&quot; : &quot;...&quot;,
-  &quot;cloudProviderName&quot; : &quot;ec2&quot;,
-  &quot;accessKeyId&quot; : &quot;...&quot;,
-  &quot;keyIDs&quot; : [ &quot;...&quot;, &quot;...&quot; ],
   &quot;owner&quot; : &quot;...&quot;
 }</pre>
 

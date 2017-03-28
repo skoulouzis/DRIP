@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-  <title>drip-api: CloudCredentials</title>
+  <title>drip-api: provisionResponse</title>
 
   <!-- Mobile viewport optimized: j.mp/bplateviewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,7 +35,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.html">drip-api: CloudCredentials</a>
+        <a class="navbar-brand" href="index.html">drip-api: provisionResponse</a>
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right">
@@ -58,16 +58,19 @@
       <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <ol class="breadcrumb" id="top">
           <li class="active dropdown"><a href="index.html">Home</a></li>
-          <li class="active dropdown"><a href="syntax_json.html">JSON</a></li>
-          <li class="dropdown"><a href="json_CloudCredentials.html">CloudCredentials</a></li>
+          <li class="active dropdown"><a href="syntax_xml.html">XML</a></li>
+          <li class="dropdown"><a href="xml_ns0_provisionResponse.html">provisionResponse</a></li>
         </ol>
 
-      <h1 class="page-header">CloudCredentials <small>Data Type</small></h1>
+      <h1 class="page-header">provisionResponse <small>Data Type</small></h1>
 
-      <p>This class represents the cloud credentials. They are used by the provisoner
-to request for resources.</p>
+      <p></p>
 
       <dl class="dl-horizontal">
+        <dt>Namespace</dt>
+        <dd>(Default)</dd>
+        <dt>Schema</dt>
+        <dd><a href="ns0.xsd">ns0.xsd</a></dd>
       </dl>
 
       <table class="table datatype-properties">
@@ -76,79 +79,113 @@ to request for resources.</p>
         <tr>
           <th>name</th>
           <th>data type</th>
+          <th>type</th>
+          <th>namespace</th>
+          <th>min/max occurs</th>
           <th>description</th>
         </tr>
         </thead>
         <tbody>
+        </tbody>
         <tr>
-          <td>  <span class="property-name">secretKey</span>
-</td>
-          <td>  <span class="datatype-reference">string
-</span>
-</td>
-          <td>  <span class="property-description">It is the secret key / password for accessing a cloud provider.</span>
-</td>
+          <td colspan="6"><h5 class="text-muted">Properties inherited from <a href="xml_ns0_provisionRequest.html">provisionRequest</a></h5></td>
+        </tr>
+        <tbody>
+        <tr>
+          <td><span class="property-name">cloudCredentialsID</span></td>
+          <td><span class="datatype-reference">string
+</span></td>
+          <td><span class="property-type">element
+</span></td>
+          <td><span class="property-namespaceInfo">
+</span></td>
+          <td><span class="property-minMaxOccurs">0/1
+</span></td>
+          <td><span class="property-description">the cloudCredentialsID</span></td>
         </tr>
         <tr>
-          <td>  <span class="property-name">id</span>
-</td>
-          <td>  <span class="datatype-reference">string
-</span>
-</td>
-          <td>  <span class="property-description"></span>
-</td>
+          <td><span class="property-name">planID</span></td>
+          <td><span class="datatype-reference">string
+</span></td>
+          <td><span class="property-type">element
+</span></td>
+          <td><span class="property-namespaceInfo">
+</span></td>
+          <td><span class="property-minMaxOccurs">0/1
+</span></td>
+          <td><span class="property-description">the planID</span></td>
         </tr>
         <tr>
-          <td>  <span class="property-name">cloudProviderName</span>
-</td>
-          <td>  <span class="datatype-reference">string
-</span>
-</td>
-          <td>  <span class="property-description">The name of the cloud provider</span>
-</td>
+          <td><span class="property-name">scriptID</span></td>
+          <td><span class="datatype-reference">string
+</span></td>
+          <td><span class="property-type">element
+</span></td>
+          <td><span class="property-namespaceInfo">
+</span></td>
+          <td><span class="property-minMaxOccurs">0/1
+</span></td>
+          <td><span class="property-description">the scriptID</span></td>
         </tr>
         <tr>
-          <td>  <span class="property-name">accessKeyId</span>
-</td>
-          <td>  <span class="datatype-reference">string
-</span>
-</td>
-          <td>  <span class="property-description"></span>
-</td>
-        </tr>
-        <tr>
-          <td>  <span class="property-name">keyIDs</span>
-</td>
-          <td>  <span class="datatype-reference">array of string
-</span>
-</td>
-          <td>  <span class="property-description"></span>
-</td>
+          <td><span class="property-name">userKeyID</span></td>
+          <td><span class="datatype-reference">string
+</span></td>
+          <td><span class="property-type">element
+</span></td>
+          <td><span class="property-namespaceInfo">
+</span></td>
+          <td><span class="property-minMaxOccurs">0/1
+</span></td>
+          <td><span class="property-description">the userKeyID</span></td>
         </tr>
         </tbody>
         <tr>
-          <td colspan="3"><h5 class="text-muted">Properties inherited from <a href="json_OwnedObject.html">OwnedObject</a></h5></td>
+          <td colspan="6"><h5 class="text-muted">Properties inherited from <a href="xml_ns0_keyValueHolder.html">keyValueHolder</a></h5></td>
+        </tr>
+        <tbody>
+        <tr>
+          <td><span class="property-name">id</span></td>
+          <td><span class="datatype-reference">string
+</span></td>
+          <td><span class="property-type">element
+</span></td>
+          <td><span class="property-namespaceInfo">
+</span></td>
+          <td><span class="property-minMaxOccurs">0/1
+</span></td>
+          <td><span class="property-description">the id</span></td>
+        </tr>
+        </tbody>
+        <tr>
+          <td colspan="6"><h5 class="text-muted">Properties inherited from <a href="xml_ns0_ownedObject.html">ownedObject</a></h5></td>
         </tr>
         <tbody>
         <tr>
           <td><span class="property-name">owner</span></td>
           <td><span class="datatype-reference">string
 </span></td>
-          <td><span class="property-description"></span></td>
+          <td><span class="property-type">element
+</span></td>
+          <td><span class="property-namespaceInfo">
+</span></td>
+          <td><span class="property-minMaxOccurs">0/1
+</span></td>
+          <td><span class="property-description">the owner</span></td>
         </tr>
         </tbody>
       </table>
 
       <p class="lead">Example</p>
       
-      <pre class="prettyprint language-js example">{
-  &quot;secretKey&quot; : &quot;7A7vo19ffdfa4SAsA6gsF5Fgbfb5rtwY6hBxtYt12&quot;,
-  &quot;id&quot; : &quot;...&quot;,
-  &quot;cloudProviderName&quot; : &quot;ec2&quot;,
-  &quot;accessKeyId&quot; : &quot;...&quot;,
-  &quot;keyIDs&quot; : [ &quot;...&quot;, &quot;...&quot; ],
-  &quot;owner&quot; : &quot;...&quot;
-}</pre>
+      <pre class="prettyprint language-xml example">&lt;p-----&gt;
+  &lt;cloudCredentialsID&gt;...&lt;/cloudCredentialsID&gt;
+  &lt;planID&gt;...&lt;/planID&gt;
+  &lt;scriptID&gt;...&lt;/scriptID&gt;
+  &lt;userKeyID&gt;...&lt;/userKeyID&gt;
+  &lt;id&gt;...&lt;/id&gt;
+&lt;/p-----&gt;
+</pre>
 
         <footer class="footer">
           <div class="container">

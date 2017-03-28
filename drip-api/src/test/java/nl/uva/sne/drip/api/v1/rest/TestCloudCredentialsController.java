@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.rest;
+package nl.uva.sne.drip.api.v1.rest;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,18 +39,17 @@ import static org.junit.Assert.assertEquals;
  *
  * @author S. Koulouzis
  */
-public class RESTTest {
+public class TestCloudCredentialsController {
 
     private static URI url;
     private static File toscaFile;
 
-    public RESTTest() {
+    public TestCloudCredentialsController() {
     }
 
     @BeforeClass
     public static void setUpClass() throws URISyntaxException {
-        url = new URI("http://localhost:8080/drip-api/upload");
-        toscaFile = new File("./etc/input.yaml");
+        url = new URI("http://localhost:8080/drip-api/user/v1.0/credentials/cloud/");
     }
 
     @AfterClass
@@ -66,20 +65,24 @@ public class RESTTest {
     }
 
     @Test
-    public void testUpload() throws IOException {
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost(url);
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-
-        FileBody fileBody = new FileBody(toscaFile);
-        builder.addPart("file", fileBody);
-        HttpEntity entity = builder.build();
-        post.setEntity(entity);
-
-        HttpResponse status = client.execute(post);
-        System.err.println(status.getStatusLine());
-        assertEquals(200, status.getStatusLine().getStatusCode());
-//
+    public void testPostCredentials() throws IOException {
     }
+
+//    @Test
+//    public void testUpload() throws IOException {
+//        HttpClient client = HttpClientBuilder.create().build();
+//        HttpPost post = new HttpPost(url);
+//        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+//        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+//
+//        FileBody fileBody = new FileBody(toscaFile);
+//        builder.addPart("file", fileBody);
+//        HttpEntity entity = builder.build();
+//        post.setEntity(entity);
+//
+//        HttpResponse status = client.execute(post);
+//        System.err.println(status.getStatusLine());
+//        assertEquals(200, status.getStatusLine().getStatusCode());
+////
+//    }
 }

@@ -21,14 +21,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * This class represents a login key. This key can be used to either login to a
- * VM created by the provisiner or by the VM to allow the user to login to the
- * VMs from the machine the keys correspond to.
+ * This class represents a key. This key can be used to either login to a VM
+ * created by the provisiner or by the VM to allow the user to login to the VMs
+ * from the machine the keys correspond to.
  *
  * @author S. Koulouzis
  */
 @Document
-public class LoginKey extends OwnedObject {
+public class Key extends OwnedObject {
 
     @Id
     private String id;

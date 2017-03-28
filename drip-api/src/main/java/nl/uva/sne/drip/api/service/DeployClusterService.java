@@ -17,7 +17,6 @@ package nl.uva.sne.drip.api.service;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,19 +25,18 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.api.dao.ClusterCredentialsDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.DeployerCaller;
 import nl.uva.sne.drip.api.v1.rest.DeployController;
-import nl.uva.sne.drip.commons.utils.MessageGenerator;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
-import nl.uva.sne.drip.commons.v1.types.ClusterCredentials;
+import nl.uva.sne.drip.commons.v1.types.DeployRequest;
 import nl.uva.sne.drip.commons.v1.types.DeployParameter;
-import nl.uva.sne.drip.commons.v1.types.LoginKey;
+import nl.uva.sne.drip.commons.v1.types.DeployResponse;
+import nl.uva.sne.drip.commons.v1.types.Key;
 import nl.uva.sne.drip.commons.v1.types.Message;
 import nl.uva.sne.drip.commons.v1.types.MessageParameter;
-import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
+import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
 import nl.uva.sne.drip.commons.v1.types.User;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +46,8 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import nl.uva.sne.drip.api.dao.DeployDao;
+import nl.uva.sne.drip.api.dao.KeyDao;
 
 /**
  *
@@ -58,7 +58,10 @@ import org.springframework.stereotype.Service;
 public class DeployClusterService {
 
     @Autowired
-    private ClusterCredentialsDao dao;
+    private DeployDao deployDao;
+
+    @Autowired
+    KeyDao keyDao;
 
     @Value("${message.broker.host}")
     private String messageBrokerHost;
@@ -70,8 +73,8 @@ public class DeployClusterService {
     private ProvisionService provisionService;
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public ClusterCredentials findOne(String id) {
-        ClusterCredentials creds = dao.findOne(id);
+    public DeployResponse findOne(String id) {
+        DeployResponse creds = deployDao.findOne(id);
         if (creds == null) {
             throw new NotFoundException();
         }
@@ -79,46 +82,48 @@ public class DeployClusterService {
     }
 
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public List<ClusterCredentials> findAll() {
-        return dao.findAll();
+    public List<DeployResponse> findAll() {
+        return deployDao.findAll();
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public ClusterCredentials delete(String id) {
-        ClusterCredentials creds = dao.findOne(id);
+    public DeployResponse delete(String id) {
+        DeployResponse creds = deployDao.findOne(id);
         if (creds == null) {
             throw new NotFoundException();
         }
-        dao.delete(creds);
+        deployDao.delete(creds);
         return creds;
     }
 
-    public ClusterCredentials save(ClusterCredentials clusterCred) {
+    public DeployResponse save(DeployResponse clusterCred) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         clusterCred.setOwner(owner);
-        return dao.save(clusterCred);
+        return deployDao.save(clusterCred);
     }
 
-    public ClusterCredentials deployCluster(String provisionID, String clusterType) {
+    public DeployResponse deployCluster(DeployRequest deployInfo) {
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
-//            Message deployerInvokationMessage = buildDeployerMessage(provisionID, clusterType.toLowerCase());
-            Message deployerInvokationMessage = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
-                    + File.separator + "workspace" + File.separator + "DRIP"
-                    + File.separator + "docs" + File.separator + "json_samples"
-                    + File.separator + "deployer_invocation.json");
+            Message deployerInvokationMessage = buildDeployerMessage(deployInfo.getProvisionID(), deployInfo.getClusterType().toLowerCase(), deployInfo.getConfigurationID());
 
+//            Message deployerInvokationMessage = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
+//                    + File.separator + "workspace" + File.separator + "DRIP"
+//                    + File.separator + "docs" + File.separator + "json_samples"
+//                    + File.separator + "deployer_invocation.json");
             Message response = (deployer.call(deployerInvokationMessage));
 //            Message response = generateFakeResponse();
             List<MessageParameter> params = response.getParameters();
-            ClusterCredentials clusterCred = new ClusterCredentials();
+            DeployResponse deployResponse = new DeployResponse();
             for (MessageParameter p : params) {
                 String name = p.getName();
                 if (name.equals("credential")) {
                     String value = p.getValue();
-                    clusterCred.setKey(value);
-                    save(clusterCred);
-                    return clusterCred;
+                    Key k = new Key();
+                    k.setKey(value);
+                    deployResponse.setKey(k);
+                    save(deployResponse);
+                    return deployResponse;
                 }
             }
 
@@ -128,15 +133,22 @@ public class DeployClusterService {
         return null;
     }
 
-    private Message buildDeployerMessage(String provisionID, String clusterType) {
-        ProvisionInfo pro = provisionService.findOne(provisionID);
+    private Message buildDeployerMessage(String provisionID, String managerType, String configurationID) {
+        ProvisionResponse pro = provisionService.findOne(provisionID);
         if (pro == null) {
             throw new NotFoundException();
         }
         String cloudConfID = pro.getCloudCredentialsID();
         CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfID);
-        List<LoginKey> loginKeys = cCred.getLoginKeys();
+        List<String> loginKeysIDs = cCred.getKeyIDs();
+        List<Key> loginKeys = new ArrayList<>();
+        for (String keyID : loginKeysIDs) {
+            Key key = keyDao.findOne(keyID);
+            loginKeys.add(key);
+        }
+
         List<DeployParameter> deployParams = pro.getDeployParameters();
+
         List<MessageParameter> parameters = new ArrayList<>();
         for (DeployParameter dp : deployParams) {
             String cName = dp.getCloudCertificateName();
@@ -144,7 +156,7 @@ public class DeployClusterService {
             messageParameter.setName("credential");
             messageParameter.setEncoding("UTF-8");
             String key = null;
-            for (LoginKey lk : loginKeys) {
+            for (Key lk : loginKeys) {
                 String lkName = lk.getName();
                 if (lkName == null) {
                     lkName = lk.getAttributes().get("domain_name");
@@ -165,7 +177,7 @@ public class DeployClusterService {
         MessageParameter clusterTypeParameter = new MessageParameter();
         clusterTypeParameter.setName("cluster");
         clusterTypeParameter.setEncoding("UTF-8");
-        clusterTypeParameter.setValue(clusterType);
+        clusterTypeParameter.setValue(managerType);
         parameters.add(clusterTypeParameter);
         Message deployInvokationMessage = new Message();
 
@@ -211,6 +223,6 @@ public class DeployClusterService {
 
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")
     public void deleteAll() {
-        dao.deleteAll();
+        deployDao.deleteAll();
     }
 }

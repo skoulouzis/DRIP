@@ -30,9 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.exception.NullKeyIDException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
+import nl.uva.sne.drip.api.service.KeyService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.Configure;
-import nl.uva.sne.drip.commons.v1.types.LoginKey;
+import nl.uva.sne.drip.commons.v1.types.Key;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -49,7 +50,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class CloudConfigurationController0 {
 
     @Autowired
-    private CloudCredentialsService cloudCredentialsDao;
+    private CloudCredentialsService cloudCredentialsService;
+
+    @Autowired
+    private KeyService keyService;
 
     @RequestMapping(value = "/ec2", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -62,23 +66,24 @@ public class CloudConfigurationController0 {
             throw new NullKeyIDException();
         }
         CloudCredentials cloudCredentials = new CloudCredentials();
-        cloudCredentials.setKeyIdAlias(configure.keyid);
-        cloudCredentials.setKey(configure.key);
+        cloudCredentials.setAccessKeyId(configure.keyid);
+        cloudCredentials.setSecretKey(configure.key);
 
-        List<nl.uva.sne.drip.commons.v1.types.LoginKey> loginKeys = new ArrayList<>();
+        List<String> loginKeyIDs = new ArrayList<>();
 
         for (nl.uva.sne.drip.commons.v0.types.LoginKey0 key0 : configure.loginKey) {
-            nl.uva.sne.drip.commons.v1.types.LoginKey key1 = new nl.uva.sne.drip.commons.v1.types.LoginKey();
+            nl.uva.sne.drip.commons.v1.types.Key key1 = new nl.uva.sne.drip.commons.v1.types.Key();
             key1.setKey(key0.content);
             Map<String, String> attributes = new HashMap<>();
             attributes.put("domain_name", key0.domain_name);
             key1.setAttributes(attributes);
-            loginKeys.add(key1);
+            key1 = keyService.save(key1);
+            loginKeyIDs.add(key1.getId());
         }
-        cloudCredentials.setLogineKeys(loginKeys);
+        cloudCredentials.setKeyIDs(loginKeyIDs);
         cloudCredentials.setCloudProviderName("ec2");
 
-        cloudCredentials = cloudCredentialsDao.save(cloudCredentials);
+        cloudCredentials = cloudCredentialsService.save(cloudCredentials);
         return "Success: " + cloudCredentials.getId();
     }
 
@@ -93,27 +98,30 @@ public class CloudConfigurationController0 {
             throw new NullKeyIDException();
         }
         CloudCredentials cloudCredentials = new CloudCredentials();
-        cloudCredentials.setKeyIdAlias(configure.geniKeyAlias);
-        cloudCredentials.setKey(configure.geniKey);
-        cloudCredentials.setKeyPass(configure.geniKeyPass);
+//        cloudCredentials.setKeyIdAlias(configure.geniKeyAlias);
+        cloudCredentials.setAccessKeyId(configure.geniKey);
+        cloudCredentials.setSecretKey(configure.geniKeyPass);
 
-        List<nl.uva.sne.drip.commons.v1.types.LoginKey> loginKeys = new ArrayList<>();
+        List<String> loginKeyIDs = new ArrayList<>();
 
         for (nl.uva.sne.drip.commons.v0.types.LoginKey0 key0 : configure.loginPubKey) {
-            nl.uva.sne.drip.commons.v1.types.LoginKey key1 = new nl.uva.sne.drip.commons.v1.types.LoginKey();
+            nl.uva.sne.drip.commons.v1.types.Key key1 = new nl.uva.sne.drip.commons.v1.types.Key();
             key1.setKey(key0.content);
-            key1.setType(LoginKey.Type.PUBLIC);
-            loginKeys.add(key1);
+            key1.setType(Key.Type.PUBLIC);
+            key1 = keyService.save(key1);
+            loginKeyIDs.add(key1.getId());
+
         }
         for (nl.uva.sne.drip.commons.v0.types.LoginKey0 key0 : configure.loginPriKey) {
-            nl.uva.sne.drip.commons.v1.types.LoginKey key1 = new nl.uva.sne.drip.commons.v1.types.LoginKey();
+            nl.uva.sne.drip.commons.v1.types.Key key1 = new nl.uva.sne.drip.commons.v1.types.Key();
             key1.setKey(key0.content);
-            key1.setType(LoginKey.Type.PRIVATE);
-            loginKeys.add(key1);
+            key1.setType(Key.Type.PRIVATE);
+            key1 = keyService.save(key1);
+            loginKeyIDs.add(key1.getId());
         }
-        cloudCredentials.setLogineKeys(loginKeys);
+        cloudCredentials.setKeyIDs(loginKeyIDs);
         cloudCredentials.setCloudProviderName("geni");
-        cloudCredentialsDao.save(cloudCredentials);
+        cloudCredentialsService.save(cloudCredentials);
         return "Success: " + cloudCredentials.getId();
     }
 
