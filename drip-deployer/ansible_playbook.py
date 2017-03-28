@@ -19,6 +19,8 @@ __author__ = 'S. Koulouzis'
 
 import paramiko, os
 import threading
+import ansible.runner
+from ansible.playbook import PlayBook
 
 def install_prerequisites(vm):
 	try:
@@ -30,10 +32,7 @@ def install_prerequisites(vm):
 		sftp = ssh.open_sftp()
 		sftp.chdir('/tmp/')
 		stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/ansible_setup.sh")
-		stdout.read()
-		
-		#stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/ansible_setup.sh")
-		
+		stdout.read()		
 		print "Ansible prerequisites installed in: %s " % (vm.ip)
 	except Exception as e:
 		print '%s: %s' % (vm.ip, e)
@@ -50,5 +49,9 @@ def run(vm_list,playbook):
             privatekey = vm.key
             user = vm.user
     if "ERROR" in ret: return ret
-    print ("ansible-playbook " + playbook + "-i "+ips+" --private-key="+privatekey +" --user="+user)
+    
+    # construct the ansible runner and execute on all hosts
+    results = ansible.runner.Runner(pattern='*', forks=10, module_name='command', module_args='/usr/bin/uptime',).run()
+    
+    
     return "SUCCESS"
