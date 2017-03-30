@@ -20,7 +20,7 @@ __author__ = 'S. Koulouzis'
 import paramiko, os
 import threading
 import ansible.runner
-from ansible.playbook import PlayBook
+from results_collector import ResultsCollector
 
 def install_prerequisites(vm):
 	try:
@@ -49,9 +49,5 @@ def run(vm_list,playbook):
             privatekey = vm.key
             user = vm.user
     if "ERROR" in ret: return ret
-    
-    # construct the ansible runner and execute on all hosts
-    results = ansible.runner.Runner(pattern='*', forks=10, module_name='command', module_args='/usr/bin/uptime',).run()
-    
     
     return "SUCCESS"

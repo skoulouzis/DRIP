@@ -9,6 +9,7 @@
       - expect
       - git
       - python-pexpect
+      - php-zip
       become: true
       
     - name: Phoronix-test-suite accept User Agreement
