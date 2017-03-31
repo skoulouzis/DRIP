@@ -23,7 +23,7 @@ from results_collector import ResultsCollector
 
 
 
-hosts='172.17.0.2,172.17.0.3,'
+hosts='172.17.0.2,'
 playbook_path = 'playbook.yml'
 if not os.path.exists(playbook_path):
     print '[ERROR] The playbook does not exist'
@@ -31,7 +31,7 @@ if not os.path.exists(playbook_path):
     
 user='vm_user'
 ssh_key_file='id_ras'
-extra_vars = {'resultslocation':'/tmp/res'}
+extra_vars = {} #{'resultslocation':'/tmp/res','ansible_sudo_pass':'123'}
     
 
 variable_manager = VariableManager()
@@ -63,35 +63,23 @@ results = pbex.run()
 
 
 ok = results_callback.host_ok
-count=0;
+answer = []
 for res in ok:
-    re = json.dumps(res['result']._result)
-    ++count
-    target = open("ok"+str(count)+".json", 'w')
-    target.write(re)
-    target.close()
-    print re
+    resp = json.dumps({"host":res['ip'], "result":res['result']._result})
+    answer.append({"host":res['ip'], "result":res['result']._result})
     
-count=0;    
+
 unreachable = results_callback.host_unreachable
 for res in unreachable:
-    re = json.dumps(res['result']._result)
-    ++count
-    target = open("unreachable"+str(count)+".json", 'w')
-    target.write(re)
-    target.close()
-    print re
+    resp = json.dumps({"host":res['ip'], "result":res['result']._result})
+    answer.append({"host":res['ip'], "result":res['result']._result})
     
-count=0;    
+
 host_failed = results_callback.host_failed
 for res in host_failed:
-    re = json.dumps(res['result']._result)
-    ++count
-    target = open("host_failed"+str(count)+".json", 'w')
-    target.write(re)
-    target.close()
-    print re
+    resp = json.dumps({"host":res['ip'], "result":res['result']._result})
+    answer.append({"host":res['ip'], "result":res['result']._result})
 
-
+print json.dumps(answer,indent=4)
  
   

@@ -21,6 +21,25 @@ import paramiko, os
 import threading
 import ansible.runner
 from results_collector import ResultsCollector
+import json
+from collections import namedtuple
+from ansible.parsing.dataloader import DataLoader
+from ansible.vars import VariableManager
+from ansible.inventory import Inventory
+from ansible.playbook.play import Play
+from ansible.executor.task_queue_manager import TaskQueueManager
+import ansible.executor.task_queue_manager
+import ansible.inventory
+import ansible.parsing.dataloader
+import ansible.playbook.play
+import ansible.plugins.callback
+import ansible.vars
+from ansible.executor.playbook_executor import PlaybookExecutor
+from ansible.plugins import callback_loader
+import logging
+import yaml
+import sys
+
 
 def install_prerequisites(vm):
 	try:
@@ -39,15 +58,66 @@ def install_prerequisites(vm):
 		return "ERROR:"+vm.ip+" "+str(e)
 	ssh.close()
 	return "SUCCESS"
+    
+    
+def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords):
+    if not os.path.exists(playbook_path):
+        print '[ERROR] The playbook does not exist'
+        return '[ERROR] The playbook does not exist'
+    
+    variable_manager = VariableManager()
+    loader = DataLoader()
 
-def run(vm_list,playbook):
-    ips=""
-    privatekey=""
+    inventory = Inventory(loader=loader, variable_manager=variable_manager,  host_list=hosts)
+
+
+    Options = namedtuple('Options', ['listtags', 'listtasks', 'listhosts', 'syntax', 'connection','module_path', 'forks', 'remote_user', 'private_key_file', 'ssh_common_args', 'ssh_extra_args', 'sftp_extra_args', 'scp_extra_args', 'become', 'become_method', 'become_user', 'verbosity', 'check'])
+
+    options = Options(listtags=False, listtasks=False, listhosts=False, syntax=False, connection='smart', module_path=None, forks=None, remote_user=user, private_key_file=ssh_key_file, ssh_common_args=None, ssh_extra_args=None, sftp_extra_args=None, scp_extra_args=None, become=True, become_method='sudo', become_user='root', verbosity=None, check=False)
+    
+    variable_manager.extra_vars = extra_vars
+    
+    pbex = PlaybookExecutor(playbooks=[playbook_path], 
+                        inventory=inventory, 
+                        variable_manager=variable_manager, 
+                        loader=loader, 
+                        options=options, 
+                        passwords=passwords,
+                        )
+    results_callback = ResultsCollector()
+    pbex._tqm._stdout_callback = results_callback
+    results = pbex.run()
+    
+    ok = results_callback.host_ok
+    answer = []
+    for res in ok:
+        resp = json.dumps({"host":res['ip'], "result":res['result']._result})
+        answer.append({"host":res['ip'], "result":res['result']._result})
+        
+
+    unreachable = results_callback.host_unreachable
+    for res in unreachable:
+        resp = json.dumps({"host":res['ip'], "result":res['result']._result})
+        answer.append({"host":res['ip'], "result":res['result']._result})
+        
+
+    host_failed = results_callback.host_failed
+    for res in host_failed:
+        resp = json.dumps({"host":res['ip'], "result":res['result']._result})
+        answer.append({"host":res['ip'], "result":res['result']._result})
+
+    return json.dumps(answer)
+
+def run(vm_list,playbook_path):
+    hosts=""
+    ssh_key_file=""
     for vm in vm_list:
             ret = install_prerequisites(vm)
-            ips+=vm.ip+","
-            privatekey = vm.key
+            hosts+=vm.ip+","
+            ssh_key_file = vm.key
             user = vm.user
     if "ERROR" in ret: return ret
     
-    return "SUCCESS"
+    extra_vars = {}
+    passwords = {}
+    return execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
