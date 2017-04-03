@@ -18,10 +18,9 @@ package nl.uva.sne.drip.api.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import nl.uva.sne.drip.api.dao.ToscaDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.utils.Constants;
-import nl.uva.sne.drip.commons.v1.types.ToscaRepresentation;
+import nl.uva.sne.drip.commons.v1.types.PlaybookRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.v1.types.User;
 import org.json.JSONException;
@@ -32,6 +31,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import nl.uva.sne.drip.api.dao.PlaybookDao;
 
 /**
  *
@@ -39,31 +39,34 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 @PreAuthorize("isAuthenticated()")
-public class ToscaService {
+public class PlaybookService {
 
     @Autowired
-    private ToscaDao dao;
+    private PlaybookDao dao;
 
     public String get(String id, String fromat) throws JSONException {
-        ToscaRepresentation tosca = findOne(id);
-        if (tosca == null) {
+        PlaybookRepresentation playbook = findOne(id);
+        if (playbook == null) {
             throw new NotFoundException();
         }
 
-        Map<String, Object> map = tosca.getKeyValue();
+        Map<String, Object> map = playbook.getKeyValue();
 
-        if (fromat != null && fromat.equals("yml")) {
+        if (fromat != null && fromat.toLowerCase().equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);
             ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+            ymlStr = ymlStr.replaceAll("\'---':", "---");
             return ymlStr;
         }
-        if (fromat != null && fromat.equals("json")) {
+        if (fromat != null && fromat.toLowerCase().equals("json")) {
             String jsonStr = Converter.map2JsonString(map);
             jsonStr = jsonStr.replaceAll("\\uff0E", "\\.");
             return jsonStr;
         }
         String ymlStr = Converter.map2YmlString(map);
         ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+        ymlStr = ymlStr.replaceAll("\'---':", "---");
+
         return ymlStr;
     }
 
@@ -77,11 +80,11 @@ public class ToscaService {
 
     public String saveYamlString(String yamlString, String name) throws IOException {
         if (name == null) {
-            name = System.currentTimeMillis() + "_" + "tosca.yaml";
+            name = System.currentTimeMillis() + "_" + "playbook.yaml";
         }
         yamlString = yamlString.replaceAll("\\.", "\uff0E");
         Map<String, Object> map = Converter.ymlString2Map(yamlString);
-        ToscaRepresentation t = new ToscaRepresentation();
+        PlaybookRepresentation t = new PlaybookRepresentation();
         t.setName(name);
         t.setKvMap(map);
         save(t);
@@ -89,23 +92,23 @@ public class ToscaService {
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public ToscaRepresentation delete(String id) {
-        ToscaRepresentation tr = dao.findOne(id);
+    public PlaybookRepresentation delete(String id) {
+        PlaybookRepresentation tr = dao.findOne(id);
         dao.delete(tr);
         return tr;
     }
 
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public List<ToscaRepresentation> findAll() {
+    public List<PlaybookRepresentation> findAll() {
         return dao.findAll();
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public ToscaRepresentation findOne(String id) {
+    public PlaybookRepresentation findOne(String id) {
         return dao.findOne(id);
     }
 
-    private ToscaRepresentation save(ToscaRepresentation t) {
+    private PlaybookRepresentation save(PlaybookRepresentation t) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         t.setOwner(owner);
@@ -117,10 +120,10 @@ public class ToscaService {
         dao.deleteAll();
     }
 
-    public String saveStringContents(String toscaContents, String name) throws IOException {
+    public String saveStringContents(String playbookContents, String name) throws IOException {
 
         //Remove '\' and 'n' if they are together and replace them with '\n'
-        char[] array = toscaContents.toCharArray();
+        char[] array = playbookContents.toCharArray();
         StringBuilder sb = new StringBuilder();
         int prevChar = -1;
         for (int i = 0; i < array.length; i++) {
@@ -134,16 +137,16 @@ public class ToscaService {
             }
             prevChar = (int) array[i];
         }
-        toscaContents = sb.toString();
-        toscaContents = toscaContents.replaceAll("(?m)^[ \t]*\r?\n", "");
+        playbookContents = sb.toString();
+        playbookContents = playbookContents.replaceAll("(?m)^[ \t]*\r?\n", "");
         for (int i = 0; i < Constants.BAD_CHARS.length; i++) {
             int hex = Constants.BAD_CHARS[i];
-            toscaContents = toscaContents.replaceAll(String.valueOf((char) hex), "");
+            playbookContents = playbookContents.replaceAll(String.valueOf((char) hex), "");
         }
 
-        toscaContents = toscaContents.replaceAll("\\.", "\uff0E");
-        Map<String, Object> map = Converter.ymlString2Map(toscaContents);
-        ToscaRepresentation t = new ToscaRepresentation();
+        playbookContents = playbookContents.replaceAll("\\.", "\uff0E");
+        Map<String, Object> map = Converter.ymlString2Map(playbookContents);
+        PlaybookRepresentation t = new PlaybookRepresentation();
         t.setName(name);
         t.setKvMap(map);
         save(t);

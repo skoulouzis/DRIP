@@ -52,7 +52,13 @@ public class Converter {
 
     public static Map<String, Object> ymlString2Map(String yamlString) {
         Yaml yaml = new Yaml();
-        return (Map<String, Object>) yaml.load(yamlString);
+        Object object = yaml.load(yamlString);
+        if (object instanceof List) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("---", object);
+            return map;
+        }
+        return (Map<String, Object>) object;
     }
 
     public static Map<String, Object> ymlString2Map(InputStream in) {

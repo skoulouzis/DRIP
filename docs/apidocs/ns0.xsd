@@ -427,6 +427,17 @@ to specify the domain name for ec2]]>
   </xs:complexContent>
 </xs:complexType>
 
+<xs:complexType name="playbookRepresentation">
+   <xs:complexContent>
+    <xs:extension base="keyValueHolder">
+      <xs:sequence>
+              <xs:element name="name" type="xs:string" minOccurs="0">
+              </xs:element>
+      </xs:sequence>
+    </xs:extension>
+  </xs:complexContent>
+</xs:complexType>
+
 <xs:complexType name="provisionRequest">
    <xs:complexContent>
     <xs:extension base="keyValueHolder">
