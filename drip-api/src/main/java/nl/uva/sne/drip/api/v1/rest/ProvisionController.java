@@ -35,8 +35,6 @@ import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.ProvisionService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
-import nl.uva.sne.drip.commons.v1.types.PlanResponse;
 import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
 import org.json.JSONException;
 import org.springframework.web.bind.annotation.PathVariable;

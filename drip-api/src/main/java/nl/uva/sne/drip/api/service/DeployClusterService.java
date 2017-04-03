@@ -48,6 +48,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.dao.KeyDao;
+import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.commons.v1.types.PlaybookRepresentation;
 
 /**
  *
@@ -71,6 +73,9 @@ public class DeployClusterService {
 
     @Autowired
     private ProvisionService provisionService;
+
+    @Autowired
+    private PlaybookService playbookService;
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public DeployResponse findOne(String id) {
@@ -105,7 +110,10 @@ public class DeployClusterService {
 
     public DeployResponse deployCluster(DeployRequest deployInfo) {
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
-            Message deployerInvokationMessage = buildDeployerMessage(deployInfo.getProvisionID(), deployInfo.getClusterType().toLowerCase(), deployInfo.getConfigurationID());
+            Message deployerInvokationMessage = buildDeployerMessage(
+                    deployInfo.getProvisionID(),
+                    deployInfo.getClusterType().toLowerCase(),
+                    deployInfo.getConfigurationID());
 
 //            Message deployerInvokationMessage = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
 //                    + File.separator + "workspace" + File.separator + "DRIP"
@@ -133,7 +141,7 @@ public class DeployClusterService {
         return null;
     }
 
-    private Message buildDeployerMessage(String provisionID, String managerType, String configurationID) {
+    private Message buildDeployerMessage(String provisionID, String managerType, String configurationID) throws JSONException {
         ProvisionResponse pro = provisionService.findOne(provisionID);
         if (pro == null) {
             throw new NotFoundException();
@@ -148,39 +156,22 @@ public class DeployClusterService {
         }
 
         List<DeployParameter> deployParams = pro.getDeployParameters();
-
         List<MessageParameter> parameters = new ArrayList<>();
+
         for (DeployParameter dp : deployParams) {
-            String cName = dp.getCloudCertificateName();
-            MessageParameter messageParameter = new MessageParameter();
-            messageParameter.setName("credential");
-            messageParameter.setEncoding("UTF-8");
-            String key = null;
-            for (Key lk : loginKeys) {
-                String lkName = lk.getName();
-                if (lkName == null) {
-                    lkName = lk.getAttributes().get("domain_name");
-                }
-                if (lkName.equals(cName)) {
-                    key = lk.getKey();
-                    break;
-                }
-            }
-            messageParameter.setValue(key);
-            Map<String, String> attributes = new HashMap<>();
-            attributes.put("IP", dp.getIP());
-            attributes.put("role", dp.getRole());
-            attributes.put("user", dp.getUser());
-            messageParameter.setAttributes(attributes);
+            MessageParameter messageParameter = createCredentialPartameter(dp, loginKeys);
             parameters.add(messageParameter);
         }
-        MessageParameter clusterTypeParameter = new MessageParameter();
-        clusterTypeParameter.setName("cluster");
-        clusterTypeParameter.setEncoding("UTF-8");
-        clusterTypeParameter.setValue(managerType);
-        parameters.add(clusterTypeParameter);
-        Message deployInvokationMessage = new Message();
 
+        MessageParameter managerTypeParameter = createManagerTypeParameter(managerType);
+        parameters.add(managerTypeParameter);
+
+        if (managerType.toLowerCase().equals("ansible") && configurationID != null) {
+            MessageParameter ansibleParameter = createAnsibleParameter(configurationID);
+            parameters.add(ansibleParameter);
+        }
+
+        Message deployInvokationMessage = new Message();
         deployInvokationMessage.setParameters(parameters);
         deployInvokationMessage.setCreationDate(System.currentTimeMillis());
         return deployInvokationMessage;
@@ -224,5 +215,47 @@ public class DeployClusterService {
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")
     public void deleteAll() {
         deployDao.deleteAll();
+    }
+
+    private MessageParameter createCredentialPartameter(DeployParameter dp, List<Key> loginKeys) {
+        String cName = dp.getCloudCertificateName();
+        MessageParameter messageParameter = new MessageParameter();
+        messageParameter.setName("credential");
+        messageParameter.setEncoding("UTF-8");
+        String key = null;
+        for (Key lk : loginKeys) {
+            String lkName = lk.getName();
+            if (lkName == null) {
+                lkName = lk.getAttributes().get("domain_name");
+            }
+            if (lkName.equals(cName)) {
+                key = lk.getKey();
+                break;
+            }
+        }
+        messageParameter.setValue(key);
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("IP", dp.getIP());
+        attributes.put("role", dp.getRole());
+        attributes.put("user", dp.getUser());
+        messageParameter.setAttributes(attributes);
+        return messageParameter;
+    }
+
+    private MessageParameter createManagerTypeParameter(String managerType) {
+        MessageParameter managerTypeParameter = new MessageParameter();
+        managerTypeParameter.setName("cluster");
+        managerTypeParameter.setEncoding("UTF-8");
+        managerTypeParameter.setValue(managerType);
+        return managerTypeParameter;
+    }
+
+    private MessageParameter createAnsibleParameter(String configurationID) throws JSONException {
+        PlaybookRepresentation playbook = playbookService.findOne(configurationID);
+        MessageParameter ansibleParameter = new MessageParameter();
+        ansibleParameter.setName("playbook");
+        ansibleParameter.setEncoding("UTF-8");
+        ansibleParameter.setValue(Converter.map2YmlString(playbook.getKeyValue()));
+        return ansibleParameter;
     }
 }
