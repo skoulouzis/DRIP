@@ -17,10 +17,6 @@
 
 __author__ = 'S. Koulouzis'
 
-import paramiko, os
-import threading
-import ansible.runner
-from results_collector import ResultsCollector
 import json
 from collections import namedtuple
 from ansible.parsing.dataloader import DataLoader
@@ -36,9 +32,12 @@ import ansible.plugins.callback
 import ansible.vars
 from ansible.executor.playbook_executor import PlaybookExecutor
 from ansible.plugins import callback_loader
+import os
+import paramiko
 import logging
 import yaml
 import sys
+from results_collector import ResultsCollector
 
 
 def install_prerequisites(vm):

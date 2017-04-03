@@ -21,9 +21,9 @@ else:
     rabbitmq_host = '127.0.0.1'
     
 
-#connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
-#channel = connection.channel()
-#channel.queue_declare(queue='deployer_queue')
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
+channel = connection.channel()
+channel.queue_declare(queue='deployer_queue')
 
 path = os.path.dirname(os.path.abspath(__file__)) + "/"
 
@@ -111,18 +111,15 @@ def on_request(ch, method, props, body):
                      body=str(response))
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
-#channel.basic_qos(prefetch_count=1)
-#channel.basic_consume(on_request, queue='deployer_queue')
+channel.basic_qos(prefetch_count=1)
+channel.basic_consume(on_request, queue='deployer_queue')
 
 
-#thread = Thread(target = threaded_function, args = (1, ))
-#thread.start()
+thread = Thread(target = threaded_function, args = (1, ))
+thread.start()
 
 print(" [x] Awaiting RPC requests")
-f = open("../docs/json_samples/deployer_invocation.json","r")
-body=f.read()
-response = handleDelivery(body)
 
 
-#channel.start_consuming()
-#thread.stop()
+channel.start_consuming()
+thread.stop()

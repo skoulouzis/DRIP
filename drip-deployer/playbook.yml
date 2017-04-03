@@ -25,43 +25,38 @@
       become: true
 
 
-    #- name: Count vCPU
-      #command: nproc
-      #register: vcpunumber
-      #become: true
-    #- debug: msg="{{ vcpunumber.stdout }}"
+    - name: Count vCPU
+      command: nproc
+      register: vcpunumber
+      become: true
+    - debug: msg="{{ vcpunumber.stdout }}"
 
 
-    #- name: Run sysbench
-      #command: sysbench --test=cpu --cpu-max-prime=100000 --num-threads={{ vcpunumber.stdout }} run
-      #register: sysbenchoutput
-      #become: true
-    #- debug: msg="{{ sysbenchoutput.stdout }}"
-    #- local_action: copy content="{{ sysbenchoutput.stdout }}" dest="{{ resultslocation }}sysbench"
+    - name: Run sysbench
+      command: sysbench --test=cpu --cpu-max-prime=100000 --num-threads={{ vcpunumber.stdout }} run
+      register: sysbenchoutput
+      become: true
+    - debug: msg="{{ sysbenchoutput.stdout }}"
 
 
     - name: Run stream
-      command: expect -c "spawn phoronix-test-suite run-test stream; expect \"Type:\"; send \"4\n\"; expect \"\(Y/n\):\"; send -- \"y\r\"; expect \"Enter a name to save these results under: \"; send -- \"out\r\"; expect \"Enter a unique name to describe this test run / configuration:\"; send -- \"unique\r\"; expect \"New Description:\"; send  \"\r\";interact;"
-      register: streamoutput
-      become: true
-    - debug: msg="{{ streamoutput.stdout }}"
-    
-    
-    - name: Get stream results
-      command: expect -c ""
+      command: expect -c "spawn phoronix-test-suite run-test stream; expect \"Type:\"; send \"4\n\"; expect \"\(Y/n\):\"; send -- \"y\r\"; expect \"Enter a name to save these results under:\"; send \"out\n\"; expect \"Enter a unique name to describe this test run / configuration:\"; send -- \"unique\r\"; expect \"New Description:\"; send  \"\r\"; expect \"Would you like to upload the results to OpenBenchmarking.org (Y/n):\"; send  \"n\r\"; interact;"
       register: streamoutput
       become: true
     - debug: msg="{{ streamoutput.stdout }}"
     
 
-    #- name: Run iozone
-      #command: expect -c "spawn phoronix-test-suite run-test iozone; expect \"Record Size:\"; send \"2\n\"; expect \"File Size:\"; send \"2\n\"; expect \"Disk Test:\"; send \"3\n\";  expect \"\(Y/n\):\"; send \"n\n\"; interact;"
-      #register: iozoneoutput
-      #become: true
+    - name: Run iozone
+      command: expect -c "spawn phoronix-test-suite run-test iozone; expect \"Record Size:\"; send \"2\n\"; expect \"File Size:\"; send \"2\n\"; expect \"Disk Test:\"; send \"3\n\";  expect \"\(Y/n\):\"; send -- \"y\r\"; expect \"Enter a name to save these results under:\"; send \"out\n\"; expect \"Enter a unique name to describe this test run / configuration:\"; send -- \"unique\r\"; expect \"New Description:\"; send  \"\r\"; expect \"Would you like to upload the results to OpenBenchmarking.org (Y/n):\"; send  \"n\r\"; interact;"
+      register: iozoneoutput
+      become: true
+      
+    - name: Get stream results
+      command: phoronix-test-suite result-file-to-csv out
+      register: streamoutput
+      become: true
+    - debug: msg="{{ streamoutput.stdout }}"
 
 
     #- debug: msg="{{ iozoneoutput.stdout }}"
-    #- local_action: copy content="{{ iozoneoutput.stdout }}" dest="{{ resultslocation }}iozone"
-
-
-
+#- local_action: copy content="{{ iozoneoutput.stdout }}" dest="{{ resultslocation }}iozone"
