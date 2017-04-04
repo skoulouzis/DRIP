@@ -599,8 +599,8 @@ module Types
 
     # the provisionID
     attr_accessor :provisionID
-    # the clusterType
-    attr_accessor :clusterType
+    # the managerType
+    attr_accessor :managerType
     # the configurationID
     attr_accessor :configurationID
 
@@ -608,7 +608,7 @@ module Types
     def to_jaxb_json_hash
       _h = super
       _h['provisionID'] = provisionID.to_jaxb_json_hash unless provisionID.nil?
-      _h['clusterType'] = clusterType.to_jaxb_json_hash unless clusterType.nil?
+      _h['managerType'] = managerType.to_jaxb_json_hash unless managerType.nil?
       _h['configurationID'] = configurationID.to_jaxb_json_hash unless configurationID.nil?
       return _h
     end
@@ -635,23 +635,23 @@ module Types
                 @provisionID = _oa
             end
           end
-        if !_o['clusterType'].nil?
-          _oa = _o['clusterType']
+        if !_o['managerType'].nil?
+          _oa = _o['managerType']
             if(_oa.is_a? Hash)
-              @clusterType = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @clusterType =  String.from_json(_oa) unless _oa['@class']
+              @managerType = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @managerType =  String.from_json(_oa) unless _oa['@class']
             elsif (_oa.is_a? Array)
               #an array(of hashes hopefully) or scalar
-              @clusterType = Array.new
+              @managerType = Array.new
               _oa.each { | _item | 
                  if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @clusterType.push String.from_json(_item)
+                   @managerType.push String.from_json(_item)
                  else
-                   @clusterType.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                   @managerType.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
                  end
                }
             else
-                @clusterType = _oa
+                @managerType = _oa
             end
           end
         if !_o['configurationID'].nil?
@@ -1417,83 +1417,6 @@ module V1
 module Types
 
   # (no documentation provided)
-  class ToscaRepresentation < Nl::Uva::Sne::Drip::Commons::V1::Types::KeyValueHolder 
-
-    # the name
-    attr_accessor :name
-
-    # the json hash for this ToscaRepresentation
-    def to_jaxb_json_hash
-      _h = super
-      _h['name'] = name.to_jaxb_json_hash unless name.nil?
-      return _h
-    end
-
-    #initializes this ToscaRepresentation with a json hash
-    def init_jaxb_json_hash(_o)
-      super _o
-        if !_o['name'].nil?
-          _oa = _o['name']
-            if(_oa.is_a? Hash)
-              @name = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @name =  String.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @name = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @name.push String.from_json(_item)
-                 else
-                   @name.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @name = _oa
-            end
-          end
-    end
-
-    # constructs a ToscaRepresentation from a (parsed) JSON hash
-    def self.from_json(o)
-      if o.nil?
-        return nil
-      else
-        inst = new
-        inst.init_jaxb_json_hash o
-        return inst
-      end
-    end
-  end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-module Nl
-
-module Uva
-
-module Sne
-
-module Drip
-
-module Commons
-
-module V1
-
-module Types
-
-  # (no documentation provided)
   class DeployResponse < Nl::Uva::Sne::Drip::Commons::V1::Types::DeployRequest 
 
     # (no documentation provided)
@@ -1553,6 +1476,83 @@ module Types
     end
 
     # constructs a DeployResponse from a (parsed) JSON hash
+    def self.from_json(o)
+      if o.nil?
+        return nil
+      else
+        inst = new
+        inst.init_jaxb_json_hash o
+        return inst
+      end
+    end
+  end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+module Nl
+
+module Uva
+
+module Sne
+
+module Drip
+
+module Commons
+
+module V1
+
+module Types
+
+  # (no documentation provided)
+  class ToscaRepresentation < Nl::Uva::Sne::Drip::Commons::V1::Types::KeyValueHolder 
+
+    # the name
+    attr_accessor :name
+
+    # the json hash for this ToscaRepresentation
+    def to_jaxb_json_hash
+      _h = super
+      _h['name'] = name.to_jaxb_json_hash unless name.nil?
+      return _h
+    end
+
+    #initializes this ToscaRepresentation with a json hash
+    def init_jaxb_json_hash(_o)
+      super _o
+        if !_o['name'].nil?
+          _oa = _o['name']
+            if(_oa.is_a? Hash)
+              @name = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @name =  String.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @name = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @name.push String.from_json(_item)
+                 else
+                   @name.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @name = _oa
+            end
+          end
+    end
+
+    # constructs a ToscaRepresentation from a (parsed) JSON hash
     def self.from_json(o)
       if o.nil?
         return nil

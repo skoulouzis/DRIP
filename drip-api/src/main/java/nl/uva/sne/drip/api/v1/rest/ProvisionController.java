@@ -31,8 +31,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.api.service.CloudCredentialsService;
-import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.ProvisionService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
@@ -54,12 +52,11 @@ public class ProvisionController {
     @Autowired
     private ProvisionService provisionService;
 
-    @Autowired
-    private CloudCredentialsService cloudCredentialService;
-
-    @Autowired
-    private PlannerService plannServcie;
-
+//    @Autowired
+//    private CloudCredentialsService cloudCredentialService;
+//
+//    @Autowired
+//    private PlannerService plannServcie;
     /**
      * Gets the ProvisionRequest
      *

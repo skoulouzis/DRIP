@@ -52,8 +52,9 @@
       <div class="col-sm-3 col-md-2 sidebar" id="apinav">
         <ul class="nav nav-sidebar">
           <li><a href="#resource_DeployController_deleteAll_DELETE">DELETE /user/v1.0/deployer/all</a></li>
-          <li><a href="#resource_DeployController_deploy_POST"><abbr title="POST /user/v1.0/deployer/deploy/">POST /user/v1.0/deployer/deplo...</abbr></a></li>
+          <li><a href="#resource_DeployController_deploy_POST"><abbr title="POST /user/v1.0/deployer/deploy">POST /user/v1.0/deployer/deplo...</abbr></a></li>
           <li><a href="#resource_DeployController_getIds_GET">GET /user/v1.0/deployer/ids</a></li>
+          <li><a href="#resource_DeployController_sample_GET">GET /user/v1.0/deployer/sample</a></li>
           <li><a href="#resource_DeployController_delete_DELETE"><abbr title="DELETE /user/v1.0/deployer/{id}">DELETE /user/v1.0/deployer/{id...</abbr></a></li>
           <li><a href="#resource_DeployController_get_GET">GET /user/v1.0/deployer/{id}</a></li>
           <li class="divider"></li>
@@ -132,7 +133,7 @@ Content-Type: application/json
       </div>
 
       <div id="resource_DeployController_deploy_POST">
-        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/user/v1.0/deployer/deploy/ <a href="../user/v1.0/deployer/deploy/" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/user/v1.0/deployer/deploy <a href="../user/v1.0/deployer/deploy" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p></p>
 
@@ -141,35 +142,24 @@ Content-Type: application/json
           <dd>ADMIN, USER</dd>
         </dl>
 
-        <table class="table resource-parameters">
-          <caption>Request Parameters</caption>
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
           <thead>
           <tr>
-            <th>name</th>
-            <th>type</th>
-            <th>description</th>
+            <th>media type</th>
+            <th>data type</th>
           </tr>
           </thead>
           <tbody>
           <tr>
-            <td><span class="parameter-name">clusterType</span></td>
-            <td>form</td>
-            <td><span class="parameter-description">&nbsp;</span></td>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_DeployRequest.html">DeployRequest</a>
+ (JSON)</span></td>
           </tr>
           <tr>
-            <td><span class="parameter-name">configurationID</span></td>
-            <td>form</td>
-            <td><span class="parameter-description">&nbsp;</span></td>
-          </tr>
-          <tr>
-            <td><span class="parameter-name">owner</span></td>
-            <td>form</td>
-            <td><span class="parameter-description">&nbsp;</span></td>
-          </tr>
-          <tr>
-            <td><span class="parameter-name">provisionID</span></td>
-            <td>form</td>
-            <td><span class="parameter-description">&nbsp;</span></td>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_deployRequest.html">deployRequest</a>
+ (XML)</span></td>
           </tr>
           </tbody>
         </table>
@@ -202,9 +192,18 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-POST /user/v1.0/deployer/deploy/
+POST /user/v1.0/deployer/deploy
+Content-Type: application/json
 Accept: application/json
 
+                <code class="prettyprint language-js">
+{
+  &quot;provisionID&quot; : &quot;...&quot;,
+  &quot;managerType&quot; : &quot;...&quot;,
+  &quot;configurationID&quot; : &quot;...&quot;,
+  &quot;owner&quot; : &quot;...&quot;
+}
+                </code>
               </pre>
             </div>
             <div class="col-md-6">
@@ -225,7 +224,7 @@ Content-Type: application/json
       <div id="resource_DeployController_getIds_GET">
         <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ids <a href="../user/v1.0/deployer/ids" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Gets the IDs of all the stored cluster credentials</p>
+        <p></p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -238,7 +237,6 @@ Content-Type: application/json
           <tr>
             <th>media type</th>
             <th>data type</th>
-            <th>description</th>
           </tr>
           </thead>
           <tbody>
@@ -246,7 +244,6 @@ Content-Type: application/json
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
             <td><span class="datatype-reference">array of string
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">a list of all the IDs</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
@@ -282,10 +279,73 @@ Content-Type: application/json
         </div>
       </div>
 
+      <div id="resource_DeployController_sample_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/sample <a href="../user/v1.0/deployer/sample" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+
+        <p></p>
+
+        <dl class="dl-horizontal">
+          <dt>Security Roles Allowed</dt>
+          <dd>ADMIN, USER</dd>
+        </dl>
+
+        <table class="table resource-response-body">
+          <caption>Response Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference"><a href="json_DeployRequest.html">DeployRequest</a>
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference"><a href="xml_ns0_deployRequest.html">deployRequest</a>
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
+        <h4>Example</h4>
+
+        <div class="container-fluid example panel">
+          <div class="row panel-body">
+            <div class="col-md-6">
+              <h5>Request</h5>
+              <pre>
+GET /user/v1.0/deployer/sample
+Accept: application/json
+
+              </pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Response</h5>
+              <pre>
+HTTP/1.1 200 Looks Good
+Content-Type: application/json
+
+                <code class="prettyprint language-js">
+{
+  &quot;provisionID&quot; : &quot;...&quot;,
+  &quot;managerType&quot; : &quot;...&quot;,
+  &quot;configurationID&quot; : &quot;...&quot;,
+  &quot;owner&quot; : &quot;...&quot;
+}
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div id="resource_DeployController_delete_DELETE">
         <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/deployer/{id} <a href="../user/v1.0/deployer/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Deletes a cluster credential</p>
+        <p></p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -316,7 +376,6 @@ Content-Type: application/json
           <tr>
             <th>media type</th>
             <th>data type</th>
-            <th>description</th>
           </tr>
           </thead>
           <tbody>
@@ -324,7 +383,6 @@ Content-Type: application/json
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
             <td><span class="datatype-reference">string
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">the id f the deleted cluster credential</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
@@ -363,7 +421,7 @@ Content-Type: application/json
       <div id="resource_DeployController_get_GET">
         <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/{id} <a href="../user/v1.0/deployer/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Gets the cluster credentials.</p>
+        <p></p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -394,7 +452,6 @@ Content-Type: application/json
           <tr>
             <th>media type</th>
             <th>data type</th>
-            <th>description</th>
           </tr>
           </thead>
           <tbody>
@@ -402,7 +459,6 @@ Content-Type: application/json
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
             <td><span class="datatype-reference"><a href="json_DeployResponse.html">DeployResponse</a>
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">the cluster credentials</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
@@ -444,7 +500,7 @@ Content-Type: application/json
   },
   &quot;id&quot; : &quot;...&quot;,
   &quot;provisionID&quot; : &quot;...&quot;,
-  &quot;clusterType&quot; : &quot;...&quot;,
+  &quot;managerType&quot; : &quot;...&quot;,
   &quot;configurationID&quot; : &quot;...&quot;,
   &quot;owner&quot; : &quot;...&quot;
 }

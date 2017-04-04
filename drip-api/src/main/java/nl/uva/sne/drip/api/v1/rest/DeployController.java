@@ -18,18 +18,20 @@ package nl.uva.sne.drip.api.v1.rest;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
+import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.service.DeployClusterService;
+import nl.uva.sne.drip.api.service.DeployService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v1.types.DeployRequest;
 import nl.uva.sne.drip.commons.v1.types.DeployResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * This controller is responsible for deploying a cluster on provisoned
@@ -43,22 +45,33 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class DeployController {
 
     @Autowired
-    private DeployClusterService deployService;
+    private DeployService deployService;
 
-    @RequestMapping(value = "/deploy/", method = RequestMethod.POST)
+    @RequestMapping(value = "/deploy", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String deploy(DeployRequest deployRequest) {
+    String deploy(@RequestBody DeployRequest deployRequest) {
+        if (deployRequest.getManagerType() == null) {
+            throw new BadRequestException("Must provide manager type. Aveliable: ansible, swarm ,kubernetes");
+        }
+        if (deployRequest.getProvisionID() == null) {
+            throw new BadRequestException("Must provide provision ID");
+        }
         DeployResponse key = deployService.deployCluster(deployRequest);
         return key.getId();
     }
 
-    /**
-     * Gets the cluster credentials.
-     *
-     * @param id
-     * @return the cluster credentials
-     */
+    @RequestMapping(value = "/sample", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    DeployRequest sample() {
+        DeployRequest req = new DeployRequest();
+        req.setManagerType("ansible");
+        req.setConfigurationID("Configuration_ID");
+        req.setProvisionID("Provision_ID");
+        return req;
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -70,11 +83,6 @@ public class DeployController {
         return resp;
     }
 
-    /**
-     * Gets the IDs of all the stored cluster credentials
-     *
-     * @return a list of all the IDs
-     */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -87,12 +95,6 @@ public class DeployController {
         return ids;
     }
 
-    /**
-     * Deletes a cluster credential
-     *
-     * @param id. The id of the cluster credential
-     * @return the id f the deleted cluster credential
-     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody

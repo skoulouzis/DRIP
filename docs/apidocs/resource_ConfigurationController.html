@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-  <title>drip-api: KeysController</title>
+  <title>drip-api: ConfigurationController</title>
 
   <!-- Mobile viewport optimized: j.mp/bplateviewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,7 +35,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.html">drip-api: KeysController</a>
+        <a class="navbar-brand" href="index.html">drip-api: ConfigurationController</a>
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right">
@@ -51,13 +51,12 @@
     <div class="row">
       <div class="col-sm-3 col-md-2 sidebar" id="apinav">
         <ul class="nav nav-sidebar">
-          <li><a href="#resource_KeysController_postKey_POST">POST /user/v1.0/keys</a></li>
-          <li><a href="#resource_KeysController_deleteAll_DELETE">DELETE /user/v1.0/keys/all</a></li>
-          <li><a href="#resource_KeysController_getIds_GET">GET /user/v1.0/keys/ids</a></li>
-          <li><a href="#resource_KeysController_geta_GET">GET /user/v1.0/keys/sample</a></li>
-          <li><a href="#resource_KeysController_upload_POST">POST /user/v1.0/keys/upload</a></li>
-          <li><a href="#resource_KeysController_delete_DELETE">DELETE /user/v1.0/keys/{id}</a></li>
-          <li><a href="#resource_KeysController_get_GET">GET /user/v1.0/keys/{id}</a></li>
+          <li><a href="#resource_ConfigurationController_deleteAll_DELETE"><abbr title="DELETE /user/v1.0/deployer/configuration/all">DELETE /user/v1.0/deployer/con...</abbr></a></li>
+          <li><a href="#resource_ConfigurationController_getIds_GET"><abbr title="GET /user/v1.0/deployer/configuration/ids">GET /user/v1.0/deployer/config...</abbr></a></li>
+          <li><a href="#resource_ConfigurationController_post_POST"><abbr title="POST /user/v1.0/deployer/configuration/post">POST /user/v1.0/deployer/confi...</abbr></a></li>
+          <li><a href="#resource_ConfigurationController_toscaUpload_POST"><abbr title="POST /user/v1.0/deployer/configuration/upload">POST /user/v1.0/deployer/confi...</abbr></a></li>
+          <li><a href="#resource_ConfigurationController_delete_DELETE"><abbr title="DELETE /user/v1.0/deployer/configuration/{id}">DELETE /user/v1.0/deployer/con...</abbr></a></li>
+          <li><a href="#resource_ConfigurationController_get_GET"><abbr title="GET /user/v1.0/deployer/configuration/{id}">GET /user/v1.0/deployer/config...</abbr></a></li>
           <li class="divider"></li>
           <li class="text-right"><a href="#top"><small>Back to Top</small></a></li>
         </ul>
@@ -67,64 +66,23 @@
         <ol class="breadcrumb" id="top">
           <li class="active dropdown"><a href="index.html">Home</a></li>
           <li class="active dropdown"><a href="resources.html">Resources</a></li>
-          <li class="dropdown"><a href="resource_KeysController.html">KeysController</a></li>
+          <li class="dropdown"><a href="resource_ConfigurationController.html">ConfigurationController</a></li>
         </ol>
 
-      <h1 class="page-header">KeysController <small>Resource</small></h1>
+      <h1 class="page-header">ConfigurationController <small>Resource</small></h1>
 
-      <p>This controller is responsible for handling user public keys. These keys can
-be used by the provisoner to allow the user to login to the VMs from the
-machine the keys correspond to.</p>
+      <p>This controller is responsible for storing PlayBook descriptions that can be
+used by the planner.</p>
 
-      <div id="resource_KeysController_postKey_POST">
-        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/user/v1.0/keys <a href="../user/v1.0/keys" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+      <div id="resource_ConfigurationController_deleteAll_DELETE">
+        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/deployer/configuration/all <a href="../user/v1.0/deployer/configuration/all" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Posts the Key and stores it. The Key is a container for public key
-contents. The public key contents are represented in the 'key' field. All
-new lines in the 'key' field have to be replaced with the '\n' character.</p>
+        <p>Gets the IDs of all the stored PlayBook descriptions.</p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
-          <dd>ADMIN, USER</dd>
+          <dd>ADMIN</dd>
         </dl>
-
-        <table class="table resource-request-body">
-          <caption>Request Body</caption>
-          <thead>
-          <tr>
-            <th>media type</th>
-            <th>data type</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
-            <td><span class="datatype-reference"><a href="json_Key.html">Key</a>
- (JSON)</span></td>
-          </tr>
-          <tr>
-            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
-            <td><span class="datatype-reference"><a href="xml_ns0_key.html">key</a>
- (XML)</span></td>
-          </tr>
-          </tbody>
-        </table>
-
-        <table class="table resource-response-codes">
-          <caption>Response Codes</caption>
-          <thead>
-          <tr>
-            <th>code</th>
-            <th>condition</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td><span class="label label-warning response-code">400</span></td>
-            <td><span class="response-condition">Key can't be empty</span></td>
-          </tr>
-          </tbody>
-        </table>
 
         <table class="table resource-response-body">
           <caption>Response Body</caption>
@@ -140,7 +98,7 @@ new lines in the 'key' field have to be replaced with the '\n' character.</p>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
             <td><span class="datatype-reference">string
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">the ID of the Key</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">a list of all the IDs</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
@@ -156,79 +114,7 @@ new lines in the 'key' field have to be replaced with the '\n' character.</p>
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-POST /user/v1.0/keys
-Content-Type: application/json
-Accept: application/json
-
-                <code class="prettyprint language-js">
-{
-  &quot;name&quot; : &quot;id_dsa.pub&quot;,
-  &quot;id&quot; : &quot;...&quot;,
-  &quot;type&quot; : &quot;PRIVATE&quot;,
-  &quot;attributes&quot; : {
-    &quot;property1&quot; : &quot;domain_name:Virginia&quot;,
-    &quot;property2&quot; : &quot;domain_name:Virginia&quot;
-  },
-  &quot;key&quot; : &quot;-----BEGIN RSA PRIVATE KEY-----\\nMIIEogIBAAKCAQEAm6AALYxkJFNzD3bfVJ4+hMY5j0/kqM9CURLKXMlYuAysnvoG8wZKx9Bedefm\\neNSse4zTg798ZA2kDMZFIrwp1AseTwtj8DDu5fhG5DjyI3g6iJltS5zFQdMXneDlHXBX8cncSzNY\\nRx0NdjEMAe7YttvI8FNlxL0VnMFli/HB/ftzYMe5+AmkSROncVGHiwoiUpj+vtobCFOYtXsCf6ri\\nd4lgWA5wv6DZT/JKCYymiBqgSXu3ueFcEzw5SAukARWVjn1xccjZkokFfBbO/FpYY00TrUTBw9S6\\nD3iM+gj8RT6EKILOmhrt71D21S95WAWIT7h2YBsy1KAvMixhNf9VaQIDAQABAoIBAHhVYK3Xl3tr\\nN1Xm0ctJTQg3ijxhR2qsUBgGUokqezpdOoD2zbbOz7XvTYsX1GLr967U9pwxzUpELexexwiTvDgk\\nnLv8D7ui6qbRsmc4DSsWBRSophVIVFKQmftO8Xow6x+fuYJAYmsicM1KIYHBILtL+PSzV8anenWq\\nKQ3r0tfCiQhEzKEk4b1uT3SJWQyHE++JAhVkO7lIeb6S9Dg1jAaAeMnJ/NiMxTarpPRnxe6hsTsH\\ngG1iKWo+Skcl4SknOc+CMEfyDjG4FL7MGhKduahsO8vMUrgGsDD7EH3NiX/FweB8La6qpDYAwFpC\\nycrooyhiyzw8Wb5gGaYnmvr9l70CgYEAx74O8JleXaHpxEAmh4h7VbLmJ3mOylfBmOdzcHeedJQw\\nack2SAv65WBI9S9MEQ7J/vFuyw5HNk3C/mcWgzDQXSNIhHLvl/Z9sux/Qpm3SQWLzBxKV3dJ4r\\nwcAxzVA93+/L1Nee+VOKnlyRumvVa6+XLsLagpap2AVcTqlerMcCgYEAx3T2pXtqkCE9eU/ov22r\\npdaKjgHoGOUg1CMEfWi/Ch6sYIIRyrHz6dhy+yR1pXNgPbLWdrn8l88F3+IsmbaMupMgRmqwEC3G\\n9Y2FglGIVvRdZaagvRxLzRCcvcN4v6OYs9ST4o1xlv7Qxphld+0XDKv7VSCv/rASuK8BqlFL3E8C\\ngYArMXJRnRjG7qh6g9TRIjZphdI3XxX9s5Rt2D8iZvuhAhqmBZjzY4PR7kxYmO2+EpCjzNnEl0XW\\n/GHaWbiIjhnAykx4N9KP7gGom3O5lzwHUme1XnFKcO2wDjQwJbufRmba8iQF1srN577mF+Z7ha4V\\nJ1duCTzvWF1KFX6sk/uhKQKBgAcDFai7rgNjJ8YcCRKxyFcMM9LKPl6hr4XFtWKzTAQPEABUkkuN\\n9gVClsg9f+VRKRECOIf0Ae1UWeCFEwxUXp4wjfHrzkTDVztKvmbWdvSXorDwKrZ7SC7tZpVFSfly\\nxuuLjadpUZT9YFmbAfY1X5oSccOMYqORjRbxEB3svb4BAoGAGTgFuq9Zojh/KIqY8b4HpEfmh6CQ\\nhLVfD98Nqd6GDbxgvIM0v4mFXE92x2jn35Ia0JdFyh3B8Vkl7sqQZfxDFXI9O9pte2mxY9ICaY\\n55+X/SN1pd53BH+gaPZJy/R+Vpvs5MN48hoUKy5UKpoFeUWrS5QArjtvNCm4SGlXw=\\n-----END RSA PRIVATE KEY-----\\n&quot;,
-  &quot;owner&quot; : &quot;...&quot;
-}
-                </code>
-              </pre>
-            </div>
-            <div class="col-md-6">
-              <h5>Response</h5>
-              <pre>
-HTTP/1.1 201 Looks Good
-Content-Type: application/json
-
-                <code class="prettyprint language-txt">
-...
-                </code>
-              </pre>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="resource_KeysController_deleteAll_DELETE">
-        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/keys/all <a href="../user/v1.0/keys/all" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
-
-        <p></p>
-
-        <dl class="dl-horizontal">
-          <dt>Security Roles Allowed</dt>
-          <dd>ADMIN</dd>
-        </dl>
-
-        <table class="table resource-response-body">
-          <caption>Response Body</caption>
-          <thead>
-          <tr>
-            <th>media type</th>
-            <th>data type</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
-            <td><span class="datatype-reference">string
- (JSON)</span></td>
-          </tr>
-          <tr>
-            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
-            <td><span class="datatype-reference">string
- (XML)</span></td>
-          </tr>
-          </tbody>
-        </table>
-        <h4>Example</h4>
-
-        <div class="container-fluid example panel">
-          <div class="row panel-body">
-            <div class="col-md-6">
-              <h5>Request</h5>
-              <pre>
-DELETE /user/v1.0/keys/all
+DELETE /user/v1.0/deployer/configuration/all
 Accept: application/json
 
               </pre>
@@ -248,10 +134,10 @@ Content-Type: application/json
         </div>
       </div>
 
-      <div id="resource_KeysController_getIds_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/keys/ids <a href="../user/v1.0/keys/ids" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+      <div id="resource_ConfigurationController_getIds_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/configuration/ids <a href="../user/v1.0/deployer/configuration/ids" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Gets the IDs of all the stored Key</p>
+        <p>Gets the IDs of all the stored PlayBook descriptions.</p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -288,7 +174,7 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-GET /user/v1.0/keys/ids
+GET /user/v1.0/deployer/configuration/ids
 Accept: application/json
 
               </pre>
@@ -308,8 +194,8 @@ Content-Type: application/json
         </div>
       </div>
 
-      <div id="resource_KeysController_geta_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/keys/sample <a href="../user/v1.0/keys/sample" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+      <div id="resource_ConfigurationController_post_POST">
+        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/user/v1.0/deployer/configuration/post <a href="../user/v1.0/deployer/configuration/post" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p></p>
 
@@ -317,6 +203,28 @@ Content-Type: application/json
           <dt>Security Roles Allowed</dt>
           <dd>ADMIN, USER</dd>
         </dl>
+
+        <table class="table resource-request-body">
+          <caption>Request Body</caption>
+          <thead>
+          <tr>
+            <th>media type</th>
+            <th>data type</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/json&quot; HTTP header to specify this media type to the server."><span class="request-type">application/json</span></abbr></td>
+            <td><span class="datatype-reference">string
+ (JSON)</span></td>
+          </tr>
+          <tr>
+            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Content-Type: application/xml&quot; HTTP header to specify this media type to the server."><span class="request-type">application/xml</span></abbr></td>
+            <td><span class="datatype-reference">string
+ (XML)</span></td>
+          </tr>
+          </tbody>
+        </table>
 
         <table class="table resource-response-body">
           <caption>Response Body</caption>
@@ -329,12 +237,12 @@ Content-Type: application/json
           <tbody>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
-            <td><span class="datatype-reference"><a href="json_Key.html">Key</a>
+            <td><span class="datatype-reference">string
  (JSON)</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
-            <td><span class="datatype-reference"><a href="xml_ns0_key.html">key</a>
+            <td><span class="datatype-reference">string
  (XML)</span></td>
           </tr>
           </tbody>
@@ -346,29 +254,23 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-GET /user/v1.0/keys/sample
+POST /user/v1.0/deployer/configuration/post
+Content-Type: application/json
 Accept: application/json
 
+                <code class="prettyprint language-txt">
+...
+                </code>
               </pre>
             </div>
             <div class="col-md-6">
               <h5>Response</h5>
               <pre>
-HTTP/1.1 200 Looks Good
+HTTP/1.1 201 Looks Good
 Content-Type: application/json
 
-                <code class="prettyprint language-js">
-{
-  &quot;name&quot; : &quot;id_dsa.pub&quot;,
-  &quot;id&quot; : &quot;...&quot;,
-  &quot;type&quot; : &quot;PRIVATE&quot;,
-  &quot;attributes&quot; : {
-    &quot;property1&quot; : &quot;domain_name:Virginia&quot;,
-    &quot;property2&quot; : &quot;domain_name:Virginia&quot;
-  },
-  &quot;key&quot; : &quot;-----BEGIN RSA PRIVATE KEY-----\\nMIIEogIBAAKCAQEAm6AALYxkJFNzD3bfVJ4+hMY5j0/kqM9CURLKXMlYuAysnvoG8wZKx9Bedefm\\neNSse4zTg798ZA2kDMZFIrwp1AseTwtj8DDu5fhG5DjyI3g6iJltS5zFQdMXneDlHXBX8cncSzNY\\nRx0NdjEMAe7YttvI8FNlxL0VnMFli/HB/ftzYMe5+AmkSROncVGHiwoiUpj+vtobCFOYtXsCf6ri\\nd4lgWA5wv6DZT/JKCYymiBqgSXu3ueFcEzw5SAukARWVjn1xccjZkokFfBbO/FpYY00TrUTBw9S6\\nD3iM+gj8RT6EKILOmhrt71D21S95WAWIT7h2YBsy1KAvMixhNf9VaQIDAQABAoIBAHhVYK3Xl3tr\\nN1Xm0ctJTQg3ijxhR2qsUBgGUokqezpdOoD2zbbOz7XvTYsX1GLr967U9pwxzUpELexexwiTvDgk\\nnLv8D7ui6qbRsmc4DSsWBRSophVIVFKQmftO8Xow6x+fuYJAYmsicM1KIYHBILtL+PSzV8anenWq\\nKQ3r0tfCiQhEzKEk4b1uT3SJWQyHE++JAhVkO7lIeb6S9Dg1jAaAeMnJ/NiMxTarpPRnxe6hsTsH\\ngG1iKWo+Skcl4SknOc+CMEfyDjG4FL7MGhKduahsO8vMUrgGsDD7EH3NiX/FweB8La6qpDYAwFpC\\nycrooyhiyzw8Wb5gGaYnmvr9l70CgYEAx74O8JleXaHpxEAmh4h7VbLmJ3mOylfBmOdzcHeedJQw\\nack2SAv65WBI9S9MEQ7J/vFuyw5HNk3C/mcWgzDQXSNIhHLvl/Z9sux/Qpm3SQWLzBxKV3dJ4r\\nwcAxzVA93+/L1Nee+VOKnlyRumvVa6+XLsLagpap2AVcTqlerMcCgYEAx3T2pXtqkCE9eU/ov22r\\npdaKjgHoGOUg1CMEfWi/Ch6sYIIRyrHz6dhy+yR1pXNgPbLWdrn8l88F3+IsmbaMupMgRmqwEC3G\\n9Y2FglGIVvRdZaagvRxLzRCcvcN4v6OYs9ST4o1xlv7Qxphld+0XDKv7VSCv/rASuK8BqlFL3E8C\\ngYArMXJRnRjG7qh6g9TRIjZphdI3XxX9s5Rt2D8iZvuhAhqmBZjzY4PR7kxYmO2+EpCjzNnEl0XW\\n/GHaWbiIjhnAykx4N9KP7gGom3O5lzwHUme1XnFKcO2wDjQwJbufRmba8iQF1srN577mF+Z7ha4V\\nJ1duCTzvWF1KFX6sk/uhKQKBgAcDFai7rgNjJ8YcCRKxyFcMM9LKPl6hr4XFtWKzTAQPEABUkkuN\\n9gVClsg9f+VRKRECOIf0Ae1UWeCFEwxUXp4wjfHrzkTDVztKvmbWdvSXorDwKrZ7SC7tZpVFSfly\\nxuuLjadpUZT9YFmbAfY1X5oSccOMYqORjRbxEB3svb4BAoGAGTgFuq9Zojh/KIqY8b4HpEfmh6CQ\\nhLVfD98Nqd6GDbxgvIM0v4mFXE92x2jn35Ia0JdFyh3B8Vkl7sqQZfxDFXI9O9pte2mxY9ICaY\\n55+X/SN1pd53BH+gaPZJy/R+Vpvs5MN48hoUKy5UKpoFeUWrS5QArjtvNCm4SGlXw=\\n-----END RSA PRIVATE KEY-----\\n&quot;,
-  &quot;owner&quot; : &quot;...&quot;
-}
+                <code class="prettyprint language-txt">
+...
                 </code>
               </pre>
             </div>
@@ -376,10 +278,10 @@ Content-Type: application/json
         </div>
       </div>
 
-      <div id="resource_KeysController_upload_POST">
-        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/user/v1.0/keys/upload <a href="../user/v1.0/keys/upload" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+      <div id="resource_ConfigurationController_toscaUpload_POST">
+        <h3><span class="label label-default resource-method">POST</span> <span class="resource-path">/user/v1.0/deployer/configuration/upload <a href="../user/v1.0/deployer/configuration/upload" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Uploads a public key (id_dsa.pub,id_rsa.pub)</p>
+        <p>Uploads and stores a PlayBook description file</p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -399,7 +301,7 @@ Content-Type: application/json
           <tr>
             <td><span class="parameter-name">file</span></td>
             <td>query</td>
-            <td><span class="parameter-description">the public key file</span></td>
+            <td><span class="parameter-description">&nbsp;</span></td>
           </tr>
           </tbody>
         </table>
@@ -418,7 +320,7 @@ Content-Type: application/json
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
             <td><span class="datatype-reference">string
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">the ID of the stored public key</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">the ID of the PlayBook description</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
@@ -434,7 +336,7 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-POST /user/v1.0/keys/upload
+POST /user/v1.0/deployer/configuration/upload
 Accept: application/json
 
               </pre>
@@ -454,10 +356,10 @@ Content-Type: application/json
         </div>
       </div>
 
-      <div id="resource_KeysController_delete_DELETE">
-        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/keys/{id} <a href="../user/v1.0/keys/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+      <div id="resource_ConfigurationController_delete_DELETE">
+        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/deployer/configuration/{id} <a href="../user/v1.0/deployer/configuration/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Deletes a Key</p>
+        <p>Deletes the PlayBook description.</p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -496,7 +398,7 @@ Content-Type: application/json
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
             <td><span class="datatype-reference">string
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">The ID of the deleted Key</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">The ID of the deleted PlayBook description.</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
@@ -512,7 +414,7 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-DELETE /user/v1.0/keys/{id}
+DELETE /user/v1.0/deployer/configuration/{id}
 Accept: application/json
 
               </pre>
@@ -532,10 +434,10 @@ Content-Type: application/json
         </div>
       </div>
 
-      <div id="resource_KeysController_get_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/keys/{id} <a href="../user/v1.0/keys/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+      <div id="resource_ConfigurationController_get_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/configuration/{id} <a href="../user/v1.0/deployer/configuration/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
-        <p>Gets the Key.</p>
+        <p>Gets the PlayBook description.</p>
 
         <dl class="dl-horizontal">
           <dt>Security Roles Allowed</dt>
@@ -555,7 +457,12 @@ Content-Type: application/json
           <tr>
             <td><span class="parameter-name">id</span></td>
             <td>path</td>
-            <td><span class="parameter-description">. The ID of the Key to return</span></td>
+            <td><span class="parameter-description">the ID PlayBook description.</span></td>
+          </tr>
+          <tr>
+            <td><span class="parameter-name">format</span></td>
+            <td>query</td>
+            <td><span class="parameter-description">&nbsp;</span></td>
           </tr>
           </tbody>
         </table>
@@ -572,13 +479,13 @@ Content-Type: application/json
           <tbody>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
-            <td><span class="datatype-reference"><a href="json_Key.html">Key</a>
+            <td><span class="datatype-reference">string
  (JSON)</span></td>
-            <td rowspan="2" class="multi-row-description"><span class="response-description">The Key</span></td>
+            <td rowspan="2" class="multi-row-description"><span class="response-description">the PlayBook description.</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
-            <td><span class="datatype-reference"><a href="xml_ns0_key.html">key</a>
+            <td><span class="datatype-reference">string
  (XML)</span></td>
           </tr>
           </tbody>
@@ -590,7 +497,7 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-GET /user/v1.0/keys/{id}
+GET /user/v1.0/deployer/configuration/{id}
 Accept: application/json
 
               </pre>
@@ -601,18 +508,8 @@ Accept: application/json
 HTTP/1.1 200 Looks Good
 Content-Type: application/json
 
-                <code class="prettyprint language-js">
-{
-  &quot;name&quot; : &quot;id_dsa.pub&quot;,
-  &quot;id&quot; : &quot;...&quot;,
-  &quot;type&quot; : &quot;PRIVATE&quot;,
-  &quot;attributes&quot; : {
-    &quot;property1&quot; : &quot;domain_name:Virginia&quot;,
-    &quot;property2&quot; : &quot;domain_name:Virginia&quot;
-  },
-  &quot;key&quot; : &quot;-----BEGIN RSA PRIVATE KEY-----\\nMIIEogIBAAKCAQEAm6AALYxkJFNzD3bfVJ4+hMY5j0/kqM9CURLKXMlYuAysnvoG8wZKx9Bedefm\\neNSse4zTg798ZA2kDMZFIrwp1AseTwtj8DDu5fhG5DjyI3g6iJltS5zFQdMXneDlHXBX8cncSzNY\\nRx0NdjEMAe7YttvI8FNlxL0VnMFli/HB/ftzYMe5+AmkSROncVGHiwoiUpj+vtobCFOYtXsCf6ri\\nd4lgWA5wv6DZT/JKCYymiBqgSXu3ueFcEzw5SAukARWVjn1xccjZkokFfBbO/FpYY00TrUTBw9S6\\nD3iM+gj8RT6EKILOmhrt71D21S95WAWIT7h2YBsy1KAvMixhNf9VaQIDAQABAoIBAHhVYK3Xl3tr\\nN1Xm0ctJTQg3ijxhR2qsUBgGUokqezpdOoD2zbbOz7XvTYsX1GLr967U9pwxzUpELexexwiTvDgk\\nnLv8D7ui6qbRsmc4DSsWBRSophVIVFKQmftO8Xow6x+fuYJAYmsicM1KIYHBILtL+PSzV8anenWq\\nKQ3r0tfCiQhEzKEk4b1uT3SJWQyHE++JAhVkO7lIeb6S9Dg1jAaAeMnJ/NiMxTarpPRnxe6hsTsH\\ngG1iKWo+Skcl4SknOc+CMEfyDjG4FL7MGhKduahsO8vMUrgGsDD7EH3NiX/FweB8La6qpDYAwFpC\\nycrooyhiyzw8Wb5gGaYnmvr9l70CgYEAx74O8JleXaHpxEAmh4h7VbLmJ3mOylfBmOdzcHeedJQw\\nack2SAv65WBI9S9MEQ7J/vFuyw5HNk3C/mcWgzDQXSNIhHLvl/Z9sux/Qpm3SQWLzBxKV3dJ4r\\nwcAxzVA93+/L1Nee+VOKnlyRumvVa6+XLsLagpap2AVcTqlerMcCgYEAx3T2pXtqkCE9eU/ov22r\\npdaKjgHoGOUg1CMEfWi/Ch6sYIIRyrHz6dhy+yR1pXNgPbLWdrn8l88F3+IsmbaMupMgRmqwEC3G\\n9Y2FglGIVvRdZaagvRxLzRCcvcN4v6OYs9ST4o1xlv7Qxphld+0XDKv7VSCv/rASuK8BqlFL3E8C\\ngYArMXJRnRjG7qh6g9TRIjZphdI3XxX9s5Rt2D8iZvuhAhqmBZjzY4PR7kxYmO2+EpCjzNnEl0XW\\n/GHaWbiIjhnAykx4N9KP7gGom3O5lzwHUme1XnFKcO2wDjQwJbufRmba8iQF1srN577mF+Z7ha4V\\nJ1duCTzvWF1KFX6sk/uhKQKBgAcDFai7rgNjJ8YcCRKxyFcMM9LKPl6hr4XFtWKzTAQPEABUkkuN\\n9gVClsg9f+VRKRECOIf0Ae1UWeCFEwxUXp4wjfHrzkTDVztKvmbWdvSXorDwKrZ7SC7tZpVFSfly\\nxuuLjadpUZT9YFmbAfY1X5oSccOMYqORjRbxEB3svb4BAoGAGTgFuq9Zojh/KIqY8b4HpEfmh6CQ\\nhLVfD98Nqd6GDbxgvIM0v4mFXE92x2jn35Ia0JdFyh3B8Vkl7sqQZfxDFXI9O9pte2mxY9ICaY\\n55+X/SN1pd53BH+gaPZJy/R+Vpvs5MN48hoUKy5UKpoFeUWrS5QArjtvNCm4SGlXw=\\n-----END RSA PRIVATE KEY-----\\n&quot;,
-  &quot;owner&quot; : &quot;...&quot;
-}
+                <code class="prettyprint language-txt">
+...
                 </code>
               </pre>
             </div>

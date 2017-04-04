@@ -49,7 +49,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/v1.0/key")
+@RequestMapping("/user/v1.0/keys")
 @Component
 public class KeysController {
 

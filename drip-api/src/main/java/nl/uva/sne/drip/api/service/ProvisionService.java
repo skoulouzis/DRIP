@@ -165,6 +165,9 @@ public class ProvisionService {
                     provisionResponse.setDeployParameters(deployParameters);
                 }
             }
+            provisionResponse.setCloudCredentialsID(provisionRequest.getCloudCredentialsID());
+            provisionResponse.setPublicKeyID(provisionRequest.getPublicKeyID());
+
             provisionResponse = save(provisionResponse);
             return provisionResponse;
         }

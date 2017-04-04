@@ -44,9 +44,9 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/v1.0/playbook")
+@RequestMapping("/user/v1.0/deployer/configuration")
 @Component
-public class PlaybookController {
+public class ConfigurationController {
 
     @Autowired
     private PlaybookService playbookService;
@@ -59,7 +59,7 @@ public class PlaybookController {
 
             return playbookService.saveStringContents(toscaContents, String.valueOf(System.currentTimeMillis()));
         } catch (IOException ex) {
-            Logger.getLogger(PlaybookController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ConfigurationController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -80,7 +80,7 @@ public class PlaybookController {
         try {
             return playbookService.saveFile(file);
         } catch (IOException | IllegalStateException ex) {
-            Logger.getLogger(PlaybookController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ConfigurationController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -99,7 +99,7 @@ public class PlaybookController {
         try {
             return playbookService.get(id, format);
         } catch (JSONException ex) {
-            Logger.getLogger(PlaybookController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ConfigurationController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

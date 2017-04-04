@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.service.DeployClusterService;
+import nl.uva.sne.drip.api.service.DeployService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.Deploy;
 import nl.uva.sne.drip.commons.v0.types.Attribute;
@@ -49,14 +49,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class DeployController0 {
 
     @Autowired
-    private DeployClusterService deployService;
+    private DeployService deployService;
 
     @RequestMapping(value = "/kubernetes", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result deployKubernetes(@RequestBody Deploy deploy) {
         DeployRequest deployReq = new DeployRequest();
-        deployReq.setClusterType("kubernetes");
+        deployReq.setManagerType("kubernetes");
         deployReq.setProvisionID(deploy.action);
         return deploy(deployReq);
     }
@@ -66,7 +66,7 @@ public class DeployController0 {
     public @ResponseBody
     Result deploySwarm(@RequestBody Deploy deploy) {
         DeployRequest deployReq = new DeployRequest();
-        deployReq.setClusterType("swarm");
+        deployReq.setManagerType("swarm");
         deployReq.setProvisionID(deploy.action);
         return deploy(deployReq);
     }

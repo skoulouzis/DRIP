@@ -120,16 +120,37 @@ CloudCredentials are a represntation of the credentials that are used by the
 provisoner to request for resources (VMs)</span>
 </td>
     </tr>
+    <tr class="clickable-row" data-href="resource_ConfigurationController.html">
+      <td>  <span class="resource-name">ConfigurationController</span>
+</td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/deployer/configuration/all</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/configuration/ids</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/configuration/post</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/configuration/upload</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/configuration/{id}</span>
+</samp></li></ul></td>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">DELETE</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> 
+</samp></li></ul></td>
+      <td>  <span class="resource-description">This controller is responsible for storing PlayBook descriptions that can be
+used by the planner.</span>
+</td>
+    </tr>
     <tr class="clickable-row" data-href="resource_DeployController.html">
       <td>  <span class="resource-name">DeployController</span>
 </td>
       <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/deployer/all</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/deploy/</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/deploy</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/ids</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/sample</span>
 </samp></li><li><samp>  <span class="resource-path">/user/v1.0/deployer/{id}</span>
 </samp></li></ul></td>
       <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">DELETE</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
+</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> 
 </samp></li></ul></td>
@@ -153,12 +174,12 @@ resources.</span>
     <tr class="clickable-row" data-href="resource_KeysController.html">
       <td>  <span class="resource-name">KeysController</span>
 </td>
-      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/key</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/key/all</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/key/ids</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/key/sample</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/key/upload</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/key/{id}</span>
+      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/keys</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/keys/all</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/keys/ids</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/keys/sample</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/keys/upload</span>
+</samp></li><li><samp>  <span class="resource-path">/user/v1.0/keys/{id}</span>
 </samp></li></ul></td>
       <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">POST</span> 
 </samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> 
@@ -200,25 +221,6 @@ provisopned based on a TOSCA description.</span>
 </samp></li></ul></td>
       <td>  <span class="resource-description">This controller is responsible for planing the type of resources to be
 provisopned based on a TOSCA description.</span>
-</td>
-    </tr>
-    <tr class="clickable-row" data-href="resource_PlaybookController.html">
-      <td>  <span class="resource-name">PlaybookController</span>
-</td>
-      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="resource-path">/user/v1.0/playbook/all</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/playbook/ids</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/playbook/post</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/playbook/upload</span>
-</samp></li><li><samp>  <span class="resource-path">/user/v1.0/playbook/{id}</span>
-</samp></li></ul></td>
-      <td class="text-nowrap"><ul class="list-unstyled"><li><samp>  <span class="label label-default resource-method">DELETE</span> 
-</samp></li><li><samp>  <span class="label label-default resource-method">GET</span> 
-</samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
-</samp></li><li><samp>  <span class="label label-default resource-method">POST</span> 
-</samp></li><li><samp>  <span class="label label-default resource-method">DELETE</span> <span class="label label-default resource-method">GET</span> 
-</samp></li></ul></td>
-      <td>  <span class="resource-description">This controller is responsible for storing PlayBook descriptions that can be
-used by the planner.</span>
 </td>
     </tr>
     <tr class="clickable-row" data-href="resource_ProvisionController.html">

@@ -22,7 +22,7 @@ package nl.uva.sne.drip.commons.v1.types;
 public class DeployRequest extends OwnedObject {
 
     private String provisionID;
-    private String clusterType;
+    private String managerType;
     private String configurationID;
 
     /**
@@ -40,17 +40,17 @@ public class DeployRequest extends OwnedObject {
     }
 
     /**
-     * @return the clusterType
+     * @return the managerType
      */
-    public String getClusterType() {
-        return clusterType;
+    public String getManagerType() {
+        return managerType;
     }
 
     /**
-     * @param clusterType the clusterType to set
+     * @param managerType the managerType to set
      */
-    public void setClusterType(String clusterType) {
-        this.clusterType = clusterType;
+    public void setManagerType(String managerType) {
+        this.managerType = managerType;
     }
 
     /**

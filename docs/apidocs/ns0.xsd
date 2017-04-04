@@ -299,7 +299,7 @@ to request for resources.]]>
       <xs:sequence>
               <xs:element name="provisionID" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="clusterType" type="xs:string" minOccurs="0">
+              <xs:element name="managerType" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="configurationID" type="xs:string" minOccurs="0">
               </xs:element>
