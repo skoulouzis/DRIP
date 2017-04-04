@@ -174,7 +174,7 @@ public class DeployService {
         deployInvokationMessage.setCreationDate(System.currentTimeMillis());
         return deployInvokationMessage;
     }
-    
+
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")
     public void deleteAll() {
         deployDao.deleteAll();
@@ -214,11 +214,11 @@ public class DeployService {
     }
 
     private MessageParameter createAnsibleParameter(String configurationID) throws JSONException {
-        PlaybookRepresentation playbook = playbookService.findOne(configurationID);
+        String playbook = playbookService.get(configurationID, "yml");
         MessageParameter ansibleParameter = new MessageParameter();
         ansibleParameter.setName("playbook");
         ansibleParameter.setEncoding("UTF-8");
-        ansibleParameter.setValue(Converter.map2YmlString(playbook.getKeyValue()));
+        ansibleParameter.setValue(playbook);
         return ansibleParameter;
     }
 }
