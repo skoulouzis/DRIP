@@ -45,6 +45,7 @@ def handleDelivery(message):
             cluster_type = param["value"]
         elif name == "credential":
             value = param["value"]
+            print "Value: %s" %value
             ip = param["attributes"]["IP"]
             user = param["attributes"]["user"]
             role = param["attributes"]["role"]

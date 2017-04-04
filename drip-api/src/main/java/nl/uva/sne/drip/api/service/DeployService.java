@@ -187,10 +187,7 @@ public class DeployService {
         messageParameter.setEncoding("UTF-8");
         String key = null;
         for (Key lk : loginKeys) {
-            String lkName = lk.getName();
-            if (lkName == null) {
-                lkName = lk.getAttributes().get("domain_name");
-            }
+            String lkName = lk.getAttributes().get("domain_name");
             if (lkName.equals(cName)) {
                 key = lk.getKey();
                 break;
