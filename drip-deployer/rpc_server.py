@@ -25,8 +25,9 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_hos
 channel = connection.channel()
 channel.queue_declare(queue='deployer_queue')
 
-path = os.path.dirname(os.path.abspath(__file__)) + "/"
 
+
+manager_type = ""
 
 def threaded_function(args):
     while True:
@@ -39,18 +40,23 @@ def handleDelivery(message):
     params = parsed_json["parameters"]  
     node_num = 0
     vm_list = []
+    current_milli_time = lambda: int(round(time.time() * 1000))
+    path = os.path.dirname(os.path.abspath(__file__)) + "/"+ str(current_milli_time()) + "/"
+    if not os.path.exists(path):
+        os.makedirs(path)
+        
     for param in params:
         name = param["name"]
         if name == "cluster":
-            cluster_type = param["value"]
+            manager_type = param["value"]
         elif name == "credential":
             value = param["value"]
-            print "Value: %s" %value
             ip = param["attributes"]["IP"]
             user = param["attributes"]["user"]
             role = param["attributes"]["role"]
             node_num += 1
             key = path + "%d.txt" % (node_num)
+            print 
             fo = open(key, "w")
             fo.write(value)
             fo.close()
@@ -63,10 +69,10 @@ def handleDelivery(message):
             fo.write(value)
             fo.close()
 
-    if cluster_type == "kubernetes":
+    if manager_type == "kubernetes":
         ret = docker_kubernetes.run(vm_list)
         return ret
-    elif cluster_type == "swarm":
+    elif manager_type == "swarm":
         ret = docker_engine.run(vm_list)
         if "ERROR" in ret: return ret
         ret = docker_swarm.run(vm_list)
@@ -74,7 +80,7 @@ def handleDelivery(message):
         ret1 = control_agent.run(vm_list)
         if "ERROR" in ret1: ret = ret1
         return ret
-    elif cluster_type == "ansible":
+    elif manager_type == "ansible":
         ret = ansible_playbook.run(vm_list,playbook)
         return ret
     else:
@@ -83,9 +89,10 @@ def handleDelivery(message):
 
 def on_request(ch, method, props, body):
     ret = handleDelivery(body)
-    print ret
     if "ERROR" in ret:
         res_name = "error"
+    elif manager_type == "ansible":
+        res_name = "ansible_output"
     else:
         res_name = "credential"
 
@@ -99,7 +106,9 @@ def on_request(ch, method, props, body):
     par["url"] = "null"
     par["encoding"] = "UTF-8"
     par["name"] = res_name
-    par["value"] = ret
+    value = ret.replace("\"", "\\\"")
+    print value
+    par["value"] = "\""+ret+"\""
     par["attributes"] = "null"
     response["parameters"].append(par)
 
@@ -116,11 +125,11 @@ channel.basic_qos(prefetch_count=1)
 channel.basic_consume(on_request, queue='deployer_queue')
 
 
-thread = Thread(target = threaded_function, args = (1, ))
-thread.start()
+#thread = Thread(target = threaded_function, args = (1, ))
+#thread.start()
 
 print(" [x] Awaiting RPC requests")
 
 
 channel.start_consuming()
-thread.stop()
+#thread.stop()

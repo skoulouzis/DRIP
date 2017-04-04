@@ -1,8 +1,0 @@
-{
-    "host": "172.17.0.3", 
-    "result": {
-        "msg": "Failed to connect to the host via ssh: ssh: connect to host 172.17.0.3 port 22: No route to host\r\n", 
-        "unreachable": true, 
-        "changed": false
-    }
-}

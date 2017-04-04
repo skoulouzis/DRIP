@@ -46,8 +46,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.dao.KeyDao;
-import nl.uva.sne.drip.commons.utils.Converter;
-import nl.uva.sne.drip.commons.v1.types.PlaybookRepresentation;
 
 /**
  *

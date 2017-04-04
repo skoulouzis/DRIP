@@ -45,12 +45,21 @@ def install_prerequisites(vm):
 		print "Installing ansible prerequisites in: %s" % (vm.ip)
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		#print "Username : %s" % (vm.user)
 		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
 		sftp = ssh.open_sftp()
+		file_path = os.path.dirname(os.path.abspath(__file__))
 		sftp.chdir('/tmp/')
-		stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/ansible_setup.sh")
-		stdout.read()		
+		install_script = file_path + "/" + "ansible_setup.sh"
+		sftp.put(install_script, "ansible_setup.sh")
+		
+                stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.','-')))
+		sshout = stdout.read()
+		
+                stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/ansible_setup.sh")
+		stdout.read()
+                
+                parentDir = os.path.dirname(os.path.abspath(vm.key))
+                os.chmod(parentDir, 770)
 		print "Ansible prerequisites installed in: %s " % (vm.ip)
 	except Exception as e:
 		print '%s: %s' % (vm.ip, e)
