@@ -15,7 +15,10 @@
  */
 package nl.uva.sne.drip.api.v0.rest;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
+import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.api.service.ProvisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,10 +26,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.service.KeyService;
+import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.ConfUserKey;
 import nl.uva.sne.drip.commons.v1.types.Key;
+import nl.uva.sne.drip.commons.v1.types.KeyPair;
 import nl.uva.sne.drip.commons.v1.types.ProvisionRequest;
 import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
 import org.springframework.http.MediaType;
@@ -45,7 +49,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class UserPublicKeysController0 {
 
     @Autowired
-    private KeyService service;
+    private KeyPairService service;
 
     @Autowired
     private ProvisionService provisionService;
@@ -54,17 +58,23 @@ public class UserPublicKeysController0 {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String uploadUserPublicKeys(@RequestBody ConfUserKey confUserKey) {
-        Key upk = new Key();
-        upk.setKey(confUserKey.file.get(0).content);
-        upk.setName(confUserKey.file.get(0).name);
-        upk.setType(Key.Type.PUBLIC);
+        try {
+            KeyPair pair = new KeyPair();
+            Key upk = new Key();
+            upk.setKey(confUserKey.file.get(0).content);
+            upk.setName(confUserKey.file.get(0).name);
+            upk.setType(Key.Type.PUBLIC);
+            pair.setPublicKey(upk);
+            pair = service.save(pair);
 
-        upk = service.save(upk);
+            ProvisionResponse provPlan = provisionService.findOne(confUserKey.action);
+            provPlan.setPublicKeyID(pair.getId());
+            provisionService.save(provPlan);
 
-        ProvisionResponse provPlan = provisionService.findOne(confUserKey.action);
-        provPlan.setPublicKeyID(upk.getId());
-        provisionService.save(provPlan);
-
-        return "Success: " + upk.getId();
+            return "Success: " + pair.getId();
+        } catch (KeyException ex) {
+            Logger.getLogger(UserPublicKeysController0.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

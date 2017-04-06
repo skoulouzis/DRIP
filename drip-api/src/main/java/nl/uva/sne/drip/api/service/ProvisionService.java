@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.api.dao.KeyDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.exception.BadRequestException;
@@ -41,7 +40,6 @@ import nl.uva.sne.drip.api.v1.rest.ProvisionController;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import nl.uva.sne.drip.commons.v1.types.DeployParameter;
-import nl.uva.sne.drip.commons.v1.types.Key;
 import nl.uva.sne.drip.commons.v1.types.Message;
 import nl.uva.sne.drip.commons.v1.types.MessageParameter;
 import nl.uva.sne.drip.commons.v1.types.PlanResponse;
@@ -57,6 +55,8 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import nl.uva.sne.drip.api.dao.ProvisionResponseDao;
+import nl.uva.sne.drip.api.dao.KeyPairDao;
+import nl.uva.sne.drip.commons.v1.types.KeyPair;
 
 /**
  *
@@ -70,7 +70,7 @@ public class ProvisionService {
     private ProvisionResponseDao provisionDao;
 
     @Autowired
-    private KeyDao keyDao;
+    private KeyPairDao keyDao;
 
     @Autowired
     private CloudCredentialsService cloudCredentialsService;
@@ -82,7 +82,7 @@ public class ProvisionService {
     private ScriptService userScriptService;
 
     @Autowired
-    private KeyService userKeysService;
+    private KeyPairService userKeysService;
 
     @Value("${message.broker.host}")
     private String messageBrokerHost;
@@ -216,24 +216,24 @@ public class ProvisionService {
 
     private List<MessageParameter> buildCertificatesParam(CloudCredentials cred) {
         List<String> loginKeysIDs = cred.getKeyIDs();
-        List<Key> loginKeys = new ArrayList<>();
+        List<KeyPair> loginKeys = new ArrayList<>();
         for (String keyID : loginKeysIDs) {
-            Key key = keyDao.findOne(keyID);
+            KeyPair key = keyDao.findOne(keyID);
             loginKeys.add(key);
         }
 
-        if (loginKeys == null || loginKeys.isEmpty()) {
+        if (loginKeys.isEmpty()) {
             throw new BadRequestException("Log in keys can't be empty");
         }
         List<MessageParameter> parameters = new ArrayList<>();
-        for (Key lk : loginKeys) {
-            String domainName = lk.getAttributes().get("domain_name");
+        for (KeyPair lk : loginKeys) {
+            String domainName = lk.getPrivateKey().getAttributes().get("domain_name");
             if (domainName == null) {
-                domainName = lk.getAttributes().get("domain_name ");
+                domainName = lk.getPrivateKey().getAttributes().get("domain_name ");
             }
             MessageParameter cert = new MessageParameter();
             cert.setName("certificate");
-            cert.setValue(lk.getKey());
+            cert.setValue(lk.getPrivateKey().getKey());
             Map<String, String> attributes = new HashMap<>();
             attributes.put("filename", domainName);
             cert.setAttributes(attributes);
@@ -301,14 +301,14 @@ public class ProvisionService {
     }
 
     private List<MessageParameter> buildKeysParams(String userKeyID) {
-        Key key = userKeysService.findOne(userKeyID);
+        KeyPair key = userKeysService.findOne(userKeyID);
         if (key == null) {
             throw new BadRequestException("User key: " + userKeyID + " was not found");
         }
         List<MessageParameter> parameters = new ArrayList();
         MessageParameter keyParameter = new MessageParameter();
         keyParameter.setName("sshkey");
-        keyParameter.setValue(key.getKey());
+        keyParameter.setValue(key.getPublicKey().getKey());
         keyParameter.setEncoding("UTF-8");
         parameters.add(keyParameter);
         return parameters;

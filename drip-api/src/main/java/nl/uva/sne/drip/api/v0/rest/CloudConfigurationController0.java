@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
+import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,10 +33,11 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.exception.NullKeyIDException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
-import nl.uva.sne.drip.api.service.KeyService;
+import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.Configure;
 import nl.uva.sne.drip.commons.v1.types.Key;
+import nl.uva.sne.drip.commons.v1.types.KeyPair;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -53,7 +57,7 @@ public class CloudConfigurationController0 {
     private CloudCredentialsService cloudCredentialsService;
 
     @Autowired
-    private KeyService keyService;
+    private KeyPairService keyService;
 
     @RequestMapping(value = "/ec2", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -72,13 +76,19 @@ public class CloudConfigurationController0 {
         List<String> loginKeyIDs = new ArrayList<>();
 
         for (nl.uva.sne.drip.commons.v0.types.LoginKey0 key0 : configure.loginKey) {
-            nl.uva.sne.drip.commons.v1.types.Key key1 = new nl.uva.sne.drip.commons.v1.types.Key();
-            key1.setKey(key0.content);
-            Map<String, String> attributes = new HashMap<>();
-            attributes.put("domain_name", key0.domain_name);
-            key1.setAttributes(attributes);
-            key1 = keyService.save(key1);
-            loginKeyIDs.add(key1.getId());
+            try {
+                nl.uva.sne.drip.commons.v1.types.Key key1 = new nl.uva.sne.drip.commons.v1.types.Key();
+                KeyPair pair = new KeyPair();
+                key1.setKey(key0.content);
+                Map<String, String> attributes = new HashMap<>();
+                attributes.put("domain_name", key0.domain_name);
+                key1.setAttributes(attributes);
+                pair.setPrivateKey(key1);
+                pair = keyService.save(pair);
+                loginKeyIDs.add(pair.getId());
+            } catch (KeyException ex) {
+                Logger.getLogger(CloudConfigurationController0.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         cloudCredentials.setKeyIDs(loginKeyIDs);
         cloudCredentials.setCloudProviderName("ec2");
@@ -105,19 +115,31 @@ public class CloudConfigurationController0 {
         List<String> loginKeyIDs = new ArrayList<>();
 
         for (nl.uva.sne.drip.commons.v0.types.LoginKey0 key0 : configure.loginPubKey) {
-            nl.uva.sne.drip.commons.v1.types.Key key1 = new nl.uva.sne.drip.commons.v1.types.Key();
-            key1.setKey(key0.content);
-            key1.setType(Key.Type.PUBLIC);
-            key1 = keyService.save(key1);
-            loginKeyIDs.add(key1.getId());
+            try {
+                nl.uva.sne.drip.commons.v1.types.Key key1 = new nl.uva.sne.drip.commons.v1.types.Key();
+                key1.setKey(key0.content);
+                key1.setType(Key.Type.PUBLIC);
+                KeyPair pair = new KeyPair();
+                pair.setPublicKey(key1);
+                pair = keyService.save(pair);
+                loginKeyIDs.add(pair.getId());
+            } catch (KeyException ex) {
+                Logger.getLogger(CloudConfigurationController0.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
         }
         for (nl.uva.sne.drip.commons.v0.types.LoginKey0 key0 : configure.loginPriKey) {
-            nl.uva.sne.drip.commons.v1.types.Key key1 = new nl.uva.sne.drip.commons.v1.types.Key();
-            key1.setKey(key0.content);
-            key1.setType(Key.Type.PRIVATE);
-            key1 = keyService.save(key1);
-            loginKeyIDs.add(key1.getId());
+            try {
+                nl.uva.sne.drip.commons.v1.types.Key key1 = new nl.uva.sne.drip.commons.v1.types.Key();
+                key1.setKey(key0.content);
+                key1.setType(Key.Type.PRIVATE);
+                KeyPair pair = new KeyPair();
+                pair.setPrivateKey(key1);
+                pair = keyService.save(pair);
+                loginKeyIDs.add(pair.getId());
+            } catch (KeyException ex) {
+                Logger.getLogger(CloudConfigurationController0.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         cloudCredentials.setKeyIDs(loginKeyIDs);
         cloudCredentials.setCloudProviderName("geni");

@@ -59,7 +59,8 @@ def install_prerequisites(vm):
 		stdout.read()
                 
                 parentDir = os.path.dirname(os.path.abspath(vm.key))
-                os.chmod(parentDir, 770)
+                #os.chmod(parentDir, 700)
+                os.chmod(vm.key, 0o444)
 		print "Ansible prerequisites installed in: %s " % (vm.ip)
 	except Exception as e:
 		print '%s: %s' % (vm.ip, e)

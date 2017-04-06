@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.ProvisionService;
-import nl.uva.sne.drip.api.service.KeyService;
+import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.ScriptService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v0.types.Execute;
@@ -44,9 +44,8 @@ import nl.uva.sne.drip.commons.v0.types.Attribute;
 import nl.uva.sne.drip.commons.v0.types.Result;
 import nl.uva.sne.drip.commons.v0.types.Upload;
 import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
-import nl.uva.sne.drip.commons.v1.types.Key;
+import nl.uva.sne.drip.commons.v1.types.KeyPair;
 import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
-import nl.uva.sne.drip.commons.v1.types.Script;
 import org.json.JSONException;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -68,7 +67,7 @@ public class ProvisionController0 {
     private ScriptService userScriptService;
 
     @Autowired
-    private KeyService userKeysService;
+    private KeyPairService userKeysService;
 
     @Autowired
     private CloudCredentialsService cloudCredentialsService;
@@ -105,7 +104,7 @@ public class ProvisionController0 {
         topLevelPlan = planService.save(topLevelPlan);
         String planID = topLevelPlan.getId();
         resp.setPlanID(planID);
-        List<Key> allKeys = userKeysService.findAll();
+        List<KeyPair> allKeys = userKeysService.findAll();
         if (allKeys != null && !allKeys.isEmpty()) {
             String userKeyID = allKeys.get(0).getId();
             resp.setPublicKeyID(userKeyID);

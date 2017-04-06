@@ -17,8 +17,6 @@ package nl.uva.sne.drip.commons.v1.types;
 
 import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.Map;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * This class represents a key. This key can be used to either login to a VM
@@ -27,11 +25,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  * @author S. Koulouzis
  */
-@Document
-public class Key extends OwnedObject {
-
-    @Id
-    private String id;
+public class Key{
 
     private Map<String, String> attributes;
 
@@ -52,20 +46,6 @@ public class Key extends OwnedObject {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
     }
 
     public static enum Type {

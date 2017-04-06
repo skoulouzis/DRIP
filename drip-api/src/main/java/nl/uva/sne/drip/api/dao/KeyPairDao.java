@@ -15,13 +15,13 @@
  */
 package nl.uva.sne.drip.api.dao;
 
-import nl.uva.sne.drip.commons.v1.types.Key;
+import nl.uva.sne.drip.commons.v1.types.KeyPair;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface KeyDao extends MongoRepository<Key, String> {
+public interface KeyPairDao extends MongoRepository<KeyPair, String> {
 
 }

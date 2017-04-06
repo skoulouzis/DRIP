@@ -45,7 +45,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.DeployDao;
-import nl.uva.sne.drip.api.dao.KeyDao;
+import nl.uva.sne.drip.api.dao.KeyPairDao;
+import nl.uva.sne.drip.commons.v1.types.KeyPair;
 
 /**
  *
@@ -59,7 +60,7 @@ public class DeployService {
     private DeployDao deployDao;
 
     @Autowired
-    KeyDao keyDao;
+    KeyPairDao keyDao;
 
     @Value("${message.broker.host}")
     private String messageBrokerHost;
@@ -145,9 +146,9 @@ public class DeployService {
         String cloudConfID = pro.getCloudCredentialsID();
         CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfID);
         List<String> loginKeysIDs = cCred.getKeyIDs();
-        List<Key> loginKeys = new ArrayList<>();
+        List<KeyPair> loginKeys = new ArrayList<>();
         for (String keyID : loginKeysIDs) {
-            Key key = keyDao.findOne(keyID);
+            KeyPair key = keyDao.findOne(keyID);
             loginKeys.add(key);
         }
 
@@ -178,16 +179,16 @@ public class DeployService {
         deployDao.deleteAll();
     }
 
-    private MessageParameter createCredentialPartameter(DeployParameter dp, List<Key> loginKeys) {
+    private MessageParameter createCredentialPartameter(DeployParameter dp, List<KeyPair> loginKeys) {
         String cName = dp.getCloudCertificateName();
         MessageParameter messageParameter = new MessageParameter();
         messageParameter.setName("credential");
         messageParameter.setEncoding("UTF-8");
         String key = null;
-        for (Key lk : loginKeys) {
-            String lkName = lk.getAttributes().get("domain_name");
+        for (KeyPair lk : loginKeys) {
+            String lkName = lk.getPrivateKey().getAttributes().get("domain_name");
             if (lkName.equals(cName)) {
-                key = lk.getKey();
+                key = lk.getPrivateKey().getKey();
                 break;
             }
         }

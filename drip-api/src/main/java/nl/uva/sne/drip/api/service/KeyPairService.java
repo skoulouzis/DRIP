@@ -18,34 +18,34 @@ package nl.uva.sne.drip.api.service;
 import java.util.ArrayList;
 import java.util.List;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.commons.v1.types.Key;
+import nl.uva.sne.drip.commons.v1.types.KeyPair;
 import nl.uva.sne.drip.commons.v1.types.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import nl.uva.sne.drip.api.dao.KeyDao;
+import nl.uva.sne.drip.api.dao.KeyPairDao;
+import nl.uva.sne.drip.commons.v1.types.KeyPair;
 
 /**
  *
  * @author S. Koulouzis
  */
 @Service
-public class KeyService {
+public class KeyPairService {
 
     @Autowired
-    KeyDao dao;
-
+    KeyPairDao dao;
 
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public List<Key> findAll() {
+    public List<KeyPair> findAll() {
         return dao.findAll();
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public Key findOne(String id) {
-        Key key = dao.findOne(id);
+    public KeyPair findOne(String id) {
+        KeyPair key = dao.findOne(id);
         if (key == null) {
             throw new NotFoundException();
         }
@@ -53,13 +53,13 @@ public class KeyService {
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public Key delete(Key k) {
+    public KeyPair delete(KeyPair k) {
         k = dao.findOne(k.getId());
         dao.delete(k);
         return k;
     }
 
-    public Key save(Key upk) {
+    public KeyPair save(KeyPair upk) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         upk.setOwner(owner);

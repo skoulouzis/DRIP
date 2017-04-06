@@ -33,12 +33,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.BadRequestException;
+import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
-import nl.uva.sne.drip.api.service.KeyService;
+import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.v1.types.Key;
+import nl.uva.sne.drip.commons.v1.types.KeyPair;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,7 +63,7 @@ public class CloudCredentialsController {
     @Autowired
     private CloudCredentialsService cloudCredentialsService;
     @Autowired
-    private KeyService keyService;
+    private KeyPairService keyService;
 
     /**
      * Post the cloud credentials.
@@ -124,13 +126,15 @@ public class CloudCredentialsController {
                 Map<String, String> attributes = new HashMap<>();
                 attributes.put("domain_name", FilenameUtils.removeExtension(originalFileName));
                 key.setAttributes(attributes);
-                key = keyService.save(key);
-                loginKeyIDs.add(key.getId());
+                KeyPair pair = new KeyPair();
+                pair.setPrivateKey(key);
+                pair = keyService.save(pair);
+                loginKeyIDs.add(pair.getId());
             }
             cloudCredentials.setKeyIDs(loginKeyIDs);
             cloudCredentials = cloudCredentialsService.save(cloudCredentials);
             return cloudCredentials.getId();
-        } catch (IOException ex) {
+        } catch (IOException | KeyException ex) {
             Logger.getLogger(CloudCredentialsController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
