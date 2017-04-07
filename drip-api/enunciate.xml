@@ -9,8 +9,9 @@
     <api-classes>
         <include pattern="nl.uva.sne.drip.api.v1.rest.*" />
         <include pattern="nl.uva.sne.drip.api.v0.rest.*" />
-        <include pattern="nl.uva.sne.drip.commons.v1.types.*" />
-        <include pattern="nl.uva.sne.drip.commons.v0.types.*" />
+        <include pattern="nl.uva.sne.drip.data.v1.external.*" />
+        <include pattern="nl.uva.sne.drip.data.v0.external.*" />
+        <exclude pattern="nl.uva.sne.drip.data.internal.*"/>
     </api-classes>
 
 

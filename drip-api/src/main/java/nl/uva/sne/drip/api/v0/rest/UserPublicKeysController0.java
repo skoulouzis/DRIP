@@ -28,11 +28,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.v0.types.ConfUserKey;
-import nl.uva.sne.drip.commons.v1.types.Key;
-import nl.uva.sne.drip.commons.v1.types.KeyPair;
-import nl.uva.sne.drip.commons.v1.types.ProvisionRequest;
-import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
+import nl.uva.sne.drip.data.v0.external.ConfUserKey;
+import nl.uva.sne.drip.data.v1.external.Key;
+import nl.uva.sne.drip.data.v1.external.KeyPair;
+import nl.uva.sne.drip.data.v1.external.ProvisionRequest;
+import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 

@@ -18,15 +18,15 @@ package nl.uva.sne.drip.api.service;
 import java.util.ArrayList;
 import java.util.List;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.commons.v1.types.KeyPair;
-import nl.uva.sne.drip.commons.v1.types.User;
+import nl.uva.sne.drip.data.v1.external.KeyPair;
+import nl.uva.sne.drip.data.v1.external.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
-import nl.uva.sne.drip.commons.v1.types.KeyPair;
+import nl.uva.sne.drip.data.v1.external.KeyPair;
 
 /**
  *

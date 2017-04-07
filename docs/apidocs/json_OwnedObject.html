@@ -64,11 +64,12 @@
 
       <h1 class="page-header">OwnedObject <small>Data Type</small></h1>
 
-      <p></p>
+      <p>This is the base class for users to own resources. Many classes extend this
+class</p>
 
       <dl class="dl-horizontal">
         <dt>Subtypes</dt>
-        <dd><a href="json_Script.html">Script</a>, <a href="json_PlaybookRepresentation.html">PlaybookRepresentation</a>, <a href="json_ProvisionRequest.html">ProvisionRequest</a>, <a href="json_ToscaRepresentation.html">ToscaRepresentation</a>, <a href="json_DeployRequest.html">DeployRequest</a>, <a href="json_KeyValueHolder.html">KeyValueHolder</a>, <a href="json_PlanResponse.html">PlanResponse</a>, <a href="json_ProvisionResponse.html">ProvisionResponse</a>, <a href="json_DeployResponse.html">DeployResponse</a>, <a href="json_Key.html">Key</a>, <a href="json_CloudCredentials.html">CloudCredentials</a></dd>
+        <dd><a href="json_DeployRequest.html">DeployRequest</a>, <a href="json_KeyPair.html">KeyPair</a>, <a href="json_ProvisionRequest.html">ProvisionRequest</a>, <a href="json_KeyValueHolder.html">KeyValueHolder</a>, <a href="json_PlanResponse.html">PlanResponse</a>, <a href="json_PlaybookRepresentation.html">PlaybookRepresentation</a>, <a href="json_ProvisionResponse.html">ProvisionResponse</a>, <a href="json_Script.html">Script</a>, <a href="json_DeployResponse.html">DeployResponse</a>, <a href="json_ToscaRepresentation.html">ToscaRepresentation</a>, <a href="json_CloudCredentials.html">CloudCredentials</a></dd>
       </dl>
 
       <table class="table datatype-properties">
@@ -87,7 +88,7 @@
           <td>  <span class="datatype-reference">string
 </span>
 </td>
-          <td>  <span class="property-description"></span>
+          <td>  <span class="property-description">The owner (username) for the particular object.</span>
 </td>
         </tr>
         </tbody>
@@ -96,7 +97,7 @@
       <p class="lead">Example</p>
       
       <pre class="prettyprint language-js example">{
-  &quot;owner&quot; : &quot;...&quot;
+  &quot;owner&quot; : &quot;user1&quot;
 }</pre>
 
         <footer class="footer">

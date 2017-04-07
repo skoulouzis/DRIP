@@ -15,7 +15,7 @@
  */
 package nl.uva.sne.drip.api.v1.rest;
 
-import nl.uva.sne.drip.commons.v1.types.ProvisionRequest;
+import nl.uva.sne.drip.data.v1.external.ProvisionRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.service.ProvisionService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
+import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
 import org.json.JSONException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

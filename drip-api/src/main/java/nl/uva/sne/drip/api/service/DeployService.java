@@ -27,15 +27,15 @@ import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.DeployerCaller;
 import nl.uva.sne.drip.api.v1.rest.DeployController;
-import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
-import nl.uva.sne.drip.commons.v1.types.DeployRequest;
-import nl.uva.sne.drip.commons.v1.types.DeployParameter;
-import nl.uva.sne.drip.commons.v1.types.DeployResponse;
-import nl.uva.sne.drip.commons.v1.types.Key;
-import nl.uva.sne.drip.commons.v1.types.Message;
-import nl.uva.sne.drip.commons.v1.types.MessageParameter;
-import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
-import nl.uva.sne.drip.commons.v1.types.User;
+import nl.uva.sne.drip.data.v1.external.CloudCredentials;
+import nl.uva.sne.drip.data.v1.external.DeployRequest;
+import nl.uva.sne.drip.data.v1.external.DeployParameter;
+import nl.uva.sne.drip.data.v1.external.DeployResponse;
+import nl.uva.sne.drip.data.v1.external.Key;
+import nl.uva.sne.drip.data.v1.external.Message;
+import nl.uva.sne.drip.data.v1.external.MessageParameter;
+import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
+import nl.uva.sne.drip.data.v1.external.User;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +46,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
-import nl.uva.sne.drip.commons.v1.types.KeyPair;
+import nl.uva.sne.drip.data.v1.external.KeyPair;
 
 /**
  *
@@ -145,7 +145,7 @@ public class DeployService {
         }
         String cloudConfID = pro.getCloudCredentialsID();
         CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfID);
-        List<String> loginKeysIDs = cCred.getKeyIDs();
+        List<String> loginKeysIDs = cCred.getkeyPairIDs();
         List<KeyPair> loginKeys = new ArrayList<>();
         for (String keyID : loginKeysIDs) {
             KeyPair key = keyDao.findOne(keyID);

@@ -24,7 +24,7 @@ import nl.uva.sne.drip.api.exception.PasswordNullException;
 import nl.uva.sne.drip.api.exception.UserExistsException;
 import nl.uva.sne.drip.api.exception.UserNotFoundException;
 import nl.uva.sne.drip.api.exception.UserNullException;
-import nl.uva.sne.drip.commons.v1.types.User;
+import nl.uva.sne.drip.data.v1.external.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;

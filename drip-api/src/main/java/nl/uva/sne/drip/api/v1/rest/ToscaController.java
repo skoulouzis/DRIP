@@ -15,7 +15,7 @@
  */
 package nl.uva.sne.drip.api.v1.rest;
 
-import nl.uva.sne.drip.commons.v1.types.ToscaRepresentation;
+import nl.uva.sne.drip.data.v1.external.ToscaRepresentation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

@@ -17,7 +17,7 @@ package nl.uva.sne.drip.api.v1.rest;
 
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
-import nl.uva.sne.drip.commons.v1.types.Key;
+import nl.uva.sne.drip.data.v1.external.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +35,7 @@ import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.v1.types.KeyPair;
+import nl.uva.sne.drip.data.v1.external.KeyPair;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 

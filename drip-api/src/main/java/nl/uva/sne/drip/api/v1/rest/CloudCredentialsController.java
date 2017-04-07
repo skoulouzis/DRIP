@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
-import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
+import nl.uva.sne.drip.data.v1.external.CloudCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,8 +39,8 @@ import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.v1.types.Key;
-import nl.uva.sne.drip.commons.v1.types.KeyPair;
+import nl.uva.sne.drip.data.v1.external.Key;
+import nl.uva.sne.drip.data.v1.external.KeyPair;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -81,7 +81,7 @@ public class CloudCredentialsController {
         if (cloudCredentials.getAccessKeyId() == null) {
             throw new NullKeyException();
         }
-        List<String> ids = cloudCredentials.getKeyIDs();
+        List<String> ids = cloudCredentials.getkeyPairIDs();
         if (ids != null) {
             for (String id : ids) {
                 if (keyService.findOne(id) == null) {
@@ -116,7 +116,7 @@ public class CloudCredentialsController {
             }
             String originalFileName = file.getOriginalFilename();
             byte[] bytes = file.getBytes();
-            List<String> loginKeyIDs = cloudCredentials.getKeyIDs();
+            List<String> loginKeyIDs = cloudCredentials.getkeyPairIDs();
             if (loginKeyIDs == null) {
                 loginKeyIDs = new ArrayList<>();
             }

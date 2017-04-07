@@ -15,7 +15,7 @@
  */
 package nl.uva.sne.drip.api.dao;
 
-import nl.uva.sne.drip.commons.v1.types.ProvisionResponse;
+import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**

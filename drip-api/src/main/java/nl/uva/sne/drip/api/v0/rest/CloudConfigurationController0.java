@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.exception.KeyException;
-import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
+import nl.uva.sne.drip.data.v1.external.CloudCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,9 +35,9 @@ import nl.uva.sne.drip.api.exception.NullKeyIDException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.v0.types.Configure;
-import nl.uva.sne.drip.commons.v1.types.Key;
-import nl.uva.sne.drip.commons.v1.types.KeyPair;
+import nl.uva.sne.drip.data.v0.external.Configure;
+import nl.uva.sne.drip.data.v1.external.Key;
+import nl.uva.sne.drip.data.v1.external.KeyPair;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -75,9 +75,9 @@ public class CloudConfigurationController0 {
 
         List<String> loginKeyIDs = new ArrayList<>();
 
-        for (nl.uva.sne.drip.commons.v0.types.LoginKey0 key0 : configure.loginKey) {
+        for (nl.uva.sne.drip.data.v0.external.LoginKey0 key0 : configure.loginKey) {
             try {
-                nl.uva.sne.drip.commons.v1.types.Key key1 = new nl.uva.sne.drip.commons.v1.types.Key();
+                nl.uva.sne.drip.data.v1.external.Key key1 = new nl.uva.sne.drip.data.v1.external.Key();
                 KeyPair pair = new KeyPair();
                 key1.setKey(key0.content);
                 Map<String, String> attributes = new HashMap<>();
@@ -114,9 +114,9 @@ public class CloudConfigurationController0 {
 
         List<String> loginKeyIDs = new ArrayList<>();
 
-        for (nl.uva.sne.drip.commons.v0.types.LoginKey0 key0 : configure.loginPubKey) {
+        for (nl.uva.sne.drip.data.v0.external.LoginKey0 key0 : configure.loginPubKey) {
             try {
-                nl.uva.sne.drip.commons.v1.types.Key key1 = new nl.uva.sne.drip.commons.v1.types.Key();
+                nl.uva.sne.drip.data.v1.external.Key key1 = new nl.uva.sne.drip.data.v1.external.Key();
                 key1.setKey(key0.content);
                 key1.setType(Key.Type.PUBLIC);
                 KeyPair pair = new KeyPair();
@@ -128,9 +128,9 @@ public class CloudConfigurationController0 {
             }
 
         }
-        for (nl.uva.sne.drip.commons.v0.types.LoginKey0 key0 : configure.loginPriKey) {
+        for (nl.uva.sne.drip.data.v0.external.LoginKey0 key0 : configure.loginPriKey) {
             try {
-                nl.uva.sne.drip.commons.v1.types.Key key1 = new nl.uva.sne.drip.commons.v1.types.Key();
+                nl.uva.sne.drip.data.v1.external.Key key1 = new nl.uva.sne.drip.data.v1.external.Key();
                 key1.setKey(key0.content);
                 key1.setType(Key.Type.PRIVATE);
                 KeyPair pair = new KeyPair();
