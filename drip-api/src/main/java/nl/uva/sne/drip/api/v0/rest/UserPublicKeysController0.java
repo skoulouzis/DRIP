@@ -65,7 +65,7 @@ public class UserPublicKeysController0 {
             Key upk = new Key();
             upk.setKey(confUserKey.file.get(0).content);
             upk.setName(confUserKey.file.get(0).name);
-            upk.setType(Key.Type.PUBLIC);
+            upk.setType(Key.KeyType.PUBLIC);
             pair.setPublicKey(upk);
             pair = service.save(pair);
 

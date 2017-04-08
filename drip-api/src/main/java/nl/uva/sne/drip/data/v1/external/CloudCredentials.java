@@ -72,8 +72,7 @@ public class CloudCredentials extends OwnedObject {
     }
 
     /**
-     * The access key ID for a cloud provider. Some providers may not use this 
-     * field
+     * The access key ID for a cloud provider. 
      * @return the accessKeyId
      */
     @DocumentationExample("AKIKIQY9K1ZUQ6M7YBSQ")

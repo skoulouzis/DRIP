@@ -118,7 +118,7 @@ public class CloudConfigurationController0 {
             try {
                 nl.uva.sne.drip.data.v1.external.Key key1 = new nl.uva.sne.drip.data.v1.external.Key();
                 key1.setKey(key0.content);
-                key1.setType(Key.Type.PUBLIC);
+                key1.setType(Key.KeyType.PUBLIC);
                 KeyPair pair = new KeyPair();
                 pair.setPublicKey(key1);
                 pair = keyService.save(pair);
@@ -132,7 +132,7 @@ public class CloudConfigurationController0 {
             try {
                 nl.uva.sne.drip.data.v1.external.Key key1 = new nl.uva.sne.drip.data.v1.external.Key();
                 key1.setKey(key0.content);
-                key1.setType(Key.Type.PRIVATE);
+                key1.setType(Key.KeyType.PRIVATE);
                 KeyPair pair = new KeyPair();
                 pair.setPrivateKey(key1);
                 pair = keyService.save(pair);

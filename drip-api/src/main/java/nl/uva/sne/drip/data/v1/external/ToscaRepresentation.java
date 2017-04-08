@@ -19,7 +19,7 @@ import com.webcohesion.enunciate.metadata.DocumentationExample;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- *
+ * This class is a representation of a TOSCA description. 
  * @author S. Koulouzis
  */
 @Document

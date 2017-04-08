@@ -803,44 +803,6 @@ module V1
 module External
 
   # (no documentation provided)
-  class Type
-
-    # 
-    PRIVATE = "PRIVATE"
-
-    # 
-    PUBLIC = "PUBLIC"
-  end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-module Nl
-
-module Uva
-
-module Sne
-
-module Drip
-
-module Data
-
-module V1
-
-module External
-
-  # (no documentation provided)
   class Script < Nl::Uva::Sne::Drip::Data::V1::External::OwnedObject 
 
     # the name
@@ -1056,6 +1018,44 @@ module External
         return inst
       end
     end
+  end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+module Nl
+
+module Uva
+
+module Sne
+
+module Drip
+
+module Data
+
+module V1
+
+module External
+
+  # (no documentation provided)
+  class KeyType
+
+    # For private keys
+    PRIVATE = "PRIVATE"
+
+    # For public keys
+    PUBLIC = "PUBLIC"
   end
 
 end

@@ -43,7 +43,7 @@ public class KeyPair extends OwnedObject {
      * @throws nl.uva.sne.drip.api.exception.KeyException
      */
     public void setPrivateKey(Key privateKey) throws KeyException {
-        if (privateKey.getType() != Key.Type.PRIVATE) {
+        if (privateKey.getType() != Key.KeyType.PRIVATE) {
             throw new KeyException("Trying to add public key to private");
         }
         this.privateKey = privateKey;
@@ -61,7 +61,7 @@ public class KeyPair extends OwnedObject {
      * @throws nl.uva.sne.drip.api.exception.KeyException
      */
     public void setPublicKey(Key publicKey) throws KeyException {
-        if (privateKey.getType() != Key.Type.PUBLIC) {
+        if (privateKey.getType() != Key.KeyType.PUBLIC) {
             throw new KeyException("Trying to add private to public");
         }
         this.publicKey = publicKey;

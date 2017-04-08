@@ -31,7 +31,7 @@ public class Key{
 
     private String key;
 
-    private Type type;
+    private KeyType type;
     private String name;
 
     /**
@@ -48,8 +48,17 @@ public class Key{
         this.name = name;
     }
 
-    public static enum Type {
+    /**
+     * This enu specifies if a key is private or public 
+     */
+    public static enum KeyType {
+        /**
+         * For private keys
+         */
         PRIVATE,
+        /**
+         * For public keys 
+         */
         PUBLIC
     }
 
@@ -59,14 +68,14 @@ public class Key{
      * @return the type
      */
     @DocumentationExample("PRIVATE")
-    public Type getType() {
+    public KeyType getType() {
         return type;
     }
 
     /**
      * @param type the type to set
      */
-    public void setType(Type type) {
+    public void setType(KeyType type) {
         this.type = type;
     }
 

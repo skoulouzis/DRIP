@@ -272,8 +272,7 @@ to request for resources.]]>
               <xs:element name="accessKeyId" type="xs:string" minOccurs="0">
               <xs:annotation>
                 <xs:documentation>
-                  <![CDATA[The access key ID for a cloud provider. Some providers may not use this
-field]]>
+                  <![CDATA[The access key ID for a cloud provider.]]>
                 </xs:documentation>
               </xs:annotation>
               </xs:element>
@@ -391,7 +390,7 @@ from the machine the keys correspond to.]]>
                 </xs:documentation>
               </xs:annotation>
               </xs:element>
-              <xs:element name="type" type="type" minOccurs="0">
+              <xs:element name="type" type="keyType" minOccurs="0">
               <xs:annotation>
                 <xs:documentation>
                   <![CDATA[The type of key]]>
@@ -428,7 +427,12 @@ to specify the domain name for ec2]]>
       </xs:sequence>
 </xs:complexType>
 
-<xs:simpleType name="type">
+<xs:simpleType name="keyType">
+  <xs:annotation>
+    <xs:documentation>
+      <![CDATA[This enu specifies if a key is private or public]]>
+    </xs:documentation>
+  </xs:annotation>
   <xs:restriction base="xs:string">
      
     <xs:enumeration value="PRIVATE"/>
@@ -623,6 +627,11 @@ provisioner to request for cloud resources.]]>
 </xs:complexType>
 
 <xs:complexType name="toscaRepresentation">
+  <xs:annotation>
+    <xs:documentation>
+      <![CDATA[This class is a representation of a TOSCA description.]]>
+    </xs:documentation>
+  </xs:annotation>
    <xs:complexContent>
     <xs:extension base="keyValueHolder">
       <xs:sequence>
@@ -645,8 +654,6 @@ provisioner to request for cloud resources.]]>
     </xs:documentation>
   </xs:annotation>
        <xs:sequence>
-              <xs:element name="id" type="xs:string" minOccurs="0">
-              </xs:element>
               <xs:element name="password" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="username" type="xs:string" minOccurs="0">

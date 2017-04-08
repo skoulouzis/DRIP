@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.core.MediaType;
 import nl.uva.sne.drip.data.v1.external.CloudCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -71,10 +72,11 @@ public class CloudCredentialsController {
      * @param cloudCredentials
      * @return the CloudCredentials id
      */
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 400, condition = "Key can't be empty")
+        @ResponseCode(code = 400, condition = "Access key ID can't be empty"),
+        @ResponseCode(code = 200, condition = "At least one key ID is posted")
     })
     public @ResponseBody
     String postCredentials(@RequestBody CloudCredentials cloudCredentials) {
