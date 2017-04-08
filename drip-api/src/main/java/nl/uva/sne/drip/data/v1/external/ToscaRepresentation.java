@@ -16,10 +16,12 @@
 package nl.uva.sne.drip.data.v1.external;
 
 import com.webcohesion.enunciate.metadata.DocumentationExample;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * This class is a representation of a TOSCA description. 
+ * This class is a representation of a TOSCA description.
+ *
  * @author S. Koulouzis
  */
 @Document

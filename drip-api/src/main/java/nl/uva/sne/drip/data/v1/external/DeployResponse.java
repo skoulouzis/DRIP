@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.data.v1.external;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -28,7 +30,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class DeployResponse extends DeployRequest {
 
     private KeyPair key;
-
+    
     public void setKey(KeyPair key) {
         this.key = key;
     }

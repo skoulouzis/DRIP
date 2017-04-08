@@ -17,6 +17,7 @@ package nl.uva.sne.drip.data.v1.external;
 
 import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.List;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -71,7 +72,8 @@ public class CloudCredentials extends OwnedObject {
     }
 
     /**
-     * The access key ID for a cloud provider. 
+     * The access key ID for a cloud provider.
+     *
      * @return the accessKeyId
      */
     @DocumentationExample("AKIKIQY9K1ZUQ6M7YBSQ")
@@ -88,7 +90,7 @@ public class CloudCredentials extends OwnedObject {
 
     /**
      * The IDs of of the key pairs for accessing the VMs of that cloud provider.
-     * 
+     *
      * @return the keyPairIDs
      */
     @DocumentationExample("AKIKIQY9K1ZUQ6M7YBSQ, LKJ2KIQY9K1F236M7YASD")

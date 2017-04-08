@@ -90,8 +90,8 @@ public class PlanResponse extends KeyValueHolder {
     }
 
     /**
-     * The list of the lower level plans attached to this plan. Some 
-     * provisioners use levels to represent a plan. In these cases there are two 
+     * The list of the lower level plans attached to this plan. Some
+     * provisioners use levels to represent a plan. In these cases there are two
      * levels of TOSCA descriptions.
      *
      *

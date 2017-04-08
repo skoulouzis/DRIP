@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * This class represents a playbook used by ansible manager to deploy software.
+ *
  * @author S. Koulouzis
  */
 @Document

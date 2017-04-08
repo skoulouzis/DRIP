@@ -15,19 +15,22 @@
  */
 package nl.uva.sne.drip.data.v1.external;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.List;
+import org.springframework.data.annotation.Id;
 
 /**
- * This class represents a description of provisioned resources 
+ * This class represents a description of provisioned resources
+ *
  * @author S. Koulouzis
  */
-public class ProvisionResponse extends ProvisionRequest{
-    
-    
+public class ProvisionResponse extends ProvisionRequest {
+
     private List<DeployParameter> deployParameters;
 
     /**
-     * The deploy parameters.  
+     * The deploy parameters.
+     *
      * @return the deployParameters
      */
     public List<DeployParameter> getDeployParameters() {
@@ -40,5 +43,5 @@ public class ProvisionResponse extends ProvisionRequest{
     public void setDeployParameters(List<DeployParameter> deployParameters) {
         this.deployParameters = deployParameters;
     }
-    
+
 }

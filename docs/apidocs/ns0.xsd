@@ -654,6 +654,14 @@ provisioner to request for cloud resources.]]>
     </xs:documentation>
   </xs:annotation>
        <xs:sequence>
+              <xs:element name="id" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>
+                  <![CDATA[The unique id of this object. This value is auto-generated when the DAO
+saves this object]]>
+                </xs:documentation>
+              </xs:annotation>
+              </xs:element>
               <xs:element name="password" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="username" type="xs:string" minOccurs="0">

@@ -25,28 +25,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
-public class Script extends OwnedObject{
-
-    @Id
-    private String id;
+public class Script extends OwnedObject {
 
     private String contents;
 
     private String name;
-
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
 
     /**
      * The name of the script
