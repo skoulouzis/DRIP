@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.api.v1.rest;
 
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import nl.uva.sne.drip.data.v1.external.ToscaRepresentation;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +48,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/user/v1.0/tosca")
 @Component
+@StatusCodes({
+    @ResponseCode(code = 401, condition = "Bad credentials")
+})
 public class ToscaController {
 
     @Autowired

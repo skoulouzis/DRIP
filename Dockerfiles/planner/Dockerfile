@@ -32,7 +32,7 @@ RUN ls
 # WORKDIR drip-planner
 # ARG RABBITMQ_HOST=172.17.0.2
 # RUN echo $RABBITMQ_HOST > hostFile
-# ENTRYPOINT python rpc_server.py 172.17.0.2
+ENTRYPOINT python rpc_server.py $RABBITMQ_HOST
 
 # docker build -t drip-planner .
 # docker run --name drip-planner-inst -d drip-planner

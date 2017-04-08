@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.api.v1.rest;
 
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/user/v1.0/planner")
 @Controller
+@StatusCodes({
+    @ResponseCode(code = 401, condition = "Bad credentials")
+})
 public class PlannerController {
 
 //    @Autowired

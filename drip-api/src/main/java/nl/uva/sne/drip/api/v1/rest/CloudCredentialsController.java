@@ -59,6 +59,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/user/v1.0/credentials/cloud")
 @Component
+@StatusCodes({
+    @ResponseCode(code = 401, condition = "Bad credentials")
+})
 public class CloudCredentialsController {
 
     @Autowired

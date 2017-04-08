@@ -12,5 +12,6 @@
     <modules>
         <module>drip-api</module>
         <module>drip-planner2provisioner</module>
+        <module>drip-tests</module>
     </modules>
 </project>

@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.data.v1.external.KeyPair;
@@ -49,6 +50,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/user/v1.0/keys")
 @Component
+@StatusCodes({
+    @ResponseCode(code = 401, condition = "Bad credentials")
+})
 public class KeyPairController {
 
     @Autowired
@@ -90,11 +94,12 @@ public class KeyPairController {
 //    }
 //    curl -H "Content-KeyType: application/json" -X POST -d  '{"key":"ssh-rsa AAAAB3NzaDWBqs75i849MytgwgQcRYMcsXIki0yeYTKABH6JqoiyFBHtYlyh/EV1t6cujb9LyNP4J5EN4fPbtwKYvxecd0LojSPxl4wjQlfrHyg6iKUYB7hVzGqACMvgYZHrtHPfrdEmOGPplPVPpoaX2j+u0BZ0yYhrWMKjzyYZKa68yy5N18+Gq+1p83HfUDwIU9wWaUYdgEvDujqF6b8p3z6LDx9Ob+RanSMZSt+b8eZRcd+F2Oy/gieJEJ8kc152VIOv8UY1xB3hVEwVnSRGgrAsa+9PChfF6efXUGWiKf8KBlWgBOYsSTsOY4ks9zkXMnbcTdC+o7xspOkyIcWjv us@u\n","name":"id_rsa.pub"}' localhost:8080/drip-api/user_key/
     /**
-     * Posts the Key and stores it. The Key is a container for public key
-     * contents. The public key contents are represented in the 'key' field. All
-     * new lines in the 'key' field have to be replaced with the '\n' character.
+     * Posts the Key and stores it. The Key is a container for public pair
+     * contents. The public pair contents are represented in the 'pair' field.
+     * All new lines in the 'pair' field have to be replaced with the '\n'
+     * character.
      *
-     * @param key. The Key
+     * @param pair. The Key
      * @return the ID of the Key
      */
     @RequestMapping(method = RequestMethod.POST)
@@ -103,9 +108,12 @@ public class KeyPairController {
         @ResponseCode(code = 400, condition = "Key can't be empty")
     })
     public @ResponseBody
-    String postKey(@RequestBody KeyPair key) {
-        service.save(key);
-        return key.getId();
+    String postKey(@RequestBody KeyPair pair) {
+        if (pair.getPrivateKey() == null && pair.getPublicKey() == null) {
+            throw new NullKeyException();
+        }
+        service.save(pair);
+        return pair.getId();
     }
 
     /**
