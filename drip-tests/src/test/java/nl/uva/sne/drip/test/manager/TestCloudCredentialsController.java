@@ -24,16 +24,14 @@ import org.junit.BeforeClass;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Response;
-
+import nl.uva.sne.drip.data.v1.external.CloudCredentials;
+import org.junit.Test;
 
 /**
  *
  * @author S. Koulouzis.
  */
-public class CloudCredentialsController {
-
-    public CloudCredentialsController() {
-    }
+public class TestCloudCredentialsController {
 
     @BeforeClass
     public static void setUpClass() {
@@ -51,14 +49,15 @@ public class CloudCredentialsController {
     public void tearDown() {
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
-    
-    
-   private void post(String lcmId, String metadataId, String storageId, int expected) {
+    @Test
+    public void hello() {
+        System.err.println("");
+        CloudCredentials cc = new CloudCredentials();
+        cc.setAccessKeyId("");
+
+    }
+
+    private void post(String lcmId, String metadataId, String storageId, int expected) {
 //    String payload = "{\"local-storage-id\" : \"" + storageId + "\"}";
 //    Entity<String> entity = Entity.entity(payload, "application/json");
 //    Response resp = getWebTarget().path(TRIGGER_PATH).path(lcmId).path("metadata").path(metadataId)
@@ -66,7 +65,6 @@ public class CloudCredentialsController {
 //        .header(BasicAuthenticationManager.BASIC_AUTHENTICATION_HEADER, basicAuthTokenAdmin)
 //        .post(entity);
 //    assertEquals(expected, resp.getStatus());
-  }
-      
-    
+    }
+
 }

@@ -8,6 +8,9 @@
     </parent>
     <artifactId>drip-tests</artifactId>
     <packaging>jar</packaging>
+    
+    
+    
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -36,8 +39,25 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
-        
+
+        <dependency>
+            <groupId>nl.uva.sne.drip</groupId>
+            <artifactId>drip-api-json-client</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../docs/apidocs/drip-api-json-client.jar</systemPath>
+        </dependency>
+
     </dependencies>
+    
+    <build>
+        <plugins>
+          
+        </plugins>
+    </build>
+        
+   
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
