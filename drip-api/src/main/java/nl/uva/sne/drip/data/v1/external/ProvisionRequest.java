@@ -15,38 +15,48 @@
  */
 package nl.uva.sne.drip.data.v1.external;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
+ * This class is a holder for the the object IDs that are required by the
+ * provisioner to request for cloud resources.
  *
  * @author S. Koulouzis
  */
 @Document
 public class ProvisionRequest extends KeyValueHolder {
 
-    private String cloudCredentialsID;
+    private List<String> cloudCredentialsIDs;
 
     private String planID;
 
-    private String publicKeyID;
+    private List<String> keyPairIDs;
 
     /**
-     * @return the cloudCredentialsID
+     * The cloud credentials ids required to provision the cloud resources.
+     *
+     * @return the cloudCredentialsIDs
      */
-    public String getCloudCredentialsID() {
-        return cloudCredentialsID;
+    @DocumentationExample("58e3946e0fb4f562d84ba1ad")
+    public List<String> getCloudCredentialsIDs() {
+        return cloudCredentialsIDs;
     }
 
     /**
-     * @param cloudCredentialsID the cloudCredentialsID to set
+     * @param cloudCredentialsIDs the cloudCredentialsIDs to set
      */
-    public void setCloudCredentialsID(String cloudCredentialsID) {
-        this.cloudCredentialsID = cloudCredentialsID;
+    public void setCloudCredentialsIDs(List<String> cloudCredentialsIDs) {
+        this.cloudCredentialsIDs = cloudCredentialsIDs;
     }
 
     /**
+     * The ID of the plan <code>PlanResponse</code> to provision for.
+     *
      * @return the planID
      */
+    @DocumentationExample("ASedsfd46b4fDFd83ba1q")
     public String getPlanID() {
         return planID;
     }
@@ -59,16 +69,18 @@ public class ProvisionRequest extends KeyValueHolder {
     }
 
     /**
-     * @return the publicKeyID
+     * The key pair id for the keys to use to log in the provisioned VMs.
+     * @return the keyPairIDs
      */
-    public String getPublicKeyID() {
-        return publicKeyID;
+     @DocumentationExample("ASedsfd46b4fFd344a1A")
+    public List<String> getKeyPairIDs() {
+        return keyPairIDs;
     }
 
     /**
-     * @param userKeyID the publicKeyID to set
+     * @param userKeyID the keyPairIDs to set
      */
-    public void setPublicKeyID(String userKeyID) {
-        this.publicKeyID = userKeyID;
+    public void setKeyPairIDs(List<String> userKeyID) {
+        this.keyPairIDs = userKeyID;
     }
 }

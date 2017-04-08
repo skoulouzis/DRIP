@@ -125,7 +125,7 @@ public class ProvisionController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String provision(@RequestBody ProvisionRequest req) {
-        if (req.getCloudCredentialsID() == null) {
+        if (req.getCloudCredentialsIDs() == null) {
             throw new BadRequestException();
         }
         if (req.getPlanID() == null) {
@@ -140,18 +140,6 @@ public class ProvisionController {
             Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-    }
-
-    @RequestMapping(value = "/sample", method = RequestMethod.GET)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    ProvisionRequest provision() {
-        ProvisionRequest r = new ProvisionRequest();
-
-        r.setCloudCredentialsID("Cloud_Credentials_ID");
-        r.setPlanID("Plan_ID");
-        r.setPublicKeyID("Public_Key_ID");
-        return r;
     }
 
 }

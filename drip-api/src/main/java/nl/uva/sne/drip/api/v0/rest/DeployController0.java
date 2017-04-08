@@ -79,9 +79,9 @@ public class DeployController0 {
         res.info = "INFO";
         res.status = "Success";
         List<Attribute> files = new ArrayList<>();
-        Attribute e = new Attribute();
-        e.content = key.getKey().getKey();
-        files.add(e);
+        Attribute attribute = new Attribute();
+        attribute.content = key.getKeyPair().getPrivateKey().getKey();
+        files.add(attribute);
         res.file = files;
         return res;
     }

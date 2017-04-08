@@ -72,20 +72,15 @@ public class PlaybookService {
 
     public String saveFile(MultipartFile file) throws IOException {
         String originalFileName = file.getOriginalFilename();
-        String name = System.currentTimeMillis() + "_" + originalFileName;
         byte[] bytes = file.getBytes();
         String str = new String(bytes, "UTF-8");
-        return saveStringContents(str, name);
+        return saveStringContents(str);
     }
 
     public String saveYamlString(String yamlString, String name) throws IOException {
-        if (name == null) {
-            name = System.currentTimeMillis() + "_" + "playbook.yaml";
-        }
         yamlString = yamlString.replaceAll("\\.", "\uff0E");
         Map<String, Object> map = Converter.ymlString2Map(yamlString);
         PlaybookRepresentation t = new PlaybookRepresentation();
-        t.setName(name);
         t.setKvMap(map);
         save(t);
         return t.getId();
@@ -120,7 +115,7 @@ public class PlaybookService {
         dao.deleteAll();
     }
 
-    public String saveStringContents(String playbookContents, String name) throws IOException {
+    public String saveStringContents(String playbookContents) throws IOException {
 
         //Remove '\' and 'n' if they are together and replace them with '\n'
         char[] array = playbookContents.toCharArray();
@@ -147,7 +142,6 @@ public class PlaybookService {
         playbookContents = playbookContents.replaceAll("\\.", "\uff0E");
         Map<String, Object> map = Converter.ymlString2Map(playbookContents);
         PlaybookRepresentation t = new PlaybookRepresentation();
-        t.setName(name);
         t.setKvMap(map);
         save(t);
         return t.getId();

@@ -51,17 +51,14 @@ public class User implements UserDetails {
     private boolean enabled;
 
     /**
+     * The unique id of this object. This value is auto-generated when the DAO
+     * saves this object
+     *
      * @return the id
      */
+    @DocumentationExample("58e3946e0fb4f562d84ba1ad")
     public String getId() {
         return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
     }
 
     @Override

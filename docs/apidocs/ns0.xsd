@@ -336,7 +336,7 @@ software]]>
               <xs:element name="provisionID" type="xs:string" minOccurs="0">
               <xs:annotation>
                 <xs:documentation>
-                  <![CDATA[The ID of the provision resources description <code>nl.uva.sne.drip.data.v1.external.ProvisionResponse</code>]]>
+                  <![CDATA[The ID of the provision resources description <code>ProvisionResponse</code>]]>
                 </xs:documentation>
               </xs:annotation>
               </xs:element>
@@ -352,7 +352,7 @@ software]]>
                 <xs:documentation>
                   <![CDATA[The ID of the configuration POJO that contains information used the
 chosen deployment manager (for now only ansible)
-<code>nl.uva.sne.drip.data.v1.external.PlaybookRepresentation</code>]]>
+<code>PlaybookRepresentation</code>]]>
                 </xs:documentation>
               </xs:annotation>
               </xs:element>
@@ -362,14 +362,15 @@ chosen deployment manager (for now only ansible)
 </xs:complexType>
 
 <xs:complexType name="deployResponse">
+  <xs:annotation>
+    <xs:documentation>
+      <![CDATA[This class represents the response of a deploy request. It may hold a key
+pair used for logging in and managing a docker cluster. Currently they key
+pair is only used by kubernetes]]>
+    </xs:documentation>
+  </xs:annotation>
    <xs:complexContent>
     <xs:extension base="deployRequest">
-      <xs:sequence>
-              <xs:element name="key" type="key" minOccurs="0">
-              </xs:element>
-              <xs:element name="id" type="xs:string" minOccurs="0">
-              </xs:element>
-      </xs:sequence>
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
@@ -456,12 +457,14 @@ logging in VMs.]]>
 </xs:complexType>
 
 <xs:complexType name="keyValueHolder">
+  <xs:annotation>
+    <xs:documentation>
+      <![CDATA[This is a generic class that hold key-value pairs. It's main usage is to hold
+abstract types such as TOSCA.]]>
+    </xs:documentation>
+  </xs:annotation>
    <xs:complexContent>
     <xs:extension base="ownedObject">
-      <xs:sequence>
-              <xs:element name="id" type="xs:string" minOccurs="0">
-              </xs:element>
-      </xs:sequence>
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
@@ -477,7 +480,8 @@ class]]>
               <xs:element name="owner" type="xs:string" minOccurs="0">
               <xs:annotation>
                 <xs:documentation>
-                  <![CDATA[The owner (username) for the particular object.]]>
+                  <![CDATA[The owner (username) for the particular object. This value is set when
+the DAO saves the object based on the principal how made the call]]>
                 </xs:documentation>
               </xs:annotation>
               </xs:element>
@@ -494,10 +498,27 @@ class]]>
     <xs:extension base="keyValueHolder">
       <xs:sequence>
               <xs:element name="name" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>
+                  <![CDATA[The name of the generated plan]]>
+                </xs:documentation>
+              </xs:annotation>
               </xs:element>
               <xs:element name="toscaID" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>
+                  <![CDATA[The id of the TOSCA <code>PlaybookRepresentation</code> description from
+which this plan was generated]]>
+                </xs:documentation>
+              </xs:annotation>
               </xs:element>
               <xs:element name="level" type="xs:int" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>
+                  <![CDATA[The level of the plan. Some provisioners use levels to represent a plan.
+In these cases there are two levels of TOSCA descriptions.]]>
+                </xs:documentation>
+              </xs:annotation>
               </xs:element>
       </xs:sequence>
     </xs:extension>
@@ -505,25 +526,47 @@ class]]>
 </xs:complexType>
 
 <xs:complexType name="playbookRepresentation">
+  <xs:annotation>
+    <xs:documentation>
+      <![CDATA[This class represents a playbook used by ansible manager to deploy software.]]>
+    </xs:documentation>
+  </xs:annotation>
    <xs:complexContent>
     <xs:extension base="keyValueHolder">
-      <xs:sequence>
-              <xs:element name="name" type="xs:string" minOccurs="0">
-              </xs:element>
-      </xs:sequence>
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
 
 <xs:complexType name="provisionRequest">
+  <xs:annotation>
+    <xs:documentation>
+      <![CDATA[This class is a holder for the the object IDs that are required by the
+provisioner to request for cloud resources.]]>
+    </xs:documentation>
+  </xs:annotation>
    <xs:complexContent>
     <xs:extension base="keyValueHolder">
       <xs:sequence>
-              <xs:element name="cloudCredentialsID" type="xs:string" minOccurs="0">
+              <xs:element name="cloudCredentialsIDs" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:documentation>
+                  <![CDATA[The cloud credentials ids required to provision the cloud resources.]]>
+                </xs:documentation>
+              </xs:annotation>
               </xs:element>
               <xs:element name="planID" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>
+                  <![CDATA[The ID of the plan <code>PlanResponse</code> to provision for.]]>
+                </xs:documentation>
+              </xs:annotation>
               </xs:element>
-              <xs:element name="publicKeyID" type="xs:string" minOccurs="0">
+              <xs:element name="keyPairIDs" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:documentation>
+                  <![CDATA[The key pair id for the keys to use to log in the provisioned VMs.]]>
+                </xs:documentation>
+              </xs:annotation>
               </xs:element>
       </xs:sequence>
     </xs:extension>
@@ -560,8 +603,6 @@ class]]>
    <xs:complexContent>
     <xs:extension base="ownedObject">
       <xs:sequence>
-              <xs:element name="id" type="xs:string" minOccurs="0">
-              </xs:element>
               <xs:element name="name" type="xs:string" minOccurs="0">
               <xs:annotation>
                 <xs:documentation>
@@ -586,6 +627,11 @@ class]]>
     <xs:extension base="keyValueHolder">
       <xs:sequence>
               <xs:element name="name" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>
+                  <![CDATA[The name of the TOSCA description]]>
+                </xs:documentation>
+              </xs:annotation>
               </xs:element>
       </xs:sequence>
     </xs:extension>

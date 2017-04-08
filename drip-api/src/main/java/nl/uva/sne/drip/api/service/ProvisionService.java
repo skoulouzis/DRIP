@@ -165,8 +165,8 @@ public class ProvisionService {
                     provisionResponse.setDeployParameters(deployParameters);
                 }
             }
-            provisionResponse.setCloudCredentialsID(provisionRequest.getCloudCredentialsID());
-            provisionResponse.setPublicKeyID(provisionRequest.getPublicKeyID());
+            provisionResponse.setCloudCredentialsIDs(provisionRequest.getCloudCredentialsIDs());
+            provisionResponse.setKeyPairIDs(provisionRequest.getKeyPairIDs());
 
             provisionResponse = save(provisionResponse);
             return provisionResponse;
@@ -176,7 +176,7 @@ public class ProvisionService {
     private Message buildProvisionerMessage(ProvisionRequest pReq) throws JSONException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
-        CloudCredentials cred = cloudCredentialsService.findOne(pReq.getCloudCredentialsID());
+        CloudCredentials cred = cloudCredentialsService.findOne(pReq.getCloudCredentialsIDs().get(0));
         if (cred == null) {
             throw new CloudCredentialsNotFoundException();
         }
@@ -189,9 +189,9 @@ public class ProvisionService {
         List<MessageParameter> topologies = buildTopologyParams(pReq.getPlanID());
         parameters.addAll(topologies);
 
-        String userKeyID = pReq.getPublicKeyID();
-        if (userKeyID != null) {
-            List<MessageParameter> userKeys = buildKeysParams(userKeyID);
+        List<String> userKeyIDs = pReq.getKeyPairIDs();
+        if (userKeyIDs != null) {
+            List<MessageParameter> userKeys = buildKeysParams(userKeyIDs.get(0));
             parameters.addAll(userKeys);
         }
 

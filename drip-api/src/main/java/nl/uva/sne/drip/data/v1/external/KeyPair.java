@@ -28,9 +28,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class KeyPair extends OwnedObject {
 
-    @Id
-    private String id;
-
     private Key privateKey;
     private Key publicKey;
 
@@ -68,13 +65,6 @@ public class KeyPair extends OwnedObject {
             throw new KeyException("Trying to add private to public");
         }
         this.publicKey = publicKey;
-    }
-
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
     }
 
 }

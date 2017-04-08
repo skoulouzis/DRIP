@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.data.v1.external;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -27,8 +28,11 @@ public class ToscaRepresentation extends KeyValueHolder {
     private String name;
 
     /**
+     * The name of the TOSCA description
+     *
      * @return the name
      */
+    @DocumentationExample("input.yml")
     public String getName() {
         return name;
     }

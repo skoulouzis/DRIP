@@ -18,25 +18,9 @@ package nl.uva.sne.drip.data.v1.external;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- *
+ * This class represents a playbook used by ansible manager to deploy software.
  * @author S. Koulouzis
  */
 @Document
 public class PlaybookRepresentation extends KeyValueHolder {
-
-    private String name;
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
 }

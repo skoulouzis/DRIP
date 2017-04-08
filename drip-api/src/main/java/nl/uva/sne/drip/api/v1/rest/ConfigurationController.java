@@ -57,7 +57,7 @@ public class ConfigurationController {
     String post(@RequestBody String toscaContents) {
         try {
 
-            return playbookService.saveStringContents(toscaContents, String.valueOf(System.currentTimeMillis()));
+            return playbookService.saveStringContents(toscaContents);
         } catch (IOException ex) {
             Logger.getLogger(ConfigurationController.class.getName()).log(Level.SEVERE, null, ex);
         }

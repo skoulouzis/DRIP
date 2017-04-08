@@ -5,6 +5,7 @@
     apt: name="{{ item }}" update_cache=yes state=latest
     with_items: [phoronix-test-suite, sysbench, expect, git, python-pexpect, php-zip]
     become: true
+    
   - {name: Phoronix-test-suite accept User Agreement, command: 'expect -c "spawn phoronix-test-suite;
       expect \"Do you agree to these terms and wish to proceed \(Y/n\):\"; send \"Y
       \"; expect \"Enable anonymous usage / statistics reporting \(Y/n\):\"; send

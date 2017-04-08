@@ -46,6 +46,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
+import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.data.v1.external.KeyPair;
 
 /**
@@ -126,7 +127,9 @@ public class DeployService {
                     String value = p.getValue();
                     Key k = new Key();
                     k.setKey(value);
-                    deployResponse.setKey(k);
+                    KeyPair pair = new KeyPair();
+                    pair.setPrivateKey(k);
+                    deployResponse.setKey(pair);
                     save(deployResponse);
                     return deployResponse;
                 }
@@ -134,6 +137,8 @@ public class DeployService {
 
         } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {
             Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (KeyException ex) {
+            Logger.getLogger(DeployService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -143,8 +148,8 @@ public class DeployService {
         if (pro == null) {
             throw new NotFoundException();
         }
-        String cloudConfID = pro.getCloudCredentialsID();
-        CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfID);
+        List<String> cloudConfIDs = pro.getCloudCredentialsIDs();
+        CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfIDs.get(0));
         List<String> loginKeysIDs = cCred.getkeyPairIDs();
         List<KeyPair> loginKeys = new ArrayList<>();
         for (String keyID : loginKeysIDs) {

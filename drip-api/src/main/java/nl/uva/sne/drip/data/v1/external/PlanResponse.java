@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.data.v1.external;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.Set;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -36,8 +37,11 @@ public class PlanResponse extends KeyValueHolder {
     private Set<String> loweLevelPlansIDs;
 
     /**
+     * The name of the generated plan
+     *
      * @return the name
      */
+    @DocumentationExample("planner_output_all.yml")
     public String getName() {
         return name;
     }
@@ -50,8 +54,12 @@ public class PlanResponse extends KeyValueHolder {
     }
 
     /**
+     * The id of the TOSCA <code>PlaybookRepresentation</code> description from
+     * which this plan was generated
+     *
      * @return the toscaID
      */
+    @DocumentationExample("58e3946e0fb4f562d84ba1ad")
     public String getToscaID() {
         return toscaID;
     }
@@ -64,8 +72,12 @@ public class PlanResponse extends KeyValueHolder {
     }
 
     /**
+     * The level of the plan. Some provisioners use levels to represent a plan.
+     * In these cases there are two levels of TOSCA descriptions.
+     *
      * @return the level
      */
+    @DocumentationExample("0")
     public Integer getLevel() {
         return level;
     }
@@ -78,8 +90,14 @@ public class PlanResponse extends KeyValueHolder {
     }
 
     /**
+     * The list of the lower level plans attached to this plan. Some 
+     * provisioners use levels to represent a plan. In these cases there are two 
+     * levels of TOSCA descriptions.
+     *
+     *
      * @return the loweLevelPlansIDs
      */
+    @DocumentationExample("ew44Ae3946e0sdds4f562d84baA")
     public Set<String> getLoweLevelPlanIDs() {
         return loweLevelPlansIDs;
     }

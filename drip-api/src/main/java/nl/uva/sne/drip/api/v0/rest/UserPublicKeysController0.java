@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.api.v0.rest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
@@ -68,7 +70,9 @@ public class UserPublicKeysController0 {
             pair = service.save(pair);
 
             ProvisionResponse provPlan = provisionService.findOne(confUserKey.action);
-            provPlan.setPublicKeyID(pair.getId());
+            List<String> keyPairIDs = new ArrayList<>();
+            keyPairIDs.add(pair.getId());
+            provPlan.setKeyPairIDs(keyPairIDs);
             provisionService.save(provPlan);
 
             return "Success: " + pair.getId();

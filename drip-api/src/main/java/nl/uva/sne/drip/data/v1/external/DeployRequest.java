@@ -30,7 +30,7 @@ public class DeployRequest extends OwnedObject {
     private String configurationID;
 
     /**
-     * The ID of the provision resources description <code>nl.uva.sne.drip.data.v1.external.ProvisionResponse</code>
+     * The ID of the provision resources description <code>ProvisionResponse</code>
      * @return the provisionID
      */
     @DocumentationExample("58e3946e0fb4f562d84ba1ad")
@@ -64,7 +64,7 @@ public class DeployRequest extends OwnedObject {
     /**
      * The ID of the configuration POJO that contains information used the 
      * chosen deployment manager (for now only ansible) 
-     * <code>nl.uva.sne.drip.data.v1.external.PlaybookRepresentation</code>
+     * <code>PlaybookRepresentation</code>
      * @return the configurationID
      */
     @DocumentationExample("58e3946e0fb4f562d84ba1ad")

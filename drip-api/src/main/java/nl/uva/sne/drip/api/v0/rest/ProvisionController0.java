@@ -86,7 +86,9 @@ public class ProvisionController0 {
         ProvisionResponse resp = new ProvisionResponse();
         CloudCredentials cloudCred = cloudCredentialsService.findAll().get(0);
         String cloudCredID = cloudCred.getId();
-        resp.setCloudCredentialsID(cloudCredID);
+        List<String> idList = new ArrayList<>();
+        idList.add(cloudCredID);
+        resp.setCloudCredentialsIDs(idList);
         List<nl.uva.sne.drip.data.v0.external.Attribute> plans = upload.file;
         nl.uva.sne.drip.data.v1.external.PlanResponse topLevelPlan = null;
         Set<String> loweLevelPlansIDs = new HashSet<>();
@@ -105,9 +107,13 @@ public class ProvisionController0 {
         String planID = topLevelPlan.getId();
         resp.setPlanID(planID);
         List<KeyPair> allKeys = userKeysService.findAll();
+        List<String> keyPairIDs = new ArrayList<>();
         if (allKeys != null && !allKeys.isEmpty()) {
-            String userKeyID = allKeys.get(0).getId();
-            resp.setPublicKeyID(userKeyID);
+            for (KeyPair keyPair : allKeys) {
+                String userKeyID = keyPair.getId();
+                keyPairIDs.add(userKeyID);
+            }
+            resp.setKeyPairIDs(keyPairIDs);
         }
         resp = provisionService.save(resp);
         return "Success: Infrastructure files are uploaded! Action number: "

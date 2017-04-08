@@ -19,37 +19,28 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- *
+ * This class represents the response of a deploy request. It may hold a key 
+ * pair used for logging in and managing a docker cluster. Currently they key 
+ * pair is only used by kubernetes
+ * 
  * @author S. Koulouzis
  */
 @Document
 public class DeployResponse extends DeployRequest {
 
-    @Id
-    private String id;
+    private KeyPair key;
 
-    private Key key;
-
-    public void setKey(Key key) {
+    public void setKey(KeyPair key) {
         this.key = key;
     }
 
-    public Key getKey() {
+    /**
+     * The key pair to log in and manage a docker cluster
+     * @return 
+     */
+    
+    public KeyPair getKeyPair() {
         return key;
-    }
-
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
     }
 
 }

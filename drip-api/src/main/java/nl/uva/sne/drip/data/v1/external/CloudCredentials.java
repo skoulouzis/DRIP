@@ -32,9 +32,6 @@ public class CloudCredentials extends OwnedObject {
     public static String ACCESS_KEY_NAME = "accessKeyId";
     public static String SECRET_KEY_NAME = "secretKey";
 
-    @Id
-    private String id;
-
     private String secretKey;
 
     private String accessKeyId;
@@ -55,15 +52,6 @@ public class CloudCredentials extends OwnedObject {
 
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
-    }
-
-    /**
-     * The UID of this object. 
-     * @return 
-     */
-    @DocumentationExample("58e3946e0fb4f562d84ba1ad")
-    public final String getId() {
-        return id;
     }
 
     /**

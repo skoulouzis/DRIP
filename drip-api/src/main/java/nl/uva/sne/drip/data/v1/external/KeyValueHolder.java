@@ -15,25 +15,28 @@
  */
 package nl.uva.sne.drip.data.v1.external;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.Map;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- *
+ * This is a generic class that hold key-value pairs. It's main usage is to hold 
+ * abstract types such as TOSCA.
+ * 
  * @author S. Koulouzis
  */
 @Document
 public class KeyValueHolder extends OwnedObject{
 
-    @Id
-    private String id;
-
     private Map<String, Object> keyValue;
 
     /**
+     *  The key-value map 
      * @return the keyValue
      */
+    @DocumentationExample("\"artifact_types\":{\"tosca.artifacts.Deployment.Image.Container.Docker\":"
+            + "{\"derived_from\": \"tosca.artifacts.Deployment.Image\"}}")
     public Map<String, Object> getKeyValue() {
         return keyValue;
     }
@@ -43,20 +46,6 @@ public class KeyValueHolder extends OwnedObject{
      */
     public void setKvMap(Map<String, Object> keyValue) {
         this.keyValue = keyValue;
-    }
-
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
     }
 
 }
