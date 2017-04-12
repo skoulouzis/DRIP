@@ -15,27 +15,54 @@
  */
 package nl.uva.sne.drip.test.manager;
 
-import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
- * @author alogo
+ * @author S. Koulouzis
  */
 public class DRIPTest {
 
+    private static List<String> PROPERTIES_FILE_PATHS;
+    public static List<Properties> propertiesList = new ArrayList<>();
+
+    public static final String ACCESS_KEY_ID_PROPPERTY_NAME = "access.key.id";
+    static String CLOUD_PROPVIDER_PROPPERTY_NAME = "cloud.provider.name";
+    static String SECRET_KEY_PROPERTY_NAME = "secret.key";
+    static String CLOUD_PRIVATE_KEY_PATHS_PROPERTY_NAME = "cloud.private.key.paths";
+
     public DRIPTest() {
+        PROPERTIES_FILE_PATHS = new ArrayList<>();
     }
 
     @BeforeClass
     public static void setUpClass() {
+        for (String propFile : PROPERTIES_FILE_PATHS) {
+            try (Reader inStream = new FileReader(new File(propFile))) {
+                Properties prop = new Properties();
+                prop.load(inStream);
+                propertiesList.add(prop);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(TestCloudCredentialsController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(TestCloudCredentialsController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
     }
 
     @AfterClass
@@ -76,7 +103,7 @@ public class DRIPTest {
 //            LOGGER.warn("Null SSL context, skipping client SSL configuration", npe);
 //        }
 //        return builder.build();
-return null;
+        return null;
     }
 
 }
