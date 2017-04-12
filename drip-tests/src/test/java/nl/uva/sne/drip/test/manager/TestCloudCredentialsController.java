@@ -20,7 +20,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -84,6 +86,7 @@ public class TestCloudCredentialsController extends DRIPTest {
             cc.setAccessKeyId(p.getProperty(ACCESS_KEY_ID_PROPPERTY_NAME));
             cc.setCloudProviderName(p.getProperty(CLOUD_PROPVIDER_PROPPERTY_NAME));
             cc.setSecretKey(p.getProperty(DRIPTest.SECRET_KEY_PROPERTY_NAME));
+            List<String> keyPairIDs = new ArrayList<>();
             cc.setKeyPairIDs(keyPairIDs);
         }
     }
