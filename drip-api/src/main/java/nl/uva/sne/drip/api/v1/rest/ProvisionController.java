@@ -120,7 +120,7 @@ public class ProvisionController {
     }
 
     /**
-     * Provison the resources specified by a plan.
+     * Provision the resources specified by a plan.
      *
      * @param req. The ProvisionRequest. This is a container the plan ID, cloud
      * credent ID, etc.
@@ -145,6 +145,22 @@ public class ProvisionController {
             Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    @RequestMapping(value = "/sample", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    ProvisionRequest sample() {
+        ProvisionRequest req = new ProvisionRequest();
+        List<String> cloudCredentialsIDs = new ArrayList<>();
+        cloudCredentialsIDs.add("58f8d74f2af451b88c779d7a");
+        cloudCredentialsIDs.add("438dAFDf2ead451we8rf34Af");
+        req.setCloudCredentialsIDs(cloudCredentialsIDs);
+        List<String> keyPairIDs = new ArrayList<>();
+        keyPairIDs.add("58f8da042af45d6621813c4e");
+        req.setKeyPairIDs(keyPairIDs);
+        req.setPlanID("58da51f7f7b42e7d967752a1");
+        return req;
     }
 
 }

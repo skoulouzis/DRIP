@@ -72,8 +72,8 @@ public class DeployController {
     DeployRequest sample() {
         DeployRequest req = new DeployRequest();
         req.setManagerType("ansible");
-        req.setConfigurationID("Configuration_ID");
-        req.setProvisionID("Provision_ID");
+        req.setConfigurationID("58e2681ba9961baa096c8541");
+        req.setProvisionID("58f8dd3a2af41387c32ff602");
         return req;
     }
 

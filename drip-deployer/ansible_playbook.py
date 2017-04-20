@@ -59,8 +59,8 @@ def install_prerequisites(vm):
 		stdout.read()
                 
                 parentDir = os.path.dirname(os.path.abspath(vm.key))
-                #os.chmod(parentDir, 700)
-                os.chmod(vm.key, 0o444)
+                os.chmod(parentDir, 0o700)
+                os.chmod(vm.key, 0o600)
 		print "Ansible prerequisites installed in: %s " % (vm.ip)
 	except Exception as e:
 		print '%s: %s' % (vm.ip, e)
@@ -74,15 +74,16 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
         print '[ERROR] The playbook does not exist'
         return '[ERROR] The playbook does not exist'
     
+    os.environ['ANSIBLE_HOST_KEY_CHECKING'] = 'False'
     variable_manager = VariableManager()
     loader = DataLoader()
 
     inventory = Inventory(loader=loader, variable_manager=variable_manager,  host_list=hosts)
 
 
-    Options = namedtuple('Options', ['listtags', 'listtasks', 'listhosts', 'syntax', 'connection','module_path', 'forks', 'remote_user', 'private_key_file', 'ssh_common_args', 'ssh_extra_args', 'sftp_extra_args', 'scp_extra_args', 'become', 'become_method', 'become_user', 'verbosity', 'check'])
+    Options = namedtuple('Options', ['listtags', 'listtasks', 'listhosts', 'syntax', 'connection','module_path', 'forks', 'remote_user', 'private_key_file', 'ssh_common_args', 'ssh_extra_args', 'sftp_extra_args', 'scp_extra_args', 'become', 'become_method', 'become_user', 'verbosity', 'check', 'aaaaaaaaaaa'])
 
-    options = Options(listtags=False, listtasks=False, listhosts=False, syntax=False, connection='smart', module_path=None, forks=None, remote_user=user, private_key_file=ssh_key_file, ssh_common_args=None, ssh_extra_args=None, sftp_extra_args=None, scp_extra_args=None, become=True, become_method='sudo', become_user='root', verbosity=None, check=False)
+    options = Options(listtags=False, listtasks=False, listhosts=False, syntax=False, connection='smart', module_path=None, forks=None, remote_user=user, private_key_file=ssh_key_file, ssh_common_args=None, ssh_extra_args=None, sftp_extra_args=None, scp_extra_args=None, become=True, become_method='sudo', become_user='root', verbosity=None, check=False , aaaaaaaaaaa=False)
     
     variable_manager.extra_vars = extra_vars
     
@@ -129,4 +130,5 @@ def run(vm_list,playbook_path):
     
     extra_vars = {}
     passwords = {}
+    print "Executing playbook: %s " % (playbook_path)
     return execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)

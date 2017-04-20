@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.data.v1.external;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -83,4 +84,5 @@ public class ProvisionRequest extends KeyValueHolder {
     public void setKeyPairIDs(List<String> userKeyID) {
         this.keyPairIDs = userKeyID;
     }
+    
 }
