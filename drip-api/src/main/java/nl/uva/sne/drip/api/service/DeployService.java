@@ -106,17 +106,18 @@ public class DeployService {
         return deployDao.save(clusterCred);
     }
 
-    public DeployResponse deployCluster(DeployRequest deployInfo) {
+    public DeployResponse deploySoftware(DeployRequest deployInfo) {
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             Message deployerInvokationMessage = buildDeployerMessage(
                     deployInfo.getProvisionID(),
                     deployInfo.getManagerType().toLowerCase(),
                     deployInfo.getConfigurationID());
 
-//            Message deployerInvokationMessage = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
-//                    + File.separator + "workspace" + File.separator + "DRIP"
-//                    + File.separator + "docs" + File.separator + "json_samples"
-//                    + File.separator + "deployer_invocation.json");
+            Message deployerInvokationMessage = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
+                    + File.separator + "workspace" + File.separator + "DRIP"
+                    + File.separator + "docs" + File.separator + "json_samples"
+                    + File.separator + "deployer_invocation.json");
+
             Message response = (deployer.call(deployerInvokationMessage));
 //            Message response = generateFakeResponse();
             List<MessageParameter> params = response.getParameters();

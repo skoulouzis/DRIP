@@ -73,7 +73,7 @@ public class DeployController0 {
 
     private Result deploy(DeployRequest deployReq) {
 
-        DeployResponse key = deployService.deployCluster(deployReq);
+        DeployResponse key = deployService.deploySoftware(deployReq);
 
         Result res = new Result();
         res.info = "INFO";

@@ -28,10 +28,11 @@ channel.queue_declare(queue='deployer_queue')
 
 
 manager_type = ""
+done = False
 
 def threaded_function(args):
-    while True:
-        #print "processing data events"
+    while not done:
+        print "Done: %r" %(done)
         connection.process_data_events()
         sleep(30)
 
@@ -125,11 +126,12 @@ channel.basic_qos(prefetch_count=1)
 channel.basic_consume(on_request, queue='deployer_queue')
 
 
-#thread = Thread(target = threaded_function, args = (1, ))
-#thread.start()
+thread = Thread(target = threaded_function, args = (1, ))
+thread.start()
 
 print(" [x] Awaiting RPC requests")
 
 
 channel.start_consuming()
-#thread.stop()
+done = True
+thread.stop()

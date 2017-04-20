@@ -62,7 +62,7 @@ public class DeployController {
         if (deployRequest.getProvisionID() == null) {
             throw new BadRequestException("Must provide provision ID");
         }
-        DeployResponse key = deployService.deployCluster(deployRequest);
+        DeployResponse key = deployService.deploySoftware(deployRequest);
         return key.getId();
     }
 
