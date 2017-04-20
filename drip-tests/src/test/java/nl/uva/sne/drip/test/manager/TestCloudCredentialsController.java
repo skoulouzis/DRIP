@@ -16,10 +16,7 @@
 package nl.uva.sne.drip.test.manager;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,15 +24,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.Response;
 import nl.uva.sne.drip.data.v1.external.CloudCredentials;
 import nl.uva.sne.drip.data.v1.external.Key;
 import nl.uva.sne.drip.data.v1.external.KeyPair;
@@ -43,9 +31,6 @@ import nl.uva.sne.drip.data.v1.external.KeyType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -53,18 +38,10 @@ import static org.junit.Assert.assertEquals;
  */
 public class TestCloudCredentialsController extends DRIPTest {
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Test
     public void testPOST_GETCloudCredentials() {
         for (Properties p : DRIPTest.propertiesList) {
-            String[] paths = DRIPTest.CLOUD_PRIVATE_KEY_PATHS_PROPERTY_NAME.split(",");
+            String[] paths = p.getProperty(DRIPTest.CLOUD_PRIVATE_KEY_PATHS_PROPERTY_NAME).split(",");
             for (String cloudPrivateKeyPath : paths) {
                 try {
                     KeyPair keyPair = new KeyPair();
@@ -76,6 +53,7 @@ public class TestCloudCredentialsController extends DRIPTest {
                     map.put(cloudPrivateKeyPath, cloudPrivateKeyPath);
                     privateKey.setAttributes(map);
                     keyPair.setPrivateKey(privateKey);
+
                 } catch (IOException ex) {
                     Logger.getLogger(TestCloudCredentialsController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -89,16 +67,6 @@ public class TestCloudCredentialsController extends DRIPTest {
             List<String> keyPairIDs = new ArrayList<>();
             cc.setKeyPairIDs(keyPairIDs);
         }
-    }
-
-    private void post(int expected) {
-//    String payload = "{\"local-storage-id\" : \"" + storageId + "\"}";
-//    Entity<String> entity = Entity.entity(payload, "application/json");
-//    Response resp = getWebTarget().path(TRIGGER_PATH).path(lcmId).path("metadata").path(metadataId)
-//        .request().header(AUTH_USER_HEADER, "admin")
-//        .header(BasicAuthenticationManager.BASIC_AUTHENTICATION_HEADER, basicAuthTokenAdmin)
-//        .post(entity);
-//    assertEquals(expected, resp.getStatus());
     }
 
 }
