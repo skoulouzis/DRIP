@@ -108,7 +108,7 @@ public class KeyPairController {
         @ResponseCode(code = 400, condition = "Key can't be empty")
     })
     public @ResponseBody
-    String postKey(@RequestBody KeyPair pair) {
+    String postKeyPair(@RequestBody KeyPair pair) {
         if (pair.getPrivateKey() == null && pair.getPublicKey() == null) {
             throw new NullKeyException();
         }

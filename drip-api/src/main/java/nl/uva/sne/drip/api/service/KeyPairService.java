@@ -59,11 +59,11 @@ public class KeyPairService {
         return k;
     }
 
-    public KeyPair save(KeyPair upk) {
+    public KeyPair save(KeyPair keyPair) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        upk.setOwner(owner);
-        return dao.save(upk);
+        keyPair.setOwner(owner);
+        return dao.save(keyPair);
     }
 
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")
