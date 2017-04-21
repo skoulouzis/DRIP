@@ -43,8 +43,6 @@ public class AnsibleResult {
     private Boolean changed;
     @JsonProperty("results")
     private List<AnsibleResult_> results = null;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("msg")
     public String getMsg() {
@@ -74,16 +72,6 @@ public class AnsibleResult {
     @JsonProperty("results")
     public void setAnsibleResults(List<AnsibleResult_> results) {
         this.results = results;
-    }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

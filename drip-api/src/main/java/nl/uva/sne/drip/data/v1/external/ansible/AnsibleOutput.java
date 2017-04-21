@@ -39,8 +39,7 @@ public class AnsibleOutput {
     private String host;
     @JsonProperty("result")
     private AnsibleResult result;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    
 
     @JsonProperty("host")
     public String getHost() {
@@ -61,15 +60,4 @@ public class AnsibleOutput {
     public void setAnsiibleResult(AnsibleResult result) {
         this.result = result;
     }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
 }

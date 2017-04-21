@@ -58,8 +58,6 @@ public class AnsibleResult_ {
     private Invocation invocation;
     @JsonProperty("cache_update_time")
     private Integer cacheUpdateTime;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("_ansible_parsed")
     public Boolean getAnsibleParsed() {
@@ -139,16 +137,6 @@ public class AnsibleResult_ {
     @JsonProperty("cache_update_time")
     public void setCacheUpdateTime(Integer cacheUpdateTime) {
         this.cacheUpdateTime = cacheUpdateTime;
-    }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

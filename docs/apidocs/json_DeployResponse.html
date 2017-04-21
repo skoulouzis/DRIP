@@ -82,6 +82,15 @@ pair is only used by kubernetes</p>
         </thead>
         <tbody>
         <tr>
+          <td>  <span class="property-name">ansibleOutputList</span>
+</td>
+          <td>  <span class="datatype-reference">array of <a href="json_AnsibleOutput.html">AnsibleOutput</a>
+</span>
+</td>
+          <td>  <span class="property-description"></span>
+</td>
+        </tr>
+        <tr>
           <td>  <span class="property-name">keyPair</span>
 </td>
           <td>  <span class="datatype-reference"><a href="json_KeyPair.html">KeyPair</a>
@@ -140,6 +149,21 @@ object is saved.</span></td>
       <p class="lead">Example</p>
       
       <pre class="prettyprint language-js example">{
+  &quot;ansibleOutputList&quot; : [ {
+    &quot;host&quot; : &quot;...&quot;,
+    &quot;result&quot; : {
+      &quot;msg&quot; : &quot;...&quot;,
+      &quot;changed&quot; : true,
+      &quot;results&quot; : [ { }, { } ]
+    }
+  }, {
+    &quot;host&quot; : &quot;...&quot;,
+    &quot;result&quot; : {
+      &quot;msg&quot; : &quot;...&quot;,
+      &quot;changed&quot; : true,
+      &quot;results&quot; : [ { }, { } ]
+    }
+  } ],
   &quot;keyPair&quot; : {
     &quot;privateKey&quot; : {
       &quot;name&quot; : &quot;id_dsa.pub&quot;,

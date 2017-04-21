@@ -370,6 +370,10 @@ pair is only used by kubernetes]]>
   </xs:annotation>
    <xs:complexContent>
     <xs:extension base="deployRequest">
+      <xs:sequence>
+              <xs:element name="ansibleOutputList" type="ansibleOutput" minOccurs="0" maxOccurs="unbounded">
+              </xs:element>
+      </xs:sequence>
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
@@ -444,7 +448,7 @@ to specify the domain name for ec2]]>
 <xs:complexType name="keyPair">
   <xs:annotation>
     <xs:documentation>
-      <![CDATA[This class hold the pair of public private keys. The kyes may be used for
+      <![CDATA[This class hold the pair of public private keys. The keys may be used for
 logging in VMs.]]>
     </xs:documentation>
   </xs:annotation>
@@ -705,6 +709,91 @@ saves this object]]>
                   <![CDATA[The roles assigned to this user.]]>
                 </xs:documentation>
               </xs:annotation>
+              </xs:element>
+      </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ansibleOutput">
+       <xs:sequence>
+              <xs:element name="host" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="ansiibleResult" type="ansibleResult" minOccurs="0">
+              </xs:element>
+      </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ansibleResult">
+       <xs:sequence>
+              <xs:element name="msg" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="changed" type="xs:boolean" minOccurs="0">
+              </xs:element>
+              <xs:element name="ansibleResults" type="ansibleResult_" minOccurs="0" maxOccurs="unbounded">
+              </xs:element>
+      </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ansibleResult_">
+       <xs:sequence>
+              <xs:element name="ansibleParsed" type="xs:boolean" minOccurs="0">
+              </xs:element>
+              <xs:element name="changed" type="xs:boolean" minOccurs="0">
+              </xs:element>
+              <xs:element name="ansibleNoLog" type="xs:boolean" minOccurs="0">
+              </xs:element>
+              <xs:element name="cacheUpdated" type="xs:boolean" minOccurs="0">
+              </xs:element>
+              <xs:element name="ansibleItemAnsibleResult" type="xs:boolean" minOccurs="0">
+              </xs:element>
+              <xs:element name="item" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+              </xs:element>
+              <xs:element name="invocation" type="invocation" minOccurs="0">
+              </xs:element>
+              <xs:element name="cacheUpdateTime" type="xs:int" minOccurs="0">
+              </xs:element>
+      </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="invocation">
+       <xs:sequence>
+              <xs:element name="moduleName" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="moduleArgs" type="moduleArgs" minOccurs="0">
+              </xs:element>
+      </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="moduleArgs">
+       <xs:sequence>
+              <xs:element name="dpkgOptions" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="autoremove" type="xs:boolean" minOccurs="0">
+              </xs:element>
+              <xs:element name="force" type="xs:boolean" minOccurs="0">
+              </xs:element>
+              <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+              </xs:element>
+              <xs:element name="installRecommends" type="xs:anyType" minOccurs="0">
+              </xs:element>
+              <xs:element name="package" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+              </xs:element>
+              <xs:element name="purge" type="xs:boolean" minOccurs="0">
+              </xs:element>
+              <xs:element name="allowUnauthenticated" type="xs:boolean" minOccurs="0">
+              </xs:element>
+              <xs:element name="state" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="upgrade" type="xs:anyType" minOccurs="0">
+              </xs:element>
+              <xs:element name="updateCache" type="xs:boolean" minOccurs="0">
+              </xs:element>
+              <xs:element name="deb" type="xs:anyType" minOccurs="0">
+              </xs:element>
+              <xs:element name="onlyUpgrade" type="xs:boolean" minOccurs="0">
+              </xs:element>
+              <xs:element name="defaultRelease" type="xs:anyType" minOccurs="0">
+              </xs:element>
+              <xs:element name="cacheValidTime" type="xs:int" minOccurs="0">
               </xs:element>
       </xs:sequence>
 </xs:complexType>
