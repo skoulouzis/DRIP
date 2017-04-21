@@ -9,8 +9,6 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -18,11 +16,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.data.v1.external.Message;
-import nl.uva.sne.drip.data.v1.external.MessageParameter;
 import nl.uva.sne.drip.commons.utils.Converter;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /*
  * Copyright 2017 S. Koulouzis, Wang Junchao, Huan Zhou, Yang Hu 

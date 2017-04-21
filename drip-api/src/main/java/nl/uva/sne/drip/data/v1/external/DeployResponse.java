@@ -15,31 +15,44 @@
  */
 package nl.uva.sne.drip.data.v1.external;
 
-import com.webcohesion.enunciate.metadata.DocumentationExample;
-import org.springframework.data.annotation.Id;
+import nl.uva.sne.drip.data.v1.external.ansible.Output;
+import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * This class represents the response of a deploy request. It may hold a key 
- * pair used for logging in and managing a docker cluster. Currently they key 
+ * This class represents the response of a deploy request. It may hold a key
+ * pair used for logging in and managing a docker cluster. Currently they key
  * pair is only used by kubernetes
- * 
+ *
  * @author S. Koulouzis
  */
 @Document
 public class DeployResponse extends DeployRequest {
 
     private KeyPair key;
-    
+
+    private List<Output> ansibleOutputList;
+
+    public void setAnsibleOutputList(List<Output> outputList) {
+        this.ansibleOutputList = outputList;
+    }
+
+    /**
+     * @return the ansibleOutputList
+     */
+    public List<Output> getAnsibleOutputList() {
+        return ansibleOutputList;
+    }
+
     public void setKey(KeyPair key) {
         this.key = key;
     }
 
     /**
      * The key pair to log in and manage a docker cluster
-     * @return 
+     *
+     * @return
      */
-    
     public KeyPair getKeyPair() {
         return key;
     }

@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.api.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +50,7 @@ import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.data.v1.external.KeyPair;
+import nl.uva.sne.drip.data.v1.external.ansible.Output;
 
 /**
  *
@@ -210,12 +213,12 @@ public class DeployService {
         return ansibleParameter;
     }
 
-    private DeployResponse handleResponse(List<MessageParameter> params) throws KeyException {
+    private DeployResponse handleResponse(List<MessageParameter> params) throws KeyException, IOException {
         DeployResponse deployResponse = new DeployResponse();
 
         for (MessageParameter p : params) {
             String name = p.getName();
-            System.err.println(name + " : " + p.getValue());
+
             if (name.equals("credential")) {
                 String value = p.getValue();
                 Key k = new Key();
@@ -224,9 +227,16 @@ public class DeployService {
                 KeyPair pair = new KeyPair();
                 pair.setPrivateKey(k);
                 deployResponse.setKey(pair);
+                save(deployResponse);
+                return deployResponse;
             }
             if (name.equals("ansible_output")) {
                 String value = p.getValue();
+                ObjectMapper mapper = new ObjectMapper();
+                System.err.println(value);
+                List<Output> outputList = mapper.readValue(value, new TypeReference<List<Output>>() {
+                });
+                deployResponse.setAnsibleOutputList(outputList);
             }
         }
         save(deployResponse);
