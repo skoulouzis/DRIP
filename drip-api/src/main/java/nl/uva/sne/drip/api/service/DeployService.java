@@ -15,7 +15,6 @@
  */
 package nl.uva.sne.drip.api.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +47,6 @@ import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.exception.KeyException;
-import nl.uva.sne.drip.commons.utils.MessageGenerator;
 import nl.uva.sne.drip.data.v1.external.KeyPair;
 
 /**
@@ -115,28 +113,14 @@ public class DeployService {
                     deployInfo.getManagerType().toLowerCase(),
                     deployInfo.getConfigurationID());
 
-            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
-                    + File.separator + "workspace" + File.separator + "DRIP"
-                    + File.separator + "docs" + File.separator + "json_samples"
-                    + File.separator + "deployer_ansible_response2.json");
-
-//            Message response = (deployer.call(deployerInvokationMessage));
-//            Message response = generateFakeResponse();
+//            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
+//                    + File.separator + "workspace" + File.separator + "DRIP"
+//                    + File.separator + "docs" + File.separator + "json_samples"
+//                    + File.separator + "deployer_ansible_response2.json");
+            Message response = (deployer.call(deployerInvokationMessage));
             List<MessageParameter> params = response.getParameters();
-            DeployResponse deployResponse = new DeployResponse();
-            for (MessageParameter p : params) {
-                String name = p.getName();
-                if (name.equals("credential")) {
-                    String value = p.getValue();
-                    Key k = new Key();
-                    k.setKey(value);
-                    KeyPair pair = new KeyPair();
-                    pair.setPrivateKey(k);
-                    deployResponse.setKey(pair);
-                    save(deployResponse);
-                    return deployResponse;
-                }
-            }
+
+            return handleResponse(params);
 
         } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {
             Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
@@ -224,5 +208,28 @@ public class DeployService {
         ansibleParameter.setEncoding("UTF-8");
         ansibleParameter.setValue(playbook);
         return ansibleParameter;
+    }
+
+    private DeployResponse handleResponse(List<MessageParameter> params) throws KeyException {
+        DeployResponse deployResponse = new DeployResponse();
+
+        for (MessageParameter p : params) {
+            String name = p.getName();
+            System.err.println(name + " : " + p.getValue());
+            if (name.equals("credential")) {
+                String value = p.getValue();
+                Key k = new Key();
+                k.setKey(value);
+                k.setType(Key.KeyType.PRIVATE);
+                KeyPair pair = new KeyPair();
+                pair.setPrivateKey(k);
+                deployResponse.setKey(pair);
+            }
+            if (name.equals("ansible_output")) {
+                String value = p.getValue();
+            }
+        }
+        save(deployResponse);
+        return deployResponse;
     }
 }

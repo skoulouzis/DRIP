@@ -129,40 +129,11 @@ public abstract class DRIPCaller implements AutoCloseable {
         if (clean.contains("\"value\":{\"")) {
             return Converter.string2Message(clean);
         }
+        if (clean.contains("\"null\"")) {
+            clean = clean.replaceAll("\"null\"", "null");
+        }
         Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", clean);
-        
-        
-        
+
         return mapper.readValue(clean, Message.class);
     }
-
-    private Message unMarshallWithSimpleJson(String strResponse) throws JSONException {
-        strResponse = strResponse.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
-        JSONObject jsonObj = new JSONObject(strResponse);
-        Message responseMessage = new Message();
-        responseMessage.setCreationDate((Long) jsonObj.get("creationDate"));
-        JSONArray jsonParams = (JSONArray) jsonObj.get("parameters");
-        List<MessageParameter> parameters = new ArrayList<>();
-
-        for (int i = 0; i < jsonParams.length(); i++) {
-            JSONObject jsonParam = (JSONObject) jsonParams.get(i);
-
-            MessageParameter parameter = new MessageParameter();
-            parameter.setName(jsonParam.getString("name"));
-            parameter.setValue(jsonParam.getString("value"));
-            parameters.add(parameter);
-        }
-
-        responseMessage.setParameters(parameters);
-        return responseMessage;//
-
-    }
-
-//    public Message unmarshall(String strResponse) throws IOException {
-//
-//        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-//        strResponse = strResponse.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
-////        return unMarshallWithSimpleJson(strResponse);
-//        return mapper.readValue(strResponse, Message.class);
-//    }
 }

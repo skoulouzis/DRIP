@@ -3,7 +3,7 @@ import pika
 import json
 import os
 import time
-
+import json
 from vm_info import VmInfo
 import docker_kubernetes
 import docker_engine
@@ -32,9 +32,8 @@ done = False
 
 def threaded_function(args):
     while not done:
-        print "Done: %r" %(done)
         connection.process_data_events()
-        sleep(30)
+        sleep(5)
 
 def handleDelivery(message):
     parsed_json = json.loads(message)
@@ -57,7 +56,7 @@ def handleDelivery(message):
             role = param["attributes"]["role"]
             node_num += 1
             key = path + "%d.txt" % (node_num)
-            print 
+             
             fo = open(key, "w")
             fo.write(value)
             fo.close()
@@ -107,12 +106,11 @@ def on_request(ch, method, props, body):
     par["url"] = "null"
     par["encoding"] = "UTF-8"
     par["name"] = res_name
-    value = ret.replace("\"", "\\\"")
-    print value
-    par["value"] = "\""+ret+"\""
+    par["value"] = ret
     par["attributes"] = "null"
     response["parameters"].append(par)
 
+    response = json.dumps(response)
     print "Response: %s " % response
     
     ch.basic_publish(exchange='',
@@ -132,6 +130,11 @@ thread.start()
 print(" [x] Awaiting RPC requests")
 
 
-channel.start_consuming()
-done = True
-thread.stop()
+
+try:
+    channel.start_consuming()
+except KeyboardInterrupt:
+    #thread.stop()
+    done = True
+    thread.join()
+    print "threads successfully closed"

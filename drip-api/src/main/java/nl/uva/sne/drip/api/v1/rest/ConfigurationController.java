@@ -59,10 +59,10 @@ public class ConfigurationController {
     @RequestMapping(value = "/post", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String post(@RequestBody String toscaContents) {
+    String post(@RequestBody String yamlContents) {
         try {
 
-            return playbookService.saveStringContents(toscaContents);
+            return playbookService.saveStringContents(yamlContents);
         } catch (IOException ex) {
             Logger.getLogger(ConfigurationController.class.getName()).log(Level.SEVERE, null, ex);
         }
