@@ -27,7 +27,6 @@ channel.queue_declare(queue='deployer_queue')
 
 
 
-manager_type = ""
 done = False
 
 def threaded_function(args):
@@ -89,14 +88,28 @@ def handleDelivery(message):
 
 def on_request(ch, method, props, body):
     ret = handleDelivery(body)
+    
+    parsed_json = json.loads(body)
+    params = parsed_json["parameters"]
+    
+    for param in params:
+        name = param["name"]
+        if name == "cluster":
+            manager_type = param["value"]
+            break
+    
+            
     if "ERROR" in ret:
         res_name = "error"
     elif manager_type == "ansible":
         res_name = "ansible_output"
     else:
         res_name = "credential"
-
-
+        
+        
+    print manager_type
+    print res_name
+    
     response = {}
     outcontent = {}
     current_milli_time = lambda: int(round(time.time() * 1000))
