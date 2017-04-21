@@ -15,16 +15,18 @@
  */
 package nl.uva.sne.drip.data.v1.external;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import nl.uva.sne.drip.api.exception.KeyException;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * This class hold the pair of public private keys. The kyes may be used for
+ * This class hold the pair of public private keys. The keys may be used for
  * logging in VMs.
  *
  * @author S. Koulouzis
  */
 @Document
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class KeyPair extends OwnedObject {
 
     private Key privateKey;
