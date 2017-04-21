@@ -227,6 +227,7 @@ public class DeployService {
             }
             if (name.equals("ansible_output")) {
                 String value = p.getValue();
+                System.err.println(value);
             }
         }
         save(deployResponse);
