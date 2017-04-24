@@ -54,8 +54,7 @@ public class AnsibleResult {
 
     @JsonProperty("stderr")
     private String stderr;
-
-    @Indexed
+    
     @JsonProperty("cmd")
     private List<String> cmd;
 
