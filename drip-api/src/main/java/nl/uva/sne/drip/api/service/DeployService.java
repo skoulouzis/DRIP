@@ -360,19 +360,19 @@ public class DeployService {
     }
 
     private Double getAvgEventsPerThread(String string) {
-        return Double.valueOf(string.replaceAll("events (avg/stddev):", "").replaceAll("s", "").trim().split("/")[0]);
+        return Double.valueOf(string.replaceAll("events \\(avg/stddev\\):", "").trim().split("/")[0]);
     }
 
     private Double getStddevEventsPerThread(String string) {
-        return Double.valueOf(string.replaceAll("events (avg/stddev):", "").replaceAll("s", "").trim().split("/")[1]);
+        return Double.valueOf(string.replaceAll("events \\(avg/stddev\\):", "").trim().split("/")[1]);
     }
 
     private Double getAvgExecTimePerThread(String string) {
-        return Double.valueOf(string.replaceAll("execution time (avg/stddev):", "").replaceAll("s", "").trim().split("/")[0]);
+        return Double.valueOf(string.replaceAll("execution time \\(avg/stddev\\):", "").replaceAll("s", "").trim().split("/")[0]);
     }
 
     private Double getStddevExecTimePerThread(String string) {
-        return Double.valueOf(string.replaceAll("execution time (avg/stddev):", "").replaceAll("s", "").trim().split("/")[0]);
+        return Double.valueOf(string.replaceAll("execution time \\(avg/stddev\\):", "").replaceAll("s", "").trim().split("/")[0]);
     }
 
     private double getMinExecutionTimePerRequest(String string) {
