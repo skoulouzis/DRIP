@@ -319,24 +319,23 @@ public class DeployService {
 
                         SysbenchCPUBenchmark b = new SysbenchCPUBenchmark();
                         b.setSysbenchVersion(version);
-                        
+
                         b.setNumberOfThreads(numOfThreads);
                         b.setExecutionTime(executionTime * 1000);
-                        
+
                         b.setTotalNumberOfEvents(totalNumberOfEvents);
-                        
+
                         b.setAvgEventsPerThread(avgEventsPerThread);
                         b.setStddevEventsPerThread(stddevEventsPerThread);
-                        
+
                         b.setAvgExecTimePerThread(avgExecTimePerThread * 1000);
                         b.setStddevExecTimePerThread(stddevExecTimePerThread);
                         b.setApprox95Percentile(approx95Percentile);
-                        
+
                         b.setMinExecutionTimePerRequest(minExecutionTimePerRequest);
                         b.setAvgExecutionTimePerRequest(avgExecutionTimePerRequest);
                         b.setMaxExecutionTimePerRequest(maxExecutionTimePerRequest);
-                        
-                        b = (SysbenchCPUBenchmark) benchmarkResultService.save(b);
+
                         b.setAnsibleOutputID(ansOut.getId());
 
                         b.setCloudDeploymentDomain(ansOut.getCloudDeploymentDomain());
@@ -344,6 +343,7 @@ public class DeployService {
                         b.setStart(ansOut.getAnsibleResult().getStart());
                         b.setEnd(ansOut.getAnsibleResult().getEnd());
                         b.setHost(ansOut.getHost());
+                        b = (SysbenchCPUBenchmark) benchmarkResultService.save(b);
                         return b;
 
                     default:
