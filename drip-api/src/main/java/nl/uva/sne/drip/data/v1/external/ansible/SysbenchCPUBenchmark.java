@@ -26,13 +26,18 @@ public class SysbenchCPUBenchmark extends BenchmarkResult {
 
     private String sysbenchVersion;
     private int numberOfThreads;
-    private int totalNumberOfEvents;
     private double executionTime;
-    private int avgEventsPerThread;
-    private int stddevEventsPerThread;
+    private int totalNumberOfEvents;
+    private double avgEventsPerThread;
+    private double stddevEventsPerThread;
 
-    private int avgExecTimePerThread;
-    private int stddevExecTimePerThread;
+    private double avgExecTimePerThread;
+    private double stddevExecTimePerThread;
+
+    private double minExecutionTimePerRequest;
+    private double avgExecutionTimePerRequest;
+    private double maxExecutionTimePerRequest;
+    private double approx95Percentile;
 
     /**
      * @return the sysbenchVersion
@@ -93,57 +98,113 @@ public class SysbenchCPUBenchmark extends BenchmarkResult {
     /**
      * @return the avgEventsPerThread
      */
-    public int getAvgEventsPerThread() {
+    public double getAvgEventsPerThread() {
         return avgEventsPerThread;
     }
 
     /**
      * @param avgEventsPerThread the avgEventsPerThread to set
      */
-    public void setAvgEventsPerThread(int avgEventsPerThread) {
+    public void setAvgEventsPerThread(double avgEventsPerThread) {
         this.avgEventsPerThread = avgEventsPerThread;
     }
 
     /**
      * @return the stddevEventsPerThread
      */
-    public int getStddevEventsPerThread() {
+    public double getStddevEventsPerThread() {
         return stddevEventsPerThread;
     }
 
     /**
      * @param stddevEventsPerThread the stddevEventsPerThread to set
      */
-    public void setStddevEventsPerThread(int stddevEventsPerThread) {
+    public void setStddevEventsPerThread(double stddevEventsPerThread) {
         this.stddevEventsPerThread = stddevEventsPerThread;
     }
 
     /**
      * @return the avgExecTimePerThread
      */
-    public int getAvgExecTimePerThread() {
+    public double getAvgExecTimePerThread() {
         return avgExecTimePerThread;
     }
 
     /**
      * @param avgExecTimePerThread the avgExecTimePerThread to set
      */
-    public void setAvgExecTimePerThread(int avgExecTimePerThread) {
+    public void setAvgExecTimePerThread(double avgExecTimePerThread) {
         this.avgExecTimePerThread = avgExecTimePerThread;
     }
 
     /**
      * @return the stddevExecTimePerThread
      */
-    public int getStddevExecTimePerThread() {
+    public double getStddevExecTimePerThread() {
         return stddevExecTimePerThread;
     }
 
     /**
      * @param stddevExecTimePerThread the stddevExecTimePerThread to set
      */
-    public void setStddevExecTimePerThread(int stddevExecTimePerThread) {
+    public void setStddevExecTimePerThread(double stddevExecTimePerThread) {
         this.stddevExecTimePerThread = stddevExecTimePerThread;
+    }
+
+    /**
+     * @return the minExecutionTimePerRequest
+     */
+    public double getMinExecutionTimePerRequest() {
+        return minExecutionTimePerRequest;
+    }
+
+    /**
+     * @param minExecutionTimePerRequest the minExecutionTimePerRequest to set
+     */
+    public void setMinExecutionTimePerRequest(double minExecutionTimePerRequest) {
+        this.minExecutionTimePerRequest = minExecutionTimePerRequest;
+    }
+
+    /**
+     * @return the avgExecutionTimePerRequest
+     */
+    public double getAvgExecutionTimePerRequest() {
+        return avgExecutionTimePerRequest;
+    }
+
+    /**
+     * @param avgExecutionTimePerRequest the avgExecutionTimePerRequest to set
+     */
+    public void setAvgExecutionTimePerRequest(double avgExecutionTimePerRequest) {
+        this.avgExecutionTimePerRequest = avgExecutionTimePerRequest;
+    }
+
+    /**
+     * @return the maxExecutionTimePerRequest
+     */
+    public double getMaxExecutionTimePerRequest() {
+        return maxExecutionTimePerRequest;
+    }
+
+    /**
+     * @param maxExecutionTimePerRequest the maxExecutionTimePerRequest to set
+     */
+    public void setMaxExecutionTimePerRequest(double maxExecutionTimePerRequest) {
+        this.maxExecutionTimePerRequest = maxExecutionTimePerRequest;
+    }
+
+    /**
+     * @return the approx95Percentile
+     */
+    public double getApprox95Percentile() {
+        return approx95Percentile;
+    }
+
+    /**
+     * @param approx95Percentile the approx95Percentile to set
+     */
+    public void setApprox95Percentile(double approx95Percentile) {
+        this.approx95Percentile = approx95Percentile;
     }
 
 }

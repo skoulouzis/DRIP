@@ -18,6 +18,7 @@ package nl.uva.sne.drip.api.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,6 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.api.dao.AnsibleOutputDao;
 import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
@@ -51,8 +51,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.exception.KeyException;
+import nl.uva.sne.drip.commons.utils.MessageGenerator;
 import nl.uva.sne.drip.data.v1.external.KeyPair;
 import nl.uva.sne.drip.data.v1.external.ansible.AnsibleOutput;
+import nl.uva.sne.drip.data.v1.external.ansible.AnsibleResult;
+import nl.uva.sne.drip.data.v1.external.ansible.BenchmarkResult;
+import nl.uva.sne.drip.data.v1.external.ansible.SysbenchCPUBenchmark;
 
 /**
  *
@@ -82,6 +86,9 @@ public class DeployService {
 
     @Autowired
     private PlaybookService playbookService;
+
+    @Autowired
+    private BenchmarkResultService benchmarkResultService;
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public DeployResponse findOne(String id) {
@@ -121,11 +128,12 @@ public class DeployService {
                     deployInfo.getManagerType().toLowerCase(),
                     deployInfo.getConfigurationID());
 
-//            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
-//                    + File.separator + "workspace" + File.separator + "DRIP"
-//                    + File.separator + "docs" + File.separator + "json_samples"
-//                    + File.separator + "deployer_ansible_response_benchmark.json");
-            Message response = (deployer.call(deployerInvokationMessage));
+            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
+                    + File.separator + "workspace" + File.separator + "DRIP"
+                    + File.separator + "docs" + File.separator + "json_samples"
+                    + File.separator + "deployer_ansible_response_benchmark.json");
+
+//            Message response = (deployer.call(deployerInvokationMessage));
             List<MessageParameter> params = response.getParameters();
             DeployResponse deploy = handleResponse(params, deployInfo);
             deploy.setProvisionID(deployInfo.getProvisionID());
@@ -252,12 +260,10 @@ public class DeployService {
 
                 for (AnsibleOutput ansOut : outputList) {
                     Map<String, Object> map = provisionService.findOne(deployInfo.getProvisionID()).getKeyValue();
-
                     String nodeType = nodeTypeCahche.get(ansOut.getHost());
                     String domain = domainCahche.get(ansOut.getHost());
                     if (nodeType == null) {
                         List<Map<String, Object>> components = (List<Map<String, Object>>) map.get("components");
-
                         for (Map<String, Object> component : components) {
                             String publicAddress = (String) component.get("public_address");
                             if (publicAddress.equals(ansOut.getHost())) {
@@ -266,7 +272,7 @@ public class DeployService {
                                 domain = (String) component.get("domain");
 
                                 nodeTypeCahche.put(ansOut.getHost(), nodeType);
-                                domainCahche.put(ansOut.getHost(), value);
+                                domainCahche.put(ansOut.getHost(), domain);
 //                            ansOut.setCloudProviderName("");
                                 break;
                             }
@@ -276,6 +282,9 @@ public class DeployService {
                     ansOut.setCloudDeploymentDomain(domain);
                     ansOut.setProvisionID(deployInfo.getProvisionID());
                     ansOut = ansibleOutputService.save(ansOut);
+                    BenchmarkResult benchmarkResult = parseToBenchmarkResult(ansOut);
+                    benchmarkResultService.save(benchmarkResult);
+
                     outputListIds.add(ansOut.getId());
                 }
                 deployResponse.setAnsibleOutputList(outputListIds);
@@ -283,4 +292,102 @@ public class DeployService {
         }
         return deployResponse;
     }
+
+    private BenchmarkResult parseToBenchmarkResult(AnsibleOutput ansOut) {
+        AnsibleResult res = ansOut.getAnsibleResult();
+        if (res != null) {
+            List<String> cmdList = res.getCmd();
+            if (cmdList != null) {
+
+                switch (cmdList.get(0)) {
+                    case "sysbench":
+                        String[] out = res.getStdout().split("\n");
+                        String version = getSysbeanchVersion(out[0]);
+                        int numOfThreads = getNumberOfThreads(out[3]);
+                        Double executionTime = getExecutionTime(out[14]);
+                        int totalNumberOfEvents = getTotalNumberOfEvents(out[15]);
+
+                        long minExecutionTimePerRequest = getMinExecutionTimePerRequest(out[18]);
+                        long avgExecutionTimePerRequest = getAvgExecutionTimePerRequest(out[19]);
+                        long maxExecutionTimePerRequest = getMaxExecutionTimePerRequest(out[20]);
+                        long approx95Percentile = getApprox95Percentile(out[21]);
+
+                        double avgEventsPerThread = getAvgEventsPerThread(out[24]);
+                        double stddevEventsPerThread = getStddevEventsPerThread(out[24]);
+
+                        double avgExecTimePerThread = getAvgExecTimePerThread(out[24]);
+                        double stddevExecTimePerThread = getStddevExecTimePerThread(out[24]);
+
+                        SysbenchCPUBenchmark b = new SysbenchCPUBenchmark();
+                        b.setSysbenchVersion(version);
+                        b.setNumberOfThreads(numOfThreads);
+                        b.setExecutionTime(executionTime * 1000);
+                        b.setTotalNumberOfEvents(totalNumberOfEvents);
+                        b.setAvgEventsPerThread(avgEventsPerThread);
+                        b.setStddevEventsPerThread(stddevEventsPerThread);
+                        b.setAvgExecTimePerThread(avgExecTimePerThread * 1000);
+                        b.setStddevExecTimePerThread(stddevExecTimePerThread);
+                        b.setApprox95Percentile(approx95Percentile);
+                        b.setMinExecutionTimePerRequest(minExecutionTimePerRequest);
+                        b.setAvgExecTimePerThread(avgExecutionTimePerRequest);
+                        b.setMaxExecutionTimePerRequest(maxExecutionTimePerRequest);
+                        return b;
+
+                    default:
+                        return null;
+
+                }
+            }
+        }
+        return null;
+    }
+
+    private String getSysbeanchVersion(String string) {
+        return string.replaceAll("sysbench", "").replaceAll(":  multi-threaded system evaluation benchmark", "");
+    }
+
+    private int getNumberOfThreads(String string) {
+        return Integer.valueOf(string.replaceAll("Number of threads: ", ""));
+    }
+
+    private Double getExecutionTime(String string) {
+        return Double.valueOf(string.replaceAll("total time:", "").replaceAll("s", "").trim());
+    }
+
+    private int getTotalNumberOfEvents(String string) {
+        return Integer.valueOf(string.replaceAll("total number of events:", "").replaceAll("s", "").trim());
+    }
+
+    private Double getAvgEventsPerThread(String string) {
+        return Double.valueOf(string.replaceAll("events (avg/stddev):", "").replaceAll("s", "").trim().split("/")[0]);
+    }
+
+    private Double getStddevEventsPerThread(String string) {
+        return Double.valueOf(string.replaceAll("events (avg/stddev):", "").replaceAll("s", "").trim().split("/")[1]);
+    }
+
+    private Double getAvgExecTimePerThread(String string) {
+        return Double.valueOf(string.replaceAll("execution time (avg/stddev):", "").replaceAll("s", "").trim().split("/")[0]);
+    }
+
+    private Double getStddevExecTimePerThread(String string) {
+        return Double.valueOf(string.replaceAll("execution time (avg/stddev):", "").replaceAll("s", "").trim().split("/")[0]);
+    }
+
+    private long getMinExecutionTimePerRequest(String string) {
+        return Long.valueOf(string.replaceAll("min:", "").replaceAll("ms", "").trim());
+    }
+
+    private long getAvgExecutionTimePerRequest(String string) {
+        return Long.valueOf(string.replaceAll("avg:", "").replaceAll("ms", "").trim());
+    }
+
+    private long getMaxExecutionTimePerRequest(String string) {
+        return Long.valueOf(string.replaceAll("max:", "").replaceAll("ms", "").trim());
+    }
+
+    private long getApprox95Percentile(String string) {
+        return Long.valueOf(string.replaceAll("approx.  95 percentile::", "").replaceAll("ms", "").trim());
+    }
+
 }

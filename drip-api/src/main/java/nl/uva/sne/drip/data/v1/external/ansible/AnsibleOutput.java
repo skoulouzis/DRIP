@@ -49,7 +49,6 @@ public class AnsibleOutput extends OwnedObject {
     @JsonProperty("result")
     private AnsibleResult result;
 
-    @Indexed
     @JsonProperty("provisionID")
     private String provisionID;
 
@@ -64,7 +63,7 @@ public class AnsibleOutput extends OwnedObject {
     }
 
     @JsonProperty("result")
-    public AnsibleResult getAnsiibleResult() {
+    public AnsibleResult getAnsibleResult() {
         return result;
     }
 

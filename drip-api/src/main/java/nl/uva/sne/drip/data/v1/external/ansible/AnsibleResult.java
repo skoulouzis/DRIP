@@ -25,7 +25,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
-import org.springframework.data.mongodb.core.index.Indexed;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -33,20 +32,18 @@ public class AnsibleResult {
 
     @JsonProperty("msg")
     private String msg;
+    
     @JsonProperty("changed")
     private Boolean changed;
 
-    @Indexed
     @JsonProperty("end")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
     private Date end;
 
-    @Indexed
     @JsonProperty("start")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
     private Date start;
 
-    @Indexed
     @JsonProperty("delta")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss.SSSSSS")
     private Date delta;
@@ -60,12 +57,11 @@ public class AnsibleResult {
     @JsonProperty("cmd")
     private List<String> cmd;
 
-    @JsonProperty("stdout_lines")
-    private List<String> stdout_lines;
+//    @JsonProperty("stdout_lines")
+//    private List<String> stdout_lines;
 
-    @JsonProperty("results")
-    private List<AnsibleResult_> results = null;
-
+//    @JsonProperty("results")
+//    private List<AnsibleResult_> results = null;
     @JsonProperty("msg")
     public String getMsg() {
         return msg;
@@ -86,16 +82,15 @@ public class AnsibleResult {
         this.changed = changed;
     }
 
-    @JsonProperty("results")
-    public List<AnsibleResult_> getAnsibleResults() {
-        return results;
-    }
-
-    @JsonProperty("results")
-    public void setAnsibleResults(List<AnsibleResult_> results) {
-        this.results = results;
-    }
-
+//    @JsonProperty("results")
+//    public List<AnsibleResult_> getAnsibleResults() {
+//        return results;
+//    }
+//
+//    @JsonProperty("results")
+//    public void setAnsibleResults(List<AnsibleResult_> results) {
+//        this.results = results;
+//    }
     @JsonProperty("end")
     public Date getEnd() {
         return end;
@@ -156,14 +151,14 @@ public class AnsibleResult {
         this.delta = delta;
     }
 
-    @JsonProperty("stdout_lines")
-    public List<String> getStdout_lines() {
-        return stdout_lines;
-    }
-
-    @JsonProperty("stdout_lines")
-    public void setStdout_lines(List<String> stdout_lines) {
-        this.stdout_lines = stdout_lines;
-    }
+//    @JsonProperty("stdout_lines")
+//    public List<String> getStdout_lines() {
+//        return stdout_lines;
+//    }
+//
+//    @JsonProperty("stdout_lines")
+//    public void setStdout_lines(List<String> stdout_lines) {
+//        this.stdout_lines = stdout_lines;
+//    }
 
 }

@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 import nl.uva.sne.drip.data.v1.external.OwnedObject;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -29,9 +28,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class BenchmarkResult extends OwnedObject {
 
-    @Indexed
     private String host;
-    @Indexed
+
     private String cloudProvider;
 
     @JsonProperty("end")

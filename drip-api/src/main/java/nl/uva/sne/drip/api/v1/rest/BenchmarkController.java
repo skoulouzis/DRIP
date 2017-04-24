@@ -21,73 +21,69 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.api.service.AnsibleOutputService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import nl.uva.sne.drip.api.service.BenchmarkResultService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v1.external.ansible.AnsibleOutput;
+import nl.uva.sne.drip.data.v1.external.ansible.BenchmarkResult;
+import nl.uva.sne.drip.data.v1.external.ansible.BenchmarkResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ *
+ * @author S. Koulouzis
+ */
 @RestController
-@RequestMapping("/user/v1.0/deployer/ansible")
+@RequestMapping("/user/v1.0/benchmark")
 @Controller
 @StatusCodes({
     @ResponseCode(code = 401, condition = "Bad credentials")
 })
-public class AnsibleOutputController {
+public class BenchmarkController {
 
-    @Autowired
-    private AnsibleOutputService ansibleOutputService;
+    private BenchmarkResultService benchmarkResultService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    AnsibleOutput get(@PathVariable("id") String id) {
-        AnsibleOutput resp = ansibleOutputService.findOne(id);
+    BenchmarkResult get(@PathVariable("id") String id) {
+        BenchmarkResult resp = benchmarkResultService.findOne(id);
         if (resp == null) {
             throw new NotFoundException();
         }
         return resp;
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"command"})
+    @RequestMapping(method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    List<AnsibleOutput> getByCommand(@RequestParam(value = "command") String command) {
-        return ansibleOutputService.findByCommand(command);
+    List<BenchmarkResult> getBySysbench() {
+        return benchmarkResultService.findBySysbench();
     }
 
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {
-        List<AnsibleOutput> all = ansibleOutputService.findAll();
+        List<BenchmarkResult> all = benchmarkResultService.findAll();
         List<String> ids = new ArrayList<>(all.size());
-        for (AnsibleOutput pi : all) {
+        for (BenchmarkResult pi : all) {
             ids.add(pi.getId());
         }
         return ids;
-    }
-
-    @RequestMapping(value = "/commands", method = RequestMethod.GET)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    List<String> getCommands() {
-        return ansibleOutputService.findAllCommands();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        AnsibleOutput Key = ansibleOutputService.findOne(id);
+        BenchmarkResult Key = benchmarkResultService.findOne(id);
         if (Key != null) {
-            ansibleOutputService.delete(id);
+            benchmarkResultService.delete(id);
             return "Deleted : " + id;
         }
         throw new NotFoundException();
@@ -97,8 +93,7 @@ public class AnsibleOutputController {
     @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
     String deleteAll() {
-        ansibleOutputService.deleteAll();
+        benchmarkResultService.deleteAll();
         return "Done";
     }
-
 }
