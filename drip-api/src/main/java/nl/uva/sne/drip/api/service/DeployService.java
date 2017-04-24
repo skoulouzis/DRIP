@@ -37,8 +37,8 @@ import nl.uva.sne.drip.data.v1.external.DeployRequest;
 import nl.uva.sne.drip.data.v1.external.DeployParameter;
 import nl.uva.sne.drip.data.v1.external.DeployResponse;
 import nl.uva.sne.drip.data.v1.external.Key;
-import nl.uva.sne.drip.data.v1.external.Message;
-import nl.uva.sne.drip.data.v1.external.MessageParameter;
+import nl.uva.sne.drip.data.internal.Message;
+import nl.uva.sne.drip.data.internal.MessageParameter;
 import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
 import nl.uva.sne.drip.data.v1.external.User;
 import org.json.JSONException;
@@ -232,6 +232,7 @@ public class DeployService {
 
     private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException {
         DeployResponse deployResponse = new DeployResponse();
+        deployResponse.setCreationDate(System.currentTimeMillis());
 
         for (MessageParameter p : params) {
             String name = p.getName();
@@ -242,6 +243,7 @@ public class DeployService {
                 k.setKey(value);
                 k.setType(Key.KeyType.PRIVATE);
                 KeyPair pair = new KeyPair();
+                pair.setCreationDate(System.currentTimeMillis());
                 pair.setPrivateKey(k);
                 deployResponse.setKey(pair);
                 save(deployResponse);

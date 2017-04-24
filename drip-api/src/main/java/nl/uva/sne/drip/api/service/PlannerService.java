@@ -29,8 +29,8 @@ import nl.uva.sne.drip.api.dao.PlanDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
-import nl.uva.sne.drip.data.v1.external.Message;
-import nl.uva.sne.drip.data.v1.external.MessageParameter;
+import nl.uva.sne.drip.data.internal.Message;
+import nl.uva.sne.drip.data.internal.MessageParameter;
 import nl.uva.sne.drip.data.v1.external.PlanResponse;
 import nl.uva.sne.drip.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
@@ -86,6 +86,7 @@ public class PlannerService {
 
             SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", "swarm");
             PlanResponse topLevel = new PlanResponse();
+            topLevel.setCreationDate(System.currentTimeMillis());
             topLevel.setLevel(0);
             topLevel.setToscaID(toscaId);
             topLevel.setName("planner_output_all.yml");
@@ -94,6 +95,7 @@ public class PlannerService {
             Set<String> loweLevelPlansIDs = new HashSet<>();
             for (String lowLevelNames : map.keySet()) {
                 PlanResponse lowLevelPlan = new PlanResponse();
+                lowLevelPlan.setCreationDate(System.currentTimeMillis());
                 lowLevelPlan.setLevel(1);
                 lowLevelPlan.setToscaID(toscaId);
                 lowLevelPlan.setName(lowLevelNames);

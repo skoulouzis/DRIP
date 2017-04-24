@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.data.v1.external;
+package nl.uva.sne.drip.data.internal;
 
 import java.io.Serializable;
 import java.util.Map;

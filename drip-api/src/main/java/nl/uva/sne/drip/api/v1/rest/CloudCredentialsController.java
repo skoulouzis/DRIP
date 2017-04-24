@@ -132,6 +132,7 @@ public class CloudCredentialsController {
                 attributes.put("domain_name", FilenameUtils.removeExtension(originalFileName));
                 key.setAttributes(attributes);
                 KeyPair pair = new KeyPair();
+                pair.setCreationDate(System.currentTimeMillis());
                 pair.setPrivateKey(key);
                 pair = keyService.save(pair);
                 loginKeyIDs.add(pair.getId());
@@ -206,15 +207,16 @@ public class CloudCredentialsController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     CloudCredentials geta() {
-        CloudCredentials c = new CloudCredentials();
-        c.setAccessKeyId("AKIAITY3KHZUQ6M7YBSQ");
-        c.setCloudProviderName("ec2");
-        c.setSecretKey("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");
+        CloudCredentials cloudCredentials = new CloudCredentials();
+        cloudCredentials.setCreationDate(System.currentTimeMillis());
+        cloudCredentials.setAccessKeyId("AKIAITY3KHZUQ6M7YBSQ");
+        cloudCredentials.setCloudProviderName("ec2");
+        cloudCredentials.setSecretKey("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");
         List<String> keyIDs = new ArrayList<>();
         keyIDs.add("58da4c91f7b43a3282cacdbb");
         keyIDs.add("58da4d2af7b43a3282cacdbd");
-        c.setKeyIDs(keyIDs);
-        return c;
+        cloudCredentials.setKeyIDs(keyIDs);
+        return cloudCredentials;
     }
 
 }

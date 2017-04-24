@@ -32,6 +32,8 @@ public class OwnedObject {
     @Id
     private String id;
 
+    private Long creationDate;
+
     @NotNull
     private String owner;
 
@@ -62,6 +64,20 @@ public class OwnedObject {
     @DocumentationExample("58e3946e0fb4f562d84ba1ad")
     public String getId() {
         return id;
+    }
+
+    /**
+     * @return the creationDate
+     */
+    public Long getCreationDate() {
+        return creationDate;
+    }
+
+    /**
+     * @param creationDate the creationDate to set
+     */
+    public void setCreationDate(Long creationDate) {
+        this.creationDate = creationDate;
     }
 
 }
