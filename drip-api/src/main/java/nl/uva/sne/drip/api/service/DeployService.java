@@ -314,8 +314,8 @@ public class DeployService {
                         double avgEventsPerThread = getAvgEventsPerThread(out[24]);
                         double stddevEventsPerThread = getStddevEventsPerThread(out[24]);
 
-                        double avgExecTimePerThread = getAvgExecTimePerThread(out[24]);
-                        double stddevExecTimePerThread = getStddevExecTimePerThread(out[24]);
+                        double avgExecTimePerThread = getAvgExecTimePerThread(out[25]);
+                        double stddevExecTimePerThread = getStddevExecTimePerThread(out[25]);
 
                         SysbenchCPUBenchmark b = new SysbenchCPUBenchmark();
                         b.setSysbenchVersion(version);
