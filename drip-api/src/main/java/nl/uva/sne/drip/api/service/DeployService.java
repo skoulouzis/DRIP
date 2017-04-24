@@ -308,10 +308,10 @@ public class DeployService {
                         Double executionTime = getExecutionTime(out[14]);
                         int totalNumberOfEvents = getTotalNumberOfEvents(out[15]);
 
-                        long minExecutionTimePerRequest = getMinExecutionTimePerRequest(out[18]);
-                        long avgExecutionTimePerRequest = getAvgExecutionTimePerRequest(out[19]);
-                        long maxExecutionTimePerRequest = getMaxExecutionTimePerRequest(out[20]);
-                        long approx95Percentile = getApprox95Percentile(out[21]);
+                        double minExecutionTimePerRequest = getMinExecutionTimePerRequest(out[18]);
+                        double avgExecutionTimePerRequest = getAvgExecutionTimePerRequest(out[19]);
+                        double maxExecutionTimePerRequest = getMaxExecutionTimePerRequest(out[20]);
+                        double approx95Percentile = getApprox95Percentile(out[21]);
 
                         double avgEventsPerThread = getAvgEventsPerThread(out[24]);
                         double stddevEventsPerThread = getStddevEventsPerThread(out[24]);
@@ -333,6 +333,7 @@ public class DeployService {
                         b.setAvgExecTimePerThread(avgExecutionTimePerRequest);
                         b.setMaxExecutionTimePerRequest(maxExecutionTimePerRequest);
                         b = (SysbenchCPUBenchmark) benchmarkResultService.save(b);
+                        b.setAnsibleOutputID(ansOut.getId());
                         return b;
 
                     default:
@@ -376,20 +377,20 @@ public class DeployService {
         return Double.valueOf(string.replaceAll("execution time (avg/stddev):", "").replaceAll("s", "").trim().split("/")[0]);
     }
 
-    private long getMinExecutionTimePerRequest(String string) {
-        return Long.valueOf(string.replaceAll("min:", "").replaceAll("ms", "").trim());
+    private double getMinExecutionTimePerRequest(String string) {
+        return Double.valueOf(string.replaceAll("min:", "").replaceAll("ms", "").trim());
     }
 
-    private long getAvgExecutionTimePerRequest(String string) {
-        return Long.valueOf(string.replaceAll("avg:", "").replaceAll("ms", "").trim());
+    private double getAvgExecutionTimePerRequest(String string) {
+        return Double.valueOf(string.replaceAll("avg:", "").replaceAll("ms", "").trim());
     }
 
-    private long getMaxExecutionTimePerRequest(String string) {
-        return Long.valueOf(string.replaceAll("max:", "").replaceAll("ms", "").trim());
+    private double getMaxExecutionTimePerRequest(String string) {
+        return Double.valueOf(string.replaceAll("max:", "").replaceAll("ms", "").trim());
     }
 
-    private long getApprox95Percentile(String string) {
-        return Long.valueOf(string.replaceAll("approx.  95 percentile::", "").replaceAll("ms", "").trim());
+    private double getApprox95Percentile(String string) {
+        return Double.valueOf(string.replaceAll("approx.  95 percentile::", "").replaceAll("ms", "").trim());
     }
 
 }

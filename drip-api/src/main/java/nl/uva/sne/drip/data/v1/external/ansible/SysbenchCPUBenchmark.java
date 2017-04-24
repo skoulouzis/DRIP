@@ -38,6 +38,7 @@ public class SysbenchCPUBenchmark extends BenchmarkResult {
     private double avgExecutionTimePerRequest;
     private double maxExecutionTimePerRequest;
     private double approx95Percentile;
+    private String ansibleOutputID;
 
     /**
      * @return the sysbenchVersion
@@ -205,6 +206,17 @@ public class SysbenchCPUBenchmark extends BenchmarkResult {
      */
     public void setApprox95Percentile(double approx95Percentile) {
         this.approx95Percentile = approx95Percentile;
+    }
+
+    public void setAnsibleOutputID(String ansibleOutputID) {
+        this.ansibleOutputID = ansibleOutputID;
+    }
+
+    /**
+     * @return the ansibleOutputID
+     */
+    public String getAnsibleOutputID() {
+        return ansibleOutputID;
     }
 
 }
