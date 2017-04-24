@@ -30,7 +30,7 @@ public class BenchmarkResult extends OwnedObject {
 
     private String host;
 
-    private String cloudProvider;
+    private String cloudDeploymentDomain;
 
     @JsonProperty("end")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
@@ -59,17 +59,17 @@ public class BenchmarkResult extends OwnedObject {
     }
 
     /**
-     * @return the cloudProvider
+     * @return the cloudDeploymentDomain
      */
-    public String getCloudProvider() {
-        return cloudProvider;
+    public String getCloudDeploymentDomain() {
+        return cloudDeploymentDomain;
     }
 
     /**
-     * @param cloudProvider the cloudProvider to set
+     * @param cloudDeploymentDomain the cloudDeploymentDomain to set
      */
-    public void setCloudProvider(String cloudProvider) {
-        this.cloudProvider = cloudProvider;
+    public void setCloudDeploymentDomain(String cloudDeploymentDomain) {
+        this.cloudDeploymentDomain = cloudDeploymentDomain;
     }
 
     /**

@@ -332,6 +332,12 @@ public class DeployService {
                         b.setMaxExecutionTimePerRequest(maxExecutionTimePerRequest);
                         b = (SysbenchCPUBenchmark) benchmarkResultService.save(b);
                         b.setAnsibleOutputID(ansOut.getId());
+
+                        b.setCloudDeploymentDomain(ansOut.getCloudDeploymentDomain());
+                        b.setDelta(ansOut.getAnsibleResult().getDelta());
+                        b.setStart(ansOut.getAnsibleResult().getStart());
+                        b.setEnd(ansOut.getAnsibleResult().getEnd());
+                        b.setHost(ansOut.getHost());
                         return b;
 
                     default:
