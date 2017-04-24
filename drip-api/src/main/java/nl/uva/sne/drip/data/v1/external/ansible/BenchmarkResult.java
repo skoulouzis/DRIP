@@ -33,6 +33,10 @@ public class BenchmarkResult extends OwnedObject {
     private String host;
     @Indexed
     private String cloudDeploymentDomain;
+    
+        @Indexed
+    @JsonProperty("vmType")
+    private String vmType;
 
     @Indexed
     @JsonProperty("end")
@@ -117,6 +121,20 @@ public class BenchmarkResult extends OwnedObject {
      */
     public void setDelta(Date delta) {
         this.delta = delta;
+    }
+
+    /**
+     * @return the vmType
+     */
+    public String getVmType() {
+        return vmType;
+    }
+
+    /**
+     * @param vmType the vmType to set
+     */
+    public void setVmType(String vmType) {
+        this.vmType = vmType;
     }
 
 }

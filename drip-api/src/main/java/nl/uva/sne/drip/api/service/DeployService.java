@@ -343,6 +343,7 @@ public class DeployService {
                         b.setStart(ansOut.getAnsibleResult().getStart());
                         b.setEnd(ansOut.getAnsibleResult().getEnd());
                         b.setHost(ansOut.getHost());
+                        b.setVmType(ansOut.getVmType());
                         b = (SysbenchCPUBenchmark) benchmarkResultService.save(b);
                         return b;
 
