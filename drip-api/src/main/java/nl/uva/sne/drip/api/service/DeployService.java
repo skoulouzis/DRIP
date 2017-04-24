@@ -282,8 +282,9 @@ public class DeployService {
                     ansOut.setCloudDeploymentDomain(domain);
                     ansOut.setProvisionID(deployInfo.getProvisionID());
                     ansOut = ansibleOutputService.save(ansOut);
-                    BenchmarkResult benchmarkResult = parseToBenchmarkResult(ansOut);
-                    benchmarkResultService.save(benchmarkResult);
+                    BenchmarkResult benchmarkResult = parseSaveBenchmarkResult(ansOut);
+                    
+                    
 
                     outputListIds.add(ansOut.getId());
                 }
@@ -293,7 +294,7 @@ public class DeployService {
         return deployResponse;
     }
 
-    private BenchmarkResult parseToBenchmarkResult(AnsibleOutput ansOut) {
+    private BenchmarkResult parseSaveBenchmarkResult(AnsibleOutput ansOut) {
         AnsibleResult res = ansOut.getAnsibleResult();
         if (res != null) {
             List<String> cmdList = res.getCmd();
@@ -331,6 +332,7 @@ public class DeployService {
                         b.setMinExecutionTimePerRequest(minExecutionTimePerRequest);
                         b.setAvgExecTimePerThread(avgExecutionTimePerRequest);
                         b.setMaxExecutionTimePerRequest(maxExecutionTimePerRequest);
+                        b = (SysbenchCPUBenchmark) benchmarkResultService.save(b);
                         return b;
 
                     default:
