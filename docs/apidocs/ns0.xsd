@@ -493,6 +493,8 @@ the DAO saves the object based on the principal how made the call]]>
                 </xs:documentation>
               </xs:annotation>
               </xs:element>
+              <xs:element name="creationDate" type="xs:long" minOccurs="0">
+              </xs:element>
       </xs:sequence>
 </xs:complexType>
 
@@ -725,8 +727,6 @@ class]]>
       <xs:sequence>
               <xs:element name="host" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="ansiibleResult" type="ansibleResult" minOccurs="0">
-              </xs:element>
               <xs:element name="cloudDeploymentDomain" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="vmType" type="xs:string" minOccurs="0">
@@ -738,59 +738,13 @@ class]]>
   </xs:complexContent>
 </xs:complexType>
 
-<xs:complexType name="ansibleResult">
-       <xs:sequence>
-              <xs:element name="msg" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="changed" type="xs:boolean" minOccurs="0">
-              </xs:element>
-              <xs:element name="ansibleResults" type="ansibleResult_" minOccurs="0" maxOccurs="unbounded">
-              </xs:element>
-              <xs:element name="end" type="xs:dateTime" minOccurs="0">
-              </xs:element>
-              <xs:element name="stdout" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="cmd" type="xs:string" minOccurs="0" maxOccurs="unbounded">
-              </xs:element>
-              <xs:element name="start" type="xs:dateTime" minOccurs="0">
-              </xs:element>
-              <xs:element name="stderr" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="delta" type="xs:dateTime" minOccurs="0">
-              </xs:element>
-              <xs:element name="stdout_lines" type="xs:string" minOccurs="0" maxOccurs="unbounded">
-              </xs:element>
-      </xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="ansibleResult_">
-       <xs:sequence>
-              <xs:element name="ansibleParsed" type="xs:boolean" minOccurs="0">
-              </xs:element>
-              <xs:element name="changed" type="xs:boolean" minOccurs="0">
-              </xs:element>
-              <xs:element name="ansibleNoLog" type="xs:boolean" minOccurs="0">
-              </xs:element>
-              <xs:element name="cacheUpdated" type="xs:boolean" minOccurs="0">
-              </xs:element>
-              <xs:element name="ansibleItemAnsibleResult" type="xs:boolean" minOccurs="0">
-              </xs:element>
-              <xs:element name="item" type="xs:string" minOccurs="0" maxOccurs="unbounded">
-              </xs:element>
-              <xs:element name="invocation" type="invocation" minOccurs="0">
-              </xs:element>
-              <xs:element name="cacheUpdateTime" type="xs:int" minOccurs="0">
-              </xs:element>
-      </xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="benchmarkResult">
    <xs:complexContent>
     <xs:extension base="ownedObject">
       <xs:sequence>
               <xs:element name="host" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="cloudProvider" type="xs:string" minOccurs="0">
+              <xs:element name="cloudDeploymentDomain" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="end" type="xs:dateTime" minOccurs="0">
               </xs:element>
@@ -798,53 +752,11 @@ class]]>
               </xs:element>
               <xs:element name="delta" type="xs:dateTime" minOccurs="0">
               </xs:element>
+              <xs:element name="vmType" type="xs:string" minOccurs="0">
+              </xs:element>
       </xs:sequence>
     </xs:extension>
   </xs:complexContent>
-</xs:complexType>
-
-<xs:complexType name="invocation">
-       <xs:sequence>
-              <xs:element name="moduleName" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="moduleArgs" type="moduleArgs" minOccurs="0">
-              </xs:element>
-      </xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="moduleArgs">
-       <xs:sequence>
-              <xs:element name="dpkgOptions" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="autoremove" type="xs:boolean" minOccurs="0">
-              </xs:element>
-              <xs:element name="force" type="xs:boolean" minOccurs="0">
-              </xs:element>
-              <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded">
-              </xs:element>
-              <xs:element name="installRecommends" type="xs:anyType" minOccurs="0">
-              </xs:element>
-              <xs:element name="package" type="xs:string" minOccurs="0" maxOccurs="unbounded">
-              </xs:element>
-              <xs:element name="purge" type="xs:boolean" minOccurs="0">
-              </xs:element>
-              <xs:element name="allowUnauthenticated" type="xs:boolean" minOccurs="0">
-              </xs:element>
-              <xs:element name="state" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="upgrade" type="xs:anyType" minOccurs="0">
-              </xs:element>
-              <xs:element name="updateCache" type="xs:boolean" minOccurs="0">
-              </xs:element>
-              <xs:element name="deb" type="xs:anyType" minOccurs="0">
-              </xs:element>
-              <xs:element name="onlyUpgrade" type="xs:boolean" minOccurs="0">
-              </xs:element>
-              <xs:element name="defaultRelease" type="xs:anyType" minOccurs="0">
-              </xs:element>
-              <xs:element name="cacheValidTime" type="xs:int" minOccurs="0">
-              </xs:element>
-      </xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="sysbenchCPUBenchmark">
@@ -859,13 +771,23 @@ class]]>
               </xs:element>
               <xs:element name="executionTime" type="xs:double" minOccurs="1">
               </xs:element>
-              <xs:element name="avgEventsPerThread" type="xs:int" minOccurs="1">
+              <xs:element name="avgEventsPerThread" type="xs:double" minOccurs="1">
               </xs:element>
-              <xs:element name="stddevEventsPerThread" type="xs:int" minOccurs="1">
+              <xs:element name="stddevEventsPerThread" type="xs:double" minOccurs="1">
               </xs:element>
-              <xs:element name="avgExecTimePerThread" type="xs:int" minOccurs="1">
+              <xs:element name="avgExecTimePerThread" type="xs:double" minOccurs="1">
               </xs:element>
-              <xs:element name="stddevExecTimePerThread" type="xs:int" minOccurs="1">
+              <xs:element name="stddevExecTimePerThread" type="xs:double" minOccurs="1">
+              </xs:element>
+              <xs:element name="minExecutionTimePerRequest" type="xs:double" minOccurs="1">
+              </xs:element>
+              <xs:element name="avgExecutionTimePerRequest" type="xs:double" minOccurs="1">
+              </xs:element>
+              <xs:element name="maxExecutionTimePerRequest" type="xs:double" minOccurs="1">
+              </xs:element>
+              <xs:element name="approx95Percentile" type="xs:double" minOccurs="1">
+              </xs:element>
+              <xs:element name="ansibleOutputID" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
     </xs:extension>

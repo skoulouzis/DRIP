@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-  <title>drip-api: AnsibleOutputController</title>
+  <title>drip-api: BenchmarkController</title>
 
   <!-- Mobile viewport optimized: j.mp/bplateviewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,7 +35,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.html">drip-api: AnsibleOutputController</a>
+        <a class="navbar-brand" href="index.html">drip-api: BenchmarkController</a>
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right">
@@ -51,12 +51,11 @@
     <div class="row">
       <div class="col-sm-3 col-md-2 sidebar" id="apinav">
         <ul class="nav nav-sidebar">
-          <li><a href="#resource_AnsibleOutputController_getByCommand_GET"><abbr title="GET /user/v1.0/deployer/ansible">GET /user/v1.0/deployer/ansibl...</abbr></a></li>
-          <li><a href="#resource_AnsibleOutputController_deleteAll_DELETE"><abbr title="DELETE /user/v1.0/deployer/ansible/all">DELETE /user/v1.0/deployer/ans...</abbr></a></li>
-          <li><a href="#resource_AnsibleOutputController_getCommands_GET"><abbr title="GET /user/v1.0/deployer/ansible/commands">GET /user/v1.0/deployer/ansibl...</abbr></a></li>
-          <li><a href="#resource_AnsibleOutputController_getIds_GET"><abbr title="GET /user/v1.0/deployer/ansible/ids">GET /user/v1.0/deployer/ansibl...</abbr></a></li>
-          <li><a href="#resource_AnsibleOutputController_delete_DELETE"><abbr title="DELETE /user/v1.0/deployer/ansible/{id}">DELETE /user/v1.0/deployer/ans...</abbr></a></li>
-          <li><a href="#resource_AnsibleOutputController_get_GET"><abbr title="GET /user/v1.0/deployer/ansible/{id}">GET /user/v1.0/deployer/ansibl...</abbr></a></li>
+          <li><a href="#resource_BenchmarkController_getBySysbench_GET">GET /user/v1.0/benchmark</a></li>
+          <li><a href="#resource_BenchmarkController_deleteAll_DELETE"><abbr title="DELETE /user/v1.0/benchmark/all">DELETE /user/v1.0/benchmark/al...</abbr></a></li>
+          <li><a href="#resource_BenchmarkController_getIds_GET">GET /user/v1.0/benchmark/ids</a></li>
+          <li><a href="#resource_BenchmarkController_delete_DELETE"><abbr title="DELETE /user/v1.0/benchmark/{id}">DELETE /user/v1.0/benchmark/{i...</abbr></a></li>
+          <li><a href="#resource_BenchmarkController_get_GET">GET /user/v1.0/benchmark/{id}</a></li>
           <li class="divider"></li>
           <li class="text-right"><a href="#top"><small>Back to Top</small></a></li>
         </ul>
@@ -66,15 +65,15 @@
         <ol class="breadcrumb" id="top">
           <li class="active dropdown"><a href="index.html">Home</a></li>
           <li class="active dropdown"><a href="resources.html">Resources</a></li>
-          <li class="dropdown"><a href="resource_AnsibleOutputController.html">AnsibleOutputController</a></li>
+          <li class="dropdown"><a href="resource_BenchmarkController.html">BenchmarkController</a></li>
         </ol>
 
-      <h1 class="page-header">AnsibleOutputController <small>Resource</small></h1>
+      <h1 class="page-header">BenchmarkController <small>Resource</small></h1>
 
       <p></p>
 
-      <div id="resource_AnsibleOutputController_getByCommand_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ansible <a href="../user/v1.0/deployer/ansible" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+      <div id="resource_BenchmarkController_getBySysbench_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/benchmark <a href="../user/v1.0/benchmark" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p></p>
 
@@ -82,24 +81,6 @@
           <dt>Security Roles Allowed</dt>
           <dd>ADMIN, USER</dd>
         </dl>
-
-        <table class="table resource-parameters">
-          <caption>Request Parameters</caption>
-          <thead>
-          <tr>
-            <th>name</th>
-            <th>type</th>
-            <th>description</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td><span class="parameter-name">command</span></td>
-            <td>query</td>
-            <td><span class="parameter-description">&nbsp;</span></td>
-          </tr>
-          </tbody>
-        </table>
 
         <table class="table resource-response-codes">
           <caption>Response Codes</caption>
@@ -128,12 +109,12 @@
           <tbody>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
-            <td><span class="datatype-reference">array of <a href="json_AnsibleOutput.html">AnsibleOutput</a>
+            <td><span class="datatype-reference">array of <a href="json_BenchmarkResult.html">BenchmarkResult</a>
  (JSON)</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
-            <td><span class="datatype-reference">list of <a href="xml_ns0_ansibleOutput.html">ansibleOutput</a>
+            <td><span class="datatype-reference">list of <a href="xml_ns0_benchmarkResult.html">benchmarkResult</a>
  (XML)</span></td>
           </tr>
           </tbody>
@@ -145,7 +126,7 @@
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-GET /user/v1.0/deployer/ansible
+GET /user/v1.0/benchmark
 Accept: application/json
 
               </pre>
@@ -158,20 +139,12 @@ Content-Type: application/json
 
                 <code class="prettyprint language-js">
 [ {
-  &quot;host&quot; : &quot;...&quot;,
-  &quot;result&quot; : {
-    &quot;msg&quot; : &quot;...&quot;,
-    &quot;changed&quot; : true,
-    &quot;end&quot; : &quot;...&quot;,
-    &quot;start&quot; : &quot;...&quot;,
-    &quot;delta&quot; : &quot;...&quot;,
-    &quot;stdout&quot; : &quot;...&quot;,
-    &quot;stderr&quot; : &quot;...&quot;,
-    &quot;cmd&quot; : [ &quot;...&quot;, &quot;...&quot; ]
-  },
   &quot;vmType&quot; : &quot;...&quot;,
+  &quot;end&quot; : &quot;...&quot;,
+  &quot;start&quot; : &quot;...&quot;,
+  &quot;delta&quot; : &quot;...&quot;,
+  &quot;host&quot; : &quot;...&quot;,
   &quot;cloudDeploymentDomain&quot; : &quot;...&quot;,
-  &quot;provisionID&quot; : &quot;...&quot;,
   &quot;owner&quot; : &quot;user1&quot;,
   &quot;id&quot; : &quot;58e3946e0fb4f562d84ba1ad&quot;,
   &quot;creationDate&quot; : 12345
@@ -183,8 +156,8 @@ Content-Type: application/json
         </div>
       </div>
 
-      <div id="resource_AnsibleOutputController_deleteAll_DELETE">
-        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/deployer/ansible/all <a href="../user/v1.0/deployer/ansible/all" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+      <div id="resource_BenchmarkController_deleteAll_DELETE">
+        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/benchmark/all <a href="../user/v1.0/benchmark/all" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p></p>
 
@@ -237,7 +210,7 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-DELETE /user/v1.0/deployer/ansible/all
+DELETE /user/v1.0/benchmark/all
 Accept: application/json
 
               </pre>
@@ -257,8 +230,8 @@ Content-Type: application/json
         </div>
       </div>
 
-      <div id="resource_AnsibleOutputController_getCommands_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ansible/commands <a href="../user/v1.0/deployer/ansible/commands" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+      <div id="resource_BenchmarkController_getIds_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/benchmark/ids <a href="../user/v1.0/benchmark/ids" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p></p>
 
@@ -311,7 +284,7 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-GET /user/v1.0/deployer/ansible/commands
+GET /user/v1.0/benchmark/ids
 Accept: application/json
 
               </pre>
@@ -331,82 +304,8 @@ Content-Type: application/json
         </div>
       </div>
 
-      <div id="resource_AnsibleOutputController_getIds_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ansible/ids <a href="../user/v1.0/deployer/ansible/ids" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
-
-        <p></p>
-
-        <dl class="dl-horizontal">
-          <dt>Security Roles Allowed</dt>
-          <dd>ADMIN, USER</dd>
-        </dl>
-
-        <table class="table resource-response-codes">
-          <caption>Response Codes</caption>
-          <thead>
-          <tr>
-            <th>code</th>
-            <th>condition</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td><span class="label label-warning response-code">401</span></td>
-            <td><span class="response-condition">Bad credentials</span></td>
-          </tr>
-          </tbody>
-        </table>
-
-        <table class="table resource-response-body">
-          <caption>Response Body</caption>
-          <thead>
-          <tr>
-            <th>media type</th>
-            <th>data type</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
-            <td><span class="datatype-reference">array of string
- (JSON)</span></td>
-          </tr>
-          <tr>
-            <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
-            <td><span class="datatype-reference">list of string
- (XML)</span></td>
-          </tr>
-          </tbody>
-        </table>
-        <h4>Example</h4>
-
-        <div class="container-fluid example panel">
-          <div class="row panel-body">
-            <div class="col-md-6">
-              <h5>Request</h5>
-              <pre>
-GET /user/v1.0/deployer/ansible/ids
-Accept: application/json
-
-              </pre>
-            </div>
-            <div class="col-md-6">
-              <h5>Response</h5>
-              <pre>
-HTTP/1.1 200 Looks Good
-Content-Type: application/json
-
-                <code class="prettyprint language-txt">
-...
-                </code>
-              </pre>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="resource_AnsibleOutputController_delete_DELETE">
-        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/deployer/ansible/{id} <a href="../user/v1.0/deployer/ansible/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+      <div id="resource_BenchmarkController_delete_DELETE">
+        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/benchmark/{id} <a href="../user/v1.0/benchmark/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p></p>
 
@@ -477,7 +376,7 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-DELETE /user/v1.0/deployer/ansible/{id}
+DELETE /user/v1.0/benchmark/{id}
 Accept: application/json
 
               </pre>
@@ -497,8 +396,8 @@ Content-Type: application/json
         </div>
       </div>
 
-      <div id="resource_AnsibleOutputController_get_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ansible/{id} <a href="../user/v1.0/deployer/ansible/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+      <div id="resource_BenchmarkController_get_GET">
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/benchmark/{id} <a href="../user/v1.0/benchmark/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p></p>
 
@@ -552,12 +451,12 @@ Content-Type: application/json
           <tbody>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/json&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/json</span></abbr></td>
-            <td><span class="datatype-reference"><a href="json_AnsibleOutput.html">AnsibleOutput</a>
+            <td><span class="datatype-reference"><a href="json_BenchmarkResult.html">BenchmarkResult</a>
  (JSON)</span></td>
           </tr>
           <tr>
             <td><abbr data-toggle="tooltip" data-placement="top" title="Use the &quot;Accept: application/xml&quot; HTTP header to request that this media type be provided by the server."><span class="response-type">application/xml</span></abbr></td>
-            <td><span class="datatype-reference"><a href="xml_ns0_ansibleOutput.html">ansibleOutput</a>
+            <td><span class="datatype-reference"><a href="xml_ns0_benchmarkResult.html">benchmarkResult</a>
  (XML)</span></td>
           </tr>
           </tbody>
@@ -569,7 +468,7 @@ Content-Type: application/json
             <div class="col-md-6">
               <h5>Request</h5>
               <pre>
-GET /user/v1.0/deployer/ansible/{id}
+GET /user/v1.0/benchmark/{id}
 Accept: application/json
 
               </pre>
@@ -582,20 +481,12 @@ Content-Type: application/json
 
                 <code class="prettyprint language-js">
 {
-  &quot;host&quot; : &quot;...&quot;,
-  &quot;result&quot; : {
-    &quot;msg&quot; : &quot;...&quot;,
-    &quot;changed&quot; : true,
-    &quot;end&quot; : &quot;...&quot;,
-    &quot;start&quot; : &quot;...&quot;,
-    &quot;delta&quot; : &quot;...&quot;,
-    &quot;stdout&quot; : &quot;...&quot;,
-    &quot;stderr&quot; : &quot;...&quot;,
-    &quot;cmd&quot; : [ &quot;...&quot;, &quot;...&quot; ]
-  },
   &quot;vmType&quot; : &quot;...&quot;,
+  &quot;end&quot; : &quot;...&quot;,
+  &quot;start&quot; : &quot;...&quot;,
+  &quot;delta&quot; : &quot;...&quot;,
+  &quot;host&quot; : &quot;...&quot;,
   &quot;cloudDeploymentDomain&quot; : &quot;...&quot;,
-  &quot;provisionID&quot; : &quot;...&quot;,
   &quot;owner&quot; : &quot;user1&quot;,
   &quot;id&quot; : &quot;58e3946e0fb4f562d84ba1ad&quot;,
   &quot;creationDate&quot; : 12345

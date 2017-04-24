@@ -87,9 +87,45 @@
         </thead>
         <tbody>
         <tr>
+          <td>  <span class="property-name">ansibleOutputID</span>
+</td>
+          <td>  <span class="datatype-reference">string
+</span>
+</td>
+          <td>  <span class="property-type">element
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo">
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">0/1
+</span>
+</td>
+          <td>  <span class="property-description">the ansibleOutputID</span>
+</td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">approx95Percentile</span>
+</td>
+          <td>  <span class="datatype-reference">double
+</span>
+</td>
+          <td>  <span class="property-type">element
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo">
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">1/1
+</span>
+</td>
+          <td>  <span class="property-description">the approx95Percentile</span>
+</td>
+        </tr>
+        <tr>
           <td>  <span class="property-name">avgEventsPerThread</span>
 </td>
-          <td>  <span class="datatype-reference">int
+          <td>  <span class="datatype-reference">double
 </span>
 </td>
           <td>  <span class="property-type">element
@@ -107,7 +143,7 @@
         <tr>
           <td>  <span class="property-name">avgExecTimePerThread</span>
 </td>
-          <td>  <span class="datatype-reference">int
+          <td>  <span class="datatype-reference">double
 </span>
 </td>
           <td>  <span class="property-type">element
@@ -120,6 +156,24 @@
 </span>
 </td>
           <td>  <span class="property-description">the avgExecTimePerThread</span>
+</td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">avgExecutionTimePerRequest</span>
+</td>
+          <td>  <span class="datatype-reference">double
+</span>
+</td>
+          <td>  <span class="property-type">element
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo">
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">1/1
+</span>
+</td>
+          <td>  <span class="property-description">the avgExecutionTimePerRequest</span>
 </td>
         </tr>
         <tr>
@@ -138,6 +192,42 @@
 </span>
 </td>
           <td>  <span class="property-description">the executionTime</span>
+</td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">maxExecutionTimePerRequest</span>
+</td>
+          <td>  <span class="datatype-reference">double
+</span>
+</td>
+          <td>  <span class="property-type">element
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo">
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">1/1
+</span>
+</td>
+          <td>  <span class="property-description">the maxExecutionTimePerRequest</span>
+</td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">minExecutionTimePerRequest</span>
+</td>
+          <td>  <span class="datatype-reference">double
+</span>
+</td>
+          <td>  <span class="property-type">element
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo">
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">1/1
+</span>
+</td>
+          <td>  <span class="property-description">the minExecutionTimePerRequest</span>
 </td>
         </tr>
         <tr>
@@ -161,7 +251,7 @@
         <tr>
           <td>  <span class="property-name">stddevEventsPerThread</span>
 </td>
-          <td>  <span class="datatype-reference">int
+          <td>  <span class="datatype-reference">double
 </span>
 </td>
           <td>  <span class="property-type">element
@@ -179,7 +269,7 @@
         <tr>
           <td>  <span class="property-name">stddevExecTimePerThread</span>
 </td>
-          <td>  <span class="datatype-reference">int
+          <td>  <span class="datatype-reference">double
 </span>
 </td>
           <td>  <span class="property-type">element
@@ -236,7 +326,7 @@
         </tr>
         <tbody>
         <tr>
-          <td><span class="property-name">cloudProvider</span></td>
+          <td><span class="property-name">cloudDeploymentDomain</span></td>
           <td><span class="datatype-reference">string
 </span></td>
           <td><span class="property-type">element
@@ -245,7 +335,7 @@
 </span></td>
           <td><span class="property-minMaxOccurs">0/1
 </span></td>
-          <td><span class="property-description">the cloudProvider</span></td>
+          <td><span class="property-description">the cloudDeploymentDomain</span></td>
         </tr>
         <tr>
           <td><span class="property-name">delta</span></td>
@@ -295,11 +385,35 @@
 </span></td>
           <td><span class="property-description">the start</span></td>
         </tr>
+        <tr>
+          <td><span class="property-name">vmType</span></td>
+          <td><span class="datatype-reference">string
+</span></td>
+          <td><span class="property-type">element
+</span></td>
+          <td><span class="property-namespaceInfo">
+</span></td>
+          <td><span class="property-minMaxOccurs">0/1
+</span></td>
+          <td><span class="property-description">the vmType</span></td>
+        </tr>
         </tbody>
         <tr>
           <td colspan="6"><h5 class="text-muted">Properties inherited from <a href="xml_ns0_ownedObject.html">ownedObject</a></h5></td>
         </tr>
         <tbody>
+        <tr>
+          <td><span class="property-name">creationDate</span></td>
+          <td><span class="datatype-reference">long
+</span></td>
+          <td><span class="property-type">element
+</span></td>
+          <td><span class="property-namespaceInfo">
+</span></td>
+          <td><span class="property-minMaxOccurs">0/1
+</span></td>
+          <td><span class="property-description">the creationDate</span></td>
+        </tr>
         <tr>
           <td><span class="property-name">owner</span></td>
           <td><span class="datatype-reference">string
@@ -327,12 +441,19 @@ the DAO saves the object based on the principal how made the call</span></td>
   &lt;stddevEventsPerThread&gt;...&lt;/stddevEventsPerThread&gt;
   &lt;avgExecTimePerThread&gt;...&lt;/avgExecTimePerThread&gt;
   &lt;stddevExecTimePerThread&gt;...&lt;/stddevExecTimePerThread&gt;
+  &lt;minExecutionTimePerRequest&gt;...&lt;/minExecutionTimePerRequest&gt;
+  &lt;avgExecutionTimePerRequest&gt;...&lt;/avgExecutionTimePerRequest&gt;
+  &lt;maxExecutionTimePerRequest&gt;...&lt;/maxExecutionTimePerRequest&gt;
+  &lt;approx95Percentile&gt;...&lt;/approx95Percentile&gt;
+  &lt;ansibleOutputID&gt;...&lt;/ansibleOutputID&gt;
   &lt;host&gt;...&lt;/host&gt;
-  &lt;cloudProvider&gt;...&lt;/cloudProvider&gt;
+  &lt;cloudDeploymentDomain&gt;...&lt;/cloudDeploymentDomain&gt;
   &lt;end&gt;...&lt;/end&gt;
   &lt;start&gt;...&lt;/start&gt;
   &lt;delta&gt;...&lt;/delta&gt;
+  &lt;vmType&gt;...&lt;/vmType&gt;
   &lt;owner&gt;user1&lt;/owner&gt;
+  &lt;creationDate&gt;...&lt;/creationDate&gt;
 &lt;/s-----&gt;
 </pre>
 
