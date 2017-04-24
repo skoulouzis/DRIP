@@ -84,7 +84,7 @@ public class ProvisionController0 {
     String provision(@RequestBody Upload upload) {
 
         ProvisionResponse resp = new ProvisionResponse();
-        resp.setCreationDate(System.currentTimeMillis());
+        resp.setTimestamp(System.currentTimeMillis());
         CloudCredentials cloudCred = cloudCredentialsService.findAll().get(0);
         String cloudCredID = cloudCred.getId();
         List<String> idList = new ArrayList<>();

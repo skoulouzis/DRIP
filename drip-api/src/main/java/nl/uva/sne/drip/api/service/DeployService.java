@@ -232,7 +232,7 @@ public class DeployService {
 
     private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException {
         DeployResponse deployResponse = new DeployResponse();
-        deployResponse.setCreationDate(System.currentTimeMillis());
+        deployResponse.setTimestamp(System.currentTimeMillis());
 
         for (MessageParameter p : params) {
             String name = p.getName();
@@ -243,7 +243,7 @@ public class DeployService {
                 k.setKey(value);
                 k.setType(Key.KeyType.PRIVATE);
                 KeyPair pair = new KeyPair();
-                pair.setCreationDate(System.currentTimeMillis());
+                pair.setTimestamp(System.currentTimeMillis());
                 pair.setPrivateKey(k);
                 deployResponse.setKey(pair);
                 save(deployResponse);

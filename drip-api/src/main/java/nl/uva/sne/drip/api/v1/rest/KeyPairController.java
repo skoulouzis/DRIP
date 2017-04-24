@@ -139,7 +139,7 @@ public class KeyPairController {
     KeyPair geta() {
         try {
             KeyPair pair = new KeyPair();
-            pair.setCreationDate(System.currentTimeMillis());
+            pair.setTimestamp(System.currentTimeMillis());
             Key pk = new Key();
             Map<String, String> attributes = new HashMap<>();
             attributes.put("domain_name", "Virginia");

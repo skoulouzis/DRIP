@@ -32,7 +32,7 @@ public class OwnedObject {
     @Id
     private String id;
 
-    private Long creationDate;
+    private Long timestamp;
 
     @NotNull
     private String owner;
@@ -67,17 +67,15 @@ public class OwnedObject {
     }
 
     /**
-     * @return the creationDate
+     * @return the timestamp
      */
-    public Long getCreationDate() {
-        return creationDate;
+    public Long getTimestamp() {
+        return timestamp;
     }
 
-    /**
-     * @param creationDate the creationDate to set
-     */
-    public void setCreationDate(Long creationDate) {
-        this.creationDate = creationDate;
+ 
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 
 }

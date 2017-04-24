@@ -128,7 +128,7 @@ public class ProvisionService {
 //                    + File.separator + "ec2_provisioner_provisoned3.json");
             List<MessageParameter> params = response.getParameters();
             ProvisionResponse provisionResponse = new ProvisionResponse();
-            provisionResponse.setCreationDate(System.currentTimeMillis());
+            provisionResponse.setTimestamp(System.currentTimeMillis());
             for (MessageParameter p : params) {
                 String name = p.getName();
                 if (name.toLowerCase().contains("exception")) {

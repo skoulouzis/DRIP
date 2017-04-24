@@ -132,7 +132,7 @@ public class CloudCredentialsController {
                 attributes.put("domain_name", FilenameUtils.removeExtension(originalFileName));
                 key.setAttributes(attributes);
                 KeyPair pair = new KeyPair();
-                pair.setCreationDate(System.currentTimeMillis());
+                pair.setTimestamp(System.currentTimeMillis());
                 pair.setPrivateKey(key);
                 pair = keyService.save(pair);
                 loginKeyIDs.add(pair.getId());
@@ -208,7 +208,7 @@ public class CloudCredentialsController {
     public @ResponseBody
     CloudCredentials geta() {
         CloudCredentials cloudCredentials = new CloudCredentials();
-        cloudCredentials.setCreationDate(System.currentTimeMillis());
+        cloudCredentials.setTimestamp(System.currentTimeMillis());
         cloudCredentials.setAccessKeyId("AKIAITY3KHZUQ6M7YBSQ");
         cloudCredentials.setCloudProviderName("ec2");
         cloudCredentials.setSecretKey("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");

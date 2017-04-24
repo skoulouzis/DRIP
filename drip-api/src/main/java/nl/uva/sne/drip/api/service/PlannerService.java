@@ -86,7 +86,7 @@ public class PlannerService {
 
             SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", "swarm");
             PlanResponse topLevel = new PlanResponse();
-            topLevel.setCreationDate(System.currentTimeMillis());
+            topLevel.setTimestamp(System.currentTimeMillis());
             topLevel.setLevel(0);
             topLevel.setToscaID(toscaId);
             topLevel.setName("planner_output_all.yml");
@@ -95,7 +95,7 @@ public class PlannerService {
             Set<String> loweLevelPlansIDs = new HashSet<>();
             for (String lowLevelNames : map.keySet()) {
                 PlanResponse lowLevelPlan = new PlanResponse();
-                lowLevelPlan.setCreationDate(System.currentTimeMillis());
+                lowLevelPlan.setTimestamp(System.currentTimeMillis());
                 lowLevelPlan.setLevel(1);
                 lowLevelPlan.setToscaID(toscaId);
                 lowLevelPlan.setName(lowLevelNames);

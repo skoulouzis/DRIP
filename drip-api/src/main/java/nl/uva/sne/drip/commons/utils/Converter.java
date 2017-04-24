@@ -200,7 +200,7 @@ public class Converter {
 
     public static PlanResponse File2Plan1(Attribute p0) {
         PlanResponse p1 = new PlanResponse();
-        p1.setCreationDate(System.currentTimeMillis());
+        p1.setTimestamp(System.currentTimeMillis());
         p1.setLevel(Integer.valueOf(p0.level));
         p1.setName(p0.name);
         String yaml = p0.content.replaceAll("\\\\n", "\n");
