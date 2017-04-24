@@ -378,7 +378,7 @@ public class DeployService {
     }
 
     private Double getStddevExecTimePerThread(String string) {
-        return Double.valueOf(string.replaceAll("execution time \\(avg/stddev\\):", "").trim().split("/")[0]);
+        return Double.valueOf(string.replaceAll("execution time \\(avg/stddev\\):", "").trim().split("/")[1]);
     }
 
     private double getMinExecutionTimePerRequest(String string) {
