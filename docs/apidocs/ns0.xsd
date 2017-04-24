@@ -371,7 +371,7 @@ pair is only used by kubernetes]]>
    <xs:complexContent>
     <xs:extension base="deployRequest">
       <xs:sequence>
-              <xs:element name="ansibleOutputList" type="ansibleOutput" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="ansibleOutputList" type="xs:string" minOccurs="0" maxOccurs="unbounded">
               </xs:element>
       </xs:sequence>
     </xs:extension>
@@ -714,12 +714,26 @@ saves this object]]>
 </xs:complexType>
 
 <xs:complexType name="ansibleOutput">
-       <xs:sequence>
+  <xs:annotation>
+    <xs:documentation>
+      <![CDATA[This is the base class for users to own resources. Many classes extend this
+class]]>
+    </xs:documentation>
+  </xs:annotation>
+   <xs:complexContent>
+    <xs:extension base="ownedObject">
+      <xs:sequence>
               <xs:element name="host" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="ansiibleResult" type="ansibleResult" minOccurs="0">
               </xs:element>
+              <xs:element name="cloudDeploymentDomain" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="vmType" type="xs:string" minOccurs="0">
+              </xs:element>
       </xs:sequence>
+    </xs:extension>
+  </xs:complexContent>
 </xs:complexType>
 
 <xs:complexType name="ansibleResult">
@@ -729,6 +743,20 @@ saves this object]]>
               <xs:element name="changed" type="xs:boolean" minOccurs="0">
               </xs:element>
               <xs:element name="ansibleResults" type="ansibleResult_" minOccurs="0" maxOccurs="unbounded">
+              </xs:element>
+              <xs:element name="end" type="xs:dateTime" minOccurs="0">
+              </xs:element>
+              <xs:element name="stdout" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="cmd" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+              </xs:element>
+              <xs:element name="start" type="xs:dateTime" minOccurs="0">
+              </xs:element>
+              <xs:element name="stderr" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="delta" type="xs:dateTime" minOccurs="0">
+              </xs:element>
+              <xs:element name="stdout_lines" type="xs:string" minOccurs="0" maxOccurs="unbounded">
               </xs:element>
       </xs:sequence>
 </xs:complexType>
@@ -752,6 +780,25 @@ saves this object]]>
               <xs:element name="cacheUpdateTime" type="xs:int" minOccurs="0">
               </xs:element>
       </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="benchmarkResult">
+   <xs:complexContent>
+    <xs:extension base="ownedObject">
+      <xs:sequence>
+              <xs:element name="host" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="cloudProvider" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="end" type="xs:dateTime" minOccurs="0">
+              </xs:element>
+              <xs:element name="start" type="xs:dateTime" minOccurs="0">
+              </xs:element>
+              <xs:element name="delta" type="xs:dateTime" minOccurs="0">
+              </xs:element>
+      </xs:sequence>
+    </xs:extension>
+  </xs:complexContent>
 </xs:complexType>
 
 <xs:complexType name="invocation">
@@ -796,6 +843,31 @@ saves this object]]>
               <xs:element name="cacheValidTime" type="xs:int" minOccurs="0">
               </xs:element>
       </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="sysbenchCPUBenchmark">
+   <xs:complexContent>
+    <xs:extension base="benchmarkResult">
+      <xs:sequence>
+              <xs:element name="sysbenchVersion" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="numberOfThreads" type="xs:int" minOccurs="1">
+              </xs:element>
+              <xs:element name="totalNumberOfEvents" type="xs:int" minOccurs="1">
+              </xs:element>
+              <xs:element name="executionTime" type="xs:double" minOccurs="1">
+              </xs:element>
+              <xs:element name="avgEventsPerThread" type="xs:int" minOccurs="1">
+              </xs:element>
+              <xs:element name="stddevEventsPerThread" type="xs:int" minOccurs="1">
+              </xs:element>
+              <xs:element name="avgExecTimePerThread" type="xs:int" minOccurs="1">
+              </xs:element>
+              <xs:element name="stddevExecTimePerThread" type="xs:int" minOccurs="1">
+              </xs:element>
+      </xs:sequence>
+    </xs:extension>
+  </xs:complexContent>
 </xs:complexType>
 
 </xs:schema>

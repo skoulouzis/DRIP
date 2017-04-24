@@ -62,8 +62,8 @@ public class DeployController {
         if (deployRequest.getProvisionID() == null) {
             throw new BadRequestException("Must provide provision ID");
         }
-        DeployResponse key = deployService.deploySoftware(deployRequest);
-        return key.getId();
+        DeployResponse deploy = deployService.deploySoftware(deployRequest);
+        return deploy.getId();
     }
 
     @RequestMapping(value = "/sample", method = RequestMethod.GET)
@@ -82,6 +82,17 @@ public class DeployController {
     public @ResponseBody
     DeployResponse get(@PathVariable("id") String id) {
         DeployResponse resp = deployService.findOne(id);
+        if (resp == null) {
+            throw new NotFoundException();
+        }
+        return resp;
+    }
+
+    @RequestMapping(value = "/sysbench", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    List<DeployResponse> getSysbenchOutputs() {
+        List<DeployResponse> resp = deployService.findSysbench();
         if (resp == null) {
             throw new NotFoundException();
         }

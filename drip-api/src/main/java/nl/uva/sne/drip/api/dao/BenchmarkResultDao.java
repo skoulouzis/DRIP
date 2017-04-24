@@ -15,18 +15,13 @@
  */
 package nl.uva.sne.drip.api.dao;
 
-import nl.uva.sne.drip.data.v1.external.DeployResponse;
-import nl.uva.sne.drip.data.v1.external.Key;
-import nl.uva.sne.drip.data.v1.external.ansible.AnsibleResult;
+import nl.uva.sne.drip.data.v1.external.ansible.BenchmarkResult;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface DeployDao extends MongoRepository<DeployResponse, String> {
+public interface BenchmarkResultDao extends MongoRepository<BenchmarkResult, String> {
 
-    @Query(value = "{'statusHistories':{$elemMatch:{'status':{$in:['PROCESSABLE']}}},'created' : { '$gt' : { '$date' : ':?0' } , '$lt' : { '$date' : ':?1'}}}", count = true)
-    public Iterable<AnsibleResult> findByCommand(String cmd);
 }

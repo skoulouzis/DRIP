@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-  <title>drip-api: ansibleOutput</title>
+  <title>drip-api: benchmarkResult</title>
 
   <!-- Mobile viewport optimized: j.mp/bplateviewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,7 +35,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.html">drip-api: ansibleOutput</a>
+        <a class="navbar-brand" href="index.html">drip-api: benchmarkResult</a>
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right">
@@ -59,19 +59,20 @@
         <ol class="breadcrumb" id="top">
           <li class="active dropdown"><a href="index.html">Home</a></li>
           <li class="active dropdown"><a href="syntax_xml.html">XML</a></li>
-          <li class="dropdown"><a href="xml_ns0_ansibleOutput.html">ansibleOutput</a></li>
+          <li class="dropdown"><a href="xml_ns0_benchmarkResult.html">benchmarkResult</a></li>
         </ol>
 
-      <h1 class="page-header">ansibleOutput <small>Data Type</small></h1>
+      <h1 class="page-header">benchmarkResult <small>Data Type</small></h1>
 
-      <p>This is the base class for users to own resources. Many classes extend this
-class</p>
+      <p></p>
 
       <dl class="dl-horizontal">
         <dt>Namespace</dt>
         <dd>(Default)</dd>
         <dt>Schema</dt>
         <dd><a href="ns0.xsd">ns0.xsd</a></dd>
+        <dt>Subtypes</dt>
+        <dd><a href="xml_ns0_sysbenchCPUBenchmark.html">sysbenchCPUBenchmark</a></dd>
       </dl>
 
       <table class="table datatype-properties">
@@ -88,25 +89,7 @@ class</p>
         </thead>
         <tbody>
         <tr>
-          <td>  <span class="property-name">ansiibleResult</span>
-</td>
-          <td>  <span class="datatype-reference"><a href="xml_ns0_ansibleResult.html">ansibleResult</a>
-</span>
-</td>
-          <td>  <span class="property-type">element
-</span>
-</td>
-          <td>  <span class="property-namespaceInfo">
-</span>
-</td>
-          <td>  <span class="property-minMaxOccurs">0/1
-</span>
-</td>
-          <td>  <span class="property-description">&nbsp;</span>
-</td>
-        </tr>
-        <tr>
-          <td>  <span class="property-name">cloudDeploymentDomain</span>
+          <td>  <span class="property-name">cloudProvider</span>
 </td>
           <td>  <span class="datatype-reference">string
 </span>
@@ -120,7 +103,43 @@ class</p>
           <td>  <span class="property-minMaxOccurs">0/1
 </span>
 </td>
-          <td>  <span class="property-description">&nbsp;</span>
+          <td>  <span class="property-description">the cloudProvider</span>
+</td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">delta</span>
+</td>
+          <td>  <span class="datatype-reference">dateTime
+</span>
+</td>
+          <td>  <span class="property-type">element
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo">
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">0/1
+</span>
+</td>
+          <td>  <span class="property-description">the delta</span>
+</td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">end</span>
+</td>
+          <td>  <span class="datatype-reference">dateTime
+</span>
+</td>
+          <td>  <span class="property-type">element
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo">
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">0/1
+</span>
+</td>
+          <td>  <span class="property-description">the end</span>
 </td>
         </tr>
         <tr>
@@ -138,13 +157,13 @@ class</p>
           <td>  <span class="property-minMaxOccurs">0/1
 </span>
 </td>
-          <td>  <span class="property-description">&nbsp;</span>
+          <td>  <span class="property-description">the host</span>
 </td>
         </tr>
         <tr>
-          <td>  <span class="property-name">vmType</span>
+          <td>  <span class="property-name">start</span>
 </td>
-          <td>  <span class="datatype-reference">string
+          <td>  <span class="datatype-reference">dateTime
 </span>
 </td>
           <td>  <span class="property-type">element
@@ -156,7 +175,7 @@ class</p>
           <td>  <span class="property-minMaxOccurs">0/1
 </span>
 </td>
-          <td>  <span class="property-description">&nbsp;</span>
+          <td>  <span class="property-description">the start</span>
 </td>
         </tr>
         </tbody>
@@ -182,33 +201,14 @@ the DAO saves the object based on the principal how made the call</span></td>
 
       <p class="lead">Example</p>
       
-      <pre class="prettyprint language-xml example">&lt;a-----&gt;
+      <pre class="prettyprint language-xml example">&lt;b-----&gt;
   &lt;host&gt;...&lt;/host&gt;
-  &lt;ansiibleResult&gt;
-    &lt;msg&gt;...&lt;/msg&gt;
-    &lt;changed&gt;...&lt;/changed&gt;
-    &lt;ansibleResults&gt;
-      &lt;ansibleParsed&gt;...&lt;/ansibleParsed&gt;
-      &lt;changed&gt;...&lt;/changed&gt;
-      &lt;ansibleNoLog&gt;...&lt;/ansibleNoLog&gt;
-      &lt;cacheUpdated&gt;...&lt;/cacheUpdated&gt;
-      &lt;ansibleItemAnsibleResult&gt;...&lt;/ansibleItemAnsibleResult&gt;
-      &lt;item&gt;...&lt;/item&gt;
-      &lt;invocation/&gt;
-      &lt;cacheUpdateTime&gt;...&lt;/cacheUpdateTime&gt;
-    &lt;/ansibleResults&gt;
-    &lt;end&gt;...&lt;/end&gt;
-    &lt;stdout&gt;...&lt;/stdout&gt;
-    &lt;cmd&gt;...&lt;/cmd&gt;
-    &lt;start&gt;...&lt;/start&gt;
-    &lt;stderr&gt;...&lt;/stderr&gt;
-    &lt;delta&gt;...&lt;/delta&gt;
-    &lt;stdout_lines&gt;...&lt;/stdout_lines&gt;
-  &lt;/ansiibleResult&gt;
-  &lt;cloudDeploymentDomain&gt;...&lt;/cloudDeploymentDomain&gt;
-  &lt;vmType&gt;...&lt;/vmType&gt;
+  &lt;cloudProvider&gt;...&lt;/cloudProvider&gt;
+  &lt;end&gt;...&lt;/end&gt;
+  &lt;start&gt;...&lt;/start&gt;
+  &lt;delta&gt;...&lt;/delta&gt;
   &lt;owner&gt;user1&lt;/owner&gt;
-&lt;/a-----&gt;
+&lt;/b-----&gt;
 </pre>
 
         <footer class="footer">

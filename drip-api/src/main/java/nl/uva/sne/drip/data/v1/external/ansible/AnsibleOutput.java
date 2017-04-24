@@ -19,27 +19,35 @@ package nl.uva.sne.drip.data.v1.external.ansible;
  *
  * @author S. Koulouzis
  */
-import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import nl.uva.sne.drip.data.v1.external.OwnedObject;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "host",
     "result"
 })
-public class AnsibleOutput {
+@Document
+public class AnsibleOutput extends OwnedObject {
 
+    @Indexed
     @JsonProperty("host")
     private String host;
+
+    @Indexed
+    @JsonProperty("cloudDeploymentDomain")
+    private String cloudDeploymentDomain;
+
+    @Indexed
+    @JsonProperty("vmType")
+    private String vmType;
+
     @JsonProperty("result")
     private AnsibleResult result;
-    
 
     @JsonProperty("host")
     public String getHost() {
@@ -59,5 +67,25 @@ public class AnsibleOutput {
     @JsonProperty("result")
     public void setAnsiibleResult(AnsibleResult result) {
         this.result = result;
+    }
+
+    @JsonProperty("cloudDeploymentDomain")
+    public String getCloudDeploymentDomain() {
+        return cloudDeploymentDomain;
+    }
+
+    @JsonProperty("cloudDeploymentDomain")
+    public void setCloudDeploymentDomain(String cloudDeploymentDomain) {
+        this.cloudDeploymentDomain = cloudDeploymentDomain;
+    }
+
+    @JsonProperty("vmType")
+    public String getVmType() {
+        return vmType;
+    }
+
+    @JsonProperty("vmType")
+    public void setVmType(String vmType) {
+        this.vmType = vmType;
     }
 }

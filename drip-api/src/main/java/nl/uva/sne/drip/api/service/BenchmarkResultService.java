@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.dao;
+package nl.uva.sne.drip.api.service;
 
-import nl.uva.sne.drip.data.v1.external.DeployResponse;
-import nl.uva.sne.drip.data.v1.external.Key;
-import nl.uva.sne.drip.data.v1.external.ansible.AnsibleResult;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
+import nl.uva.sne.drip.api.dao.BenchmarkResultDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface DeployDao extends MongoRepository<DeployResponse, String> {
+@Service
+@PreAuthorize("isAuthenticated()")
+public class BenchmarkResultService {
 
-    @Query(value = "{'statusHistories':{$elemMatch:{'status':{$in:['PROCESSABLE']}}},'created' : { '$gt' : { '$date' : ':?0' } , '$lt' : { '$date' : ':?1'}}}", count = true)
-    public Iterable<AnsibleResult> findByCommand(String cmd);
+    @Autowired
+    private BenchmarkResultDao benchmarkResultDao;
+   
+
+   
 }

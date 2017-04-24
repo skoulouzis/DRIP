@@ -16,6 +16,7 @@
 package nl.uva.sne.drip.api.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.api.dao.AnsibleOutputDao;
+import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.DeployerCaller;
@@ -46,7 +49,6 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.data.v1.external.KeyPair;
@@ -62,6 +64,9 @@ public class DeployService {
 
     @Autowired
     private DeployDao deployDao;
+
+    @Autowired
+    private AnsibleOutputDao ansibleOutputDao;
 
     @Autowired
     KeyPairDao keyDao;
@@ -85,6 +90,11 @@ public class DeployService {
             throw new NotFoundException();
         }
         return creds;
+    }
+
+    @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
+    public List<DeployResponse> findSysbench() {
+        return deployDao.findAll();
     }
 
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
@@ -119,11 +129,15 @@ public class DeployService {
 //            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
 //                    + File.separator + "workspace" + File.separator + "DRIP"
 //                    + File.separator + "docs" + File.separator + "json_samples"
-//                    + File.separator + "deployer_ansible_response2.json");
+//                    + File.separator + "deployer_ansible_response_benchmark.json");
             Message response = (deployer.call(deployerInvokationMessage));
             List<MessageParameter> params = response.getParameters();
-
-            return handleResponse(params);
+            DeployResponse deploy = handleResponse(params, deployInfo);
+            deploy.setProvisionID(deployInfo.getProvisionID());
+            deploy.setConfigurationID(deployInfo.getConfigurationID());
+            deploy.setManagerType(deployInfo.getManagerType().toLowerCase());
+            save(deploy);
+            return deploy;
 
         } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {
             Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
@@ -213,7 +227,7 @@ public class DeployService {
         return ansibleParameter;
     }
 
-    private DeployResponse handleResponse(List<MessageParameter> params) throws KeyException, IOException {
+    private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException {
         DeployResponse deployResponse = new DeployResponse();
 
         for (MessageParameter p : params) {
@@ -233,13 +247,31 @@ public class DeployService {
             if (name.equals("ansible_output")) {
                 String value = p.getValue();
                 ObjectMapper mapper = new ObjectMapper();
-                System.err.println(value);
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 List<AnsibleOutput> outputList = mapper.readValue(value, new TypeReference<List<AnsibleOutput>>() {
                 });
-                deployResponse.setAnsibleOutputList(outputList);
+
+                List<String> outputListIds = new ArrayList<>();
+
+                for (AnsibleOutput ansOut : outputList) {
+                    Map<String, Object> map = provisionService.findOne(deployInfo.getProvisionID()).getKeyValue();
+                    List<Map<String, Object>> components = (List<Map<String, Object>>) map.get("components");
+
+                    for (Map<String, Object> component : components) {
+                        String publicAddress = (String) component.get("public_address");
+                        if (publicAddress.equals(ansOut.getHost())) {
+                            ansOut.setVmType((String) component.get("nodeType"));
+                            ansOut.setCloudDeploymentDomain((String) component.get("domain"));
+//                            ansOut.setCloudProviderName("");
+                            break;
+                        }
+                    }
+                    ansOut = ansibleOutputDao.save(ansOut);
+                    outputListIds.add(ansOut.getId());
+                }
+                deployResponse.setAnsibleOutputList(outputListIds);
             }
         }
-        save(deployResponse);
         return deployResponse;
     }
 }
