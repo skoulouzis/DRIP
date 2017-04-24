@@ -283,8 +283,6 @@ public class DeployService {
                     ansOut.setProvisionID(deployInfo.getProvisionID());
                     ansOut = ansibleOutputService.save(ansOut);
                     BenchmarkResult benchmarkResult = parseSaveBenchmarkResult(ansOut);
-                    
-                    
 
                     outputListIds.add(ansOut.getId());
                 }
@@ -390,7 +388,7 @@ public class DeployService {
     }
 
     private double getApprox95Percentile(String string) {
-        return Double.valueOf(string.replaceAll("approx.  95 percentile::", "").replaceAll("ms", "").trim());
+        return Double.valueOf(string.replaceAll("approx.  95 percentile:", "").replaceAll("ms", "").trim());
     }
 
 }
