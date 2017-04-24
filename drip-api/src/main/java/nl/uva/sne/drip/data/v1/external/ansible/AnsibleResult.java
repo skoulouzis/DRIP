@@ -36,25 +36,27 @@ public class AnsibleResult {
     @JsonProperty("changed")
     private Boolean changed;
 
+    @Indexed
     @JsonProperty("end")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
     private Date end;
 
+    @Indexed
     @JsonProperty("start")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
     private Date start;
 
+    @Indexed
     @JsonProperty("delta")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss.SSSSSS")
     private Date delta;
 
-    
     @JsonProperty("stdout")
     private String stdout;
 
     @JsonProperty("stderr")
     private String stderr;
-    
+
     @JsonProperty("cmd")
     private List<String> cmd;
 
