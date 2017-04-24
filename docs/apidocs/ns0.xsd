@@ -731,6 +731,8 @@ class]]>
               </xs:element>
               <xs:element name="vmType" type="xs:string" minOccurs="0">
               </xs:element>
+              <xs:element name="provisionID" type="xs:string" minOccurs="0">
+              </xs:element>
       </xs:sequence>
     </xs:extension>
   </xs:complexContent>

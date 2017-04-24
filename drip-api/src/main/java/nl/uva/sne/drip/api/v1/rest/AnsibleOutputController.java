@@ -20,93 +20,74 @@ import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
-import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.api.service.AnsibleOutputService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.service.DeployService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v1.external.DeployRequest;
-import nl.uva.sne.drip.data.v1.external.DeployResponse;
+import nl.uva.sne.drip.data.v1.external.ansible.AnsibleOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
-/**
- * This controller is responsible for deploying a cluster on provisoned
- * resources.
- *
- * @author S. Koulouzis
- */
 @RestController
-@RequestMapping("/user/v1.0/deployer")
+@RequestMapping("/user/v1.0/deployer/ansible")
 @Controller
 @StatusCodes({
     @ResponseCode(code = 401, condition = "Bad credentials")
 })
-public class DeployController {
+public class AnsibleOutputController {
 
     @Autowired
-    private DeployService deployService;
-
-    @RequestMapping(value = "/deploy", method = RequestMethod.POST)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    String deploy(@RequestBody DeployRequest deployRequest) {
-        if (deployRequest.getManagerType() == null) {
-            throw new BadRequestException("Must provide manager type. Aveliable: ansible, swarm ,kubernetes");
-        }
-        if (deployRequest.getProvisionID() == null) {
-            throw new BadRequestException("Must provide provision ID");
-        }
-        DeployResponse deploy = deployService.deploySoftware(deployRequest);
-        return deploy.getId();
-    }
-
-    @RequestMapping(value = "/sample", method = RequestMethod.GET)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    DeployRequest sample() {
-        DeployRequest req = new DeployRequest();
-        req.setManagerType("ansible");
-        req.setConfigurationID("58e2681ba9961baa096c8541");
-        req.setProvisionID("58f8dd3a2af41387c32ff602");
-        return req;
-    }
+    private AnsibleOutputService ansibleOutputService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    DeployResponse get(@PathVariable("id") String id) {
-        DeployResponse resp = deployService.findOne(id);
+    AnsibleOutput get(@PathVariable("id") String id) {
+        AnsibleOutput resp = ansibleOutputService.findOne(id);
         if (resp == null) {
             throw new NotFoundException();
         }
         return resp;
     }
 
+    @RequestMapping(method = RequestMethod.GET, params = {"command"})
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    AnsibleOutput getByCommand(@RequestParam(value = "command") String command) {
+        return null;
+    }
+
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {
-        List<DeployResponse> all = deployService.findAll();
+        List<AnsibleOutput> all = ansibleOutputService.findAll();
         List<String> ids = new ArrayList<>(all.size());
-        for (DeployResponse pi : all) {
+        for (AnsibleOutput pi : all) {
             ids.add(pi.getId());
         }
         return ids;
+    }
+
+    @RequestMapping(value = "/commands", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    List<String> getCommands() {
+        return ansibleOutputService.findAllCommands();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        DeployResponse Key = deployService.findOne(id);
+        AnsibleOutput Key = ansibleOutputService.findOne(id);
         if (Key != null) {
-            deployService.delete(id);
+            ansibleOutputService.delete(id);
             return "Deleted : " + id;
         }
         throw new NotFoundException();
@@ -116,7 +97,7 @@ public class DeployController {
     @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
     String deleteAll() {
-        deployService.deleteAll();
+        ansibleOutputService.deleteAll();
         return "Done";
     }
 

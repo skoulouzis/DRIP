@@ -66,7 +66,7 @@ public class DeployService {
     private DeployDao deployDao;
 
     @Autowired
-    private AnsibleOutputDao ansibleOutputDao;
+    private AnsibleOutputService ansibleOutputService;
 
     @Autowired
     KeyPairDao keyDao;
@@ -90,11 +90,6 @@ public class DeployService {
             throw new NotFoundException();
         }
         return creds;
-    }
-
-    @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public List<DeployResponse> findSysbench() {
-        return deployDao.findAll();
     }
 
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
@@ -252,21 +247,35 @@ public class DeployService {
                 });
 
                 List<String> outputListIds = new ArrayList<>();
+                Map<String, String> nodeTypeCahche = new HashMap<>();
+                Map<String, String> domainCahche = new HashMap<>();
 
                 for (AnsibleOutput ansOut : outputList) {
                     Map<String, Object> map = provisionService.findOne(deployInfo.getProvisionID()).getKeyValue();
-                    List<Map<String, Object>> components = (List<Map<String, Object>>) map.get("components");
 
-                    for (Map<String, Object> component : components) {
-                        String publicAddress = (String) component.get("public_address");
-                        if (publicAddress.equals(ansOut.getHost())) {
-                            ansOut.setVmType((String) component.get("nodeType"));
-                            ansOut.setCloudDeploymentDomain((String) component.get("domain"));
+                    String nodeType = nodeTypeCahche.get(ansOut.getHost());
+                    String domain = domainCahche.get(ansOut.getHost());
+                    if (nodeType == null) {
+                        List<Map<String, Object>> components = (List<Map<String, Object>>) map.get("components");
+
+                        for (Map<String, Object> component : components) {
+                            String publicAddress = (String) component.get("public_address");
+                            if (publicAddress.equals(ansOut.getHost())) {
+                                nodeType = (String) component.get("nodeType");
+
+                                domain = (String) component.get("domain");
+
+                                nodeTypeCahche.put(ansOut.getHost(), nodeType);
+                                domainCahche.put(ansOut.getHost(), value);
 //                            ansOut.setCloudProviderName("");
-                            break;
+                                break;
+                            }
                         }
                     }
-                    ansOut = ansibleOutputDao.save(ansOut);
+                    ansOut.setVmType(nodeType);
+                    ansOut.setCloudDeploymentDomain(domain);
+                    ansOut.setProvisionID(deployInfo.getProvisionID());
+                    ansOut = ansibleOutputService.save(ansOut);
                     outputListIds.add(ansOut.getId());
                 }
                 deployResponse.setAnsibleOutputList(outputListIds);

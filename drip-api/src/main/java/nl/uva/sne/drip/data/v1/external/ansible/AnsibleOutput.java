@@ -49,6 +49,9 @@ public class AnsibleOutput extends OwnedObject {
     @JsonProperty("result")
     private AnsibleResult result;
 
+    @JsonProperty("provisionID")
+    private String provisionID;
+
     @JsonProperty("host")
     public String getHost() {
         return host;
@@ -87,5 +90,15 @@ public class AnsibleOutput extends OwnedObject {
     @JsonProperty("vmType")
     public void setVmType(String vmType) {
         this.vmType = vmType;
+    }
+
+    @JsonProperty("provisionID")
+    public void setProvisionID(String provisionID) {
+        this.provisionID = provisionID;
+    }
+
+    @JsonProperty("provisionID")
+    public String getProvisionID() {
+        return provisionID;
     }
 }
