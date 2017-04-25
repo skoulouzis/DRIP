@@ -16,7 +16,9 @@
 package nl.uva.sne.drip.api.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.DeployerCaller;
@@ -34,8 +37,8 @@ import nl.uva.sne.drip.data.v1.external.DeployRequest;
 import nl.uva.sne.drip.data.v1.external.DeployParameter;
 import nl.uva.sne.drip.data.v1.external.DeployResponse;
 import nl.uva.sne.drip.data.v1.external.Key;
-import nl.uva.sne.drip.data.v1.external.Message;
-import nl.uva.sne.drip.data.v1.external.MessageParameter;
+import nl.uva.sne.drip.data.internal.Message;
+import nl.uva.sne.drip.data.internal.MessageParameter;
 import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
 import nl.uva.sne.drip.data.v1.external.User;
 import org.json.JSONException;
@@ -46,11 +49,14 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.exception.KeyException;
+import nl.uva.sne.drip.commons.utils.MessageGenerator;
 import nl.uva.sne.drip.data.v1.external.KeyPair;
 import nl.uva.sne.drip.data.v1.external.ansible.AnsibleOutput;
+import nl.uva.sne.drip.data.v1.external.ansible.AnsibleResult;
+import nl.uva.sne.drip.data.v1.external.ansible.BenchmarkResult;
+import nl.uva.sne.drip.data.v1.external.ansible.SysbenchCPUBenchmark;
 
 /**
  *
@@ -62,6 +68,9 @@ public class DeployService {
 
     @Autowired
     private DeployDao deployDao;
+
+    @Autowired
+    private AnsibleOutputService ansibleOutputService;
 
     @Autowired
     KeyPairDao keyDao;
@@ -77,6 +86,9 @@ public class DeployService {
 
     @Autowired
     private PlaybookService playbookService;
+
+    @Autowired
+    private BenchmarkResultService benchmarkResultService;
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public DeployResponse findOne(String id) {
@@ -119,11 +131,15 @@ public class DeployService {
 //            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
 //                    + File.separator + "workspace" + File.separator + "DRIP"
 //                    + File.separator + "docs" + File.separator + "json_samples"
-//                    + File.separator + "deployer_ansible_response2.json");
+//                    + File.separator + "deployer_ansible_response_benchmark.json");
             Message response = (deployer.call(deployerInvokationMessage));
             List<MessageParameter> params = response.getParameters();
-
-            return handleResponse(params);
+            DeployResponse deploy = handleResponse(params, deployInfo);
+            deploy.setProvisionID(deployInfo.getProvisionID());
+            deploy.setConfigurationID(deployInfo.getConfigurationID());
+            deploy.setManagerType(deployInfo.getManagerType().toLowerCase());
+            save(deploy);
+            return deploy;
 
         } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {
             Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
@@ -213,8 +229,9 @@ public class DeployService {
         return ansibleParameter;
     }
 
-    private DeployResponse handleResponse(List<MessageParameter> params) throws KeyException, IOException {
+    private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException {
         DeployResponse deployResponse = new DeployResponse();
+        deployResponse.setTimestamp(System.currentTimeMillis());
 
         for (MessageParameter p : params) {
             String name = p.getName();
@@ -225,6 +242,7 @@ public class DeployService {
                 k.setKey(value);
                 k.setType(Key.KeyType.PRIVATE);
                 KeyPair pair = new KeyPair();
+                pair.setTimestamp(System.currentTimeMillis());
                 pair.setPrivateKey(k);
                 deployResponse.setKey(pair);
                 save(deployResponse);
@@ -233,13 +251,158 @@ public class DeployService {
             if (name.equals("ansible_output")) {
                 String value = p.getValue();
                 ObjectMapper mapper = new ObjectMapper();
-                System.err.println(value);
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 List<AnsibleOutput> outputList = mapper.readValue(value, new TypeReference<List<AnsibleOutput>>() {
                 });
-                deployResponse.setAnsibleOutputList(outputList);
+
+                List<String> outputListIds = new ArrayList<>();
+                Map<String, String> nodeTypeCahche = new HashMap<>();
+                Map<String, String> domainCahche = new HashMap<>();
+
+                for (AnsibleOutput ansOut : outputList) {
+                    Map<String, Object> map = provisionService.findOne(deployInfo.getProvisionID()).getKeyValue();
+                    String nodeType = nodeTypeCahche.get(ansOut.getHost());
+                    String domain = domainCahche.get(ansOut.getHost());
+                    if (nodeType == null) {
+                        List<Map<String, Object>> components = (List<Map<String, Object>>) map.get("components");
+                        for (Map<String, Object> component : components) {
+                            String publicAddress = (String) component.get("public_address");
+                            if (publicAddress.equals(ansOut.getHost())) {
+                                nodeType = (String) component.get("nodeType");
+
+                                domain = (String) component.get("domain");
+
+                                nodeTypeCahche.put(ansOut.getHost(), nodeType);
+                                domainCahche.put(ansOut.getHost(), domain);
+//                            ansOut.setCloudProviderName("");
+                                break;
+                            }
+                        }
+                    }
+                    ansOut.setVmType(nodeType);
+                    ansOut.setCloudDeploymentDomain(domain);
+                    ansOut.setProvisionID(deployInfo.getProvisionID());
+                    ansOut = ansibleOutputService.save(ansOut);
+                    BenchmarkResult benchmarkResult = parseSaveBenchmarkResult(ansOut);
+
+                    outputListIds.add(ansOut.getId());
+                }
+                deployResponse.setAnsibleOutputList(outputListIds);
             }
         }
-        save(deployResponse);
         return deployResponse;
     }
+
+    private BenchmarkResult parseSaveBenchmarkResult(AnsibleOutput ansOut) {
+        AnsibleResult res = ansOut.getAnsibleResult();
+        if (res != null) {
+            List<String> cmdList = res.getCmd();
+            if (cmdList != null) {
+
+                switch (cmdList.get(0)) {
+                    case "sysbench":
+                        String[] out = res.getStdout().split("\n");
+                        String version = getSysbeanchVersion(out[0]);
+                        int numOfThreads = getNumberOfThreads(out[3]);
+                        Double executionTime = getExecutionTime(out[14]);
+                        int totalNumberOfEvents = getTotalNumberOfEvents(out[15]);
+
+                        double minExecutionTimePerRequest = getMinExecutionTimePerRequest(out[18]);
+                        double avgExecutionTimePerRequest = getAvgExecutionTimePerRequest(out[19]);
+                        double maxExecutionTimePerRequest = getMaxExecutionTimePerRequest(out[20]);
+                        double approx95Percentile = getApprox95Percentile(out[21]);
+
+                        double avgEventsPerThread = getAvgEventsPerThread(out[24]);
+                        double stddevEventsPerThread = getStddevEventsPerThread(out[24]);
+
+                        double avgExecTimePerThread = getAvgExecTimePerThread(out[25]);
+                        double stddevExecTimePerThread = getStddevExecTimePerThread(out[25]);
+
+                        SysbenchCPUBenchmark b = new SysbenchCPUBenchmark();
+                        b.setSysbenchVersion(version);
+
+                        b.setNumberOfThreads(numOfThreads);
+                        b.setExecutionTime(executionTime * 1000);
+
+                        b.setTotalNumberOfEvents(totalNumberOfEvents);
+
+                        b.setAvgEventsPerThread(avgEventsPerThread);
+                        b.setStddevEventsPerThread(stddevEventsPerThread);
+
+                        b.setAvgExecTimePerThread(avgExecTimePerThread * 1000);
+                        b.setStddevExecTimePerThread(stddevExecTimePerThread);
+                        b.setApprox95Percentile(approx95Percentile);
+
+                        b.setMinExecutionTimePerRequest(minExecutionTimePerRequest);
+                        b.setAvgExecutionTimePerRequest(avgExecutionTimePerRequest);
+                        b.setMaxExecutionTimePerRequest(maxExecutionTimePerRequest);
+
+                        b.setAnsibleOutputID(ansOut.getId());
+
+                        b.setCloudDeploymentDomain(ansOut.getCloudDeploymentDomain());
+                        b.setDelta(ansOut.getAnsibleResult().getDelta());
+                        b.setStart(ansOut.getAnsibleResult().getStart());
+                        b.setEnd(ansOut.getAnsibleResult().getEnd());
+                        b.setHost(ansOut.getHost());
+                        b.setVmType(ansOut.getVmType());
+                        b = (SysbenchCPUBenchmark) benchmarkResultService.save(b);
+                        return b;
+
+                    default:
+                        return null;
+
+                }
+            }
+        }
+        return null;
+    }
+
+    private String getSysbeanchVersion(String string) {
+        return string.replaceAll("sysbench", "").replaceAll(":  multi-threaded system evaluation benchmark", "");
+    }
+
+    private int getNumberOfThreads(String string) {
+        return Integer.valueOf(string.replaceAll("Number of threads: ", ""));
+    }
+
+    private Double getExecutionTime(String string) {
+        return Double.valueOf(string.replaceAll("total time:", "").replaceAll("s", "").trim());
+    }
+
+    private int getTotalNumberOfEvents(String string) {
+        return Integer.valueOf(string.replaceAll("total number of events:", "").replaceAll("s", "").trim());
+    }
+
+    private Double getAvgEventsPerThread(String string) {
+        return Double.valueOf(string.replaceAll("events \\(avg/stddev\\):", "").trim().split("/")[0]);
+    }
+
+    private Double getStddevEventsPerThread(String string) {
+        return Double.valueOf(string.replaceAll("events \\(avg/stddev\\):", "").trim().split("/")[1]);
+    }
+
+    private Double getAvgExecTimePerThread(String string) {
+        return Double.valueOf(string.replaceAll("execution time \\(avg/stddev\\):", "").trim().split("/")[0]);
+    }
+
+    private Double getStddevExecTimePerThread(String string) {
+        return Double.valueOf(string.replaceAll("execution time \\(avg/stddev\\):", "").trim().split("/")[1]);
+    }
+
+    private double getMinExecutionTimePerRequest(String string) {
+        return Double.valueOf(string.replaceAll("min:", "").replaceAll("ms", "").trim());
+    }
+
+    private double getAvgExecutionTimePerRequest(String string) {
+        return Double.valueOf(string.replaceAll("avg:", "").replaceAll("ms", "").trim());
+    }
+
+    private double getMaxExecutionTimePerRequest(String string) {
+        return Double.valueOf(string.replaceAll("max:", "").replaceAll("ms", "").trim());
+    }
+
+    private double getApprox95Percentile(String string) {
+        return Double.valueOf(string.replaceAll("approx.  95 percentile:", "").replaceAll("ms", "").trim());
+    }
+
 }

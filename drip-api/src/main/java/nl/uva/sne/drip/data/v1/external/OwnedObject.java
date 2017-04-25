@@ -32,6 +32,8 @@ public class OwnedObject {
     @Id
     private String id;
 
+    private Long timestamp;
+
     @NotNull
     private String owner;
 
@@ -62,6 +64,18 @@ public class OwnedObject {
     @DocumentationExample("58e3946e0fb4f562d84ba1ad")
     public String getId() {
         return id;
+    }
+
+    /**
+     * @return the timestamp
+     */
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+ 
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 
 }

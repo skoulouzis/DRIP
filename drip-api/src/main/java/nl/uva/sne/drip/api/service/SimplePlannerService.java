@@ -29,8 +29,8 @@ import java.util.concurrent.TimeoutException;
 import nl.uva.sne.drip.api.dao.PlanDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
-import nl.uva.sne.drip.data.v1.external.Message;
-import nl.uva.sne.drip.data.v1.external.MessageParameter;
+import nl.uva.sne.drip.data.internal.Message;
+import nl.uva.sne.drip.data.internal.MessageParameter;
 import nl.uva.sne.drip.data.v1.external.PlanResponse;
 import nl.uva.sne.drip.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
@@ -64,6 +64,7 @@ public class SimplePlannerService {
             Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
             List<MessageParameter> planFiles = plannerReturnedMessage.getParameters();
             topLevel = new PlanResponse();
+            topLevel.setTimestamp(System.currentTimeMillis());
             Set<String> ids = topLevel.getLoweLevelPlanIDs();
             if (ids == null) {
                 ids = new HashSet<>();
@@ -83,6 +84,7 @@ public class SimplePlannerService {
                     topLevel.setKvMap(Converter.ymlString2Map(p.getValue()));
                 } else {
                     lowerLevelPlan = new PlanResponse();
+                    lowerLevelPlan.setTimestamp(System.currentTimeMillis());
                     lowerLevelPlan.setName(name);
                     lowerLevelPlan.setKvMap(Converter.ymlString2Map(p.getValue()));
                     lowerLevelPlan.setLevel(1);

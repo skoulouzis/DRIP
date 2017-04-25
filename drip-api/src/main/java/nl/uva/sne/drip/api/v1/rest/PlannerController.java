@@ -51,9 +51,7 @@ import org.springframework.web.bind.annotation.RequestParam;
     @ResponseCode(code = 401, condition = "Bad credentials")
 })
 public class PlannerController {
-
-//    @Autowired
-//    private SimplePlannerService simplePlannerService;
+    
     @Autowired
     private PlannerService plannerService;
 

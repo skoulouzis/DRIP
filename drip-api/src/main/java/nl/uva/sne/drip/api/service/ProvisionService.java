@@ -40,8 +40,8 @@ import nl.uva.sne.drip.api.v1.rest.ProvisionController;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.data.v1.external.CloudCredentials;
 import nl.uva.sne.drip.data.v1.external.DeployParameter;
-import nl.uva.sne.drip.data.v1.external.Message;
-import nl.uva.sne.drip.data.v1.external.MessageParameter;
+import nl.uva.sne.drip.data.internal.Message;
+import nl.uva.sne.drip.data.internal.MessageParameter;
 import nl.uva.sne.drip.data.v1.external.PlanResponse;
 import nl.uva.sne.drip.data.v1.external.ProvisionRequest;
 import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
@@ -128,6 +128,7 @@ public class ProvisionService {
 //                    + File.separator + "ec2_provisioner_provisoned3.json");
             List<MessageParameter> params = response.getParameters();
             ProvisionResponse provisionResponse = new ProvisionResponse();
+            provisionResponse.setTimestamp(System.currentTimeMillis());
             for (MessageParameter p : params) {
                 String name = p.getName();
                 if (name.toLowerCase().contains("exception")) {

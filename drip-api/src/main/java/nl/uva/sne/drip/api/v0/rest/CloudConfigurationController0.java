@@ -70,6 +70,7 @@ public class CloudConfigurationController0 {
             throw new NullKeyIDException();
         }
         CloudCredentials cloudCredentials = new CloudCredentials();
+        cloudCredentials.setTimestamp(System.currentTimeMillis());
         cloudCredentials.setAccessKeyId(configure.keyid);
         cloudCredentials.setSecretKey(configure.key);
 
@@ -79,6 +80,7 @@ public class CloudConfigurationController0 {
             try {
                 nl.uva.sne.drip.data.v1.external.Key key1 = new nl.uva.sne.drip.data.v1.external.Key();
                 KeyPair pair = new KeyPair();
+                pair.setTimestamp(System.currentTimeMillis());
                 key1.setKey(key0.content);
                 Map<String, String> attributes = new HashMap<>();
                 attributes.put("domain_name", key0.domain_name);
@@ -108,6 +110,7 @@ public class CloudConfigurationController0 {
             throw new NullKeyIDException();
         }
         CloudCredentials cloudCredentials = new CloudCredentials();
+        cloudCredentials.setTimestamp(System.currentTimeMillis());
 //        cloudCredentials.setKeyIdAlias(configure.geniKeyAlias);
         cloudCredentials.setAccessKeyId(configure.geniKey);
         cloudCredentials.setSecretKey(configure.geniKeyPass);
@@ -120,6 +123,7 @@ public class CloudConfigurationController0 {
                 key1.setKey(key0.content);
                 key1.setType(Key.KeyType.PUBLIC);
                 KeyPair pair = new KeyPair();
+                pair.setTimestamp(System.currentTimeMillis());
                 pair.setPublicKey(key1);
                 pair = keyService.save(pair);
                 loginKeyIDs.add(pair.getId());
@@ -134,6 +138,7 @@ public class CloudConfigurationController0 {
                 key1.setKey(key0.content);
                 key1.setType(Key.KeyType.PRIVATE);
                 KeyPair pair = new KeyPair();
+                pair.setTimestamp(System.currentTimeMillis());
                 pair.setPrivateKey(key1);
                 pair = keyService.save(pair);
                 loginKeyIDs.add(pair.getId());

@@ -19,19 +19,21 @@ package nl.uva.sne.drip.data.v1.external.ansible;
  *
  * @author S. Koulouzis
  */
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+    "module_name",
+    "module_args"
+})
 public class Invocation {
 
     @JsonProperty("module_name")
     private String moduleName;
-
-    @JsonIgnore
     @JsonProperty("module_args")
-    private Object moduleArgs;
+    private ModuleArgs moduleArgs;
 
     @JsonProperty("module_name")
     public String getModuleName() {
@@ -43,4 +45,13 @@ public class Invocation {
         this.moduleName = moduleName;
     }
 
+    @JsonProperty("module_args")
+    public ModuleArgs getModuleArgs() {
+        return moduleArgs;
+    }
+
+    @JsonProperty("module_args")
+    public void setModuleArgs(ModuleArgs moduleArgs) {
+        this.moduleArgs = moduleArgs;
+    }
 }

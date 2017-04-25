@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.Properties;
 import nl.uva.sne.drip.data.v0.external.Attribute;
 import nl.uva.sne.drip.data.v1.external.CloudCredentials;
-import nl.uva.sne.drip.data.v1.external.Message;
-import nl.uva.sne.drip.data.v1.external.MessageParameter;
+import nl.uva.sne.drip.data.internal.Message;
+import nl.uva.sne.drip.data.internal.MessageParameter;
 import nl.uva.sne.drip.data.v1.external.PlanResponse;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
@@ -200,6 +200,7 @@ public class Converter {
 
     public static PlanResponse File2Plan1(Attribute p0) {
         PlanResponse p1 = new PlanResponse();
+        p1.setTimestamp(System.currentTimeMillis());
         p1.setLevel(Integer.valueOf(p0.level));
         p1.setName(p0.name);
         String yaml = p0.content.replaceAll("\\\\n", "\n");

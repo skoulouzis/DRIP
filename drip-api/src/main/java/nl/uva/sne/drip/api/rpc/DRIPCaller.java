@@ -15,7 +15,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.data.v1.external.Message;
+import nl.uva.sne.drip.data.internal.Message;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONException;
 

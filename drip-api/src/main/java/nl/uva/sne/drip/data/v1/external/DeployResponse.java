@@ -31,17 +31,17 @@ public class DeployResponse extends DeployRequest {
 
     private KeyPair key;
 
-    private List<AnsibleOutput> ansibleOutputList;
+    private List<String> ansibleOutputListIDs;
 
-    public void setAnsibleOutputList(List<AnsibleOutput> outputList) {
-        this.ansibleOutputList = outputList;
+    public void setAnsibleOutputList(List<String> outputListIDs) {
+        this.ansibleOutputListIDs = outputListIDs;
     }
 
     /**
      * @return the ansibleOutputList
      */
-    public List<AnsibleOutput> getAnsibleOutputList() {
-        return ansibleOutputList;
+    public List<String> getAnsibleOutputList() {
+        return ansibleOutputListIDs;
     }
 
     public void setKey(KeyPair key) {
