@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.api.v1.rest;
 
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.v1.types.Plan;
+import nl.uva.sne.drip.data.v1.external.PlanResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -45,6 +47,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/user/v1.0/planner")
 @Controller
+@StatusCodes({
+    @ResponseCode(code = 401, condition = "Bad credentials")
+})
 public class PlannerController {
 
 //    @Autowired
@@ -64,8 +69,7 @@ public class PlannerController {
     String plan(@PathVariable("tosca_id") String toscaId) {
 
         try {
-//            Plan plan = simplePlannerService.getPlan(toscaId);
-            Plan plan = plannerService.getPlan(toscaId);
+            PlanResponse plan = plannerService.getPlan(toscaId);
             if (plan == null) {
                 throw new NotFoundException("Could not make plan");
             }
@@ -79,7 +83,7 @@ public class PlannerController {
     /**
      * Gets a plan
      *
-     * @param id. The id iof the plan
+     * @param id. The id of the plan
      * @param format. The format (yml,json)
      * @return the plan
      */
@@ -140,9 +144,9 @@ public class PlannerController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {
-        List<Plan> all = plannerService.findAll();
+        List<PlanResponse> all = plannerService.findAll();
         List<String> ids = new ArrayList<>();
-        for (Plan tr : all) {
+        for (PlanResponse tr : all) {
             ids.add(tr.getId());
         }
         return ids;

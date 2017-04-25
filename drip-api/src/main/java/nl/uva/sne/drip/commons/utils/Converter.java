@@ -26,11 +26,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import nl.uva.sne.drip.commons.v0.types.Attribute;
-import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
-import nl.uva.sne.drip.commons.v1.types.Message;
-import nl.uva.sne.drip.commons.v1.types.MessageParameter;
-import nl.uva.sne.drip.commons.v1.types.Plan;
+import nl.uva.sne.drip.data.v0.external.Attribute;
+import nl.uva.sne.drip.data.v1.external.CloudCredentials;
+import nl.uva.sne.drip.data.v1.external.Message;
+import nl.uva.sne.drip.data.v1.external.MessageParameter;
+import nl.uva.sne.drip.data.v1.external.PlanResponse;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,7 +52,13 @@ public class Converter {
 
     public static Map<String, Object> ymlString2Map(String yamlString) {
         Yaml yaml = new Yaml();
-        return (Map<String, Object>) yaml.load(yamlString);
+        Object object = yaml.load(yamlString);
+        if (object instanceof List) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("---", object);
+            return map;
+        }
+        return (Map<String, Object>) object;
     }
 
     public static Map<String, Object> ymlString2Map(InputStream in) {
@@ -141,8 +147,8 @@ public class Converter {
     }
 
     private static void initEC2_NAME_MAP() {
-        EC2_NAME_MAP.put("keyIdAlias", "AWSAccessKeyId");
-        EC2_NAME_MAP.put("key", "AWSSecretKey");
+        EC2_NAME_MAP.put(CloudCredentials.ACCESS_KEY_NAME, "AWSAccessKeyId");
+        EC2_NAME_MAP.put(CloudCredentials.SECRET_KEY_NAME, "AWSSecretKey");
     }
 
     public static Message string2Message(String clean) throws JSONException, IOException {
@@ -177,7 +183,7 @@ public class Converter {
         return mess;
     }
 
-    public static Attribute plan1toFile(Plan plan1) throws JSONException {
+    public static Attribute plan1toFile(PlanResponse plan1) throws JSONException {
         Attribute e = new Attribute();
         e.level = String.valueOf(plan1.getLevel());
         String p1Name = FilenameUtils.getBaseName(plan1.getName());
@@ -192,8 +198,8 @@ public class Converter {
         return e;
     }
 
-    public static Plan File2Plan1(Attribute p0) {
-        Plan p1 = new Plan();
+    public static PlanResponse File2Plan1(Attribute p0) {
+        PlanResponse p1 = new PlanResponse();
         p1.setLevel(Integer.valueOf(p0.level));
         p1.setName(p0.name);
         String yaml = p0.content.replaceAll("\\\\n", "\n");

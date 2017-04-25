@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.api.v1.rest;
 
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -24,7 +26,7 @@ import nl.uva.sne.drip.api.exception.PasswordNullException;
 import nl.uva.sne.drip.api.exception.UserExistsException;
 import nl.uva.sne.drip.api.exception.UserNotFoundException;
 import nl.uva.sne.drip.api.exception.UserNullException;
-import nl.uva.sne.drip.commons.v1.types.User;
+import nl.uva.sne.drip.data.v1.external.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,6 +47,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/manager/v1.0/user")
 @Component
+@StatusCodes({
+    @ResponseCode(code = 401, condition = "Bad credentials")
+})
 public class UserController {
 
     @Autowired
@@ -121,7 +126,7 @@ public class UserController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.ADMIN})
     public @ResponseBody
-    String remove(@PathVariable("id") String id) {
+    String delete(@PathVariable("id") String id) {
         try {
             User user = service.findOne(id);
             if (user == null) {

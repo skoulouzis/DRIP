@@ -3,17 +3,18 @@ import pika
 import json
 import os
 import time
-
+import json
 from vm_info import VmInfo
 import docker_kubernetes
 import docker_engine
 import docker_swarm
 import control_agent
+import ansible_playbook
 import sys, argparse
 from threading import Thread
 from time import sleep
 
-print sys.argv
+
 if len(sys.argv) > 1:
     rabbitmq_host = sys.argv[1]
 else:
@@ -24,41 +25,53 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_hos
 channel = connection.channel()
 channel.queue_declare(queue='deployer_queue')
 
-path = os.path.dirname(os.path.abspath(__file__)) + "/"
 
+
+done = False
 
 def threaded_function(args):
-    while True:
-        #print "processing data events"
+    while not done:
         connection.process_data_events()
-        sleep(30)
+        sleep(5)
 
 def handleDelivery(message):
     parsed_json = json.loads(message)
     params = parsed_json["parameters"]  
     node_num = 0
     vm_list = []
+    current_milli_time = lambda: int(round(time.time() * 1000))
+    path = os.path.dirname(os.path.abspath(__file__)) + "/"+ str(current_milli_time()) + "/"
+    if not os.path.exists(path):
+        os.makedirs(path)
+        
     for param in params:
         name = param["name"]
         if name == "cluster":
-            cluster_type = param["value"]
-        else:
+            manager_type = param["value"]
+        elif name == "credential":
             value = param["value"]
             ip = param["attributes"]["IP"]
             user = param["attributes"]["user"]
             role = param["attributes"]["role"]
             node_num += 1
             key = path + "%d.txt" % (node_num)
+             
             fo = open(key, "w")
             fo.write(value)
             fo.close()
             vm = VmInfo(ip, user, key, role)
             vm_list.append(vm)
+        elif name == "playbook":
+            value = param["value"]
+            playbook = path + "playbook.yml"
+            fo = open(playbook, "w")
+            fo.write(value)
+            fo.close()
 
-    if cluster_type == "kubernetes":
+    if manager_type == "kubernetes":
         ret = docker_kubernetes.run(vm_list)
         return ret
-    elif cluster_type == "swarm":
+    elif manager_type == "swarm":
         ret = docker_engine.run(vm_list)
         if "ERROR" in ret: return ret
         ret = docker_swarm.run(vm_list)
@@ -66,19 +79,37 @@ def handleDelivery(message):
         ret1 = control_agent.run(vm_list)
         if "ERROR" in ret1: ret = ret1
         return ret
+    elif manager_type == "ansible":
+        ret = ansible_playbook.run(vm_list,playbook)
+        return ret
     else:
         return "ERROR: invalid cluster"
     
 
 def on_request(ch, method, props, body):
     ret = handleDelivery(body)
-    print ret
+    
+    parsed_json = json.loads(body)
+    params = parsed_json["parameters"]
+    
+    for param in params:
+        name = param["name"]
+        if name == "cluster":
+            manager_type = param["value"]
+            break
+    
+            
     if "ERROR" in ret:
         res_name = "error"
+    elif manager_type == "ansible":
+        res_name = "ansible_output"
     else:
         res_name = "credential"
-
-
+        
+        
+    print manager_type
+    print res_name
+    
     response = {}
     outcontent = {}
     current_milli_time = lambda: int(round(time.time() * 1000))
@@ -92,6 +123,7 @@ def on_request(ch, method, props, body):
     par["attributes"] = "null"
     response["parameters"].append(par)
 
+    response = json.dumps(response)
     print "Response: %s " % response
     
     ch.basic_publish(exchange='',
@@ -109,5 +141,13 @@ thread = Thread(target = threaded_function, args = (1, ))
 thread.start()
 
 print(" [x] Awaiting RPC requests")
-channel.start_consuming()
-thread.stop()
+
+
+
+try:
+    channel.start_consuming()
+except KeyboardInterrupt:
+    #thread.stop()
+    done = True
+    thread.join()
+    print "threads successfully closed"

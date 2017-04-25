@@ -29,12 +29,12 @@ import nl.uva.sne.drip.api.dao.PlanDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
-import nl.uva.sne.drip.commons.v1.types.Message;
-import nl.uva.sne.drip.commons.v1.types.MessageParameter;
-import nl.uva.sne.drip.commons.v1.types.Plan;
-import nl.uva.sne.drip.commons.v1.types.ToscaRepresentation;
+import nl.uva.sne.drip.data.v1.external.Message;
+import nl.uva.sne.drip.data.v1.external.MessageParameter;
+import nl.uva.sne.drip.data.v1.external.PlanResponse;
+import nl.uva.sne.drip.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
-import nl.uva.sne.drip.commons.v1.types.User;
+import nl.uva.sne.drip.data.v1.external.User;
 import nl.uva.sne.drip.drip.converter.P2PConverter;
 import nl.uva.sne.drip.drip.converter.SimplePlanContainer;
 import org.json.JSONException;
@@ -63,7 +63,7 @@ public class PlannerService {
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-    public Plan getPlan(String toscaId) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
+    public PlanResponse getPlan(String toscaId) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
 
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);
@@ -85,7 +85,7 @@ public class PlannerService {
             jsonArrayString.append("]");
 
             SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", "swarm");
-            Plan topLevel = new Plan();
+            PlanResponse topLevel = new PlanResponse();
             topLevel.setLevel(0);
             topLevel.setToscaID(toscaId);
             topLevel.setName("planner_output_all.yml");
@@ -93,7 +93,7 @@ public class PlannerService {
             Map<String, String> map = simplePlan.lowerLevelContents;
             Set<String> loweLevelPlansIDs = new HashSet<>();
             for (String lowLevelNames : map.keySet()) {
-                Plan lowLevelPlan = new Plan();
+                PlanResponse lowLevelPlan = new PlanResponse();
                 lowLevelPlan.setLevel(1);
                 lowLevelPlan.setToscaID(toscaId);
                 lowLevelPlan.setName(lowLevelNames);
@@ -133,7 +133,7 @@ public class PlannerService {
     }
 
     public String get(String id, String fromat) throws JSONException {
-        Plan plan = findOne(id);
+        PlanResponse plan = findOne(id);
         if (plan == null) {
             throw new NotFoundException();
         }
@@ -167,10 +167,10 @@ public class PlannerService {
     }
 
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public List<Plan> findAll() {
-        List<Plan> all = planDao.findAll();
-        List<Plan> topLevel = new ArrayList<>();
-        for (Plan p : all) {
+    public List<PlanResponse> findAll() {
+        List<PlanResponse> all = planDao.findAll();
+        List<PlanResponse> topLevel = new ArrayList<>();
+        for (PlanResponse p : all) {
             if (p.getLevel() == 0) {
                 topLevel.add(p);
             }
@@ -178,7 +178,7 @@ public class PlannerService {
         return topLevel;
     }
 
-    public Plan save(Plan plan) {
+    public PlanResponse save(PlanResponse plan) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         plan.setOwner(owner);
@@ -186,8 +186,8 @@ public class PlannerService {
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public Plan findOne(String lowiID) {
-        Plan plan = planDao.findOne(lowiID);
+    public PlanResponse findOne(String lowiID) {
+        PlanResponse plan = planDao.findOne(lowiID);
         if (plan == null) {
             throw new NotFoundException();
         }
@@ -196,8 +196,8 @@ public class PlannerService {
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public Plan delete(String id) {
-        Plan plan = planDao.findOne(id);
+    public PlanResponse delete(String id) {
+        PlanResponse plan = planDao.findOne(id);
         if (plan == null) {
             throw new NotFoundException();
         }

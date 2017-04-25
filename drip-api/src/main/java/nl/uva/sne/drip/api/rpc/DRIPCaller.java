@@ -9,20 +9,15 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.commons.v1.types.Message;
-import nl.uva.sne.drip.commons.v1.types.MessageParameter;
+import nl.uva.sne.drip.data.v1.external.Message;
 import nl.uva.sne.drip.commons.utils.Converter;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /*
  * Copyright 2017 S. Koulouzis, Wang Junchao, Huan Zhou, Yang Hu 
@@ -129,41 +124,11 @@ public abstract class DRIPCaller implements AutoCloseable {
         if (clean.contains("\"value\":{\"")) {
             return Converter.string2Message(clean);
         }
+        if (clean.contains("\"null\"")) {
+            clean = clean.replaceAll("\"null\"", "null");
+        }
         Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", clean);
-        
-        
-        
+
         return mapper.readValue(clean, Message.class);
     }
-
-    private Message unMarshallWithSimpleJson(String strResponse) throws JSONException {
-        strResponse = strResponse.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
-//        System.err.println(strResponse);
-        JSONObject jsonObj = new JSONObject(strResponse);
-        Message responseMessage = new Message();
-        responseMessage.setCreationDate((Long) jsonObj.get("creationDate"));
-        JSONArray jsonParams = (JSONArray) jsonObj.get("parameters");
-        List<MessageParameter> parameters = new ArrayList<>();
-
-        for (int i = 0; i < jsonParams.length(); i++) {
-            JSONObject jsonParam = (JSONObject) jsonParams.get(i);
-
-            MessageParameter parameter = new MessageParameter();
-            parameter.setName(jsonParam.getString("name"));
-            parameter.setValue(jsonParam.getString("value"));
-            parameters.add(parameter);
-        }
-
-        responseMessage.setParameters(parameters);
-        return responseMessage;//
-
-    }
-
-//    public Message unmarshall(String strResponse) throws IOException {
-//
-//        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-//        strResponse = strResponse.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
-////        return unMarshallWithSimpleJson(strResponse);
-//        return mapper.readValue(strResponse, Message.class);
-//    }
 }

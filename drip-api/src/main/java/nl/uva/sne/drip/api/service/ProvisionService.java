@@ -15,11 +15,8 @@
  */
 package nl.uva.sne.drip.api.service;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import nl.uva.sne.drip.api.dao.ProvisionInfoDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.CloudCredentialsNotFoundException;
 import nl.uva.sne.drip.api.exception.ExceptionHandler;
@@ -42,16 +38,15 @@ import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
 import nl.uva.sne.drip.api.v1.rest.ProvisionController;
 import nl.uva.sne.drip.commons.utils.Converter;
-import nl.uva.sne.drip.commons.v1.types.CloudCredentials;
-import nl.uva.sne.drip.commons.v1.types.DeployParameter;
-import nl.uva.sne.drip.commons.v1.types.LoginKey;
-import nl.uva.sne.drip.commons.v1.types.Message;
-import nl.uva.sne.drip.commons.v1.types.MessageParameter;
-import nl.uva.sne.drip.commons.v1.types.Plan;
-import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
-import nl.uva.sne.drip.commons.v1.types.Script;
-import nl.uva.sne.drip.commons.v1.types.User;
-import org.apache.commons.io.FileUtils;
+import nl.uva.sne.drip.data.v1.external.CloudCredentials;
+import nl.uva.sne.drip.data.v1.external.DeployParameter;
+import nl.uva.sne.drip.data.v1.external.Message;
+import nl.uva.sne.drip.data.v1.external.MessageParameter;
+import nl.uva.sne.drip.data.v1.external.PlanResponse;
+import nl.uva.sne.drip.data.v1.external.ProvisionRequest;
+import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
+import nl.uva.sne.drip.data.v1.external.Script;
+import nl.uva.sne.drip.data.v1.external.User;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,6 +54,9 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import nl.uva.sne.drip.api.dao.ProvisionResponseDao;
+import nl.uva.sne.drip.api.dao.KeyPairDao;
+import nl.uva.sne.drip.data.v1.external.KeyPair;
 
 /**
  *
@@ -69,7 +67,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class ProvisionService {
 
     @Autowired
-    private ProvisionInfoDao dao;
+    private ProvisionResponseDao provisionDao;
+
+    @Autowired
+    private KeyPairDao keyDao;
 
     @Autowired
     private CloudCredentialsService cloudCredentialsService;
@@ -78,24 +79,24 @@ public class ProvisionService {
     private SimplePlannerService planService;
 
     @Autowired
-    private UserScriptService userScriptService;
+    private ScriptService userScriptService;
 
     @Autowired
-    private UserKeyService userKeysService;
+    private KeyPairService userKeysService;
 
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-    public ProvisionInfo save(ProvisionInfo provisionInfo) {
+    public ProvisionResponse save(ProvisionResponse provision) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        provisionInfo.setOwner(owner);
-        return dao.save(provisionInfo);
+        provision.setOwner(owner);
+        return provisionDao.save(provision);
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public ProvisionInfo findOne(String id) {
-        ProvisionInfo provisionInfo = dao.findOne(id);
+    public ProvisionResponse findOne(String id) {
+        ProvisionResponse provisionInfo = provisionDao.findOne(id);
         if (provisionInfo == null) {
             throw new NotFoundException();
         }
@@ -103,30 +104,30 @@ public class ProvisionService {
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public ProvisionInfo delete(String id) {
-        ProvisionInfo provisionInfo = dao.findOne(id);
-        dao.delete(provisionInfo);
+    public ProvisionResponse delete(String id) {
+        ProvisionResponse provisionInfo = provisionDao.findOne(id);
+        provisionDao.delete(provisionInfo);
         return provisionInfo;
     }
 
 //    @PreAuthorize(" (hasRole('ROLE_ADMIN')) or (hasRole('ROLE_USER'))")
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
 //    @PostFilter("hasPermission(filterObject, 'read') or hasPermission(filterObject, 'admin')")
-    public List<ProvisionInfo> findAll() {
-        return dao.findAll();
+    public List<ProvisionResponse> findAll() {
+        return provisionDao.findAll();
     }
 
-    public ProvisionInfo provisionResources(ProvisionInfo req) throws IOException, TimeoutException, JSONException, InterruptedException {
+    public ProvisionResponse provisionResources(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException {
         try (DRIPCaller provisioner = new ProvisionerCaller(messageBrokerHost);) {
-            Message provisionerInvokationMessage = buildProvisionerMessage(req);
+            Message provisionerInvokationMessage = buildProvisionerMessage(provisionRequest);
 
             Message response = (provisioner.call(provisionerInvokationMessage));
-//            Message response = generateFakeResponse(System.getProperty("user.home")
+//            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
 //                    + File.separator + "workspace" + File.separator + "DRIP"
-//                    + File.separator + "doc" + File.separator + "json_samples"
-//                    + File.separator + "ec2_provisioner_provisoned2.json");
+//                    + File.separator + "docs" + File.separator + "json_samples"
+//                    + File.separator + "ec2_provisioner_provisoned3.json");
             List<MessageParameter> params = response.getParameters();
-
+            ProvisionResponse provisionResponse = new ProvisionResponse();
             for (MessageParameter p : params) {
                 String name = p.getName();
                 if (name.toLowerCase().contains("exception")) {
@@ -134,11 +135,12 @@ public class ProvisionService {
                     Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
                     throw ex;
                 }
+
                 if (!name.equals("kubernetes")) {
                     String value = p.getValue();
                     Map<String, Object> kvMap = Converter.ymlString2Map(value);
-                    req.setKvMap(kvMap);
-                    req.setPlanID(req.getPlanID());
+                    provisionResponse.setKvMap(kvMap);
+                    provisionResponse.setPlanID(provisionRequest.getPlanID());
                 } else {
                     String value = p.getValue();
                     String[] lines = value.split("\n");
@@ -160,18 +162,21 @@ public class ProvisionService {
                         deployParam.setCloudCertificateName(cloudCertificateName);
                         deployParameters.add(deployParam);
                     }
-                    req.setDeployParameters(deployParameters);
+                    provisionResponse.setDeployParameters(deployParameters);
                 }
             }
-            req = save(req);
-            return req;
+            provisionResponse.setCloudCredentialsIDs(provisionRequest.getCloudCredentialsIDs());
+            provisionResponse.setKeyPairIDs(provisionRequest.getKeyPairIDs());
+
+            provisionResponse = save(provisionResponse);
+            return provisionResponse;
         }
     }
 
-    private Message buildProvisionerMessage(ProvisionInfo pReq) throws JSONException, IOException {
+    private Message buildProvisionerMessage(ProvisionRequest pReq) throws JSONException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
-        CloudCredentials cred = cloudCredentialsService.findOne(pReq.getCloudCredentialsID());
+        CloudCredentials cred = cloudCredentialsService.findOne(pReq.getCloudCredentialsIDs().get(0));
         if (cred == null) {
             throw new CloudCredentialsNotFoundException();
         }
@@ -184,15 +189,9 @@ public class ProvisionService {
         List<MessageParameter> topologies = buildTopologyParams(pReq.getPlanID());
         parameters.addAll(topologies);
 
-        String scriptID = pReq.getscriptID();
-        if (scriptID != null) {
-            List<MessageParameter> userScripts = buildScriptParams(scriptID);
-            parameters.addAll(userScripts);
-        }
-
-        String userKeyID = pReq.getUserKeyID();
-        if (userKeyID != null) {
-            List<MessageParameter> userKeys = buildKeysParams(userKeyID);
+        List<String> userKeyIDs = pReq.getKeyPairIDs();
+        if (userKeyIDs != null) {
+            List<MessageParameter> userKeys = buildKeysParams(userKeyIDs.get(0));
             parameters.addAll(userKeys);
         }
 
@@ -216,19 +215,25 @@ public class ProvisionService {
     }
 
     private List<MessageParameter> buildCertificatesParam(CloudCredentials cred) {
-        List<LoginKey> loginKeys = cred.getLoginKeys();
-        if (loginKeys == null || loginKeys.isEmpty()) {
+        List<String> loginKeysIDs = cred.getkeyPairIDs();
+        List<KeyPair> loginKeys = new ArrayList<>();
+        for (String keyID : loginKeysIDs) {
+            KeyPair key = keyDao.findOne(keyID);
+            loginKeys.add(key);
+        }
+
+        if (loginKeys.isEmpty()) {
             throw new BadRequestException("Log in keys can't be empty");
         }
         List<MessageParameter> parameters = new ArrayList<>();
-        for (LoginKey lk : loginKeys) {
-            String domainName = lk.getAttributes().get("domain_name");
+        for (KeyPair lk : loginKeys) {
+            String domainName = lk.getPrivateKey().getAttributes().get("domain_name");
             if (domainName == null) {
-                domainName = lk.getAttributes().get("domain_name ");
+                domainName = lk.getPrivateKey().getAttributes().get("domain_name ");
             }
             MessageParameter cert = new MessageParameter();
             cert.setName("certificate");
-            cert.setValue(lk.getKey());
+            cert.setValue(lk.getPrivateKey().getKey());
             Map<String, String> attributes = new HashMap<>();
             attributes.put("filename", domainName);
             cert.setAttributes(attributes);
@@ -238,7 +243,7 @@ public class ProvisionService {
     }
 
     private List<MessageParameter> buildTopologyParams(String planID) throws JSONException {
-        Plan plan = planService.getDao().findOne(planID);
+        PlanResponse plan = planService.getDao().findOne(planID);
         if (plan == null) {
             throw new PlanNotFoundException();
         }
@@ -254,7 +259,7 @@ public class ProvisionService {
 
         Set<String> ids = plan.getLoweLevelPlanIDs();
         for (String lowID : ids) {
-            Plan lowPlan = planService.getDao().findOne(lowID);
+            PlanResponse lowPlan = planService.getDao().findOne(lowID);
             topology = new MessageParameter();
             topology.setName("topology");
             topology.setValue(Converter.map2YmlString(lowPlan.getKeyValue()));
@@ -296,47 +301,22 @@ public class ProvisionService {
     }
 
     private List<MessageParameter> buildKeysParams(String userKeyID) {
-        LoginKey key = userKeysService.get(userKeyID, LoginKey.Type.PUBLIC);
+        KeyPair key = userKeysService.findOne(userKeyID);
         if (key == null) {
             throw new BadRequestException("User key: " + userKeyID + " was not found");
         }
         List<MessageParameter> parameters = new ArrayList();
         MessageParameter keyParameter = new MessageParameter();
         keyParameter.setName("sshkey");
-        keyParameter.setValue(key.getKey());
+        keyParameter.setValue(key.getPublicKey().getKey());
         keyParameter.setEncoding("UTF-8");
         parameters.add(keyParameter);
         return parameters;
 
     }
 
-    private Message generateFakeResponse(String path) throws IOException, TimeoutException, InterruptedException, JSONException {
-//        String strResponse = "{\"creationDate\":1488368936945,\"parameters\":["
-//                + "{\"name\":\"f293ff03-4b82-49e2-871a-899aadf821ce\","
-//                + "\"encoding\":\"UTF-8\",\"value\":"
-//                + "\"publicKeyPath: /tmp/Input-4007028381500/user.pem\\nuserName: "
-//                + "zh9314\\nsubnets:\\n- {name: s1, subnet: 192.168.10.0, "
-//                + "netmask: 255.255.255.0}\\ncomponents:\\n- "
-//                + "name: faab6756-61b6-4800-bffa-ae9d859a9d6c\\n  "
-//                + "type: Switch.nodes.Compute\\n  nodetype: t2.medium\\n  "
-//                + "OStype: Ubuntu 16.04\\n  domain: ec2.us-east-1.amazonaws.com\\n  "
-//                + "script: /tmp/Input-4007028381500/guiscipt.sh\\n  "
-//                + "installation: null\\n  role: master\\n  "
-//                + "dockers: mogswitch/InputDistributor\\n  "
-//                + "public_address: 54.144.0.91\\n  instanceId: i-0e78cbf853328b820\\n  "
-//                + "ethernet_port:\\n  - {name: p1, subnet_name: s1, "
-//                + "address: 192.168.10.10}\\n- name: 1c75eedf-8497-46fe-aeb8-dab6a62154cb\\n  "
-//                + "type: Switch.nodes.Compute\\n  nodetype: t2.medium\\n  OStype: Ubuntu 16.04\\n  domain: ec2.us-east-1.amazonaws.com\\n  script: /tmp/Input-4007028381500/guiscipt.sh\\n  installation: null\\n  role: slave\\n  dockers: mogswitch/ProxyTranscoder\\n  public_address: 34.207.254.160\\n  instanceId: i-0a99ea18fcc77ed7a\\n  ethernet_port:\\n  - {name: p1, subnet_name: s1, address: 192.168.10.11}\\n\"},{\"name\":\"kubernetes\",\"encoding\":\"UTF-8\",\"value\":\"54.144.0.91 ubuntu /tmp/Input-4007028381500/Virginia.pem master\\n34.207.254.160 ubuntu /tmp/Input-4007028381500/Virginia.pem slave\\n\"}]}";
-//        String strResponse = "{\"creationDate\":1488805337447,\"parameters\":[{\"name\":\"2e5dafb6-5a1c-4a66-9dca-5841f99ea735\",\"encoding\":\"UTF-8\",\"value\":\"publicKeyPath: /tmp/Input-11594765342486/user.pem\\nuserName: zh9314\\nsubnets:\\n- {name: s1, subnet: 192.168.10.0, netmask: 255.255.255.0}\\ncomponents:\\n- name: 8fcc1788d9ee462c826572c79fdb2a6a\\n  type: Switch.nodes.Compute\\n  nodeType: t2.medium\\n  OStype: Ubuntu 16.04\\n  script: /tmp/Input-11594765342486/guiscipt.sh\\n  domain: ec2.us-east-1.amazonaws.com\\n  installation: null\\n  clusterType: swarm\\n  role: master\\n  dockers: mogswitch/ProxyTranscoder:1.0\\n  public_address: 34.207.73.18\\n  instanceId: i-0e82b5624a0df99b1\\n  ethernet_port:\\n  - {name: p1, subnet_name: s1, address: 192.168.10.10}\\n- name: 8fcc1788d9ee462c826572c79fdb2a6a\\n  type: Switch.nodes.Compute\\n  nodeType: t2.medium\\n  OStype: Ubuntu 16.04\\n  script: /tmp/Input-11594765342486/guiscipt.sh\\n  domain: ec2.us-east-1.amazonaws.com\\n  installation: null\\n  clusterType: swarm\\n  role: slave\\n  dockers: mogswitch/ProxyTranscoder:1.0\\n  public_address: 34.207.73.18\\n  instanceId: i-0e82b5624a0df99b1\\n  ethernet_port:\\n  - {name: p1, subnet_name: s1, address: 192.168.10.11}\\n\"},{\"name\":\"kubernetes\",\"encoding\":\"UTF-8\",\"value\":\"34.207.73.18 ubuntu /tmp/Input-11594765342486/Virginia.pem master\\n34.207.73.18 ubuntu /tmp/Input-11594765342486/Virginia.pem slave\\n\"}]}";
-        String strResponse = FileUtils.readFileToString(new File(path));
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-
-        return mapper.readValue(strResponse, Message.class);
-    }
-
     @PostFilter("(hasRole('ROLE_ADMIN'))")
     public void deleteAll() {
-        dao.deleteAll();
+        provisionDao.deleteAll();
     }
 }

@@ -21,11 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.service.UserScriptService;
+import nl.uva.sne.drip.api.service.ScriptService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.v0.types.ConfScript;
-import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
-import nl.uva.sne.drip.commons.v1.types.Script;
+import nl.uva.sne.drip.data.v0.external.ConfScript;
+import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
+import nl.uva.sne.drip.data.v1.external.Script;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,10 +43,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserScriptController0 {
 
     @Autowired
-    private UserScriptService scriptService;
-
-    @Autowired
-    private ProvisionService provisionService;
+    private ScriptService scriptService;
 
     @RequestMapping(value = "/confscript", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -55,11 +52,6 @@ public class UserScriptController0 {
         Script script = new Script();
         script.setContents(confScript.script);
         script = scriptService.save(script);
-
-        ProvisionInfo provPlan = provisionService.findOne(confScript.action);
-        provPlan.setScriptID(script.getId());
-        provisionService.save(provPlan);
-
         return "Success: script for GUI is uploaded: " + script.getId();
     }
 

@@ -20,9 +20,10 @@ import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.api.dao.ToscaDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.commons.v1.types.ToscaRepresentation;
+import nl.uva.sne.drip.commons.utils.Constants;
+import nl.uva.sne.drip.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
-import nl.uva.sne.drip.commons.v1.types.User;
+import nl.uva.sne.drip.data.v1.external.User;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -71,14 +72,7 @@ public class ToscaService {
         String name = System.currentTimeMillis() + "_" + originalFileName;
         byte[] bytes = file.getBytes();
         String str = new String(bytes, "UTF-8");
-        str = str.replaceAll("\\.", "\uff0E");
-
-        Map<String, Object> map = Converter.ymlString2Map(str);
-        ToscaRepresentation t = new ToscaRepresentation();
-        t.setName(name);
-        t.setKvMap(map);
-        save(t);
-        return t.getId();
+        return saveStringContents(str, name);
     }
 
     public String saveYamlString(String yamlString, String name) throws IOException {
@@ -122,4 +116,38 @@ public class ToscaService {
     public void deleteAll() {
         dao.deleteAll();
     }
+
+    public String saveStringContents(String toscaContents, String name) throws IOException {
+
+        //Remove '\' and 'n' if they are together and replace them with '\n'
+        char[] array = toscaContents.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        int prevChar = -1;
+        for (int i = 0; i < array.length; i++) {
+            int currentChar = (int) array[i];
+            if (prevChar > 0 && prevChar == 92 && currentChar == 110) {
+                sb.delete(sb.length() - 1, sb.length());
+                sb.append('\n');
+
+            } else {
+                sb.append((char) currentChar);
+            }
+            prevChar = (int) array[i];
+        }
+        toscaContents = sb.toString();
+        toscaContents = toscaContents.replaceAll("(?m)^[ \t]*\r?\n", "");
+        for (int i = 0; i < Constants.BAD_CHARS.length; i++) {
+            int hex = Constants.BAD_CHARS[i];
+            toscaContents = toscaContents.replaceAll(String.valueOf((char) hex), "");
+        }
+
+        toscaContents = toscaContents.replaceAll("\\.", "\uff0E");
+        Map<String, Object> map = Converter.ymlString2Map(toscaContents);
+        ToscaRepresentation t = new ToscaRepresentation();
+        t.setName(name);
+        t.setKvMap(map);
+        save(t);
+        return t.getId();
+    }
+
 }

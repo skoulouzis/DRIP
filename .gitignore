@@ -8,3 +8,6 @@
 /drip-planner2provisioner/target/
 /drip-component_example/target/
 /deleteme/target/
+/drip-api/nbproject/
+/drip-tests/nbproject/
+/drip-tests/target/

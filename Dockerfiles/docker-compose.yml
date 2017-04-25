@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+    mongo:
+    image: mongo:3
+    ports:
+        - "27017:27017"
+    command: "mongod --port 27017"
+    restart: always
+    
+    rabbit:
+    image: rabbitmq:latest
+    ports:
+        - "5671-5672:5671-5672"
+        - "15671:15671"
+    restart: always
+    
+    drip-planner:
+        depends_on:
+            - rabbit
+        build: planner/Dockerfile
+        image: drip-planner:latest
+        restart: always
+        environment:
+            RABBITMQ_HOST: rabbit
+        command: "python rpc_server.py $RABBITMQ_HOST"

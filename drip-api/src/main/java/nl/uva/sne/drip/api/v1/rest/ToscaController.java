@@ -15,7 +15,9 @@
  */
 package nl.uva.sne.drip.api.v1.rest;
 
-import nl.uva.sne.drip.commons.v1.types.ToscaRepresentation;
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
+import nl.uva.sne.drip.data.v1.external.ToscaRepresentation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * This controller is responsible for storing TOSCA descriptions that can be
@@ -45,10 +48,26 @@ import nl.uva.sne.drip.api.service.UserService;
 @RestController
 @RequestMapping("/user/v1.0/tosca")
 @Component
+@StatusCodes({
+    @ResponseCode(code = 401, condition = "Bad credentials")
+})
 public class ToscaController {
 
     @Autowired
     private ToscaService toscaService;
+
+    @RequestMapping(value = "/post", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String post(@RequestBody String toscaContents) {
+        try {
+
+            return toscaService.saveStringContents(toscaContents, String.valueOf(System.currentTimeMillis()));
+        } catch (IOException ex) {
+            Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     /**
      * Uploads and stores a TOSCA description file
@@ -120,8 +139,8 @@ public class ToscaController {
         }
         return ids;
     }
-    
-     /**
+
+    /**
      * Gets the IDs of all the stored TOSCA descriptionss.
      *
      * @return a list of all the IDs

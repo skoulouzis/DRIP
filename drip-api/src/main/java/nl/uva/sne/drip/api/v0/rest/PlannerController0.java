@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.commons.v0.types.Result;
+import nl.uva.sne.drip.data.v0.external.Result;
 import javax.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,8 +33,8 @@ import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.commons.utils.Converter;
-import nl.uva.sne.drip.commons.v0.types.Attribute;
-import nl.uva.sne.drip.commons.v0.types.Plan;
+import nl.uva.sne.drip.data.v0.external.Attribute;
+import nl.uva.sne.drip.data.v0.external.Plan;
 import org.json.JSONException;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,7 +65,7 @@ public class PlannerController0 {
             String yaml = plan0.file;
             yaml = yaml.replaceAll("\\\\n", "\n");
             String id = toscaService.saveYamlString(yaml, null);
-            nl.uva.sne.drip.commons.v1.types.Plan plan1 = plannerService.getPlan(id);
+            nl.uva.sne.drip.data.v1.external.PlanResponse plan1 = plannerService.getPlan(id);
 
             Result r = new Result();
             r.info = ("INFO");
@@ -76,7 +76,7 @@ public class PlannerController0 {
             files.add(e);
 
             for (String lowiID : plan1.getLoweLevelPlanIDs()) {
-                nl.uva.sne.drip.commons.v1.types.Plan lowPlan1 = plannerService.findOne(lowiID);
+                nl.uva.sne.drip.data.v1.external.PlanResponse lowPlan1 = plannerService.findOne(lowiID);
                 e = Converter.plan1toFile(lowPlan1);
                 files.add(e);
                 //Don't save them cause they will be re-uploaded in the provision step

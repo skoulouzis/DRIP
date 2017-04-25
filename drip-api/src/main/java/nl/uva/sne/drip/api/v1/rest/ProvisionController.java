@@ -15,7 +15,9 @@
  */
 package nl.uva.sne.drip.api.v1.rest;
 
-import nl.uva.sne.drip.commons.v1.types.ProvisionInfo;
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
+import nl.uva.sne.drip.data.v1.external.ProvisionRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.service.ProvisionService;
 import nl.uva.sne.drip.api.service.UserService;
+import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
 import org.json.JSONException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,35 +49,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/user/v1.0/provisioner")
 @Component
+@StatusCodes({
+    @ResponseCode(code = 401, condition = "Bad credentials")
+})
 public class ProvisionController {
 
     @Autowired
     private ProvisionService provisionService;
 
+//    @Autowired
+//    private CloudCredentialsService cloudCredentialService;
+//
+//    @Autowired
+//    private PlannerService plannServcie;
     /**
-     * Gets the ProvisionInfo
+     * Gets the ProvisionRequest
      *
-     * @param id. The id of the ProvisionInfo
-     * @return the requested ProvisionInfo
+     * @param id. The id of the ProvisionRequest
+     * @return the requested ProvisionRequest
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    ProvisionInfo get(@PathVariable("id") String id) {
+    ProvisionResponse get(@PathVariable("id") String id) {
         return provisionService.findOne(id);
     }
 
     /**
-     * Deletes the ProvisionInfo
+     * Deletes the ProvisionRequest
      *
-     * @param id. The ID of the ProvisionInfo to be deleted
-     * @return the ID of the deleted ProvisionInfo
+     * @param id. The ID of the ProvisionRequest to be deleted
+     * @return the ID of the deleted ProvisionRequest
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        ProvisionInfo provPlan = provisionService.findOne(id);
+        ProvisionRequest provPlan = provisionService.findOne(id);
         if (provPlan != null) {
             provisionService.delete(id);
             return "Deleted : " + id;
@@ -92,7 +103,7 @@ public class ProvisionController {
     }
 
     /**
-     * Gets the IDs of all the stored ProvisionInfo
+     * Gets the IDs of all the stored ProvisionRequest
      *
      * @return a list of IDs
      */
@@ -100,26 +111,26 @@ public class ProvisionController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     List<String> getIds() {
-        List<ProvisionInfo> all = provisionService.findAll();
+        List<ProvisionResponse> all = provisionService.findAll();
         List<String> ids = new ArrayList<>(all.size());
-        for (ProvisionInfo pi : all) {
+        for (ProvisionRequest pi : all) {
             ids.add(pi.getId());
         }
         return ids;
     }
 
     /**
-     * Provison the resources specified by a plan.
+     * Provision the resources specified by a plan.
      *
-     * @param req. The ProvisionInfo. This is a container the plan ID, cloud
+     * @param req. The ProvisionRequest. This is a container the plan ID, cloud
      * credent ID, etc.
-     * @return The ID of the provisioned ProvisionInfo
+     * @return The ID of the provisioned ProvisionRequest
      */
     @RequestMapping(value = "/provision", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String provision(@RequestBody ProvisionInfo req) {
-        if (req.getCloudCredentialsID() == null) {
+    String provision(@RequestBody ProvisionRequest req) {
+        if (req.getCloudCredentialsIDs() == null) {
             throw new BadRequestException();
         }
         if (req.getPlanID() == null) {
@@ -134,6 +145,22 @@ public class ProvisionController {
             Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    @RequestMapping(value = "/sample", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    ProvisionRequest sample() {
+        ProvisionRequest req = new ProvisionRequest();
+        List<String> cloudCredentialsIDs = new ArrayList<>();
+        cloudCredentialsIDs.add("58f8d74f2af451b88c779d7a");
+        cloudCredentialsIDs.add("438dAFDf2ead451we8rf34Af");
+        req.setCloudCredentialsIDs(cloudCredentialsIDs);
+        List<String> keyPairIDs = new ArrayList<>();
+        keyPairIDs.add("58f8da042af45d6621813c4e");
+        req.setKeyPairIDs(keyPairIDs);
+        req.setPlanID("58da51f7f7b42e7d967752a1");
+        return req;
     }
 
 }

@@ -29,10 +29,12 @@ def install_manager(vm):
 		sftp.chdir('/tmp/')
 		install_script = file_path + "/" + "docker_kubernetes.sh"
 		sftp.put(install_script, "kubernetes_setup.sh")
+		
 		stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.','-')))
 		stdout.read()
 		stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/kubernetes_setup.sh")
 		stdout.read()
+		
 		stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init --api-advertise-addresses=%s" % (vm.ip))
 		retstr = stdout.readlines()
 		stdin, stdout, stderr = ssh.exec_command("sudo cp /etc/kubernetes/admin.conf /tmp/")

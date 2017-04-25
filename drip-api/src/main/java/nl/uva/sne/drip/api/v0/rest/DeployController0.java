@@ -23,12 +23,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import nl.uva.sne.drip.api.service.DeployClusterService;
+import nl.uva.sne.drip.api.service.DeployService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.commons.v0.types.Deploy;
-import nl.uva.sne.drip.commons.v0.types.Attribute;
-import nl.uva.sne.drip.commons.v0.types.Result;
-import nl.uva.sne.drip.commons.v1.types.ClusterCredentials;
+import nl.uva.sne.drip.data.v0.external.Deploy;
+import nl.uva.sne.drip.data.v0.external.Attribute;
+import nl.uva.sne.drip.data.v0.external.Result;
+import nl.uva.sne.drip.data.v1.external.DeployRequest;
+import nl.uva.sne.drip.data.v1.external.DeployResponse;
+import nl.uva.sne.drip.data.v1.external.Key;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -47,34 +49,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class DeployController0 {
 
     @Autowired
-    private DeployClusterService deployService;
+    private DeployService deployService;
 
     @RequestMapping(value = "/kubernetes", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result deployKubernetes(@RequestBody Deploy deploy) {
-        return deploy(deploy, "kubernetes");
+        DeployRequest deployReq = new DeployRequest();
+        deployReq.setManagerType("kubernetes");
+        deployReq.setProvisionID(deploy.action);
+        return deploy(deployReq);
     }
 
     @RequestMapping(value = "/swarm", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result deploySwarm(@RequestBody Deploy deploy) {
-        return deploy(deploy, "swarm");
+        DeployRequest deployReq = new DeployRequest();
+        deployReq.setManagerType("swarm");
+        deployReq.setProvisionID(deploy.action);
+        return deploy(deployReq);
     }
 
-    private Result deploy(Deploy deploy, String clusterType) {
-        String provisionID = deploy.action;
+    private Result deploy(DeployRequest deployReq) {
 
-        ClusterCredentials clusterCred = deployService.deployCluster(provisionID, clusterType);
+        DeployResponse key = deployService.deploySoftware(deployReq);
 
         Result res = new Result();
         res.info = "INFO";
         res.status = "Success";
         List<Attribute> files = new ArrayList<>();
-        Attribute e = new Attribute();
-        e.content = clusterCred.getKey();
-        files.add(e);
+        Attribute attribute = new Attribute();
+        attribute.content = key.getKeyPair().getPrivateKey().getKey();
+        files.add(attribute);
         res.file = files;
         return res;
     }
