@@ -824,15 +824,15 @@ module External
     attr_accessor :owner
     # the id
     attr_accessor :id
-    # the creationDate
-    attr_accessor :creationDate
+    # the timestamp
+    attr_accessor :timestamp
 
     # the json hash for this OwnedObject
     def to_jaxb_json_hash
       _h = {}
       _h['owner'] = owner.to_jaxb_json_hash unless owner.nil?
       _h['id'] = id.to_jaxb_json_hash unless id.nil?
-      _h['creationDate'] = creationDate.to_jaxb_json_hash unless creationDate.nil?
+      _h['timestamp'] = timestamp.to_jaxb_json_hash unless timestamp.nil?
       return _h
     end
 
@@ -881,23 +881,23 @@ module External
                 @id = _oa
             end
           end
-        if !_o['creationDate'].nil?
-          _oa = _o['creationDate']
+        if !_o['timestamp'].nil?
+          _oa = _o['timestamp']
             if(_oa.is_a? Hash)
-              @creationDate = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @creationDate =  Bignum.from_json(_oa) unless _oa['@class']
+              @timestamp = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @timestamp =  Bignum.from_json(_oa) unless _oa['@class']
             elsif (_oa.is_a? Array)
               #an array(of hashes hopefully) or scalar
-              @creationDate = Array.new
+              @timestamp = Array.new
               _oa.each { | _item | 
                  if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @creationDate.push Bignum.from_json(_item)
+                   @timestamp.push Bignum.from_json(_item)
                  else
-                   @creationDate.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                   @timestamp.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
                  end
                }
             else
-                @creationDate = _oa
+                @timestamp = _oa
             end
           end
     end

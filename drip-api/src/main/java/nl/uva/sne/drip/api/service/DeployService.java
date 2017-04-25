@@ -128,12 +128,11 @@ public class DeployService {
                     deployInfo.getManagerType().toLowerCase(),
                     deployInfo.getConfigurationID());
 
-            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
-                    + File.separator + "workspace" + File.separator + "DRIP"
-                    + File.separator + "docs" + File.separator + "json_samples"
-                    + File.separator + "deployer_ansible_response_benchmark.json");
-
-//            Message response = (deployer.call(deployerInvokationMessage));
+//            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
+//                    + File.separator + "workspace" + File.separator + "DRIP"
+//                    + File.separator + "docs" + File.separator + "json_samples"
+//                    + File.separator + "deployer_ansible_response_benchmark.json");
+            Message response = (deployer.call(deployerInvokationMessage));
             List<MessageParameter> params = response.getParameters();
             DeployResponse deploy = handleResponse(params, deployInfo);
             deploy.setProvisionID(deployInfo.getProvisionID());

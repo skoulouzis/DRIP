@@ -128,18 +128,6 @@
         </tr>
         <tbody>
         <tr>
-          <td><span class="property-name">creationDate</span></td>
-          <td><span class="datatype-reference">long
-</span></td>
-          <td><span class="property-type">element
-</span></td>
-          <td><span class="property-namespaceInfo">
-</span></td>
-          <td><span class="property-minMaxOccurs">0/1
-</span></td>
-          <td><span class="property-description">the creationDate</span></td>
-        </tr>
-        <tr>
           <td><span class="property-name">owner</span></td>
           <td><span class="datatype-reference">string
 </span></td>
@@ -151,6 +139,18 @@
 </span></td>
           <td><span class="property-description">The owner (username) for the particular object. This value is set when
 the DAO saves the object based on the principal how made the call</span></td>
+        </tr>
+        <tr>
+          <td><span class="property-name">timestamp</span></td>
+          <td><span class="datatype-reference">long
+</span></td>
+          <td><span class="property-type">element
+</span></td>
+          <td><span class="property-namespaceInfo">
+</span></td>
+          <td><span class="property-minMaxOccurs">0/1
+</span></td>
+          <td><span class="property-description">the timestamp</span></td>
         </tr>
         </tbody>
       </table>
@@ -164,7 +164,7 @@ echo &quot;Reading system-wide config....&quot; &amp;gt;&amp;amp;2\n. /etc/cool.
 if [ -r ~/.coolrc ]; then
   echo &quot;Reading user config....&quot; &amp;gt;&amp;amp;2\n  . ~/.coolrc\nfi&lt;/contents&gt;
   &lt;owner&gt;user1&lt;/owner&gt;
-  &lt;creationDate&gt;...&lt;/creationDate&gt;
+  &lt;timestamp&gt;...&lt;/timestamp&gt;
 &lt;/s-----&gt;
 </pre>
 

@@ -25,6 +25,7 @@ import nl.uva.sne.drip.api.service.BenchmarkResultService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.data.v1.external.ansible.BenchmarkResult;
 import nl.uva.sne.drip.data.v1.external.ansible.BenchmarkResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.stereotype.Controller;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 })
 public class BenchmarkController {
 
+    @Autowired
     private BenchmarkResultService benchmarkResultService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
