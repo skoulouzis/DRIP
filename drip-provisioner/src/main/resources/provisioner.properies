@@ -1,1 +1,2 @@
 rabbitmq.host=127.0.0.1
+rpc.queue.name=provisioner_queue_v1

@@ -19,6 +19,7 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.DefaultConsumer;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +35,7 @@ import java.util.logging.Logger;
  */
 public class RPCServer {
 
-    private static final String RPC_QUEUE_NAME = "provisioner_queue";
+    private static String RPC_QUEUE_NAME = "provisioner_queue_v1";
     private static String HOST = "127.0.0.1";
 
     public static void main(String[] argv) {
@@ -55,7 +56,9 @@ public class RPCServer {
             }
         }
         HOST = prop.getProperty("rabbitmq.host", "127.0.0.1");
+        RPC_QUEUE_NAME = prop.getProperty("rpc.queue.name", "provisioner_queue_v1");
         Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, MessageFormat.format("rabbitmq.host: {0}", HOST));
+        Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, MessageFormat.format("rpc.queue.name: {0}", RPC_QUEUE_NAME));
         start();
     }
 
@@ -70,8 +73,13 @@ public class RPCServer {
             Channel channel = connection.createChannel();
             //We define the queue name 
             channel.queueDeclare(RPC_QUEUE_NAME, false, false, false, null);
-            //Set our own customized consummer 
-            Consumer c = new Consumer(channel);
+            DefaultConsumer c;
+            if (RPC_QUEUE_NAME.endsWith("v0")) {
+                c = new nl.uva.sne.drip.drip.provisioner.v0.Consumer(channel);
+            } else {
+                c = new nl.uva.sne.drip.drip.provisioner.v1.Consumer(channel);
+            }
+
             //Start listening for messages 
             channel.basicConsume(RPC_QUEUE_NAME, false, c);
 

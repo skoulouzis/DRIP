@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.drip.provisioner;
+package nl.uva.sne.drip.drip.provisioner.v0;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -27,7 +27,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
@@ -40,6 +39,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.drip.provisioner.utils.MessageParsing;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
@@ -161,12 +161,12 @@ public class Consumer extends DefaultConsumer {
             geniConfFile = cloudConfFile;
         }
 
-        File topologyFile = getTopology(parameters, tempInputDirPath, 0);
+        File topologyFile = MessageParsing.getTopology(parameters, tempInputDirPath, 0);
         File mainTopologyFile = new File(tempInputDirPath + "topology_main");
         FileUtils.moveFile(topologyFile, mainTopologyFile);
         mainTopologyPath = mainTopologyFile.getAbsolutePath();
 
-        topologyFile = getTopology(parameters, tempInputDirPath, 1);
+        topologyFile = MessageParsing.getTopology(parameters, tempInputDirPath, 1);
         File secondaryTopologyFile = new File(tempInputDirPath + File.separator + topologyFile.getName() + ".yml");
         String outputFilePath = tempInputDirPath + File.separator + topologyFile.getName() + "_provisioned.yml";
         TopologyElement x = new TopologyElement();
@@ -365,15 +365,6 @@ public class Consumer extends DefaultConsumer {
         return jo.toString();
     }
 
-    private void writeValueToFile(String value, File file) throws FileNotFoundException {
-        try (PrintWriter out = new PrintWriter(file)) {
-            out.print(value);
-        }
-        if (!file.exists() || file.length() < value.getBytes().length) {
-            throw new FileNotFoundException("File " + file.getAbsolutePath() + " doesn't exist or contents are missing ");
-        }
-    }
-
     private File getCloudConfigurationFile(JSONArray parameters, String tempInputDirPath) throws JSONException {
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
@@ -382,7 +373,7 @@ public class Consumer extends DefaultConsumer {
                 try {
                     File confFile = new File(tempInputDirPath + File.separator + name);
                     if (confFile.createNewFile()) {
-                        writeValueToFile((String) param.get("value"), confFile);
+                        MessageParsing.writeValueToFile((String) param.get("value"), confFile);
                         return confFile;
                     } else {
                         return null;
@@ -390,39 +381,6 @@ public class Consumer extends DefaultConsumer {
                 } catch (IOException e) {
                     Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, e);
                     return null;
-                }
-            }
-        }
-        return null;
-    }
-
-    private File getTopology(JSONArray parameters, String tempInputDirPath, int level) throws JSONException, IOException {
-        for (int i = 0; i < parameters.length(); i++) {
-            JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get("name");
-            if (name.equals("topology")) {
-                JSONObject attributes = param.getJSONObject("attributes");
-                int fileLevel = Integer.valueOf((String) attributes.get("level"));
-                if (fileLevel == level) {
-                    String originalFilename = (String) attributes.get("filename");
-                    String fileName = "";
-//                    String[] parts = originalFilename.split("_");
-//                    String prefix = "";
-//                    //Clear date part form file name
-//                    if (isNumeric(parts[0])) {
-//                        for (int j = 1; j < parts.length; j++) {
-//                            fileName += prefix + parts[j];
-//                            prefix = "_";
-//                        }
-//                    } else {
-                    fileName = originalFilename;
-//                    }
-
-                    File topologyFile = new File(tempInputDirPath + File.separator + fileName);
-                    topologyFile.createNewFile();
-                    String val = (String) param.get("value");
-                    writeValueToFile(val, topologyFile);
-                    return topologyFile;
                 }
             }
         }
@@ -439,7 +397,7 @@ public class Consumer extends DefaultConsumer {
                 String fileName = (String) attribute.get("filename");
                 File certificate = new File(tempInputDirPath + File.separator + fileName + ".pem");
                 if (certificate.createNewFile()) {
-                    writeValueToFile((String) param.get("value"), certificate);
+                    MessageParsing.writeValueToFile((String) param.get("value"), certificate);
                     Set<PosixFilePermission> perms = new HashSet<>();
                     perms.add(PosixFilePermission.OWNER_READ);
                     Files.setPosixFilePermissions(Paths.get(certificate.getAbsolutePath()), perms);
@@ -469,7 +427,7 @@ public class Consumer extends DefaultConsumer {
                 String sshKeyContent = (String) param.get("value");
                 File sshKeyFile = new File(tempInputDirPath + File.separator + "user.pem");
                 if (sshKeyFile.createNewFile()) {
-                    writeValueToFile(sshKeyContent, sshKeyFile);
+                    MessageParsing.writeValueToFile(sshKeyContent, sshKeyFile);
                     return sshKeyFile;
                 }
             }
@@ -485,16 +443,12 @@ public class Consumer extends DefaultConsumer {
                 String scriptContent = (String) param.get("value");
                 File scriptFile = new File(tempInputDirPath + File.separator + "guiscipt.sh");
                 if (scriptFile.createNewFile()) {
-                    writeValueToFile(scriptContent, scriptFile);
+                    MessageParsing.writeValueToFile(scriptContent, scriptFile);
                     return scriptFile;
                 }
             }
         }
         return null;
-    }
-
-    private static boolean isNumeric(String str) {
-        return str.matches("-?\\d+(\\.\\d+)?");
     }
 
 }
