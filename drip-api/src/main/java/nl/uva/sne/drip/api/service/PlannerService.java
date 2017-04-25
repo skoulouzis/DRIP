@@ -63,7 +63,7 @@ public class PlannerService {
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-    public PlanResponse getPlan(String toscaId) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
+    public PlanResponse getPlan(String toscaId, String clusterType) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
 
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);
@@ -84,7 +84,7 @@ public class PlannerService {
             }
             jsonArrayString.append("]");
 
-            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", "swarm");
+            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", clusterType);
             PlanResponse topLevel = new PlanResponse();
             topLevel.setTimestamp(System.currentTimeMillis());
             topLevel.setLevel(0);

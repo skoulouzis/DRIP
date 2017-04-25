@@ -51,7 +51,7 @@ import org.springframework.web.bind.annotation.RequestParam;
     @ResponseCode(code = 401, condition = "Bad credentials")
 })
 public class PlannerController {
-    
+
     @Autowired
     private PlannerService plannerService;
 
@@ -67,7 +67,7 @@ public class PlannerController {
     String plan(@PathVariable("tosca_id") String toscaId) {
 
         try {
-            PlanResponse plan = plannerService.getPlan(toscaId);
+            PlanResponse plan = plannerService.getPlan(toscaId, "swarm");
             if (plan == null) {
                 throw new NotFoundException("Could not make plan");
             }

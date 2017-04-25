@@ -17,9 +17,12 @@ package nl.uva.sne.drip.api.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -35,7 +38,7 @@ import nl.uva.sne.drip.api.exception.ExceptionHandler;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.exception.PlanNotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
-import nl.uva.sne.drip.api.rpc.ProvisionerCaller;
+import nl.uva.sne.drip.api.rpc.ProvisionerCaller0;
 import nl.uva.sne.drip.api.v1.rest.ProvisionController;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.data.v1.external.CloudCredentials;
@@ -56,6 +59,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import nl.uva.sne.drip.api.dao.ProvisionResponseDao;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
+import nl.uva.sne.drip.api.rpc.ProvisionerCaller1;
 import nl.uva.sne.drip.data.v1.external.KeyPair;
 
 /**
@@ -117,64 +121,19 @@ public class ProvisionService {
         return provisionDao.findAll();
     }
 
-    public ProvisionResponse provisionResources(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException {
-        try (DRIPCaller provisioner = new ProvisionerCaller(messageBrokerHost);) {
-            Message provisionerInvokationMessage = buildProvisionerMessage(provisionRequest);
+    public ProvisionResponse provisionResources(ProvisionRequest provisionRequest, int provisionerVersion) throws IOException, TimeoutException, JSONException, InterruptedException {
 
-            Message response = (provisioner.call(provisionerInvokationMessage));
-//            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
-//                    + File.separator + "workspace" + File.separator + "DRIP"
-//                    + File.separator + "docs" + File.separator + "json_samples"
-//                    + File.separator + "ec2_provisioner_provisoned3.json");
-            List<MessageParameter> params = response.getParameters();
-            ProvisionResponse provisionResponse = new ProvisionResponse();
-            provisionResponse.setTimestamp(System.currentTimeMillis());
-            for (MessageParameter p : params) {
-                String name = p.getName();
-                if (name.toLowerCase().contains("exception")) {
-                    RuntimeException ex = ExceptionHandler.generateException(name, p.getValue());
-                    Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
-                    throw ex;
-                }
-
-                if (!name.equals("kubernetes")) {
-                    String value = p.getValue();
-                    Map<String, Object> kvMap = Converter.ymlString2Map(value);
-                    provisionResponse.setKvMap(kvMap);
-                    provisionResponse.setPlanID(provisionRequest.getPlanID());
-                } else {
-                    String value = p.getValue();
-                    String[] lines = value.split("\n");
-                    List<DeployParameter> deployParameters = new ArrayList<>();
-                    for (String line : lines) {
-                        DeployParameter deployParam = new DeployParameter();
-                        String[] parts = line.split(" ");
-                        String deployIP = parts[0];
-
-                        String deployUser = parts[1];
-
-                        String deployCertPath = parts[2];
-                        String cloudCertificateName = FilenameUtils.removeExtension(FilenameUtils.getBaseName(deployCertPath));
-                        String deployRole = parts[3];
-
-                        deployParam.setIP(deployIP);
-                        deployParam.setRole(deployRole);
-                        deployParam.setUser(deployUser);
-                        deployParam.setCloudCertificateName(cloudCertificateName);
-                        deployParameters.add(deployParam);
-                    }
-                    provisionResponse.setDeployParameters(deployParameters);
-                }
-            }
-            provisionResponse.setCloudCredentialsIDs(provisionRequest.getCloudCredentialsIDs());
-            provisionResponse.setKeyPairIDs(provisionRequest.getKeyPairIDs());
-
-            provisionResponse = save(provisionResponse);
-            return provisionResponse;
+        switch (provisionerVersion) {
+            case 0:
+                return callProvisioner0(provisionRequest);
+            case 1:
+                return callProvisioner1(provisionRequest);
         }
+        return null;
+
     }
 
-    private Message buildProvisionerMessage(ProvisionRequest pReq) throws JSONException, IOException {
+    private Message buildProvisioner0Message(ProvisionRequest pReq) throws JSONException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
         CloudCredentials cred = cloudCredentialsService.findOne(pReq.getCloudCredentialsIDs().get(0));
@@ -243,8 +202,22 @@ public class ProvisionService {
         return parameters;
     }
 
-    private List<MessageParameter> buildTopologyParams(String planID) throws JSONException {
-        PlanResponse plan = planService.getDao().findOne(planID);
+    private List<MessageParameter> buildTopologyParams(String planID) throws JSONException, FileNotFoundException {
+        PlanResponse plan = new PlanResponse(); //planService.getDao().findOne(planID);
+        plan.setLevel(0);
+        plan.setKvMap(
+                Converter.ymlStream2Map(
+                        new FileInputStream(
+                                System.getProperty("user.home") + "/workspace/DRIPProvisioningAgent/ES/standard2/zh_all_test.yml")
+                )
+        );
+        plan.setName("zh_all_test.yml");
+        plan.setTimestamp(System.currentTimeMillis());
+        Set<String> loweLevelPlansIDs = new HashSet<>();
+        loweLevelPlansIDs.add("ec2_zh_a.yml");
+        loweLevelPlansIDs.add("ec2_zh_b.yml");
+        plan.setLoweLevelPlansIDs(loweLevelPlansIDs);
+
         if (plan == null) {
             throw new PlanNotFoundException();
         }
@@ -260,7 +233,16 @@ public class ProvisionService {
 
         Set<String> ids = plan.getLoweLevelPlanIDs();
         for (String lowID : ids) {
-            PlanResponse lowPlan = planService.getDao().findOne(lowID);
+            PlanResponse lowPlan = new PlanResponse(); //planService.getDao().findOne(lowID);
+            lowPlan.setLevel(1);
+            lowPlan.setName(lowID);
+            lowPlan.setKvMap(Converter.ymlStream2Map(
+                    new FileInputStream(
+                            System.getProperty("user.home") + "/workspace/DRIPProvisioningAgent/ES/standard2/" + lowID)
+            )
+            );
+            lowPlan.setTimestamp(System.currentTimeMillis());
+
             topology = new MessageParameter();
             topology.setName("topology");
             topology.setValue(Converter.map2YmlString(lowPlan.getKeyValue()));
@@ -319,5 +301,84 @@ public class ProvisionService {
     @PostFilter("(hasRole('ROLE_ADMIN'))")
     public void deleteAll() {
         provisionDao.deleteAll();
+    }
+
+    private ProvisionResponse callProvisioner0(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException {
+        try (DRIPCaller provisioner = new ProvisionerCaller0(messageBrokerHost);) {
+            Message provisionerInvokationMessage = buildProvisioner0Message(provisionRequest);
+
+            Message response = (provisioner.call(provisionerInvokationMessage));
+//            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
+//                    + File.separator + "workspace" + File.separator + "DRIP"
+//                    + File.separator + "docs" + File.separator + "json_samples"
+//                    + File.separator + "ec2_provisioner_provisoned3.json");
+            List<MessageParameter> params = response.getParameters();
+            ProvisionResponse provisionResponse = new ProvisionResponse();
+            provisionResponse.setTimestamp(System.currentTimeMillis());
+            for (MessageParameter p : params) {
+                String name = p.getName();
+                if (name.toLowerCase().contains("exception")) {
+                    RuntimeException ex = ExceptionHandler.generateException(name, p.getValue());
+                    Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
+                    throw ex;
+                }
+
+                if (!name.equals("kubernetes")) {
+                    String value = p.getValue();
+                    Map<String, Object> kvMap = Converter.ymlString2Map(value);
+                    provisionResponse.setKvMap(kvMap);
+                    provisionResponse.setPlanID(provisionRequest.getPlanID());
+                } else {
+                    String value = p.getValue();
+                    String[] lines = value.split("\n");
+                    List<DeployParameter> deployParameters = new ArrayList<>();
+                    for (String line : lines) {
+                        DeployParameter deployParam = new DeployParameter();
+                        String[] parts = line.split(" ");
+                        String deployIP = parts[0];
+
+                        String deployUser = parts[1];
+
+                        String deployCertPath = parts[2];
+                        String cloudCertificateName = FilenameUtils.removeExtension(FilenameUtils.getBaseName(deployCertPath));
+                        String deployRole = parts[3];
+
+                        deployParam.setIP(deployIP);
+                        deployParam.setRole(deployRole);
+                        deployParam.setUser(deployUser);
+                        deployParam.setCloudCertificateName(cloudCertificateName);
+                        deployParameters.add(deployParam);
+                    }
+                    provisionResponse.setDeployParameters(deployParameters);
+                }
+            }
+            provisionResponse.setCloudCredentialsIDs(provisionRequest.getCloudCredentialsIDs());
+            provisionResponse.setKeyPairIDs(provisionRequest.getKeyPairIDs());
+
+            provisionResponse = save(provisionResponse);
+            return provisionResponse;
+        }
+
+    }
+
+    private ProvisionResponse callProvisioner1(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException {
+        try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
+            Message provisionerInvokationMessage = buildProvisioner1Message(provisionRequest);
+        }
+
+        return null;
+    }
+
+    private Message buildProvisioner1Message(ProvisionRequest provisionRequest) throws JSONException, FileNotFoundException {
+        Message invokationMessage = new Message();
+        List<MessageParameter> parameters = new ArrayList();
+
+        List<MessageParameter> topologies = buildTopologyParams(provisionRequest.getPlanID());
+        parameters.addAll(topologies);
+
+        invokationMessage.setParameters(parameters);
+        invokationMessage.setCreationDate((System.currentTimeMillis()));
+        return invokationMessage;
+
     }
 }

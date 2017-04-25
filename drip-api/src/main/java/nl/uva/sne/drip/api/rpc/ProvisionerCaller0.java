@@ -22,11 +22,11 @@ import java.util.concurrent.TimeoutException;
  *
  * @author S. Koulouzis
  */
-public class ProvisionerCaller extends DRIPCaller {
+public class ProvisionerCaller0 extends DRIPCaller {
 
-    private static final String REQUEST_QUEUE_NAME = "provisioner_queue";
+    private static final String REQUEST_QUEUE_NAME = "provisioner_queue_v0";
 
-    public ProvisionerCaller(String messageBrokerHost) throws IOException, TimeoutException {
+    public ProvisionerCaller0(String messageBrokerHost) throws IOException, TimeoutException {
         super(messageBrokerHost, REQUEST_QUEUE_NAME);
     }
 }

@@ -65,7 +65,7 @@ public class PlannerController0 {
             String yaml = plan0.file;
             yaml = yaml.replaceAll("\\\\n", "\n");
             String id = toscaService.saveYamlString(yaml, null);
-            nl.uva.sne.drip.data.v1.external.PlanResponse plan1 = plannerService.getPlan(id);
+            nl.uva.sne.drip.data.v1.external.PlanResponse plan1 = plannerService.getPlan(id,"swarm");
 
             Result r = new Result();
             r.info = ("INFO");

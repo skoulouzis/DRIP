@@ -61,7 +61,7 @@ public class Converter {
         return (Map<String, Object>) object;
     }
 
-    public static Map<String, Object> ymlString2Map(InputStream in) {
+    public static Map<String, Object> ymlStream2Map(InputStream in) {
         Yaml yaml = new Yaml();
         Map<String, Object> map = (Map<String, Object>) yaml.load(in);
         return map;

@@ -128,7 +128,7 @@ public class ProvisionController0 {
 
         try {
             ProvisionRequest req = provisionService.findOne(exc.action);
-            req = provisionService.provisionResources(req);
+            req = provisionService.provisionResources(req,0);
             Map<String, Object> map = req.getKeyValue();
             String yaml = Converter.map2YmlString(map);
             yaml = yaml.replaceAll("\n", "\\\\n");

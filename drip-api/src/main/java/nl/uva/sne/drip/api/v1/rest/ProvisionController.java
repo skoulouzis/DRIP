@@ -137,7 +137,7 @@ public class ProvisionController {
             throw new BadRequestException();
         }
         try {
-            req = provisionService.provisionResources(req);
+            req = provisionService.provisionResources(req, 1);
 
             return req.getId();
 
