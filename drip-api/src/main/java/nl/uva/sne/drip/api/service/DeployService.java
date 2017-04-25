@@ -50,7 +50,7 @@ import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.data.v1.external.KeyPair;
-import nl.uva.sne.drip.data.v1.external.ansible.Output;
+import nl.uva.sne.drip.data.v1.external.ansible.AnsibleOutput;
 
 /**
  *
@@ -234,7 +234,7 @@ public class DeployService {
                 String value = p.getValue();
                 ObjectMapper mapper = new ObjectMapper();
                 System.err.println(value);
-                List<Output> outputList = mapper.readValue(value, new TypeReference<List<Output>>() {
+                List<AnsibleOutput> outputList = mapper.readValue(value, new TypeReference<List<AnsibleOutput>>() {
                 });
                 deployResponse.setAnsibleOutputList(outputList);
             }

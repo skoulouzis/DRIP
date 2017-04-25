@@ -15,8 +15,8 @@
  */
 package nl.uva.sne.drip.data.v1.external;
 
-import nl.uva.sne.drip.data.v1.external.ansible.Output;
 import java.util.List;
+import nl.uva.sne.drip.data.v1.external.ansible.AnsibleOutput;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -31,16 +31,16 @@ public class DeployResponse extends DeployRequest {
 
     private KeyPair key;
 
-    private List<Output> ansibleOutputList;
+    private List<AnsibleOutput> ansibleOutputList;
 
-    public void setAnsibleOutputList(List<Output> outputList) {
+    public void setAnsibleOutputList(List<AnsibleOutput> outputList) {
         this.ansibleOutputList = outputList;
     }
 
     /**
      * @return the ansibleOutputList
      */
-    public List<Output> getAnsibleOutputList() {
+    public List<AnsibleOutput> getAnsibleOutputList() {
         return ansibleOutputList;
     }
 
