@@ -46,8 +46,6 @@ import provisioning.credential.EGICredential;
  */
 public class MessageParsing {
 
-    private static ObjectMapper mapper;
-
     public static List<File> getTopologies(JSONArray parameters, String tempInputDirPath, int level) throws JSONException, IOException {
         List<File> topologyFiles = new ArrayList<>();
         for (int i = 0; i < parameters.length(); i++) {
@@ -117,10 +115,12 @@ public class MessageParsing {
             String name = (String) param.get("name");
             if (name.equals("cloud_credential")) {
                 Credential credential = null;
-                mapper = new ObjectMapper();
+                ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
                 String credentialString = (String) param.get("value");
-                credentialString = credentialString.substring(1, credentialString.length() - 2);
+                System.err.println(credentialString);
+                credentialString = credentialString.substring(1, credentialString.length() - 1);
+                System.err.println(credentialString);
                 CloudCredentials cred = mapper.readValue(credentialString, CloudCredentials.class);
                 if (cred.getCloudProviderName().toLowerCase().equals("ec2")) {
                     EC2Credential ec2 = new EC2Credential();
@@ -136,12 +136,19 @@ public class MessageParsing {
                 }
 
                 for (KeyPair pair : cred.getKeyPairs()) {
-                    File dir = new File(tempInputDirPath + File.separator + pair.getId());
-                    dir.mkdir();
-                    Key privateKey = pair.getPrivateKey();
-                    writeValueToFile(privateKey.getKey(), new File(dir.getAbsolutePath() + File.separator + privateKey.getName()));
-                    Key publicKey = pair.getPublicKey();
-                    writeValueToFile(publicKey.getKey(), new File(dir.getAbsolutePath() + File.separator + publicKey.getName()));
+                    if (pair != null) {
+                        File dir = new File(tempInputDirPath + File.separator + pair.getId());
+                        dir.mkdir();
+                        Key privateKey = pair.getPrivateKey();
+                        if (privateKey != null) {
+                            writeValueToFile(privateKey.getKey(), new File(dir.getAbsolutePath() + File.separator + privateKey.getName()));
+                        }
+                        Key publicKey = pair.getPublicKey();
+                        if (publicKey != null) {
+                            writeValueToFile(publicKey.getKey(), new File(dir.getAbsolutePath() + File.separator + publicKey.getName()));
+                        }
+                    }
+
                 }
                 credentials.add(credential);
             }
