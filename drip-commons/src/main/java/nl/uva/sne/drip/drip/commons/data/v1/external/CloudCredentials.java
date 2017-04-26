@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -26,6 +28,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CloudCredentials extends OwnedObject {
 
     public static String ACCESS_KEY_NAME = "accessKeyId";
@@ -36,6 +39,8 @@ public class CloudCredentials extends OwnedObject {
     private String accessKeyId;
 
     private List<String> keyPairIDs;
+
+    private List<KeyPair> keyPairs;
 
     private String cloudProviderName;
 
@@ -102,5 +107,19 @@ public class CloudCredentials extends OwnedObject {
      */
     public void setKeyIDs(List<String> keyIDs) {
         this.keyPairIDs = keyIDs;
+    }
+
+    /**
+     * @return the keyPairs
+     */
+    public List<KeyPair> getKeyPairs() {
+        return keyPairs;
+    }
+
+    /**
+     * @param keyPairs the keyPairs to set
+     */
+    public void setKeyPairs(List<KeyPair> keyPairs) {
+        this.keyPairs = keyPairs;
     }
 }
