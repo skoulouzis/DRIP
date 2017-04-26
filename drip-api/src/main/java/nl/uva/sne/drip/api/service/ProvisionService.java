@@ -15,7 +15,9 @@
  */
 package nl.uva.sne.drip.api.service;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -140,7 +142,7 @@ public class ProvisionService {
         if (cred == null) {
             throw new CloudCredentialsNotFoundException();
         }
-        MessageParameter conf = buildCloudConfParam(cred);
+        MessageParameter conf = buildCloudCredentialParam(cred, 0).get(0);
         parameters.add(conf);
 
         List<MessageParameter> certs = buildCertificatesParam(cred);
@@ -160,18 +162,38 @@ public class ProvisionService {
         return invokationMessage;
     }
 
-    private MessageParameter buildCloudConfParam(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
-        MessageParameter conf = null;
-        String provider = cred.getCloudProviderName();
-        if (provider == null) {
-            throw new BadRequestException("Provider name can't be null. Check the cloud credentials: " + cred.getId());
+    private List<MessageParameter> buildCloudCredentialParam(CloudCredentials cred, int version) throws JsonProcessingException, JSONException, IOException {
+        List<MessageParameter> cloudCredentialParams = new ArrayList<>();
+        if (version == 0) {
+            MessageParameter cloudCredentialParam = new MessageParameter();
+            String provider = cred.getCloudProviderName();
+            if (provider == null) {
+                throw new BadRequestException("Provider name can't be null. Check the cloud credentials: " + cred.getId());
+            }
+            switch (cred.getCloudProviderName().toLowerCase()) {
+                case "ec2":
+                    cloudCredentialParam = buildEC2Conf(cred);
+                    break;
+            }
+            cloudCredentialParams.add(cloudCredentialParam);
+            return cloudCredentialParams;
         }
-        switch (cred.getCloudProviderName().toLowerCase()) {
-            case "ec2":
-                conf = buildEC2Conf(cred);
-                break;
+        if (version == 1) {
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+            String jsonInString = mapper.writeValueAsString(cred);
+
+            MessageParameter cloudCred = new MessageParameter();
+            cloudCred.setName("cloud_credential");
+            cloudCred.setValue("\"" + jsonInString + "\"");
+            cloudCred.setEncoding("UTF-8");
+            cloudCredentialParams.add(cloudCred);
+
+            return cloudCredentialParams;
         }
-        return conf;
+        return null;
+
     }
 
     private List<MessageParameter> buildCertificatesParam(CloudCredentials cred) {
@@ -361,20 +383,39 @@ public class ProvisionService {
 
     }
 
-    private ProvisionResponse callProvisioner1(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException {
+    private ProvisionResponse callProvisioner1(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException {
         try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisioner1Message(provisionRequest);
+
+            Message response = (provisioner.call(provisionerInvokationMessage));
+
         }
 
         return null;
     }
 
-    private Message buildProvisioner1Message(ProvisionRequest provisionRequest) throws JSONException, FileNotFoundException {
+    private Message buildProvisioner1Message(ProvisionRequest provisionRequest) throws JSONException, FileNotFoundException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
 
         List<MessageParameter> topologies = buildTopologyParams(provisionRequest.getPlanID());
         parameters.addAll(topologies);
+
+        List<String> userKeyIDs = provisionRequest.getKeyPairIDs();
+        for (String keyID : userKeyIDs) {
+            if (userKeyIDs != null) {
+                List<MessageParameter> userKeys = buildKeysParams(keyID);
+                parameters.addAll(userKeys);
+            }
+        }
+        for (String id : provisionRequest.getCloudCredentialsIDs()) {
+            CloudCredentials cred = cloudCredentialsService.findOne(id);
+            if (cred == null) {
+                throw new CloudCredentialsNotFoundException();
+            }
+            List<MessageParameter> cloudCredentialParams = buildCloudCredentialParam(cred, 1);
+            parameters.addAll(cloudCredentialParams);
+        }
 
         invokationMessage.setParameters(parameters);
         invokationMessage.setCreationDate((System.currentTimeMillis()));

@@ -21,9 +21,12 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import commonTool.CommonTool;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,11 +34,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import nl.uva.sne.drip.drip.provisioner.utils.MessageParsing;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import provisioning.credential.Credential;
 import provisioning.credential.EC2Credential;
 import provisioning.credential.EGICredential;
 import provisioning.credential.SSHKeyPair;
@@ -125,19 +132,21 @@ public class Consumer extends DefaultConsumer {
 
     private void startTopology(JSONArray parameters, String tempInputDirPath) throws Exception {
 
-        String topTopologyLoadingPath = "ES/EGI/zh_all_test.yml";
-
-        File topologyFile = MessageParsing.getTopology(parameters, tempInputDirPath, 0);
-        File mainTopologyFile = new File(tempInputDirPath + "topology_main");
+        File topologyFile = MessageParsing.getTopologies(parameters, tempInputDirPath, 0).get(0);
+        File mainTopologyFile = new File(tempInputDirPath + "topology_main.yml");
         FileUtils.moveFile(topologyFile, mainTopologyFile);
-        topTopologyLoadingPath = mainTopologyFile.getAbsolutePath();
-//load 2nd level in same folder 
-        topologyFile = MessageParsing.getTopology(parameters, tempInputDirPath, 1);
-        File secondaryTopologyFile = new File(tempInputDirPath + File.separator + topologyFile.getName() + ".yml");
-        String outputFilePath = tempInputDirPath + File.separator + topologyFile.getName() + "_provisioned.yml";
-        FileUtils.moveFile(topologyFile, secondaryTopologyFile);
+        String topTopologyLoadingPath = mainTopologyFile.getAbsolutePath();
 
-        System.exit(-1);
+        List<File> topologyFiles = MessageParsing.getTopologies(parameters, tempInputDirPath, 1);
+        for (File lowLevelTopologyFile : topologyFiles) {
+            File secondaryTopologyFile = new File(tempInputDirPath + File.separator + lowLevelTopologyFile.getName() + ".yml");
+            FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
+        }
+
+        Map<String, Object> map = MessageParsing.ymlStream2Map(new FileInputStream(topTopologyLoadingPath));
+        String publicKeyName = ((String) map.get("publicKeyPath")).split("@")[1].replaceAll("\"", "");
+
+        List<File> sshKeys = MessageParsing.getSSHKeys(parameters, tempInputDirPath, publicKeyName);
 
         String currentDir = CommonTool.getPathDir(topTopologyLoadingPath);
 
@@ -146,21 +155,30 @@ public class Consumer extends DefaultConsumer {
             throw new Exception("sth wrong!");
         }
 
-        ////Initial credentials and ssh key pairs
+        List<Credential> credentials = MessageParsing.getCloudCredentials(parameters, tempInputDirPath);
         UserCredential userCredential = new UserCredential();
-
-        EC2Credential ec2Credential = new EC2Credential();
-        ec2Credential.accessKey = "23332323wer";
-        ec2Credential.secretKey = "fdfsdffdfsdf";
-
-        EGICredential egiCredential = new EGICredential();
-        egiCredential.proxyFilePath = "/tmp/x509up_u0";
-        egiCredential.trustedCertPath = "/etc/grid-security/certificates";
-        if (userCredential.cloudAccess == null) {
-            userCredential.cloudAccess = new HashMap<>();
+        for (Credential cred : credentials) {
+            ////Initial credentials and ssh key pairs
+            if (userCredential.cloudAccess == null) {
+                userCredential.cloudAccess = new HashMap<>();
+            }
+            if (cred instanceof EC2Credential) {
+                userCredential.cloudAccess.put("ec2", cred);
+            }
+            if (cred instanceof EGICredential) {
+                userCredential.cloudAccess.put("egi", cred);
+            }
         }
-        userCredential.cloudAccess.put("ec2", ec2Credential);
-        userCredential.cloudAccess.put("egi", egiCredential);
+
+//        EC2Credential ec2Credential = new EC2Credential();
+//        ec2Credential.accessKey = "23332323wer";
+//        ec2Credential.secretKey = "fdfsdffdfsdf";
+//
+//        EGICredential egiCredential = new EGICredential();
+//        egiCredential.proxyFilePath = "/tmp/x509up_u0";
+//        egiCredential.trustedCertPath = "/etc/grid-security/certificates";
+        System.exit(-1);
+
         ArrayList<SSHKeyPair> sshKeyPairs = userCredential.loadSSHKeyPairFromFile(currentDir);
         if (sshKeyPairs == null) {
             throw new NullPointerException("ssh key pairs are null");

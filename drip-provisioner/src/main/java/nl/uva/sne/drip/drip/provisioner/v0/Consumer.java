@@ -161,12 +161,12 @@ public class Consumer extends DefaultConsumer {
             geniConfFile = cloudConfFile;
         }
 
-        File topologyFile = MessageParsing.getTopology(parameters, tempInputDirPath, 0);
+        File topologyFile = MessageParsing.getTopologies(parameters, tempInputDirPath, 0).get(0);
         File mainTopologyFile = new File(tempInputDirPath + "topology_main");
         FileUtils.moveFile(topologyFile, mainTopologyFile);
         mainTopologyPath = mainTopologyFile.getAbsolutePath();
 
-        topologyFile = MessageParsing.getTopology(parameters, tempInputDirPath, 1);
+        topologyFile = MessageParsing.getTopologies(parameters, tempInputDirPath, 1).get(0);
         File secondaryTopologyFile = new File(tempInputDirPath + File.separator + topologyFile.getName() + ".yml");
         String outputFilePath = tempInputDirPath + File.separator + topologyFile.getName() + "_provisioned.yml";
         TopologyElement x = new TopologyElement();
@@ -180,7 +180,7 @@ public class Consumer extends DefaultConsumer {
 
         logDir = getLogDirPath(parameters, tempInputDirPath);
 
-        File sshKey = getSSHKey(parameters, tempInputDirPath);
+        File sshKey = MessageParsing.getSSHKeys(parameters, tempInputDirPath, "user.pem").get(0);
         if (sshKey != null) {
             sshKeyFilePath = sshKey.getAbsolutePath();
         }
@@ -417,22 +417,6 @@ public class Consumer extends DefaultConsumer {
             }
         }
         return System.getProperty("java.io.tmpdir");
-    }
-
-    private File getSSHKey(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
-        for (int i = 0; i < parameters.length(); i++) {
-            JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get("name");
-            if (name.equals("sshkey")) {
-                String sshKeyContent = (String) param.get("value");
-                File sshKeyFile = new File(tempInputDirPath + File.separator + "user.pem");
-                if (sshKeyFile.createNewFile()) {
-                    MessageParsing.writeValueToFile(sshKeyContent, sshKeyFile);
-                    return sshKeyFile;
-                }
-            }
-        }
-        return null;
     }
 
     private File getSciptFile(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {

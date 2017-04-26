@@ -15,13 +15,25 @@
  */
 package nl.uva.sne.drip.drip.provisioner.utils;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.yaml.snakeyaml.Yaml;
+import provisioning.credential.Credential;
+import provisioning.credential.EC2Credential;
+import provisioning.credential.EGICredential;
 
 /**
  *
@@ -29,7 +41,10 @@ import org.json.JSONObject;
  */
 public class MessageParsing {
 
-    public static File getTopology(JSONArray parameters, String tempInputDirPath, int level) throws JSONException, IOException {
+    private static ObjectMapper mapper;
+
+    public static List<File> getTopologies(JSONArray parameters, String tempInputDirPath, int level) throws JSONException, IOException {
+        List<File> topologyFiles = new ArrayList<>();
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
             String name = (String) param.get("name");
@@ -38,28 +53,21 @@ public class MessageParsing {
                 int fileLevel = Integer.valueOf((String) attributes.get("level"));
                 if (fileLevel == level) {
                     String originalFilename = (String) attributes.get("filename");
-                    String fileName = "";
-//                    String[] parts = originalFilename.split("_");
-//                    String prefix = "";
-//                    //Clear date part form file name
-//                    if (isNumeric(parts[0])) {
-//                        for (int j = 1; j < parts.length; j++) {
-//                            fileName += prefix + parts[j];
-//                            prefix = "_";
-//                        }
-//                    } else {
-                    fileName = originalFilename;
-//                    }
+                    String fileName = originalFilename;
 
                     File topologyFile = new File(tempInputDirPath + File.separator + fileName);
                     topologyFile.createNewFile();
                     String val = (String) param.get("value");
                     writeValueToFile(val, topologyFile);
-                    return topologyFile;
+                    topologyFiles.add(topologyFile);
+                    //We should have only one top level topoloy
+                    if (level == 0) {
+                        return topologyFiles;
+                    }
                 }
             }
         }
-        return null;
+        return topologyFiles;
     }
 
     public static void writeValueToFile(String value, File file) throws FileNotFoundException {
@@ -71,4 +79,49 @@ public class MessageParsing {
         }
     }
 
+    public static List<File> getSSHKeys(JSONArray parameters, String tempInputDirPath, String filename) throws JSONException, IOException {
+        List<File> sshKeys = new ArrayList<>();
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get("name");
+            if (name.equals("sshkey")) {
+                String sshKeyContent = (String) param.get("value");
+                File sshKeyFile = new File(tempInputDirPath + File.separator + filename);
+                if (sshKeyFile.exists()) {
+                    sshKeyFile = new File(tempInputDirPath + File.separator + i + "_" + filename);
+                }
+                if (sshKeyFile.createNewFile()) {
+                    MessageParsing.writeValueToFile(sshKeyContent, sshKeyFile);
+                    sshKeys.add(sshKeyFile);
+                }
+            }
+        }
+        return sshKeys;
+    }
+
+    public static Map<String, Object> ymlStream2Map(InputStream in) {
+        Yaml yaml = new Yaml();
+        Map<String, Object> map = (Map<String, Object>) yaml.load(in);
+        return map;
+    }
+
+    private static Map<String, String> getCloudRawCredentials(JSONArray parameters) throws JSONException, FileNotFoundException {
+        Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            String name = (String) param.get("name");
+            if (name.startsWith("cloud_credential")) {
+                map.put(name, (String) param.get("value"));
+            }
+        }
+        return map;
+    }
+
+    public static List<Credential> getCloudCredentials(JSONArray parameters, String tempInputDirPath) throws JSONException, FileNotFoundException {
+
+        mapper = new ObjectMapper();
+        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+
+        return null;
+    }
 }

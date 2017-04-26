@@ -2821,6 +2821,208 @@ module V1
 
 module External
 
+  # (no documentation provided)
+  class PlanResponse < Nl::Uva::Sne::Drip::Data::V1::External::KeyValueHolder 
+
+    # the name
+    attr_accessor :name
+    # the toscaID
+    attr_accessor :toscaID
+    # the level
+    attr_accessor :level
+    # the loweLevelPlansIDs
+    attr_accessor :loweLevelPlanIDs
+
+    # the json hash for this PlanResponse
+    def to_jaxb_json_hash
+      _h = super
+      _h['name'] = name.to_jaxb_json_hash unless name.nil?
+      _h['toscaID'] = toscaID.to_jaxb_json_hash unless toscaID.nil?
+      _h['level'] = level.to_jaxb_json_hash unless level.nil?
+      if !loweLevelPlanIDs.nil?
+        _ha = Array.new
+        loweLevelPlanIDs.each { | _item | _ha.push _item.to_jaxb_json_hash }
+        _h['loweLevelPlanIDs'] = _ha
+      end
+      return _h
+    end
+
+    #initializes this PlanResponse with a json hash
+    def init_jaxb_json_hash(_o)
+      super _o
+        if !_o['name'].nil?
+          _oa = _o['name']
+            if(_oa.is_a? Hash)
+              @name = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @name =  String.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @name = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @name.push String.from_json(_item)
+                 else
+                   @name.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @name = _oa
+            end
+          end
+        if !_o['toscaID'].nil?
+          _oa = _o['toscaID']
+            if(_oa.is_a? Hash)
+              @toscaID = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @toscaID =  String.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @toscaID = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @toscaID.push String.from_json(_item)
+                 else
+                   @toscaID.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @toscaID = _oa
+            end
+          end
+        if !_o['level'].nil?
+          _oa = _o['level']
+            if(_oa.is_a? Hash)
+              @level = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @level =  Fixnum.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @level = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @level.push Fixnum.from_json(_item)
+                 else
+                   @level.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @level = _oa
+            end
+          end
+        if !_o['loweLevelPlanIDs'].nil?
+          _oa = _o['loweLevelPlanIDs']
+            if(_oa.is_a? Hash)
+              @loweLevelPlanIDs = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @loweLevelPlanIDs =  String.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @loweLevelPlanIDs = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @loweLevelPlanIDs.push String.from_json(_item)
+                 else
+                   @loweLevelPlanIDs.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @loweLevelPlanIDs = _oa
+            end
+          end
+    end
+
+    # constructs a PlanResponse from a (parsed) JSON hash
+    def self.from_json(o)
+      if o.nil?
+        return nil
+      else
+        inst = new
+        inst.init_jaxb_json_hash o
+        return inst
+      end
+    end
+  end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+module Nl
+
+module Uva
+
+module Sne
+
+module Drip
+
+module Data
+
+module V1
+
+module External
+
+  # (no documentation provided)
+  class PlaybookRepresentation < Nl::Uva::Sne::Drip::Data::V1::External::KeyValueHolder 
+
+
+    # the json hash for this PlaybookRepresentation
+    def to_jaxb_json_hash
+      _h = super
+      return _h
+    end
+
+    #initializes this PlaybookRepresentation with a json hash
+    def init_jaxb_json_hash(_o)
+      super _o
+    end
+
+    # constructs a PlaybookRepresentation from a (parsed) JSON hash
+    def self.from_json(o)
+      if o.nil?
+        return nil
+      else
+        inst = new
+        inst.init_jaxb_json_hash o
+        return inst
+      end
+    end
+  end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+module Nl
+
+module Uva
+
+module Sne
+
+module Drip
+
+module Data
+
+module V1
+
+module External
+
 module Ansible
 
   # (no documentation provided)
@@ -3137,208 +3339,6 @@ module Ansible
   end
 
 end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-module Nl
-
-module Uva
-
-module Sne
-
-module Drip
-
-module Data
-
-module V1
-
-module External
-
-  # (no documentation provided)
-  class PlaybookRepresentation < Nl::Uva::Sne::Drip::Data::V1::External::KeyValueHolder 
-
-
-    # the json hash for this PlaybookRepresentation
-    def to_jaxb_json_hash
-      _h = super
-      return _h
-    end
-
-    #initializes this PlaybookRepresentation with a json hash
-    def init_jaxb_json_hash(_o)
-      super _o
-    end
-
-    # constructs a PlaybookRepresentation from a (parsed) JSON hash
-    def self.from_json(o)
-      if o.nil?
-        return nil
-      else
-        inst = new
-        inst.init_jaxb_json_hash o
-        return inst
-      end
-    end
-  end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-module Nl
-
-module Uva
-
-module Sne
-
-module Drip
-
-module Data
-
-module V1
-
-module External
-
-  # (no documentation provided)
-  class PlanResponse < Nl::Uva::Sne::Drip::Data::V1::External::KeyValueHolder 
-
-    # the name
-    attr_accessor :name
-    # the toscaID
-    attr_accessor :toscaID
-    # the level
-    attr_accessor :level
-    # the loweLevelPlansIDs
-    attr_accessor :loweLevelPlanIDs
-
-    # the json hash for this PlanResponse
-    def to_jaxb_json_hash
-      _h = super
-      _h['name'] = name.to_jaxb_json_hash unless name.nil?
-      _h['toscaID'] = toscaID.to_jaxb_json_hash unless toscaID.nil?
-      _h['level'] = level.to_jaxb_json_hash unless level.nil?
-      if !loweLevelPlanIDs.nil?
-        _ha = Array.new
-        loweLevelPlanIDs.each { | _item | _ha.push _item.to_jaxb_json_hash }
-        _h['loweLevelPlanIDs'] = _ha
-      end
-      return _h
-    end
-
-    #initializes this PlanResponse with a json hash
-    def init_jaxb_json_hash(_o)
-      super _o
-        if !_o['name'].nil?
-          _oa = _o['name']
-            if(_oa.is_a? Hash)
-              @name = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @name =  String.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @name = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @name.push String.from_json(_item)
-                 else
-                   @name.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @name = _oa
-            end
-          end
-        if !_o['toscaID'].nil?
-          _oa = _o['toscaID']
-            if(_oa.is_a? Hash)
-              @toscaID = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @toscaID =  String.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @toscaID = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @toscaID.push String.from_json(_item)
-                 else
-                   @toscaID.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @toscaID = _oa
-            end
-          end
-        if !_o['level'].nil?
-          _oa = _o['level']
-            if(_oa.is_a? Hash)
-              @level = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @level =  Fixnum.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @level = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @level.push Fixnum.from_json(_item)
-                 else
-                   @level.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @level = _oa
-            end
-          end
-        if !_o['loweLevelPlanIDs'].nil?
-          _oa = _o['loweLevelPlanIDs']
-            if(_oa.is_a? Hash)
-              @loweLevelPlanIDs = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @loweLevelPlanIDs =  String.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @loweLevelPlanIDs = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @loweLevelPlanIDs.push String.from_json(_item)
-                 else
-                   @loweLevelPlanIDs.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @loweLevelPlanIDs = _oa
-            end
-          end
-    end
-
-    # constructs a PlanResponse from a (parsed) JSON hash
-    def self.from_json(o)
-      if o.nil?
-        return nil
-      else
-        inst = new
-        inst.init_jaxb_json_hash o
-        return inst
-      end
-    end
-  end
 
 end
 
