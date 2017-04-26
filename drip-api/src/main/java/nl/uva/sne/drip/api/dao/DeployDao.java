@@ -15,9 +15,9 @@
  */
 package nl.uva.sne.drip.api.dao;
 
-import nl.uva.sne.drip.data.v1.external.DeployResponse;
-import nl.uva.sne.drip.data.v1.external.Key;
-import nl.uva.sne.drip.data.v1.external.ansible.AnsibleResult;
+import nl.uva.sne.drip.drip.commons.data.v1.external.DeployResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleResult;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 

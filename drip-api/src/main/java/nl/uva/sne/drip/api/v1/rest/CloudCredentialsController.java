@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.core.MediaType;
-import nl.uva.sne.drip.data.v1.external.CloudCredentials;
+import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,8 +40,8 @@ import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v1.external.Key;
-import nl.uva.sne.drip.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
+import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -109,7 +109,7 @@ public class CloudCredentialsController {
     @RequestMapping(value = "/upload/{id}", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String addLogineKey(@RequestParam("file") MultipartFile file, @PathVariable("id") String id) {
+    String addLogineKey(@RequestParam("file") MultipartFile file, @PathVariable("id") String id) throws Exception {
         try {
 
             CloudCredentials cloudCredentials = cloudCredentialsService.findOne(id);

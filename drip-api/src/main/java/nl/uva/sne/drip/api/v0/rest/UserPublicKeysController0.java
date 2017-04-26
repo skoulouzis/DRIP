@@ -30,11 +30,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v0.external.ConfUserKey;
-import nl.uva.sne.drip.data.v1.external.Key;
-import nl.uva.sne.drip.data.v1.external.KeyPair;
-import nl.uva.sne.drip.data.v1.external.ProvisionRequest;
-import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
+import nl.uva.sne.drip.drip.commons.data.v0.external.ConfUserKey;
+import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
+import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionRequest;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -59,7 +59,7 @@ public class UserPublicKeysController0 {
     @RequestMapping(value = "/confuserkey", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String uploadUserPublicKeys(@RequestBody ConfUserKey confUserKey) {
+    String uploadUserPublicKeys(@RequestBody ConfUserKey confUserKey) throws Exception {
         try {
             KeyPair pair = new KeyPair();
             Key upk = new Key();

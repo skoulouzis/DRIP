@@ -19,6 +19,8 @@ import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
@@ -29,8 +31,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.DeployService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v1.external.DeployRequest;
-import nl.uva.sne.drip.data.v1.external.DeployResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.DeployRequest;
+import nl.uva.sne.drip.drip.commons.data.v1.external.DeployResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,14 +58,19 @@ public class DeployController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String deploy(@RequestBody DeployRequest deployRequest) {
-        if (deployRequest.getManagerType() == null) {
-            throw new BadRequestException("Must provide manager type. Aveliable: ansible, swarm ,kubernetes");
+        try {
+            if (deployRequest.getManagerType() == null) {
+                throw new BadRequestException("Must provide manager type. Aveliable: ansible, swarm ,kubernetes");
+            }
+            if (deployRequest.getProvisionID() == null) {
+                throw new BadRequestException("Must provide provision ID");
+            }
+            DeployResponse deploy = deployService.deploySoftware(deployRequest);
+            return deploy.getId();
+        } catch (Exception ex) {
+            Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (deployRequest.getProvisionID() == null) {
-            throw new BadRequestException("Must provide provision ID");
-        }
-        DeployResponse deploy = deployService.deploySoftware(deployRequest);
-        return deploy.getId();
+        return null;
     }
 
     @RequestMapping(value = "/sample", method = RequestMethod.GET)

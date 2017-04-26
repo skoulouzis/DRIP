@@ -31,15 +31,15 @@ import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.DeployerCaller;
 import nl.uva.sne.drip.api.v1.rest.DeployController;
-import nl.uva.sne.drip.data.v1.external.CloudCredentials;
-import nl.uva.sne.drip.data.v1.external.DeployRequest;
-import nl.uva.sne.drip.data.v1.external.DeployParameter;
-import nl.uva.sne.drip.data.v1.external.DeployResponse;
-import nl.uva.sne.drip.data.v1.external.Key;
-import nl.uva.sne.drip.data.internal.Message;
-import nl.uva.sne.drip.data.internal.MessageParameter;
-import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
-import nl.uva.sne.drip.data.v1.external.User;
+import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
+import nl.uva.sne.drip.drip.commons.data.v1.external.DeployRequest;
+import nl.uva.sne.drip.drip.commons.data.v1.external.DeployParameter;
+import nl.uva.sne.drip.drip.commons.data.v1.external.DeployResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
+import nl.uva.sne.drip.drip.commons.data.internal.Message;
+import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,11 +50,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.exception.KeyException;
-import nl.uva.sne.drip.data.v1.external.KeyPair;
-import nl.uva.sne.drip.data.v1.external.ansible.AnsibleOutput;
-import nl.uva.sne.drip.data.v1.external.ansible.AnsibleResult;
-import nl.uva.sne.drip.data.v1.external.ansible.BenchmarkResult;
-import nl.uva.sne.drip.data.v1.external.ansible.SysbenchCPUBenchmark;
+import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleOutput;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleResult;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.BenchmarkResult;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.SysbenchCPUBenchmark;
 
 /**
  *
@@ -119,7 +119,7 @@ public class DeployService {
         return deployDao.save(clusterCred);
     }
 
-    public DeployResponse deploySoftware(DeployRequest deployInfo) {
+    public DeployResponse deploySoftware(DeployRequest deployInfo) throws Exception {
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             Message deployerInvokationMessage = buildDeployerMessage(
                     deployInfo.getProvisionID(),
@@ -227,7 +227,7 @@ public class DeployService {
         return ansibleParameter;
     }
 
-    private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException {
+    private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException, Exception {
         DeployResponse deployResponse = new DeployResponse();
         deployResponse.setTimestamp(System.currentTimeMillis());
 

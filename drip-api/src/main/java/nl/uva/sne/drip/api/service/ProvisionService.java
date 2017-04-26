@@ -43,15 +43,15 @@ import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller0;
 import nl.uva.sne.drip.api.v1.rest.ProvisionController;
 import nl.uva.sne.drip.commons.utils.Converter;
-import nl.uva.sne.drip.data.v1.external.CloudCredentials;
-import nl.uva.sne.drip.data.v1.external.DeployParameter;
-import nl.uva.sne.drip.data.internal.Message;
-import nl.uva.sne.drip.data.internal.MessageParameter;
-import nl.uva.sne.drip.data.v1.external.PlanResponse;
-import nl.uva.sne.drip.data.v1.external.ProvisionRequest;
-import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
-import nl.uva.sne.drip.data.v1.external.Script;
-import nl.uva.sne.drip.data.v1.external.User;
+import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
+import nl.uva.sne.drip.drip.commons.data.v1.external.DeployParameter;
+import nl.uva.sne.drip.drip.commons.data.internal.Message;
+import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
+import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionRequest;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.Script;
+import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,7 +62,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import nl.uva.sne.drip.api.dao.ProvisionResponseDao;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller1;
-import nl.uva.sne.drip.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 
 /**
  *

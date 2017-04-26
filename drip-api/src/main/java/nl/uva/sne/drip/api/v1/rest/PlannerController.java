@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v1.external.PlanResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestParam;
 

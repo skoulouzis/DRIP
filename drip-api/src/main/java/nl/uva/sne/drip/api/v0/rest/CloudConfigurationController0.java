@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.exception.KeyException;
-import nl.uva.sne.drip.data.v1.external.CloudCredentials;
+import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,9 +35,9 @@ import nl.uva.sne.drip.api.exception.NullKeyIDException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v0.external.Configure;
-import nl.uva.sne.drip.data.v1.external.Key;
-import nl.uva.sne.drip.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v0.external.Configure;
+import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
+import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -62,7 +62,7 @@ public class CloudConfigurationController0 {
     @RequestMapping(value = "/ec2", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String postEC2Conf(@RequestBody Configure configure) {
+    String postEC2Conf(@RequestBody Configure configure) throws Exception {
         if (configure.key == null) {
             throw new NullKeyException();
         }
@@ -76,9 +76,9 @@ public class CloudConfigurationController0 {
 
         List<String> loginKeyIDs = new ArrayList<>();
 
-        for (nl.uva.sne.drip.data.v0.external.LoginKey0 key0 : configure.loginKey) {
+        for (nl.uva.sne.drip.drip.commons.data.v0.external.LoginKey0 key0 : configure.loginKey) {
             try {
-                nl.uva.sne.drip.data.v1.external.Key key1 = new nl.uva.sne.drip.data.v1.external.Key();
+                nl.uva.sne.drip.drip.commons.data.v1.external.Key key1 = new nl.uva.sne.drip.drip.commons.data.v1.external.Key();
                 KeyPair pair = new KeyPair();
                 pair.setTimestamp(System.currentTimeMillis());
                 key1.setKey(key0.content);
@@ -102,7 +102,7 @@ public class CloudConfigurationController0 {
     @RequestMapping(value = "/geni", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String postGeniConf(@RequestBody Configure configure) {
+    String postGeniConf(@RequestBody Configure configure) throws Exception {
         if (configure.geniKey == null) {
             throw new NullKeyException();
         }
@@ -117,9 +117,9 @@ public class CloudConfigurationController0 {
 
         List<String> loginKeyIDs = new ArrayList<>();
 
-        for (nl.uva.sne.drip.data.v0.external.LoginKey0 key0 : configure.loginPubKey) {
+        for (nl.uva.sne.drip.drip.commons.data.v0.external.LoginKey0 key0 : configure.loginPubKey) {
             try {
-                nl.uva.sne.drip.data.v1.external.Key key1 = new nl.uva.sne.drip.data.v1.external.Key();
+                nl.uva.sne.drip.drip.commons.data.v1.external.Key key1 = new nl.uva.sne.drip.drip.commons.data.v1.external.Key();
                 key1.setKey(key0.content);
                 key1.setType(Key.KeyType.PUBLIC);
                 KeyPair pair = new KeyPair();
@@ -132,9 +132,9 @@ public class CloudConfigurationController0 {
             }
 
         }
-        for (nl.uva.sne.drip.data.v0.external.LoginKey0 key0 : configure.loginPriKey) {
+        for (nl.uva.sne.drip.drip.commons.data.v0.external.LoginKey0 key0 : configure.loginPriKey) {
             try {
-                nl.uva.sne.drip.data.v1.external.Key key1 = new nl.uva.sne.drip.data.v1.external.Key();
+                nl.uva.sne.drip.drip.commons.data.v1.external.Key key1 = new nl.uva.sne.drip.drip.commons.data.v1.external.Key();
                 key1.setKey(key0.content);
                 key1.setType(Key.KeyType.PRIVATE);
                 KeyPair pair = new KeyPair();

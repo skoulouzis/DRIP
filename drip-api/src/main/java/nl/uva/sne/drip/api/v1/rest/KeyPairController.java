@@ -17,7 +17,7 @@ package nl.uva.sne.drip.api.v1.rest;
 
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
-import nl.uva.sne.drip.data.v1.external.Key;
+import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +36,7 @@ import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -136,7 +136,7 @@ public class KeyPairController {
     @RequestMapping(value = "/sample", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    KeyPair geta() {
+    KeyPair geta() throws Exception {
         try {
             KeyPair pair = new KeyPair();
             pair.setTimestamp(System.currentTimeMillis());

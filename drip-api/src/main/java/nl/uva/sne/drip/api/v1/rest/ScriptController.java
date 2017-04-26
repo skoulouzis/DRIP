@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.data.v1.external.Script;
+import nl.uva.sne.drip.drip.commons.data.v1.external.Script;
 import org.springframework.web.bind.annotation.PathVariable;
 import nl.uva.sne.drip.api.service.ScriptService;
 import nl.uva.sne.drip.api.service.UserService;

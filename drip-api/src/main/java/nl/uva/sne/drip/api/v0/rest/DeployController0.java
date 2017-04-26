@@ -17,6 +17,8 @@ package nl.uva.sne.drip.api.v0.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,12 +27,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.DeployService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v0.external.Deploy;
-import nl.uva.sne.drip.data.v0.external.Attribute;
-import nl.uva.sne.drip.data.v0.external.Result;
-import nl.uva.sne.drip.data.v1.external.DeployRequest;
-import nl.uva.sne.drip.data.v1.external.DeployResponse;
-import nl.uva.sne.drip.data.v1.external.Key;
+import nl.uva.sne.drip.drip.commons.data.v0.external.Deploy;
+import nl.uva.sne.drip.drip.commons.data.v0.external.Attribute;
+import nl.uva.sne.drip.drip.commons.data.v0.external.Result;
+import nl.uva.sne.drip.drip.commons.data.v1.external.DeployRequest;
+import nl.uva.sne.drip.drip.commons.data.v1.external.DeployResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -55,23 +57,33 @@ public class DeployController0 {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result deployKubernetes(@RequestBody Deploy deploy) {
-        DeployRequest deployReq = new DeployRequest();
-        deployReq.setManagerType("kubernetes");
-        deployReq.setProvisionID(deploy.action);
-        return deploy(deployReq);
+        try {
+            DeployRequest deployReq = new DeployRequest();
+            deployReq.setManagerType("kubernetes");
+            deployReq.setProvisionID(deploy.action);
+            return deploy(deployReq);
+        } catch (Exception ex) {
+            Logger.getLogger(DeployController0.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @RequestMapping(value = "/swarm", method = RequestMethod.POST, consumes = MediaType.TEXT_XML_VALUE, produces = MediaType.TEXT_XML_VALUE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result deploySwarm(@RequestBody Deploy deploy) {
-        DeployRequest deployReq = new DeployRequest();
-        deployReq.setManagerType("swarm");
-        deployReq.setProvisionID(deploy.action);
-        return deploy(deployReq);
+        try {
+            DeployRequest deployReq = new DeployRequest();
+            deployReq.setManagerType("swarm");
+            deployReq.setProvisionID(deploy.action);
+            return deploy(deployReq);
+        } catch (Exception ex) {
+            Logger.getLogger(DeployController0.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
-    private Result deploy(DeployRequest deployReq) {
+    private Result deploy(DeployRequest deployReq) throws Exception {
 
         DeployResponse key = deployService.deploySoftware(deployReq);
 
