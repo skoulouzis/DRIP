@@ -42,6 +42,7 @@ import provisioning.credential.EC2Credential;
 import provisioning.credential.EGICredential;
 import provisioning.credential.SSHKeyPair;
 import provisioning.credential.UserCredential;
+import provisioning.database.EC2.EC2Database;
 import provisioning.database.EGI.EGIDatabase;
 import provisioning.database.UserDatabase;
 import provisioning.engine.TEngine.TEngine;
@@ -172,9 +173,8 @@ public class Consumer extends DefaultConsumer {
 //        EGICredential egiCredential = new EGICredential();
 //        egiCredential.proxyFilePath = "/tmp/x509up_u0";
 //        egiCredential.trustedCertPath = "/etc/grid-security/certificates";
-        System.exit(-1);
-
-        ArrayList<SSHKeyPair> sshKeyPairs = userCredential.loadSSHKeyPairFromFile(currentDir);
+        ArrayList<SSHKeyPair> sshKeyPairs = userCredential.
+                loadSSHKeyPairFromFile(currentDir);
         if (sshKeyPairs == null) {
             throw new NullPointerException("ssh key pairs are null");
         }
@@ -184,13 +184,16 @@ public class Consumer extends DefaultConsumer {
             throw new IOException("ssh key pair initilaziation error");
         }
 
+        System.err.println(currentDir);
+        System.exit(-1);
+
         ///Initial Database
         UserDatabase userDatabase = new UserDatabase();
         EGIDatabase egiDatabase = new EGIDatabase();
         egiDatabase.loadDomainInfoFromFile(currentDir + "EGI_Domain_Info");
-        /*EC2Database ec2Database = new EC2Database();
-		ec2Database.loadDomainFromFile(currentDir+"domains");
-		ec2Database.loadAmiFromFile(currentDir+"OS_Domain_AMI");*/
+        EC2Database ec2Database = new EC2Database();
+        ec2Database.loadDomainFromFile(currentDir + "domains");
+        ec2Database.loadAmiFromFile(currentDir + "OS_Domain_AMI");
         if (userDatabase.databases == null) {
             userDatabase.databases = new HashMap<>();
         }
