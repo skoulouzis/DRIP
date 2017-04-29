@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.drip.provisioner.v1;
 
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.KeyPair;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
@@ -33,7 +35,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.drip.provisioner.utils.MessageParsing;
+import nl.uva.sne.drip.drip.provisioner.utils.PropertyValues;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,6 +51,8 @@ import provisioning.database.EGI.EGIDatabase;
 import provisioning.database.UserDatabase;
 import provisioning.engine.TEngine.TEngine;
 import topologyAnalysis.TopologyAnalysisMain;
+import topologyAnalysis.dataStructure.SubTopologyInfo;
+import topologyAnalysis.dataStructure.VM;
 
 /**
  *
@@ -143,8 +149,14 @@ public class Consumer extends DefaultConsumer {
         String publicKeyName = ((String) map.get("publicKeyPath")).split("@")[1].replaceAll("\"", "");
 
         List<File> sshKeys = MessageParsing.getSSHKeys(parameters, tempInputDirPath, publicKeyName);
-
-        String currentDir = CommonTool.getPathDir(topTopologyLoadingPath);
+        if (sshKeys == null || sshKeys.isEmpty()) {
+            JSch jsch = new JSch();
+            KeyPair kpair = KeyPair.genKeyPair(jsch, KeyPair.RSA);
+            String privateName = FilenameUtils.removeExtension(publicKeyName);
+            kpair.writePrivateKey(tempInputDirPath + File.separator + privateName);
+            kpair.writePublicKey(tempInputDirPath + File.separator + publicKeyName, "auto generated user accees keys");
+            kpair.dispose();
+        }
 
         TopologyAnalysisMain tam = new TopologyAnalysisMain(topTopologyLoadingPath);
         if (!tam.fullLoadWholeTopology()) {
@@ -174,7 +186,7 @@ public class Consumer extends DefaultConsumer {
 //        egiCredential.proxyFilePath = "/tmp/x509up_u0";
 //        egiCredential.trustedCertPath = "/etc/grid-security/certificates";
         ArrayList<SSHKeyPair> sshKeyPairs = userCredential.
-                loadSSHKeyPairFromFile(currentDir);
+                loadSSHKeyPairFromFile(tempInputDirPath);
         if (sshKeyPairs == null) {
             throw new NullPointerException("ssh key pairs are null");
         }
@@ -184,21 +196,18 @@ public class Consumer extends DefaultConsumer {
             throw new IOException("ssh key pair initilaziation error");
         }
 
-        System.err.println(currentDir);
-        System.exit(-1);
-
         ///Initial Database
         UserDatabase userDatabase = new UserDatabase();
         EGIDatabase egiDatabase = new EGIDatabase();
-        egiDatabase.loadDomainInfoFromFile(currentDir + "EGI_Domain_Info");
+//        egiDatabase.loadDomainInfoFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "EGI_Domain_Info");
         EC2Database ec2Database = new EC2Database();
-        ec2Database.loadDomainFromFile(currentDir + "domains");
-        ec2Database.loadAmiFromFile(currentDir + "OS_Domain_AMI");
+        ec2Database.loadDomainFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "domains");
+        ec2Database.loadAmiFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "OS_Domain_AMI");
         if (userDatabase.databases == null) {
             userDatabase.databases = new HashMap<>();
         }
-        //userDatabase.databases.put("ec2", ec2Database);
-        userDatabase.databases.put("egi", egiDatabase);
+        userDatabase.databases.put("ec2", ec2Database);
+//        userDatabase.databases.put("egi", egiDatabase);
 
         /*ProvisionRequest pq = new ProvisionRequest();
 		pq.topologyName = "ec2_zh_b";
@@ -209,11 +218,19 @@ public class Consumer extends DefaultConsumer {
         tEngine.provisionAll(tam.wholeTopology, userCredential, userDatabase);
 
         //For deployment parameters
-        String userName = tam.wholeTopology.topologies.get(0).subTopology.getVMsinSubClass().get(0).defaultSSHAccount;
-        String ip = tam.wholeTopology.topologies.get(0).subTopology.getVMsinSubClass().get(0).publicAddress;
-        String vmRole = tam.wholeTopology.topologies.get(0).subTopology.getVMsinSubClass().get(0).role;
-        String curDir = CommonTool.getPathDir(tam.wholeTopology.loadingPath);
-        String accessKeyPath = curDir + File.separator + tam.wholeTopology.topologies.get(0).subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
+        for (SubTopologyInfo sub : tam.wholeTopology.topologies) {
+            ArrayList<VM> vms = sub.subTopology.getVMsinSubClass();
+            for (VM vm : vms) {
+                String userName = vm.defaultSSHAccount;
+                System.err.println("defaultSSHAccount: " + userName);
+                String ip = vm.publicAddress;
+                System.err.println("publicAddress: " + ip);
+                String vmRole = vm.role;
+                System.err.println("vmRole: " + vmRole);
+            }
+            String accessKeyPath = tempInputDirPath + File.separator + sub.subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
+            System.err.println("accessKeyPath: " + accessKeyPath);
+        }
 
     }
 

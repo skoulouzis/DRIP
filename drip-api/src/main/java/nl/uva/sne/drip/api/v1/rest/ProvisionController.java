@@ -99,7 +99,6 @@ public class ProvisionController {
     String deleteAll() {
         provisionService.deleteAll();
         return "Done";
-
     }
 
     /**

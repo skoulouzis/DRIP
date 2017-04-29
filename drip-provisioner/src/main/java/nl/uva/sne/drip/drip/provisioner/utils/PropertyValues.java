@@ -34,6 +34,7 @@ public class PropertyValues {
     public static String TRUSTED_CERTIFICATE_FOLDER;
     public static URL CA_BUNDLE_URL;
     public static String MY_PROXY_ENDPOINT = "myproxy1.egee.cesnet.cz";
+    public static String DOMAIN_INFO_PATH = "etc";
 
     public static void setPropertyValues(Properties prop) throws MalformedURLException {
         PropertyValues.HOST = prop.getProperty("rabbitmq.host", "127.0.0.1");
@@ -45,7 +46,11 @@ public class PropertyValues {
                 + "igtf-preinstalled-bundle-classic.tar.gz"));
 
         MY_PROXY_ENDPOINT = prop.getProperty("my.proxy.endpoint",
-                "myproxy1.egee.cesnet.cz");;
+                "myproxy1.egee.cesnet.cz");
+
+        DOMAIN_INFO_PATH = prop.getProperty("domain.info.path",
+                "etc");
+
         Logger.getLogger(RPCServer.class.getName()).log(Level.INFO,
                 MessageFormat.format("rabbitmq.host: {0}", PropertyValues.HOST));
         Logger.getLogger(RPCServer.class.getName()).log(Level.INFO,

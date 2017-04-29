@@ -410,12 +410,13 @@ public class ProvisionService {
         parameters.addAll(topologies);
 
         List<String> userKeyIDs = provisionRequest.getKeyPairIDs();
-        for (String keyID : userKeyIDs) {
-            if (userKeyIDs != null) {
+        if (userKeyIDs != null) {
+            for (String keyID : userKeyIDs) {
                 List<MessageParameter> userKeys = buildKeysParams(keyID);
                 parameters.addAll(userKeys);
             }
         }
+
         for (String id : provisionRequest.getCloudCredentialsIDs()) {
             CloudCredentials cred = cloudCredentialsService.findOne(id);
             if (cred == null) {

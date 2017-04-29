@@ -40,7 +40,7 @@ public class KeyPair extends OwnedObject {
 
     /**
      * @param privateKey the privateKey to set
-     * @throws nl.uva.sne.drip.api.exception.KeyException
+     * @throws java.lang.Exception
      */
     public void setPrivateKey(Key privateKey) throws Exception {
         if (privateKey != null && privateKey.getType() != Key.KeyType.PRIVATE) {
@@ -58,7 +58,7 @@ public class KeyPair extends OwnedObject {
 
     /**
      * @param publicKey the publicKey to set
-     * @throws nl.uva.sne.drip.api.exception.KeyException
+     * @throws java.lang.Exception
      */
     public void setPublicKey(Key publicKey) throws Exception {
         if (publicKey != null && publicKey.getType() != Key.KeyType.PUBLIC) {
