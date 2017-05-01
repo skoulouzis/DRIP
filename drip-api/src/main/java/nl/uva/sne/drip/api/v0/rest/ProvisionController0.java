@@ -114,7 +114,7 @@ public class ProvisionController0 {
                 String userKeyID = keyPair.getId();
                 keyPairIDs.add(userKeyID);
             }
-            resp.setKeyPairIDs(keyPairIDs);
+            resp.setUserKeyPairIDs(keyPairIDs);
         }
         resp = provisionService.save(resp);
         return "Success: Infrastructure files are uploaded! Action number: "
@@ -145,6 +145,8 @@ public class ProvisionController0 {
             res.file = files;
             return res;
         } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {
+            Logger.getLogger(ProvisionController0.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(ProvisionController0.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;

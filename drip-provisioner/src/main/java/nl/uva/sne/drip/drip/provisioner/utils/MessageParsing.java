@@ -34,10 +34,7 @@ import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.GZIPInputStream;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
-import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
-import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.globus.gsi.X509Credential;
@@ -100,12 +97,12 @@ public class MessageParsing {
         }
     }
 
-    public static List<File> getSSHKeys(JSONArray parameters, String tempInputDirPath, String filename) throws JSONException, IOException {
+    public static List<File> getSSHKeys(JSONArray parameters, String tempInputDirPath, String filename, String varName) throws JSONException, IOException {
         List<File> sshKeys = new ArrayList<>();
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
             String name = (String) param.get("name");
-            if (name.equals("sshkey")) {
+            if (name.equals(varName)) {
                 String sshKeyContent = (String) param.get("value");
                 File sshKeyFile = new File(tempInputDirPath + File.separator + filename);
                 if (sshKeyFile.exists()) {

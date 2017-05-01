@@ -16,6 +16,7 @@
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -30,6 +31,8 @@ public class KeyPair extends OwnedObject {
 
     private Key privateKey;
     private Key publicKey;
+    @Indexed
+    private String keyPairId;
 
     /**
      * @return the privateKey
@@ -65,6 +68,20 @@ public class KeyPair extends OwnedObject {
             throw new Exception("Trying to add private to public");
         }
         this.publicKey = publicKey;
+    }
+
+    /**
+     * @return the keyPairId
+     */
+    public String getKeyPairId() {
+        return keyPairId;
+    }
+
+    /**
+     * @param keyPairId the keyPairId to set
+     */
+    public void setKeyPairId(String keyPairId) {
+        this.keyPairId = keyPairId;
     }
 
 }

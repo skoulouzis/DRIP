@@ -72,7 +72,7 @@ public class UserPublicKeysController0 {
             ProvisionResponse provPlan = provisionService.findOne(confUserKey.action);
             List<String> keyPairIDs = new ArrayList<>();
             keyPairIDs.add(pair.getId());
-            provPlan.setKeyPairIDs(keyPairIDs);
+            provPlan.setUserKeyPairIDs(keyPairIDs);
             provisionService.save(provPlan);
 
             return "Success: " + pair.getId();

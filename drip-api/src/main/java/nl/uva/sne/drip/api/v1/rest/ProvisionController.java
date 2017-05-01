@@ -142,6 +142,8 @@ public class ProvisionController {
 
         } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {
             Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -157,7 +159,7 @@ public class ProvisionController {
         req.setCloudCredentialsIDs(cloudCredentialsIDs);
         List<String> keyPairIDs = new ArrayList<>();
         keyPairIDs.add("58f8da042af45d6621813c4e");
-        req.setKeyPairIDs(keyPairIDs);
+        req.setUserKeyPairIDs(keyPairIDs);
         req.setPlanID("58da51f7f7b42e7d967752a1");
         return req;
     }

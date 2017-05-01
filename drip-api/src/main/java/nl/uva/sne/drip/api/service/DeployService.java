@@ -152,9 +152,13 @@ public class DeployService {
         if (pro == null) {
             throw new NotFoundException();
         }
-        List<String> cloudConfIDs = pro.getCloudCredentialsIDs();
-        CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfIDs.get(0));
-        List<String> loginKeysIDs = cCred.getkeyPairIDs();
+        List<String> loginKeysIDs = pro.getDeployerKeyPairIDs();
+        if (loginKeysIDs == null || loginKeysIDs.isEmpty()) {
+            List<String> cloudConfIDs = pro.getCloudCredentialsIDs();
+            CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfIDs.get(0));
+            loginKeysIDs = cCred.getkeyPairIDs();
+        }
+
         List<KeyPair> loginKeys = new ArrayList<>();
         for (String keyID : loginKeysIDs) {
             KeyPair key = keyDao.findOne(keyID);
@@ -189,18 +193,18 @@ public class DeployService {
     }
 
     private MessageParameter createCredentialPartameter(DeployParameter dp, List<KeyPair> loginKeys) {
-        String cName = dp.getCloudCertificateName();
+//        String cName = dp.getCloudCertificateName();
         MessageParameter messageParameter = new MessageParameter();
         messageParameter.setName("credential");
         messageParameter.setEncoding("UTF-8");
         String key = null;
-        for (KeyPair lk : loginKeys) {
-            String lkName = lk.getPrivateKey().getAttributes().get("domain_name");
-            if (lkName.equals(cName)) {
-                key = lk.getPrivateKey().getKey();
-                break;
-            }
-        }
+//        for (KeyPair lk : loginKeys) {
+//            String lkName = lk.getPrivateKey().getAttributes().get("domain_name");
+//            if (lkName.equals(cName)) {
+//                key = lk.getPrivateKey().getKey();
+//                break;
+//            }
+//        }
         messageParameter.setValue(key);
         Map<String, String> attributes = new HashMap<>();
         attributes.put("IP", dp.getIP());

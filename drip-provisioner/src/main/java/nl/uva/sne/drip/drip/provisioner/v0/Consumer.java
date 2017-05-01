@@ -180,7 +180,7 @@ public class Consumer extends DefaultConsumer {
 
         logDir = getLogDirPath(parameters, tempInputDirPath);
 
-        File sshKey = MessageParsing.getSSHKeys(parameters, tempInputDirPath, "user.pem").get(0);
+        File sshKey = MessageParsing.getSSHKeys(parameters, tempInputDirPath, "user.pem", "sshkey").get(0);
         if (sshKey != null) {
             sshKeyFilePath = sshKey.getAbsolutePath();
         }
@@ -255,8 +255,8 @@ public class Consumer extends DefaultConsumer {
 //        }
 
         x = new TopologyElement();
-        x.topologyName = "kubernetes";
-        x.outputFilePath = tempInputDirPath + "file_kubernetes";
+        x.topologyName = "topology";
+        x.outputFilePath = tempInputDirPath + "file_topology";
         topologyInfoArray.add(x);
 
         return topologyInfoArray;
@@ -342,7 +342,6 @@ public class Consumer extends DefaultConsumer {
                     fileArguments.put("value", "ERROR::There is no output for topology " + outputs.get(i).topologyName);
                     parameters.add(fileArguments);
                 }
-
             }
         }
         jo.put("parameters", parameters);

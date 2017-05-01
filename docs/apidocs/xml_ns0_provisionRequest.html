@@ -107,7 +107,7 @@
 </td>
         </tr>
         <tr>
-          <td>  <span class="property-name">keyPairIDs</span>
+          <td>  <span class="property-name">deployerKeyPairIDs</span>
 </td>
           <td>  <span class="datatype-reference">string
 </span>
@@ -137,6 +137,24 @@
 </span>
 </td>
           <td>  <span class="property-minMaxOccurs">0/1
+</span>
+</td>
+          <td>  <span class="property-description">&nbsp;</span>
+</td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">userKeyPairIDs</span>
+</td>
+          <td>  <span class="datatype-reference">string
+</span>
+</td>
+          <td>  <span class="property-type">element
+</span>
+</td>
+          <td>  <span class="property-namespaceInfo">
+</span>
+</td>
+          <td>  <span class="property-minMaxOccurs">0/unbounded
 </span>
 </td>
           <td>  <span class="property-description">&nbsp;</span>
@@ -177,11 +195,12 @@
       <p class="lead">Example</p>
       
       <pre class="prettyprint language-xml example">&lt;p-----&gt;
-  &lt;keyPairIDs&gt;ASedsfd46b4fFd344a1A&lt;/keyPairIDs&gt;
-  &lt;planID&gt;ASedsfd46b4fDFd83ba1q&lt;/planID&gt;
   &lt;cloudCredentialsIDs&gt;58e3946e0fb4f562d84ba1ad&lt;/cloudCredentialsIDs&gt;
-  &lt;timestamp&gt;...&lt;/timestamp&gt;
+  &lt;deployerKeyPairIDs&gt;...&lt;/deployerKeyPairIDs&gt;
+  &lt;planID&gt;ASedsfd46b4fDFd83ba1q&lt;/planID&gt;
+  &lt;userKeyPairIDs&gt;ASedsfd46b4fFd344a1A&lt;/userKeyPairIDs&gt;
   &lt;owner&gt;user1&lt;/owner&gt;
+  &lt;timestamp&gt;...&lt;/timestamp&gt;
 &lt;/p-----&gt;
 </pre>
 

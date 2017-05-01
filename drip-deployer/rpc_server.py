@@ -105,11 +105,7 @@ def on_request(ch, method, props, body):
         res_name = "ansible_output"
     else:
         res_name = "credential"
-        
-        
-    print manager_type
-    print res_name
-    
+            
     response = {}
     outcontent = {}
     current_milli_time = lambda: int(round(time.time() * 1000))

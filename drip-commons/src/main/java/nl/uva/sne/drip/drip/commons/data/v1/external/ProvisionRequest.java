@@ -32,7 +32,9 @@ public class ProvisionRequest extends KeyValueHolder {
 
     private String planID;
 
-    private List<String> keyPairIDs;
+    private List<String> userKeyPairIDs;
+
+    private List<String> deployerKeyPairIDs;
 
     /**
      * The cloud credentials ids required to provision the cloud resources.
@@ -70,18 +72,33 @@ public class ProvisionRequest extends KeyValueHolder {
 
     /**
      * The key pair id for the keys to use to log in the provisioned VMs.
-     * @return the keyPairIDs
+     *
+     * @return the userKeyPairIDs
      */
-     @DocumentationExample("ASedsfd46b4fFd344a1A")
-    public List<String> getKeyPairIDs() {
-        return keyPairIDs;
+    @DocumentationExample("ASedsfd46b4fFd344a1A")
+    public List<String> getUserKeyPairIDs() {
+        return userKeyPairIDs;
     }
 
     /**
-     * @param userKeyID the keyPairIDs to set
+     * @param userKeyID the userKeyPairIDs to set
      */
-    public void setKeyPairIDs(List<String> userKeyID) {
-        this.keyPairIDs = userKeyID;
+    public void setUserKeyPairIDs(List<String> userKeyID) {
+        this.userKeyPairIDs = userKeyID;
     }
-    
+
+    /**
+     * @return the deployerKeyPairIDs
+     */
+    public List<String> getDeployerKeyPairIDs() {
+        return deployerKeyPairIDs;
+    }
+
+    /**
+     * @param deployerKeyPairIDs the deployerKeyPairIDs to set
+     */
+    public void setDeployerKeyPairIDs(List<String> deployerKeyPairIDs) {
+        this.deployerKeyPairIDs = deployerKeyPairIDs;
+    }
+
 }

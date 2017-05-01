@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ import java.util.List;
 public class ProvisionResponse extends ProvisionRequest {
 
     private List<DeployParameter> deployParameters;
+    private ArrayList<String> cloudKeyPairIDs;
 
     /**
      * The deploy parameters.
@@ -40,6 +42,17 @@ public class ProvisionResponse extends ProvisionRequest {
      */
     public void setDeployParameters(List<DeployParameter> deployParameters) {
         this.deployParameters = deployParameters;
+    }
+
+    public void setCloudKeyPairIDs(ArrayList<String> cloudKeyPairIDs) {
+        this.cloudKeyPairIDs = cloudKeyPairIDs;
+    }
+
+    /**
+     * @return the cloudKeyPairIDs
+     */
+    public ArrayList<String> getCloudKeyPairIDs() {
+        return cloudKeyPairIDs;
     }
 
 }
