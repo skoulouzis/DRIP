@@ -397,10 +397,21 @@ public class Consumer extends DefaultConsumer {
         FileUtils.moveFile(topologyFile, mainTopologyFile);
         String topTopologyLoadingPath = mainTopologyFile.getAbsolutePath();
 
+        List<File> topologyFiles = MessageParsing.getTopologies(parameters, tempInputDirPath, 1);
+        for (File lowLevelTopologyFile : topologyFiles) {
+            File secondaryTopologyFile = new File(tempInputDirPath + File.separator + lowLevelTopologyFile.getName() + ".yml");
+            FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
+        }
+        
+          File clusterKeyPair = MessageParsing.getClusterKeysPair(parameters, tempInputDirPath);
+          
+
         tam = new TopologyAnalysisMain(topTopologyLoadingPath);
         if (!tam.fullLoadWholeTopology()) {
             throw new Exception("sth wrong!");
         }
+
+      
 
         tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
         Message response = new Message();

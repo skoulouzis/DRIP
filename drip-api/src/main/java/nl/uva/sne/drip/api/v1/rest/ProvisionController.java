@@ -85,9 +85,14 @@ public class ProvisionController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        ProvisionRequest provPlan = provisionService.findOne(id);
+        ProvisionResponse provPlan = provisionService.findOne(id);
         if (provPlan != null) {
-            provisionService.delete(id);
+            try {
+                provisionService.deleteProvisionedResources(provPlan);
+            } catch (IOException | TimeoutException | InterruptedException | JSONException ex) {
+                Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            ProvisionResponse provisionInfo = provisionService.delete(id);
             return "Deleted : " + id;
         }
         throw new NotFoundException();

@@ -34,6 +34,7 @@ import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
@@ -55,6 +56,16 @@ import provisioning.credential.EGICredential;
  * @author S. Koulouzis
  */
 public class MessageParsing {
+
+    public static File getClusterKeysPair(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            MessageParameter messageParam = mapper.readValue(param.toString(), MessageParameter.class);
+        }
+        return null;
+    }
 
     enum SOURCE {
         MY_PROXY,

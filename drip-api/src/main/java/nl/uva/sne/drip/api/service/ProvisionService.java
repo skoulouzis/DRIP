@@ -180,10 +180,8 @@ public class ProvisionService {
             return cloudCredentialParams;
         }
         if (version == 1) {
-
             MessageParameter cloudCred = new MessageParameter();
             cloudCred.setName("cloud_credential");
-
             cloudCred.setEncoding("UTF-8");
             List<KeyPair> keyPairs = new ArrayList<>();
             for (String id : cred.getkeyPairIDs()) {
@@ -212,7 +210,6 @@ public class ProvisionService {
             KeyPair key = keyDao.findOne(keyID);
             loginKeys.add(key);
         }
-
         if (loginKeys.isEmpty()) {
             throw new BadRequestException("Log in keys can't be empty");
         }
@@ -286,6 +283,107 @@ public class ProvisionService {
         return parameters;
     }
 
+    private List<MessageParameter> buildProvisionedTopologyParams(ProvisionResponse provisionInfo) throws JSONException {
+        List<MessageParameter> parameters = new ArrayList();
+
+        Map<String, Object> map = provisionInfo.getKeyValue();
+        for (String topoName : map.keySet()) {
+            Map<String, Object> topo = (Map<String, Object>) map.get(topoName);
+            MessageParameter topology = new MessageParameter();
+            topology.setName("topology");
+            topology.setValue(Converter.map2YmlString(topo));
+            HashMap<String, String> attributes = new HashMap<>();
+            if (topoName.equals("topology_main")) {
+                attributes.put("level", String.valueOf(0));
+            } else {
+                attributes.put("level", String.valueOf(1));
+            }
+            attributes.put("filename", topoName);
+            topology.setAttributes(attributes);
+            parameters.add(topology);
+        }
+        return parameters;
+    }
+
+    private List<MessageParameter> buildClusterKeyParams(ProvisionResponse provisionInfo) {
+        List<MessageParameter> parameters = new ArrayList();
+        List<String> ids = provisionInfo.getDeployerKeyPairIDs();
+        for (String id : ids) {
+            KeyPair pair = keyPairService.findOne(id);
+
+            MessageParameter param = new MessageParameter();
+            param.setName("private_deployer_key");
+            param.setValue(pair.getPrivateKey().getKey());
+            HashMap<String, String> attributes = new HashMap<>();
+            attributes.putAll(pair.getPrivateKey().getAttributes());
+            attributes.put("name", pair.getPrivateKey().getName());
+            param.setAttributes(attributes);
+
+            param = new MessageParameter();
+            param.setName("public_deployer_key");
+            param.setValue(pair.getPublicKey().getKey());
+            attributes = new HashMap<>();
+            attributes.putAll(pair.getPrivateKey().getAttributes());
+            attributes.put("name", pair.getPublicKey().getName());
+            param.setAttributes(attributes);
+        }
+
+        return parameters;
+    }
+
+    private List<MessageParameter> buildUserKeyParams(ProvisionResponse provisionInfo) {
+        List<MessageParameter> parameters = new ArrayList();
+        List<String> ids = provisionInfo.getUserKeyPairIDs();
+        for (String id : ids) {
+            KeyPair pair = keyPairService.findOne(id);
+
+            MessageParameter param = new MessageParameter();
+            param.setName("private_user_key");
+            param.setValue(pair.getPrivateKey().getKey());
+            HashMap<String, String> attributes = new HashMap<>();
+            attributes.putAll(pair.getPrivateKey().getAttributes());
+            attributes.put("name", pair.getPrivateKey().getName());
+            param.setAttributes(attributes);
+
+            param = new MessageParameter();
+            param.setName("public_user_key");
+            param.setValue(pair.getPublicKey().getKey());
+            attributes = new HashMap<>();
+            attributes.putAll(pair.getPrivateKey().getAttributes());
+            attributes.put("name", pair.getPublicKey().getName());
+            param.setAttributes(attributes);
+        }
+        return parameters;
+    }
+
+    private List<MessageParameter> buildCloudKeyParams(ProvisionResponse provisionInfo) {
+        List<MessageParameter> parameters = new ArrayList();
+        List<String> ids = provisionInfo.getCloudKeyPairIDs();
+        for (String id : ids) {
+            KeyPair pair = keyPairService.findOne(id);
+
+            MessageParameter param = new MessageParameter();
+            param.setName("private_cloud_key");
+            param.setValue(pair.getPrivateKey().getKey());
+            HashMap<String, String> attributes = new HashMap<>();
+            attributes.putAll(pair.getPrivateKey().getAttributes());
+            attributes.put("name", pair.getPrivateKey().getName());
+            attributes.put("key_pair_id", pair.getKeyPairId());
+            param.setAttributes(attributes);
+
+            param = new MessageParameter();
+            param.setName("public_cloud_key");
+            param.setValue(pair.getPublicKey().getKey());
+            attributes = new HashMap<>();
+            attributes.putAll(pair.getPrivateKey().getAttributes());
+            attributes.put("name", pair.getPublicKey().getName());
+            attributes.put("key_pair_id", pair.getKeyPairId());
+            param.setAttributes(attributes);
+        }
+        return parameters;
+
+    }
+
     private MessageParameter buildEC2Conf(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
         Properties prop = Converter.getEC2Properties(cred);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -347,7 +445,7 @@ public class ProvisionService {
 //                    + File.separator + "docs" + File.separator + "json_samples"
 //                    + File.separator + "ec2_provisioner_provisoned3.json");
 
-            return parseResponse(response.getParameters(), provisionRequest);
+            return parseCreateResourcesResponse(response.getParameters(), provisionRequest);
 
         }
 
@@ -355,14 +453,23 @@ public class ProvisionService {
 
     private ProvisionResponse callProvisioner1(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
         try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
-            Message provisionerInvokationMessage = buildProvisioner1Message(provisionRequest);
+            Message provisionerInvokationMessage = buildProvisione1Message(provisionRequest);
             Message response = (provisioner.call(provisionerInvokationMessage));
-            return parseResponse(response.getParameters(), provisionRequest);
+            return parseCreateResourcesResponse(response.getParameters(), provisionRequest);
         }
 
     }
 
-    private Message buildProvisioner1Message(ProvisionRequest provisionRequest) throws JSONException, FileNotFoundException, IOException {
+    public void deleteProvisionedResources(ProvisionResponse provisionInfo) throws IOException, TimeoutException, InterruptedException, JSONException {
+        try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
+            Message deleteInvokationMessage = buildDeleteMessage(provisionInfo);
+            Message response = (provisioner.call(deleteInvokationMessage));
+            parseDeleteResourcesResponse(response.getParameters(), provisionInfo);
+        }
+
+    }
+
+    private Message buildProvisione1Message(ProvisionRequest provisionRequest) throws JSONException, FileNotFoundException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
 
@@ -404,6 +511,32 @@ public class ProvisionService {
 
     }
 
+    private Message buildDeleteMessage(ProvisionResponse provisionInfo) throws JSONException {
+        Message invokationMessage = new Message();
+        List<MessageParameter> parameters = new ArrayList();
+
+        MessageParameter action = new MessageParameter();
+        action.setName("action");
+        action.setValue("kill_topology");
+        parameters.add(action);
+
+        List<MessageParameter> topologies = buildProvisionedTopologyParams(provisionInfo);
+        parameters.addAll(topologies);
+
+        List<MessageParameter> clusterKeys = buildClusterKeyParams(provisionInfo);
+        parameters.addAll(clusterKeys);
+
+        List<MessageParameter> userKeys = buildUserKeyParams(provisionInfo);
+        parameters.addAll(userKeys);
+
+        List<MessageParameter> cloudKeys = buildCloudKeyParams(provisionInfo);
+        parameters.addAll(cloudKeys);
+
+        invokationMessage.setParameters(parameters);
+        invokationMessage.setCreationDate(System.currentTimeMillis());
+        return invokationMessage;
+    }
+
     private List<MessageParameter> buildDeployKeysParams(String keyID) {
         KeyPair key = keyPairService.findOne(keyID);
         if (key == null) {
@@ -420,7 +553,7 @@ public class ProvisionService {
         return parameters;
     }
 
-    private ProvisionResponse parseResponse(List<MessageParameter> parameters, ProvisionRequest provisionRequest) throws Exception {
+    private ProvisionResponse parseCreateResourcesResponse(List<MessageParameter> parameters, ProvisionRequest provisionRequest) throws Exception {
         ProvisionResponse provisionResponse = new ProvisionResponse();
         provisionResponse.setTimestamp(System.currentTimeMillis());
         List<DeployParameter> deployParameters = new ArrayList<>();
@@ -556,4 +689,9 @@ public class ProvisionService {
         return provisionResponse;
 
     }
+
+    private void parseDeleteResourcesResponse(List<MessageParameter> parameters, ProvisionResponse provisionInfo) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
