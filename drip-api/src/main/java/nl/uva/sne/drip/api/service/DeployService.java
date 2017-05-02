@@ -198,13 +198,13 @@ public class DeployService {
         messageParameter.setName("credential");
         messageParameter.setEncoding("UTF-8");
         String key = null;
-//        for (KeyPair lk : loginKeys) {
+        for (KeyPair lk : loginKeys) {
 //            String lkName = lk.getPrivateKey().getAttributes().get("domain_name");
 //            if (lkName.equals(cName)) {
-//                key = lk.getPrivateKey().getKey();
+            key = lk.getPrivateKey().getKey();
 //                break;
 //            }
-//        }
+        }
         messageParameter.setValue(key);
         Map<String, String> attributes = new HashMap<>();
         attributes.put("IP", dp.getIP());
@@ -266,7 +266,16 @@ public class DeployService {
                     String nodeType = nodeTypeCahche.get(ansOut.getHost());
                     String domain = domainCahche.get(ansOut.getHost());
                     if (nodeType == null) {
-                        List<Map<String, Object>> components = (List<Map<String, Object>>) map.get("components");
+                        List<Map<String, Object>> components;
+                        if (map.containsKey("components")) {
+                            components = (List<Map<String, Object>>) map.get("components");
+                        } else {
+                            for (String key : map.keySet()) {
+                                Object contents = map.get(key);
+                                System.err.println(contents.getClass().getName());
+                            }
+                        }
+
                         for (Map<String, Object> component : components) {
                             String publicAddress = (String) component.get("public_address");
                             if (publicAddress.equals(ansOut.getHost())) {
