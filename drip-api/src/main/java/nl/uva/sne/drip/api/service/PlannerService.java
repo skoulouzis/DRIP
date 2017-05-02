@@ -204,6 +204,12 @@ public class PlannerService {
         if (plan == null) {
             throw new NotFoundException();
         }
+        Set<String> lowIds = plan.getLoweLevelPlanIDs();
+        if (lowIds != null) {
+            for (String lId : lowIds) {
+                planDao.delete(lId);
+            }
+        }
         planDao.delete(plan);
         return plan;
     }

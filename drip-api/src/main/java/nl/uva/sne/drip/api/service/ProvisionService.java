@@ -182,12 +182,15 @@ public class ProvisionService {
             cloudCred.setName("cloud_credential");
             cloudCred.setEncoding("UTF-8");
             List<KeyPair> keyPairs = new ArrayList<>();
-            for (String id : cred.getkeyPairIDs()) {
-                KeyPair pair = keyDao.findOne(id);
-                keyPairs.add(pair);
+            List<String> keyPairIds = cred.getkeyPairIDs();
+            if (keyPairIds != null) {
+                for (String id : cred.getkeyPairIDs()) {
+                    KeyPair pair = keyDao.findOne(id);
+                    keyPairs.add(pair);
+                }
+                cred.setKeyPairs(keyPairs);
             }
 
-            cred.setKeyPairs(keyPairs);
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
             String jsonInString = mapper.writeValueAsString(cred);

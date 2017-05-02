@@ -47,23 +47,23 @@
 
 <xs:complexType name="configure">
        <xs:sequence>
-              <xs:element name="loginKey" type="loginKey0" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="geniKey" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="keyid" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="user" type="xs:string" minOccurs="0">
               </xs:element>
+              <xs:element name="geniKeyAlias" type="xs:string" minOccurs="0">
+              </xs:element>
               <xs:element name="key" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="geniKeyPass" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="pwd" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="geniKey" type="xs:string" minOccurs="0">
+              <xs:element name="loginKey" type="loginKey0" minOccurs="0" maxOccurs="unbounded">
               </xs:element>
               <xs:element name="loginPubKey" type="loginKey0" minOccurs="0" maxOccurs="unbounded">
               </xs:element>
-              <xs:element name="geniKeyAlias" type="xs:string" minOccurs="0">
+              <xs:element name="pwd" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="loginPriKey" type="loginKey0" minOccurs="0" maxOccurs="unbounded">
               </xs:element>
@@ -79,11 +79,11 @@
 
 <xs:complexType name="execute">
        <xs:sequence>
-              <xs:element name="pwd" type="xs:string" minOccurs="0">
-              </xs:element>
               <xs:element name="action" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="user" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="pwd" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
 </xs:complexType>
@@ -99,31 +99,31 @@
 
 <xs:complexType name="plan">
        <xs:sequence>
-              <xs:element name="user" type="xs:string" minOccurs="0">
-              </xs:element>
               <xs:element name="pwd" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="file" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="user" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="register">
        <xs:sequence>
-              <xs:element name="pwd" type="xs:string" minOccurs="0">
-              </xs:element>
               <xs:element name="user" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="pwd" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="result">
        <xs:sequence>
+              <xs:element name="info" type="xs:string" minOccurs="0">
+              </xs:element>
               <xs:element name="file" type="attribute" minOccurs="0" maxOccurs="unbounded">
               </xs:element>
               <xs:element name="status" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="info" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
 </xs:complexType>
@@ -145,11 +145,11 @@
       <xs:sequence>
               <xs:element name="keyPairs" type="keyPair" minOccurs="0" maxOccurs="unbounded">
               </xs:element>
-              <xs:element name="secretKey" type="xs:string" minOccurs="0">
-              </xs:element>
               <xs:element name="accessKeyId" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="cloudProviderName" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="secretKey" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="attributes" minOccurs="0">
   <xs:complexType>
@@ -185,11 +185,11 @@
    <xs:complexContent>
     <xs:extension base="ownedObject">
       <xs:sequence>
+              <xs:element name="configurationID" type="xs:string" minOccurs="0">
+              </xs:element>
               <xs:element name="provisionID" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="managerType" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="configurationID" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
     </xs:extension>
@@ -209,6 +209,12 @@
 
 <xs:complexType name="key">
        <xs:sequence>
+              <xs:element name="type" type="keyType" minOccurs="0">
+              </xs:element>
+              <xs:element name="name" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="key" type="xs:string" minOccurs="0">
+              </xs:element>
               <xs:element name="attributes" minOccurs="0">
   <xs:complexType>
     <xs:sequence>
@@ -222,12 +228,6 @@
       </xs:element>
     </xs:sequence>
   </xs:complexType>
-              </xs:element>
-              <xs:element name="type" type="keyType" minOccurs="0">
-              </xs:element>
-              <xs:element name="name" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="key" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
 </xs:complexType>
@@ -245,11 +245,11 @@
    <xs:complexContent>
     <xs:extension base="ownedObject">
       <xs:sequence>
-              <xs:element name="publicKey" type="key" minOccurs="0">
+              <xs:element name="privateKey" type="key" minOccurs="0">
               </xs:element>
               <xs:element name="keyPairId" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="privateKey" type="key" minOccurs="0">
+              <xs:element name="publicKey" type="key" minOccurs="0">
               </xs:element>
       </xs:sequence>
     </xs:extension>
@@ -298,11 +298,11 @@
    <xs:complexContent>
     <xs:extension base="keyValueHolder">
       <xs:sequence>
-              <xs:element name="cloudCredentialsIDs" type="xs:string" minOccurs="0" maxOccurs="unbounded">
-              </xs:element>
               <xs:element name="userKeyPairIDs" type="xs:string" minOccurs="0" maxOccurs="unbounded">
               </xs:element>
               <xs:element name="deployerKeyPairIDs" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+              </xs:element>
+              <xs:element name="cloudCredentialsIDs" type="xs:string" minOccurs="0" maxOccurs="unbounded">
               </xs:element>
               <xs:element name="planID" type="xs:string" minOccurs="0">
               </xs:element>
@@ -315,9 +315,9 @@
    <xs:complexContent>
     <xs:extension base="provisionRequest">
       <xs:sequence>
-              <xs:element name="deployParameters" type="deployParameter" minOccurs="0" maxOccurs="unbounded">
-              </xs:element>
               <xs:element name="cloudKeyPairIDs" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+              </xs:element>
+              <xs:element name="deployParameters" type="deployParameter" minOccurs="0" maxOccurs="unbounded">
               </xs:element>
       </xs:sequence>
     </xs:extension>
@@ -328,9 +328,9 @@
    <xs:complexContent>
     <xs:extension base="ownedObject">
       <xs:sequence>
-              <xs:element name="name" type="xs:string" minOccurs="0">
-              </xs:element>
               <xs:element name="contents" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="name" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
     </xs:extension>
@@ -350,21 +350,21 @@
 
 <xs:complexType name="user">
        <xs:sequence>
-              <xs:element name="accountNonExpired" type="xs:boolean" minOccurs="1">
-              </xs:element>
-              <xs:element name="enabled" type="xs:boolean" minOccurs="1">
-              </xs:element>
-              <xs:element name="credentialsNonExpired" type="xs:boolean" minOccurs="1">
-              </xs:element>
-              <xs:element name="roles" type="xs:string" minOccurs="0" maxOccurs="unbounded">
-              </xs:element>
-              <xs:element name="password" type="xs:string" minOccurs="0">
-              </xs:element>
               <xs:element name="username" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="id" type="xs:string" minOccurs="0">
               </xs:element>
+              <xs:element name="credentialsNonExpired" type="xs:boolean" minOccurs="1">
+              </xs:element>
+              <xs:element name="enabled" type="xs:boolean" minOccurs="1">
+              </xs:element>
+              <xs:element name="password" type="xs:string" minOccurs="0">
+              </xs:element>
               <xs:element name="accountNonLocked" type="xs:boolean" minOccurs="1">
+              </xs:element>
+              <xs:element name="accountNonExpired" type="xs:boolean" minOccurs="1">
+              </xs:element>
+              <xs:element name="roles" type="xs:string" minOccurs="0" maxOccurs="unbounded">
               </xs:element>
       </xs:sequence>
 </xs:complexType>
@@ -375,11 +375,11 @@
       <xs:sequence>
               <xs:element name="cloudDeploymentDomain" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="vmType" type="xs:string" minOccurs="0">
+              <xs:element name="provisionID" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="host" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="provisionID" type="xs:string" minOccurs="0">
+              <xs:element name="vmType" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
     </xs:extension>
@@ -390,17 +390,17 @@
    <xs:complexContent>
     <xs:extension base="ownedObject">
       <xs:sequence>
-              <xs:element name="host" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="vmType" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="end" type="xs:dateTime" minOccurs="0">
-              </xs:element>
-              <xs:element name="delta" type="xs:dateTime" minOccurs="0">
+              <xs:element name="start" type="xs:dateTime" minOccurs="0">
               </xs:element>
               <xs:element name="cloudDeploymentDomain" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="start" type="xs:dateTime" minOccurs="0">
+              <xs:element name="vmType" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="delta" type="xs:dateTime" minOccurs="0">
+              </xs:element>
+              <xs:element name="host" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="end" type="xs:dateTime" minOccurs="0">
               </xs:element>
       </xs:sequence>
     </xs:extension>
@@ -411,29 +411,29 @@
    <xs:complexContent>
     <xs:extension base="benchmarkResult">
       <xs:sequence>
+              <xs:element name="executionTime" type="xs:double" minOccurs="1">
+              </xs:element>
               <xs:element name="avgEventsPerThread" type="xs:double" minOccurs="1">
-              </xs:element>
-              <xs:element name="avgExecutionTimePerRequest" type="xs:double" minOccurs="1">
-              </xs:element>
-              <xs:element name="approx95Percentile" type="xs:double" minOccurs="1">
-              </xs:element>
-              <xs:element name="ansibleOutputID" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="numberOfThreads" type="xs:int" minOccurs="1">
               </xs:element>
-              <xs:element name="maxExecutionTimePerRequest" type="xs:double" minOccurs="1">
-              </xs:element>
-              <xs:element name="executionTime" type="xs:double" minOccurs="1">
-              </xs:element>
-              <xs:element name="avgExecTimePerThread" type="xs:double" minOccurs="1">
+              <xs:element name="sysbenchVersion" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="totalNumberOfEvents" type="xs:int" minOccurs="1">
               </xs:element>
-              <xs:element name="stddevEventsPerThread" type="xs:double" minOccurs="1">
+              <xs:element name="avgExecutionTimePerRequest" type="xs:double" minOccurs="1">
+              </xs:element>
+              <xs:element name="maxExecutionTimePerRequest" type="xs:double" minOccurs="1">
+              </xs:element>
+              <xs:element name="approx95Percentile" type="xs:double" minOccurs="1">
               </xs:element>
               <xs:element name="stddevExecTimePerThread" type="xs:double" minOccurs="1">
               </xs:element>
-              <xs:element name="sysbenchVersion" type="xs:string" minOccurs="0">
+              <xs:element name="ansibleOutputID" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="stddevEventsPerThread" type="xs:double" minOccurs="1">
+              </xs:element>
+              <xs:element name="avgExecTimePerThread" type="xs:double" minOccurs="1">
               </xs:element>
               <xs:element name="minExecutionTimePerRequest" type="xs:double" minOccurs="1">
               </xs:element>
