@@ -15,10 +15,10 @@
  */
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.List;
+import java.util.Map;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -33,7 +33,6 @@ public class CloudCredentials extends OwnedObject {
 
     public static String ACCESS_KEY_NAME = "accessKeyId";
     public static String SECRET_KEY_NAME = "secretKey";
-
     private String secretKey;
 
     private String accessKeyId;
@@ -43,6 +42,8 @@ public class CloudCredentials extends OwnedObject {
     private List<KeyPair> keyPairs;
 
     private String cloudProviderName;
+
+    private Map<String, Object> attributes;
 
     /**
      * It is the secret key / password for accessing a cloud provider.
@@ -76,7 +77,7 @@ public class CloudCredentials extends OwnedObject {
     }
 
     /**
-     * The access key ID for a cloud provider.
+     * The access key ID / user name for a cloud provider.
      *
      * @return the accessKeyId
      */
@@ -121,5 +122,19 @@ public class CloudCredentials extends OwnedObject {
      */
     public void setKeyPairs(List<KeyPair> keyPairs) {
         this.keyPairs = keyPairs;
+    }
+
+    /**
+     * @return the attributes
+     */
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * @param attributes the attributes to set
+     */
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
     }
 }

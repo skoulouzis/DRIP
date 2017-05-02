@@ -19,7 +19,9 @@ import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -146,8 +148,39 @@ public class PlannerController {
         List<PlanResponse> all = plannerService.findAll();
         List<String> ids = new ArrayList<>();
         for (PlanResponse tr : all) {
-            ids.add(tr.getId());
+            if (tr.getLevel() == 0) {
+                ids.add(tr.getId());
+            }
         }
         return ids;
     }
+
+    @RequestMapping(value = "/post/{name}", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String postTop(@RequestBody String toscaContents, @PathVariable("name") String name) {
+        return plannerService.saveStringContents(toscaContents, 0, name);
+    }
+
+    @RequestMapping(value = "/post/{level}/{name}/{id}", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String postLow(@RequestBody String toscaContents, @PathVariable("level") String level, @PathVariable("name") String name, @PathVariable("id") String id) {
+        int intLevel = Integer.valueOf(level);
+        if (intLevel == 0) {
+            return plannerService.saveStringContents(toscaContents, 0, name);
+        }
+
+        PlanResponse topPlan = plannerService.findOne(id);
+        Set<String> lowIDs = topPlan.getLoweLevelPlanIDs();
+        if (lowIDs == null) {
+            lowIDs = new HashSet<>();
+        }
+        String lowPlanID = plannerService.saveStringContents(toscaContents, intLevel, name);
+        lowIDs.add(lowPlanID);
+        topPlan.setLoweLevelPlansIDs(lowIDs);
+        topPlan = plannerService.save(topPlan);
+        return topPlan.getId();
+    }
+
 }

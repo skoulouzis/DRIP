@@ -105,6 +105,7 @@ public class CloudCredentialsController {
      * @param file
      * @param id
      * @return the CloudCredentials id
+     * @throws java.lang.Exception
      */
     @RequestMapping(value = "/upload/{id}", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -208,14 +209,16 @@ public class CloudCredentialsController {
     public @ResponseBody
     CloudCredentials geta() {
         CloudCredentials cloudCredentials = new CloudCredentials();
-        cloudCredentials.setTimestamp(System.currentTimeMillis());
-        cloudCredentials.setAccessKeyId("AKIAITY3KHZUQ6M7YBSQ");
+        cloudCredentials.setAccessKeyId("AKIAITWERHZUQ6M7YBSQ");
         cloudCredentials.setCloudProviderName("ec2");
-        cloudCredentials.setSecretKey("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");
+        cloudCredentials.setSecretKey("6J7uo99ifrff45sa6Gsy5vgb3b3ewdsdtwY6hBxtYt9y");
         List<String> keyIDs = new ArrayList<>();
         keyIDs.add("58da4c91f7b43a3282cacdbb");
         keyIDs.add("58da4d2af7b43a3282cacdbd");
         cloudCredentials.setKeyIDs(keyIDs);
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("myProxyEndpoint", "myproxy1.egee.host.com");
+        cloudCredentials.setAttributes(attributes);
         return cloudCredentials;
     }
 

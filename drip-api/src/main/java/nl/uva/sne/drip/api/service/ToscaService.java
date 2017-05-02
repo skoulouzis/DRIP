@@ -54,16 +54,16 @@ public class ToscaService {
 
         if (fromat != null && fromat.equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);
-            ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+            ymlStr = ymlStr.replaceAll("\\uff0E", ".");
             return ymlStr;
         }
         if (fromat != null && fromat.equals("json")) {
             String jsonStr = Converter.map2JsonString(map);
-            jsonStr = jsonStr.replaceAll("\\uff0E", "\\.");
+            jsonStr = jsonStr.replaceAll("\\uff0E", ".");
             return jsonStr;
         }
         String ymlStr = Converter.map2YmlString(map);
-        ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+        ymlStr = ymlStr.replaceAll("\\uff0E", ".");
         return ymlStr;
     }
 

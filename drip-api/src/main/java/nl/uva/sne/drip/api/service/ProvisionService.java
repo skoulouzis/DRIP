@@ -19,12 +19,10 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -231,20 +229,7 @@ public class ProvisionService {
     }
 
     private List<MessageParameter> buildTopologyParams(String planID) throws JSONException, FileNotFoundException {
-        PlanResponse plan = new PlanResponse(); //planService.getDao().findOne(planID);
-        plan.setLevel(0);
-        plan.setKvMap(
-                Converter.ymlStream2Map(
-                        new FileInputStream(
-                                System.getProperty("user.home") + "/workspace/DRIPProvisioningAgent/ES/standard2/zh_all_test.yml")
-                )
-        );
-        plan.setName("zh_all_test.yml");
-        plan.setTimestamp(System.currentTimeMillis());
-        Set<String> loweLevelPlansIDs = new HashSet<>();
-        loweLevelPlansIDs.add("ec2_zh_a.yml");
-        loweLevelPlansIDs.add("ec2_zh_b.yml");
-        plan.setLoweLevelPlansIDs(loweLevelPlansIDs);
+        PlanResponse plan = planService.getDao().findOne(planID);
 
         if (plan == null) {
             throw new PlanNotFoundException();
@@ -252,7 +237,9 @@ public class ProvisionService {
         List<MessageParameter> parameters = new ArrayList();
         MessageParameter topology = new MessageParameter();
         topology.setName("topology");
-        topology.setValue(Converter.map2YmlString(plan.getKeyValue()));
+        String val = Converter.map2YmlString(plan.getKeyValue());
+        val = val.replaceAll("\\uff0E", ".");
+        topology.setValue(val);
         Map<String, String> attributes = new HashMap<>();
         attributes.put("level", String.valueOf(plan.getLevel()));
         attributes.put("filename", FilenameUtils.removeExtension(plan.getName()));
@@ -261,19 +248,12 @@ public class ProvisionService {
 
         Set<String> ids = plan.getLoweLevelPlanIDs();
         for (String lowID : ids) {
-            PlanResponse lowPlan = new PlanResponse(); //planService.getDao().findOne(lowID);
-            lowPlan.setLevel(1);
-            lowPlan.setName(lowID);
-            lowPlan.setKvMap(Converter.ymlStream2Map(
-                    new FileInputStream(
-                            System.getProperty("user.home") + "/workspace/DRIPProvisioningAgent/ES/standard2/" + lowID)
-            )
-            );
-            lowPlan.setTimestamp(System.currentTimeMillis());
-
+            PlanResponse lowPlan = planService.getDao().findOne(lowID);
             topology = new MessageParameter();
             topology.setName("topology");
-            topology.setValue(Converter.map2YmlString(lowPlan.getKeyValue()));
+            String value = Converter.map2YmlString(lowPlan.getKeyValue());
+            value = value.replaceAll("\\uff0E", ".");
+            topology.setValue(value);
             attributes = new HashMap<>();
             attributes.put("level", String.valueOf(lowPlan.getLevel()));
             attributes.put("filename", FilenameUtils.removeExtension(lowPlan.getName()));

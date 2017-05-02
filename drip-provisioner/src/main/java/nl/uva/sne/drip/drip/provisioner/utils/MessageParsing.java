@@ -73,7 +73,9 @@ public class MessageParsing {
                 if (fileLevel == level) {
                     String originalFilename = (String) attributes.get("filename");
                     String fileName = originalFilename;
-
+                    if (!fileName.endsWith(".yml")) {
+                        fileName += ".yml";
+                    }
                     File topologyFile = new File(tempInputDirPath + File.separator + fileName);
                     topologyFile.createNewFile();
                     String val = (String) param.get("value");

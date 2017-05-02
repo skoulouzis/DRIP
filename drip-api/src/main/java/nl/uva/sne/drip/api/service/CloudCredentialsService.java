@@ -42,6 +42,7 @@ public class CloudCredentialsService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         cloudCredentials.setOwner(owner);
+        cloudCredentials.setTimestamp(System.currentTimeMillis());
         return dao.save(cloudCredentials);
     }
 

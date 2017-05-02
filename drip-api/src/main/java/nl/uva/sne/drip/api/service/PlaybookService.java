@@ -54,17 +54,17 @@ public class PlaybookService {
 
         if (fromat != null && fromat.toLowerCase().equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);
-            ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+            ymlStr = ymlStr.replaceAll("\\uff0E", ".");
             ymlStr = ymlStr.replaceAll("\'---':", "---");
             return ymlStr;
         }
         if (fromat != null && fromat.toLowerCase().equals("json")) {
             String jsonStr = Converter.map2JsonString(map);
-            jsonStr = jsonStr.replaceAll("\\uff0E", "\\.");
+            jsonStr = jsonStr.replaceAll("\\uff0E", ".");
             return jsonStr;
         }
         String ymlStr = Converter.map2YmlString(map);
-        ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+        ymlStr = ymlStr.replaceAll("\\uff0E", ".");
         ymlStr = ymlStr.replaceAll("\'---':", "---");
 
         return ymlStr;

@@ -164,10 +164,10 @@ public class Consumer extends DefaultConsumer {
             String topTopologyLoadingPath = mainTopologyFile.getAbsolutePath();
 
             List<File> topologyFiles = MessageParsing.getTopologies(parameters, tempInputDirPath, 1);
-            for (File lowLevelTopologyFile : topologyFiles) {
-                File secondaryTopologyFile = new File(tempInputDirPath + File.separator + lowLevelTopologyFile.getName() + ".yml");
-                FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
-            }
+//            for (File lowLevelTopologyFile : topologyFiles) {
+//                File secondaryTopologyFile = new File(tempInputDirPath + File.separator + lowLevelTopologyFile.getName() + ".yml");
+//                FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
+//            }
 
             Map<String, Object> map = MessageParsing.ymlStream2Map(new FileInputStream(topTopologyLoadingPath));
             String userPublicKeyName = ((String) map.get("publicKeyPath")).split("@")[1].replaceAll("\"", "");
@@ -342,7 +342,7 @@ public class Consumer extends DefaultConsumer {
             response.setParameters(responseParameters);
 
             return response;
-        }  catch (Throwable ex) {
+        } catch (Throwable ex) {
             if (tam != null) {
                 tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
             }
