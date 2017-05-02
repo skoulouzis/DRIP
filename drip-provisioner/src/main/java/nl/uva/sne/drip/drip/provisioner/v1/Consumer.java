@@ -343,9 +343,9 @@ public class Consumer extends DefaultConsumer {
 
             return response;
         } finally {
-            if (tam != null) {
-                tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
-            }
+//            if (tam != null) {
+//                tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
+//            }
         }
     }
 
