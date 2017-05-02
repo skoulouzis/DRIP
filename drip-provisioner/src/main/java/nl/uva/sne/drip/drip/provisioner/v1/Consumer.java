@@ -342,10 +342,11 @@ public class Consumer extends DefaultConsumer {
             response.setParameters(responseParameters);
 
             return response;
-        } finally {
-//            if (tam != null) {
-//                tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
-//            }
+        }  catch (Throwable ex) {
+            if (tam != null) {
+                tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
+            }
+            throw ex;
         }
     }
 
