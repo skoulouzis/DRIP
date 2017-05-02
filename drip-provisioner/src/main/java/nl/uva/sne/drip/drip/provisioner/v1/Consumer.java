@@ -372,14 +372,13 @@ public class Consumer extends DefaultConsumer {
 
         File topologyFile = MessageParsing.getTopologies(parameters, tempInputDirPath, 0).get(0);
         File mainTopologyFile = new File(tempInputDirPath + "topology_main.yml");
-        FileUtils.moveFile(topologyFile, mainTopologyFile);
         String topTopologyLoadingPath = mainTopologyFile.getAbsolutePath();
 
         List<File> topologyFiles = MessageParsing.getTopologies(parameters, tempInputDirPath, 1);
-        for (File lowLevelTopologyFile : topologyFiles) {
-            File secondaryTopologyFile = new File(tempInputDirPath + File.separator + lowLevelTopologyFile.getName() + ".yml");
-            FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
-        }
+//        for (File lowLevelTopologyFile : topologyFiles) {
+//            File secondaryTopologyFile = new File(tempInputDirPath + File.separator + lowLevelTopologyFile.getName() + ".yml");
+//            FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
+//        }
 
         File clusterDir = new File(tempInputDirPath + File.separator + "clusterKeyPair");
         clusterDir.mkdir();
