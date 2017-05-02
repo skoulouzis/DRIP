@@ -36,6 +36,7 @@ import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -149,5 +150,4 @@ public class PlannerController {
         }
         return ids;
     }
-
 }

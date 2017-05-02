@@ -89,11 +89,11 @@ public class ProvisionController {
         if (provPlan != null) {
             try {
                 provisionService.deleteProvisionedResources(provPlan);
+                ProvisionResponse provisionInfo = provisionService.delete(id);
+                return "Deleted : " + id;
             } catch (IOException | TimeoutException | InterruptedException | JSONException ex) {
                 Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            ProvisionResponse provisionInfo = provisionService.delete(id);
-            return "Deleted : " + id;
         }
         throw new NotFoundException();
     }

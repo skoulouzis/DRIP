@@ -57,16 +57,6 @@ import provisioning.credential.EGICredential;
  */
 public class MessageParsing {
 
-    public static File getClusterKeysPair(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-        for (int i = 0; i < parameters.length(); i++) {
-            JSONObject param = (JSONObject) parameters.get(i);
-            MessageParameter messageParam = mapper.readValue(param.toString(), MessageParameter.class);
-        }
-        return null;
-    }
-
     enum SOURCE {
         MY_PROXY,
         CERTIFICATE
@@ -110,17 +100,36 @@ public class MessageParsing {
 
     public static List<File> getSSHKeys(JSONArray parameters, String tempInputDirPath, String filename, String varName) throws JSONException, IOException {
         List<File> sshKeys = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get("name");
+
+            MessageParameter messageParam = mapper.readValue(param.toString(), MessageParameter.class);
+            String name = messageParam.getName();
+            String value = messageParam.getValue();
+
             if (name.equals(varName)) {
-                String sshKeyContent = (String) param.get("value");
-                File sshKeyFile = new File(tempInputDirPath + File.separator + filename);
+                File sshKeyFile = null;
+                if (messageParam.getAttributes() != null) {
+                    if (messageParam.getAttributes().get("name") != null) {
+                        filename = messageParam.getAttributes().get("name");
+                    }
+                    if (messageParam.getAttributes().get("key_pair_id") != null) {
+                        File tempInputDir = new File(tempInputDirPath + File.separator + messageParam.getAttributes().get("key_pair_id"));
+                        tempInputDir.mkdir();
+                        sshKeyFile = new File(tempInputDir.getAbsolutePath() + File.separator + filename);
+                    }
+                }
+                if (sshKeyFile == null) {
+                    sshKeyFile = new File(tempInputDirPath + File.separator + filename);
+                }
                 if (sshKeyFile.exists()) {
                     sshKeyFile = new File(tempInputDirPath + File.separator + i + "_" + filename);
                 }
                 if (sshKeyFile.createNewFile()) {
-                    MessageParsing.writeValueToFile(sshKeyContent, sshKeyFile);
+                    MessageParsing.writeValueToFile(value, sshKeyFile);
                     sshKeys.add(sshKeyFile);
                 }
             }

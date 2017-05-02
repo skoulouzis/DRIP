@@ -27,9 +27,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +42,7 @@ import nl.uva.sne.drip.drip.provisioner.utils.MessageParsing;
 import nl.uva.sne.drip.drip.provisioner.utils.PropertyValues;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.globus.myproxy.MyProxyException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -185,20 +186,7 @@ public class Consumer extends DefaultConsumer {
                 throw new Exception("sth wrong!");
             }
 
-            List<Credential> credentials = MessageParsing.getCloudCredentials(parameters, tempInputDirPath);
-            for (Credential cred : credentials) {
-                ////Initial credentials and ssh key pairs
-                if (userCredential.cloudAccess == null) {
-                    userCredential.cloudAccess = new HashMap<>();
-                }
-                if (cred instanceof EC2Credential) {
-                    userCredential.cloudAccess.put("ec2", cred);
-                }
-                if (cred instanceof EGICredential) {
-                    userCredential.cloudAccess.put("egi", cred);
-                }
-            }
-
+            userCredential = getUserCredential(parameters, tempInputDirPath);
             ArrayList<SSHKeyPair> sshKeyPairs = userCredential.
                     loadSSHKeyPairFromFile(tempInputDirPath);
             if (sshKeyPairs == null) {
@@ -210,17 +198,7 @@ public class Consumer extends DefaultConsumer {
                 throw new IOException("ssh key pair initilaziation error");
             }
 
-            ///Initial Database
-            EGIDatabase egiDatabase = new EGIDatabase();
-            egiDatabase.loadDomainInfoFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "EGI_Domain_Info");
-            EC2Database ec2Database = new EC2Database();
-            ec2Database.loadDomainFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "domains");
-            ec2Database.loadAmiFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "OS_Domain_AMI");
-            if (userDatabase.databases == null) {
-                userDatabase.databases = new HashMap<>();
-            }
-            userDatabase.databases.put("ec2", ec2Database);
-//        userDatabase.databases.put("egi", egiDatabase);
+            userDatabase = getUserDB();
 
             /*ProvisionRequest pq = new ProvisionRequest();
 		pq.topologyName = "ec2_zh_b";
@@ -269,6 +247,7 @@ public class Consumer extends DefaultConsumer {
                     responseParameters.add(param);
                 }
             }
+
             param = new MessageParameter();
             param.setEncoding(charset);
             param.setName("public_user_key");
@@ -285,7 +264,7 @@ public class Consumer extends DefaultConsumer {
             bytes = Files.readAllBytes(Paths.get(tempInputDirPath + File.separator + userPrivateName));
             param.setValue(new String(bytes, charset));
             attributes = new HashMap<>();
-            attributes.put("name", userPublicKeyName);
+            attributes.put("name", userPrivateName);
 //            attributes.put("username",  sub.userName);
             param.setAttributes(attributes);
             responseParameters.add(param);
@@ -389,8 +368,6 @@ public class Consumer extends DefaultConsumer {
     private Message killTopology(JSONArray parameters, String tempInputDirPath) throws Exception {
         TEngine tEngine = new TEngine();
         TopologyAnalysisMain tam = null;
-        UserCredential userCredential = new UserCredential();
-        UserDatabase userDatabase = new UserDatabase();
 
         File topologyFile = MessageParsing.getTopologies(parameters, tempInputDirPath, 0).get(0);
         File mainTopologyFile = new File(tempInputDirPath + "topology_main.yml");
@@ -402,20 +379,89 @@ public class Consumer extends DefaultConsumer {
             File secondaryTopologyFile = new File(tempInputDirPath + File.separator + lowLevelTopologyFile.getName() + ".yml");
             FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
         }
-        
-          File clusterKeyPair = MessageParsing.getClusterKeysPair(parameters, tempInputDirPath);
-          
+
+        File clusterDir = new File(tempInputDirPath + File.separator + "clusterKeyPair");
+        clusterDir.mkdir();
+        List<File> public_deployer_key = MessageParsing.getSSHKeys(parameters, clusterDir.getAbsolutePath(), "id_rsa.pub", "public_deployer_key");
+        List<File> private_deployer_key = MessageParsing.getSSHKeys(parameters, clusterDir.getAbsolutePath(), "id_rsa", "private_deployer_key");
+
+        Map<String, Object> map = MessageParsing.ymlStream2Map(new FileInputStream(topTopologyLoadingPath));
+        String userPublicKeyName = ((String) map.get("publicKeyPath")).split("@")[1].replaceAll("\"", "");
+        String userPrivateName = FilenameUtils.removeExtension(userPublicKeyName);
+
+        List<File> public_user_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, userPublicKeyName, "public_user_key");
+        List<File> private_user_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "id_rsa", "private_user_key");
+        FileUtils.moveFile(private_user_key.get(0), new File(private_user_key.get(0).getParent() + File.separator + userPrivateName));
+
+        List<File> public_cloud_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "name.pub", "public_cloud_key");
+        List<File> private_cloud_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "id_rsa", "private_cloud_key");
+
+        UserCredential userCredential = getUserCredential(parameters, tempInputDirPath);
+        UserDatabase userDatabase = getUserDB();
 
         tam = new TopologyAnalysisMain(topTopologyLoadingPath);
         if (!tam.fullLoadWholeTopology()) {
             throw new Exception("sth wrong!");
         }
 
-      
-
-        tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
+        ArrayList<SSHKeyPair> sshKeyPairs = userCredential.
+                loadSSHKeyPairFromFile(tempInputDirPath);
+        if (sshKeyPairs == null) {
+            throw new NullPointerException("ssh key pairs are null");
+        }
+        if (sshKeyPairs.isEmpty()) {
+            throw new IOException("No ssh key pair is loaded!");
+        } else if (!userCredential.initial(sshKeyPairs, tam.wholeTopology)) {
+            throw new IOException("ssh key pair initilaziation error");
+        }
         Message response = new Message();
+        try {
+            tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
+        } catch (Throwable ex) {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+            return mapper.readValue(generateExeptionResponse(ex), Message.class);
+        }
+        MessageParameter param = new MessageParameter();
+        param.setName("topology_killed");
+        param.setValue("true");
+        List<MessageParameter> messageParameters = new ArrayList<>();
+        messageParameters.add(param);
+        response.setParameters(messageParameters);
+        response.setCreationDate(System.currentTimeMillis());
         return response;
     }
 
+    private UserDatabase getUserDB() {
+        UserDatabase userDatabase = new UserDatabase();
+        EGIDatabase egiDatabase = new EGIDatabase();
+        egiDatabase.loadDomainInfoFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "EGI_Domain_Info");
+        EC2Database ec2Database = new EC2Database();
+        ec2Database.loadDomainFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "domains");
+        ec2Database.loadAmiFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "OS_Domain_AMI");
+        if (userDatabase.databases == null) {
+            userDatabase.databases = new HashMap<>();
+        }
+        userDatabase.databases.put("ec2", ec2Database);
+        userDatabase.databases.put("egi", egiDatabase);
+        return userDatabase;
+    }
+
+    private UserCredential getUserCredential(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException, FileNotFoundException, MyProxyException, CertificateEncodingException {
+        UserCredential userCredential = new UserCredential();
+        List<Credential> credentials = MessageParsing.getCloudCredentials(parameters, tempInputDirPath);
+        for (Credential cred : credentials) {
+            ////Initial credentials and ssh key pairs
+            if (userCredential.cloudAccess == null) {
+                userCredential.cloudAccess = new HashMap<>();
+            }
+            if (cred instanceof EC2Credential) {
+                userCredential.cloudAccess.put("ec2", cred);
+            }
+            if (cred instanceof EGICredential) {
+                userCredential.cloudAccess.put("egi", cred);
+            }
+        }
+        return userCredential;
+    }
 }

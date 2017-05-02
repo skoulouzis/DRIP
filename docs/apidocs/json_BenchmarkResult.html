@@ -82,6 +82,33 @@
         </thead>
         <tbody>
         <tr>
+          <td>  <span class="property-name">vmType</span>
+</td>
+          <td>  <span class="datatype-reference">string
+</span>
+</td>
+          <td>  <span class="property-description"></span>
+</td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">delta</span>
+</td>
+          <td>  <span class="datatype-reference">string
+</span>
+</td>
+          <td>  <span class="property-description"></span>
+</td>
+        </tr>
+        <tr>
+          <td>  <span class="property-name">end</span>
+</td>
+          <td>  <span class="datatype-reference">string
+</span>
+</td>
+          <td>  <span class="property-description"></span>
+</td>
+        </tr>
+        <tr>
           <td>  <span class="property-name">start</span>
 </td>
           <td>  <span class="datatype-reference">string
@@ -100,34 +127,7 @@
 </td>
         </tr>
         <tr>
-          <td>  <span class="property-name">end</span>
-</td>
-          <td>  <span class="datatype-reference">string
-</span>
-</td>
-          <td>  <span class="property-description"></span>
-</td>
-        </tr>
-        <tr>
           <td>  <span class="property-name">host</span>
-</td>
-          <td>  <span class="datatype-reference">string
-</span>
-</td>
-          <td>  <span class="property-description"></span>
-</td>
-        </tr>
-        <tr>
-          <td>  <span class="property-name">delta</span>
-</td>
-          <td>  <span class="datatype-reference">string
-</span>
-</td>
-          <td>  <span class="property-description"></span>
-</td>
-        </tr>
-        <tr>
-          <td>  <span class="property-name">vmType</span>
 </td>
           <td>  <span class="datatype-reference">string
 </span>
@@ -141,12 +141,6 @@
         </tr>
         <tbody>
         <tr>
-          <td><span class="property-name">timestamp</span></td>
-          <td><span class="datatype-reference">number
-</span></td>
-          <td><span class="property-description"></span></td>
-        </tr>
-        <tr>
           <td><span class="property-name">owner</span></td>
           <td><span class="datatype-reference">string
 </span></td>
@@ -158,21 +152,27 @@
 </span></td>
           <td><span class="property-description"></span></td>
         </tr>
+        <tr>
+          <td><span class="property-name">timestamp</span></td>
+          <td><span class="datatype-reference">number
+</span></td>
+          <td><span class="property-description"></span></td>
+        </tr>
         </tbody>
       </table>
 
       <p class="lead">Example</p>
       
       <pre class="prettyprint language-js example">{
+  &quot;vmType&quot; : &quot;...&quot;,
+  &quot;delta&quot; : &quot;...&quot;,
+  &quot;end&quot; : &quot;...&quot;,
   &quot;start&quot; : &quot;...&quot;,
   &quot;cloudDeploymentDomain&quot; : &quot;...&quot;,
-  &quot;end&quot; : &quot;...&quot;,
   &quot;host&quot; : &quot;...&quot;,
-  &quot;delta&quot; : &quot;...&quot;,
-  &quot;vmType&quot; : &quot;...&quot;,
-  &quot;timestamp&quot; : 12345,
   &quot;owner&quot; : &quot;user1&quot;,
-  &quot;id&quot; : &quot;58e3946e0fb4f562d84ba1ad&quot;
+  &quot;id&quot; : &quot;58e3946e0fb4f562d84ba1ad&quot;,
+  &quot;timestamp&quot; : 12345
 }</pre>
 
         <footer class="footer">

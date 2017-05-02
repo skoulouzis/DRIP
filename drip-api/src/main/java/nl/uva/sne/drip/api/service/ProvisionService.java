@@ -315,17 +315,23 @@ public class ProvisionService {
             param.setName("private_deployer_key");
             param.setValue(pair.getPrivateKey().getKey());
             HashMap<String, String> attributes = new HashMap<>();
-            attributes.putAll(pair.getPrivateKey().getAttributes());
+            if (pair.getPrivateKey() != null && pair.getPrivateKey().getAttributes() != null) {
+                attributes.putAll(pair.getPrivateKey().getAttributes());
+            }
             attributes.put("name", pair.getPrivateKey().getName());
             param.setAttributes(attributes);
+            parameters.add(param);
 
             param = new MessageParameter();
             param.setName("public_deployer_key");
             param.setValue(pair.getPublicKey().getKey());
             attributes = new HashMap<>();
-            attributes.putAll(pair.getPrivateKey().getAttributes());
-            attributes.put("name", pair.getPublicKey().getName());
+            if (pair.getPublicKey() != null && pair.getPublicKey().getAttributes() != null) {
+                attributes.putAll(pair.getPublicKey().getAttributes());
+            }
             param.setAttributes(attributes);
+            attributes.put("name", pair.getPublicKey().getName());
+            parameters.add(param);
         }
 
         return parameters;
@@ -341,17 +347,22 @@ public class ProvisionService {
             param.setName("private_user_key");
             param.setValue(pair.getPrivateKey().getKey());
             HashMap<String, String> attributes = new HashMap<>();
-            attributes.putAll(pair.getPrivateKey().getAttributes());
+            if (pair.getPrivateKey().getAttributes() != null) {
+                attributes.putAll(pair.getPrivateKey().getAttributes());
+            }
             attributes.put("name", pair.getPrivateKey().getName());
             param.setAttributes(attributes);
+            parameters.add(param);
 
             param = new MessageParameter();
             param.setName("public_user_key");
             param.setValue(pair.getPublicKey().getKey());
-            attributes = new HashMap<>();
-            attributes.putAll(pair.getPrivateKey().getAttributes());
+            if (pair.getPublicKey().getAttributes() != null) {
+                attributes.putAll(pair.getPublicKey().getAttributes());
+            }
             attributes.put("name", pair.getPublicKey().getName());
             param.setAttributes(attributes);
+            parameters.add(param);
         }
         return parameters;
     }
@@ -359,27 +370,32 @@ public class ProvisionService {
     private List<MessageParameter> buildCloudKeyParams(ProvisionResponse provisionInfo) {
         List<MessageParameter> parameters = new ArrayList();
         List<String> ids = provisionInfo.getCloudKeyPairIDs();
-        for (String id : ids) {
-            KeyPair pair = keyPairService.findOne(id);
+        if (ids != null) {
+            for (String id : ids) {
+                KeyPair pair = keyPairService.findOne(id);
 
-            MessageParameter param = new MessageParameter();
-            param.setName("private_cloud_key");
-            param.setValue(pair.getPrivateKey().getKey());
-            HashMap<String, String> attributes = new HashMap<>();
-            attributes.putAll(pair.getPrivateKey().getAttributes());
-            attributes.put("name", pair.getPrivateKey().getName());
-            attributes.put("key_pair_id", pair.getKeyPairId());
-            param.setAttributes(attributes);
+                MessageParameter param = new MessageParameter();
+                param.setName("private_cloud_key");
+                param.setValue(pair.getPrivateKey().getKey());
+                HashMap<String, String> attributes = new HashMap<>();
+                attributes.putAll(pair.getPrivateKey().getAttributes());
+                attributes.put("name", pair.getPrivateKey().getName());
+                attributes.put("key_pair_id", pair.getKeyPairId());
+                param.setAttributes(attributes);
+                parameters.add(param);
 
-            param = new MessageParameter();
-            param.setName("public_cloud_key");
-            param.setValue(pair.getPublicKey().getKey());
-            attributes = new HashMap<>();
-            attributes.putAll(pair.getPrivateKey().getAttributes());
-            attributes.put("name", pair.getPublicKey().getName());
-            attributes.put("key_pair_id", pair.getKeyPairId());
-            param.setAttributes(attributes);
+                param = new MessageParameter();
+                param.setName("public_cloud_key");
+                param.setValue(pair.getPublicKey().getKey());
+                attributes = new HashMap<>();
+                attributes.putAll(pair.getPrivateKey().getAttributes());
+                attributes.put("name", pair.getPublicKey().getName());
+                attributes.put("key_pair_id", pair.getKeyPairId());
+                param.setAttributes(attributes);
+                parameters.add(param);
+            }
         }
+
         return parameters;
 
     }
@@ -511,7 +527,7 @@ public class ProvisionService {
 
     }
 
-    private Message buildDeleteMessage(ProvisionResponse provisionInfo) throws JSONException {
+    private Message buildDeleteMessage(ProvisionResponse provisionInfo) throws JSONException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
 
@@ -531,6 +547,15 @@ public class ProvisionService {
 
         List<MessageParameter> cloudKeys = buildCloudKeyParams(provisionInfo);
         parameters.addAll(cloudKeys);
+
+        for (String id : provisionInfo.getCloudCredentialsIDs()) {
+            CloudCredentials cred = cloudCredentialsService.findOne(id);
+            if (cred == null) {
+                throw new CloudCredentialsNotFoundException();
+            }
+            List<MessageParameter> cloudCredentialParams = buildCloudCredentialParam(cred, 1);
+            parameters.addAll(cloudCredentialParams);
+        }
 
         invokationMessage.setParameters(parameters);
         invokationMessage.setCreationDate(System.currentTimeMillis());
@@ -691,7 +716,9 @@ public class ProvisionService {
     }
 
     private void parseDeleteResourcesResponse(List<MessageParameter> parameters, ProvisionResponse provisionInfo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (MessageParameter p : parameters) {
+            System.err.println(p.getName() + " : " + p.getValue());
+        }
     }
 
 }
