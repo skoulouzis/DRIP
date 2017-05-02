@@ -295,10 +295,14 @@ public class Consumer extends DefaultConsumer {
                     param = new MessageParameter();
                     param.setEncoding(charset);
                     param.setName("public_cloud_key");
-                    bytes = Files.readAllBytes(Paths.get(d.getAbsolutePath() + File.separator + "name.pub"));
+                    File publicKey = new File(d.getAbsolutePath() + File.separator + "name.pub");
+                    if (!publicKey.exists()) {
+                        publicKey = new File(d.getAbsolutePath() + File.separator + "id_rsa.pub");
+                    }
+                    bytes = Files.readAllBytes(Paths.get(publicKey.getAbsolutePath()));
                     param.setValue(new String(bytes, charset));
                     attributes = new HashMap<>();
-                    attributes.put("name", "name.pub");
+                    attributes.put("name", publicKey.getName());
                     attributes.put("key_pair_id", d.getName());
                     param.setAttributes(attributes);
                     responseParameters.add(param);
@@ -347,6 +351,10 @@ public class Consumer extends DefaultConsumer {
                 tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
             }
             throw ex;
+        } finally {
+//            if (tam != null) {
+//                tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
+//            }
         }
     }
 

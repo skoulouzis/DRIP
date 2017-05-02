@@ -38,6 +38,7 @@ import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.io.FilenameUtils;
 import org.globus.gsi.X509Credential;
 import org.globus.gsi.gssapi.GlobusGSSCredentialImpl;
 import org.globus.myproxy.MyProxy;
@@ -149,14 +150,17 @@ public class MessageParsing {
         List<Credential> credentials = new ArrayList<>();
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
-            String name = (String) param.get("name");
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+            MessageParameter messageParam = mapper.readValue(param.toString(), MessageParameter.class);
+            String name = messageParam.getName();
+            String value = messageParam.getValue();
+
             if (name.equals("cloud_credential")) {
                 Credential credential = null;
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-                String credentialString = (String) param.get("value");
-                credentialString = credentialString.substring(1, credentialString.length() - 1);
-                CloudCredentials cred = mapper.readValue(credentialString, CloudCredentials.class);
+
+                value = value.substring(1, value.length() - 1);
+                CloudCredentials cred = mapper.readValue(value, CloudCredentials.class);
                 if (cred.getCloudProviderName().toLowerCase().equals("ec2")) {
                     EC2Credential ec2 = new EC2Credential();
                     ec2.accessKey = cred.getAccessKeyId();
@@ -165,16 +169,29 @@ public class MessageParsing {
                 }
                 if (cred.getCloudProviderName().toLowerCase().equals("egi")) {
                     EGICredential egi = new EGICredential();
-                    if (PropertyValues.MY_PROXY_ENDPOINT != null || PropertyValues.MY_PROXY_ENDPOINT.length() > 2) {
-                        egi.proxyFilePath = generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.MY_PROXY);
+                    Map<String, Object> att = cred.getAttributes();
+                    String trustedCertificatesURL = null;
+                    if (att != null && att.containsKey("trustedCertificatesURL")) {
+                        trustedCertificatesURL = (String) att.get("trustedCertificatesURL");
+                    }
+//                    if (trustedCertificatesURL != null) {
+//                        downloadCACertificates(new URL(trustedCertificatesURL));
+//                    } else {
+//                        downloadCACertificates(PropertyValues.CA_BUNDLE_URL);
+//                    }
+                    String myProxyEndpoint = null;
+                    if (att != null && att.containsKey("myProxyEndpoint")) {
+                        myProxyEndpoint = (String) att.get("myProxyEndpoint");
+                    }
+                    if (myProxyEndpoint == null && PropertyValues.MY_PROXY_ENDPOINT != null) {
+                        myProxyEndpoint = PropertyValues.MY_PROXY_ENDPOINT;
+                    }
+                    if (myProxyEndpoint != null) {
+                        egi.proxyFilePath = "/tmp/x509up_u0";//generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.MY_PROXY);
                     } else {
                         egi.proxyFilePath = generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.CERTIFICATE);
                     }
-//                    else if (){
-//                        
-//                    }
-//                   
-                    downloadCACertificates();
+
                     egi.trustedCertPath = PropertyValues.TRUSTED_CERTIFICATE_FOLDER;
                     credential = egi;
                 }
@@ -202,7 +219,9 @@ public class MessageParsing {
 
     private static String generateProxy(String accessKeyId, String secretKey, SOURCE source) throws MyProxyException, IOException, CertificateEncodingException {
         if (source.equals(SOURCE.MY_PROXY)) {
+
             MyProxy myProxy = new MyProxy(PropertyValues.MY_PROXY_ENDPOINT, 7512);
+            myProxy.writeTrustRoots(PropertyValues.TRUSTED_CERTIFICATE_FOLDER);
             GSSCredential cert = myProxy.get(accessKeyId, secretKey, 2 * 3600);
             X509Credential gCred = ((GlobusGSSCredentialImpl) cert).getX509Credential();
             gCred.save(new FileOutputStream("/tmp/x509up_u0"));
@@ -211,14 +230,23 @@ public class MessageParsing {
         return "/tmp/x509up_u0";
     }
 
-    private static void downloadCACertificates() throws MalformedURLException, IOException {
-        File bundle = new File(PropertyValues.CA_BUNDLE_URL.getFile());
+    private static void downloadCACertificates(URL url) throws MalformedURLException, IOException {
+
+        String fileName = FilenameUtils.getBaseName(url.getFile());
+        File bundle = new File(PropertyValues.TRUSTED_CERTIFICATE_FOLDER + File.separator + fileName);
+        if (!bundle.getParentFile().exists()) {
+            if (!bundle.getParentFile().mkdirs()) {
+                throw new IOException(bundle + " could not be created");
+            }
+        }
+
 //        Path path = Paths.get(bundle.getAbsolutePath());
 //        BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
         if (!bundle.exists()) {
-            URL website = new URL(PropertyValues.CA_BUNDLE_URL.toString());
+            URL website = new URL(url.toString());
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream(PropertyValues.CA_BUNDLE_URL.getFile());
+
+            FileOutputStream fos = new FileOutputStream(bundle);
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
             untar(new File(PropertyValues.TRUSTED_CERTIFICATE_FOLDER), bundle);
         }
