@@ -42,8 +42,7 @@ public class PropertyValues {
                 "provisioner_queue_v1");
         PropertyValues.TRUSTED_CERTIFICATE_FOLDER = prop.getProperty("trusted.certificates.folder", "/etc/grid-security/certificates");
         CA_BUNDLE_URL = new URL(prop.getProperty("ca.bundle.url",
-                "https://dist.eugridpma.info/distribution/igtf/current/accredited/"
-                + "igtf-preinstalled-bundle-classic.tar.gz"));
+                "https://dist.eugridpma.info/distribution/igtf/current/accredited/igtf-preinstalled-bundle-classic.tar.gz"));
 
         MY_PROXY_ENDPOINT = prop.getProperty("my.proxy.endpoint",
                 "myproxy1.egee.cesnet.cz");

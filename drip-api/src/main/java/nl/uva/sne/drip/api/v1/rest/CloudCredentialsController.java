@@ -207,17 +207,18 @@ public class CloudCredentialsController {
     @RequestMapping(value = "/sample", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    CloudCredentials geta() {
+    CloudCredentials getSample() {
         CloudCredentials cloudCredentials = new CloudCredentials();
         cloudCredentials.setAccessKeyId("AKIAITWERHZUQ6M7YBSQ");
-        cloudCredentials.setCloudProviderName("ec2");
+        cloudCredentials.setCloudProviderName("egi");
         cloudCredentials.setSecretKey("6J7uo99ifrff45sa6Gsy5vgb3b3ewdsdtwY6hBxtYt9y");
         List<String> keyIDs = new ArrayList<>();
         keyIDs.add("58da4c91f7b43a3282cacdbb");
         keyIDs.add("58da4d2af7b43a3282cacdbd");
         cloudCredentials.setKeyIDs(keyIDs);
         Map<String, Object> attributes = new HashMap<>();
-        attributes.put("myProxyEndpoint", "myproxy1.egee.host.com");
+        attributes.put("myProxyEndpoint", "myproxy.egee.host.com");
+        attributes.put("trustedCertificatesURL", "https://dist.eugridpma.info/distribution/igtf/current/accredited/igtf-preinstalled-bundle-classic.tar.gz");
         cloudCredentials.setAttributes(attributes);
         return cloudCredentials;
     }

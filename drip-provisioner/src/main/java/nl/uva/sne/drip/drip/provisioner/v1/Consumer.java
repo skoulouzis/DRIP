@@ -376,7 +376,7 @@ public class Consumer extends DefaultConsumer {
 
     private Message killTopology(JSONArray parameters, String tempInputDirPath) throws Exception {
         TEngine tEngine = new TEngine();
-        TopologyAnalysisMain tam = null;
+        TopologyAnalysisMain tam;
 
         File topologyFile = MessageParsing.getTopologies(parameters, tempInputDirPath, 0).get(0);
         File mainTopologyFile = new File(tempInputDirPath + "topology_main.yml");
