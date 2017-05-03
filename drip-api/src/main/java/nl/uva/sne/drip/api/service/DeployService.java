@@ -88,6 +88,9 @@ public class DeployService {
     @Autowired
     private BenchmarkResultService benchmarkResultService;
 
+    private static final String[] CLOUD_SITE_NAMES = new String[]{"nodeType", "VMResourceID"};
+    private static final String[] PUBLIC_ADRESS_NAMES = new String[]{"public_address", "publicAddress"};
+
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public DeployResponse findOne(String id) {
         DeployResponse creds = deployDao.findOne(id);
@@ -258,34 +261,57 @@ public class DeployService {
                 });
 
                 List<String> outputListIds = new ArrayList<>();
-                Map<String, String> nodeTypeCahche = new HashMap<>();
-                Map<String, String> domainCahche = new HashMap<>();
+                Map<String, String> nodeTypeCache = new HashMap<>();
+                Map<String, String> domainCache = new HashMap<>();
+                Map<String, String> osTypeCache = new HashMap<>();
+//                Map<String, String> cloudProviderCache = new HashMap<>();
 
                 for (AnsibleOutput ansOut : outputList) {
                     Map<String, Object> map = provisionService.findOne(deployInfo.getProvisionID()).getKeyValue();
-                    String nodeType = nodeTypeCahche.get(ansOut.getHost());
-                    String domain = domainCahche.get(ansOut.getHost());
+                    String nodeType = nodeTypeCache.get(ansOut.getHost());
+                    String domain = domainCache.get(ansOut.getHost());
+                    String os = osTypeCache.get(ansOut.getHost());
                     if (nodeType == null) {
-                        List<Map<String, Object>> components;
+                        List<Map<String, Object>> components = null;
+                        List<Map<String, Object>> topologies = null;
                         if (map.containsKey("components")) {
                             components = (List<Map<String, Object>>) map.get("components");
+//                            topologies = (List<Map<String, Object>>) map.get("topologies");
                         } else {
                             for (String key : map.keySet()) {
-                                Object contents = map.get(key);
-                                System.err.println(contents.getClass().getName());
+                                Map<String, Object> subMap = (Map<String, Object>) map.get(key);
+                                if (subMap.containsKey("components") && components == null) {
+                                    components = (List<Map<String, Object>>) subMap.get("components");
+                                }
+                                if (subMap.containsKey("topologies") && topologies == null) {
+                                    topologies = (List<Map<String, Object>>) subMap.get("topologies");
+                                }
+                                if (components != null && topologies != null) {
+                                    break;
+                                }
                             }
                         }
 
                         for (Map<String, Object> component : components) {
-                            String publicAddress = (String) component.get("public_address");
-                            if (publicAddress.equals(ansOut.getHost())) {
+                            String publicAddress = null;
+                            for (String addressName : PUBLIC_ADRESS_NAMES) {
+                                if (component.containsKey(addressName)) {
+                                    publicAddress = (String) component.get(addressName);
+                                    break;
+                                }
+                            }
+                            if (publicAddress != null && publicAddress.equals(ansOut.getHost())) {
                                 nodeType = (String) component.get("nodeType");
-
-                                domain = (String) component.get("domain");
-
-                                nodeTypeCahche.put(ansOut.getHost(), nodeType);
-                                domainCahche.put(ansOut.getHost(), domain);
-//                            ansOut.setCloudProviderName("");
+                                for (String siteName : CLOUD_SITE_NAMES) {
+                                    if (component.containsKey(siteName)) {
+                                        domain = (String) component.get(siteName);
+                                        break;
+                                    }
+                                }
+                                os = (String) component.get("OStype");
+                                nodeTypeCache.put(ansOut.getHost(), nodeType);
+                                domainCache.put(ansOut.getHost(), domain);
+                                osTypeCache.put(ansOut.getHost(), os);
                                 break;
                             }
                         }
@@ -293,6 +319,7 @@ public class DeployService {
                     ansOut.setVmType(nodeType);
                     ansOut.setCloudDeploymentDomain(domain);
                     ansOut.setProvisionID(deployInfo.getProvisionID());
+                    ansOut.setCloudProviderName(os);
                     ansOut = ansibleOutputService.save(ansOut);
                     BenchmarkResult benchmarkResult = parseSaveBenchmarkResult(ansOut);
 

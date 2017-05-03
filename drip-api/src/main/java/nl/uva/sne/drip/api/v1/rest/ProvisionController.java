@@ -72,6 +72,10 @@ public class ProvisionController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     ProvisionResponse get(@PathVariable("id") String id) {
+        ProvisionResponse pro = provisionService.findOne(id);
+        if (pro == null) {
+            throw new NotFoundException();
+        }
         return provisionService.findOne(id);
     }
 

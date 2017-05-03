@@ -52,6 +52,10 @@ public class AnsibleOutput extends OwnedObject {
     @JsonProperty("provisionID")
     private String provisionID;
 
+    @Indexed
+    @JsonProperty("cloudProvider")
+    private String cloudProvider;
+
     @JsonProperty("host")
     public String getHost() {
         return host;
@@ -100,5 +104,23 @@ public class AnsibleOutput extends OwnedObject {
     @JsonProperty("provisionID")
     public String getProvisionID() {
         return provisionID;
+    }
+
+    public void setCloudProviderName(String cloudProvider) {
+        this.setCloudProvider(cloudProvider);
+    }
+
+    /**
+     * @return the cloudProvider
+     */
+    public String getCloudProvider() {
+        return cloudProvider;
+    }
+
+    /**
+     * @param cloudProvider the cloudProvider to set
+     */
+    public void setCloudProvider(String cloudProvider) {
+        this.cloudProvider = cloudProvider;
     }
 }
