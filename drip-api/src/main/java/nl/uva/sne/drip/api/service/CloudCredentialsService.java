@@ -18,8 +18,8 @@ package nl.uva.sne.drip.api.service;
 import java.util.List;
 import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.data.v1.external.CloudCredentials;
-import nl.uva.sne.drip.data.v1.external.User;
+import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
+import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
@@ -42,6 +42,7 @@ public class CloudCredentialsService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         cloudCredentials.setOwner(owner);
+        cloudCredentials.setTimestamp(System.currentTimeMillis());
         return dao.save(cloudCredentials);
     }
 

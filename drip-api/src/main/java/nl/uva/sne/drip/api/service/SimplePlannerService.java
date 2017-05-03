@@ -29,10 +29,10 @@ import java.util.concurrent.TimeoutException;
 import nl.uva.sne.drip.api.dao.PlanDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
-import nl.uva.sne.drip.data.internal.Message;
-import nl.uva.sne.drip.data.internal.MessageParameter;
-import nl.uva.sne.drip.data.v1.external.PlanResponse;
-import nl.uva.sne.drip.data.v1.external.ToscaRepresentation;
+import nl.uva.sne.drip.drip.commons.data.internal.Message;
+import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
+import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +105,7 @@ public class SimplePlannerService {
         }
         Map<String, Object> map = t2.getKeyValue();
         String ymlStr = Converter.map2YmlString(map);
-        ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+        ymlStr = ymlStr.replaceAll("\\uff0E", ".");
         byte[] bytes = ymlStr.getBytes();
 
         Message invokationMessage = new Message();
@@ -145,16 +145,16 @@ public class SimplePlannerService {
 
         if (fromat != null && fromat.equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);
-            ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+            ymlStr = ymlStr.replaceAll("\\uff0E", ".");
             return ymlStr;
         }
         if (fromat != null && fromat.equals("json")) {
             String jsonStr = Converter.map2JsonString(map);
-            jsonStr = jsonStr.replaceAll("\\uff0E", "\\.");
+            jsonStr = jsonStr.replaceAll("\\uff0E", ".");
             return jsonStr;
         }
         String ymlStr = Converter.map2YmlString(map);
-        ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+        ymlStr = ymlStr.replaceAll("\\uff0E", ".");
         return ymlStr;
     }
 

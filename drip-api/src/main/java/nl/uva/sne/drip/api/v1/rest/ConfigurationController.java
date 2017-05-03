@@ -17,7 +17,7 @@ package nl.uva.sne.drip.api.v1.rest;
 
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
-import nl.uva.sne.drip.data.v1.external.PlaybookRepresentation;
+import nl.uva.sne.drip.drip.commons.data.v1.external.PlaybookRepresentation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

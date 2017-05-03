@@ -21,9 +21,9 @@ import java.util.Map;
 import nl.uva.sne.drip.api.dao.ToscaDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.utils.Constants;
-import nl.uva.sne.drip.data.v1.external.ToscaRepresentation;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
-import nl.uva.sne.drip.data.v1.external.User;
+import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -54,16 +54,16 @@ public class ToscaService {
 
         if (fromat != null && fromat.equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);
-            ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+            ymlStr = ymlStr.replaceAll("\\uff0E", ".");
             return ymlStr;
         }
         if (fromat != null && fromat.equals("json")) {
             String jsonStr = Converter.map2JsonString(map);
-            jsonStr = jsonStr.replaceAll("\\uff0E", "\\.");
+            jsonStr = jsonStr.replaceAll("\\uff0E", ".");
             return jsonStr;
         }
         String ymlStr = Converter.map2YmlString(map);
-        ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+        ymlStr = ymlStr.replaceAll("\\uff0E", ".");
         return ymlStr;
     }
 

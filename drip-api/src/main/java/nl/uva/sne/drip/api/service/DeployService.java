@@ -18,7 +18,6 @@ package nl.uva.sne.drip.api.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,15 +31,15 @@ import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.DeployerCaller;
 import nl.uva.sne.drip.api.v1.rest.DeployController;
-import nl.uva.sne.drip.data.v1.external.CloudCredentials;
-import nl.uva.sne.drip.data.v1.external.DeployRequest;
-import nl.uva.sne.drip.data.v1.external.DeployParameter;
-import nl.uva.sne.drip.data.v1.external.DeployResponse;
-import nl.uva.sne.drip.data.v1.external.Key;
-import nl.uva.sne.drip.data.internal.Message;
-import nl.uva.sne.drip.data.internal.MessageParameter;
-import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
-import nl.uva.sne.drip.data.v1.external.User;
+import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
+import nl.uva.sne.drip.drip.commons.data.v1.external.DeployRequest;
+import nl.uva.sne.drip.drip.commons.data.v1.external.DeployParameter;
+import nl.uva.sne.drip.drip.commons.data.v1.external.DeployResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
+import nl.uva.sne.drip.drip.commons.data.internal.Message;
+import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,12 +50,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.exception.KeyException;
-import nl.uva.sne.drip.commons.utils.MessageGenerator;
-import nl.uva.sne.drip.data.v1.external.KeyPair;
-import nl.uva.sne.drip.data.v1.external.ansible.AnsibleOutput;
-import nl.uva.sne.drip.data.v1.external.ansible.AnsibleResult;
-import nl.uva.sne.drip.data.v1.external.ansible.BenchmarkResult;
-import nl.uva.sne.drip.data.v1.external.ansible.SysbenchCPUBenchmark;
+import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleOutput;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleResult;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.BenchmarkResult;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.SysbenchCPUBenchmark;
 
 /**
  *
@@ -90,6 +88,9 @@ public class DeployService {
     @Autowired
     private BenchmarkResultService benchmarkResultService;
 
+    private static final String[] CLOUD_SITE_NAMES = new String[]{"nodeType", "VMResourceID"};
+    private static final String[] PUBLIC_ADRESS_NAMES = new String[]{"public_address", "publicAddress"};
+
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public DeployResponse findOne(String id) {
         DeployResponse creds = deployDao.findOne(id);
@@ -121,7 +122,7 @@ public class DeployService {
         return deployDao.save(clusterCred);
     }
 
-    public DeployResponse deploySoftware(DeployRequest deployInfo) {
+    public DeployResponse deploySoftware(DeployRequest deployInfo) throws Exception {
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             Message deployerInvokationMessage = buildDeployerMessage(
                     deployInfo.getProvisionID(),
@@ -154,9 +155,13 @@ public class DeployService {
         if (pro == null) {
             throw new NotFoundException();
         }
-        List<String> cloudConfIDs = pro.getCloudCredentialsIDs();
-        CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfIDs.get(0));
-        List<String> loginKeysIDs = cCred.getkeyPairIDs();
+        List<String> loginKeysIDs = pro.getDeployerKeyPairIDs();
+        if (loginKeysIDs == null || loginKeysIDs.isEmpty()) {
+            List<String> cloudConfIDs = pro.getCloudCredentialsIDs();
+            CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfIDs.get(0));
+            loginKeysIDs = cCred.getkeyPairIDs();
+        }
+
         List<KeyPair> loginKeys = new ArrayList<>();
         for (String keyID : loginKeysIDs) {
             KeyPair key = keyDao.findOne(keyID);
@@ -191,17 +196,17 @@ public class DeployService {
     }
 
     private MessageParameter createCredentialPartameter(DeployParameter dp, List<KeyPair> loginKeys) {
-        String cName = dp.getCloudCertificateName();
+//        String cName = dp.getCloudCertificateName();
         MessageParameter messageParameter = new MessageParameter();
         messageParameter.setName("credential");
         messageParameter.setEncoding("UTF-8");
         String key = null;
         for (KeyPair lk : loginKeys) {
-            String lkName = lk.getPrivateKey().getAttributes().get("domain_name");
-            if (lkName.equals(cName)) {
-                key = lk.getPrivateKey().getKey();
-                break;
-            }
+//            String lkName = lk.getPrivateKey().getAttributes().get("domain_name");
+//            if (lkName.equals(cName)) {
+            key = lk.getPrivateKey().getKey();
+//                break;
+//            }
         }
         messageParameter.setValue(key);
         Map<String, String> attributes = new HashMap<>();
@@ -229,7 +234,7 @@ public class DeployService {
         return ansibleParameter;
     }
 
-    private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException {
+    private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException, Exception {
         DeployResponse deployResponse = new DeployResponse();
         deployResponse.setTimestamp(System.currentTimeMillis());
 
@@ -256,25 +261,57 @@ public class DeployService {
                 });
 
                 List<String> outputListIds = new ArrayList<>();
-                Map<String, String> nodeTypeCahche = new HashMap<>();
-                Map<String, String> domainCahche = new HashMap<>();
+                Map<String, String> nodeTypeCache = new HashMap<>();
+                Map<String, String> domainCache = new HashMap<>();
+                Map<String, String> osTypeCache = new HashMap<>();
+//                Map<String, String> cloudProviderCache = new HashMap<>();
 
                 for (AnsibleOutput ansOut : outputList) {
                     Map<String, Object> map = provisionService.findOne(deployInfo.getProvisionID()).getKeyValue();
-                    String nodeType = nodeTypeCahche.get(ansOut.getHost());
-                    String domain = domainCahche.get(ansOut.getHost());
+                    String nodeType = nodeTypeCache.get(ansOut.getHost());
+                    String domain = domainCache.get(ansOut.getHost());
+                    String os = osTypeCache.get(ansOut.getHost());
                     if (nodeType == null) {
-                        List<Map<String, Object>> components = (List<Map<String, Object>>) map.get("components");
+                        List<Map<String, Object>> components = null;
+                        List<Map<String, Object>> topologies = null;
+                        if (map.containsKey("components")) {
+                            components = (List<Map<String, Object>>) map.get("components");
+//                            topologies = (List<Map<String, Object>>) map.get("topologies");
+                        } else {
+                            for (String key : map.keySet()) {
+                                Map<String, Object> subMap = (Map<String, Object>) map.get(key);
+                                if (subMap.containsKey("components") && components == null) {
+                                    components = (List<Map<String, Object>>) subMap.get("components");
+                                }
+                                if (subMap.containsKey("topologies") && topologies == null) {
+                                    topologies = (List<Map<String, Object>>) subMap.get("topologies");
+                                }
+                                if (components != null && topologies != null) {
+                                    break;
+                                }
+                            }
+                        }
+
                         for (Map<String, Object> component : components) {
-                            String publicAddress = (String) component.get("public_address");
-                            if (publicAddress.equals(ansOut.getHost())) {
+                            String publicAddress = null;
+                            for (String addressName : PUBLIC_ADRESS_NAMES) {
+                                if (component.containsKey(addressName)) {
+                                    publicAddress = (String) component.get(addressName);
+                                    break;
+                                }
+                            }
+                            if (publicAddress != null && publicAddress.equals(ansOut.getHost())) {
                                 nodeType = (String) component.get("nodeType");
-
-                                domain = (String) component.get("domain");
-
-                                nodeTypeCahche.put(ansOut.getHost(), nodeType);
-                                domainCahche.put(ansOut.getHost(), domain);
-//                            ansOut.setCloudProviderName("");
+                                for (String siteName : CLOUD_SITE_NAMES) {
+                                    if (component.containsKey(siteName)) {
+                                        domain = (String) component.get(siteName);
+                                        break;
+                                    }
+                                }
+                                os = (String) component.get("OStype");
+                                nodeTypeCache.put(ansOut.getHost(), nodeType);
+                                domainCache.put(ansOut.getHost(), domain);
+                                osTypeCache.put(ansOut.getHost(), os);
                                 break;
                             }
                         }
@@ -282,6 +319,7 @@ public class DeployService {
                     ansOut.setVmType(nodeType);
                     ansOut.setCloudDeploymentDomain(domain);
                     ansOut.setProvisionID(deployInfo.getProvisionID());
+                    ansOut.setCloudProviderName(os);
                     ansOut = ansibleOutputService.save(ansOut);
                     BenchmarkResult benchmarkResult = parseSaveBenchmarkResult(ansOut);
 

@@ -19,14 +19,17 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.DefaultConsumer;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.text.MessageFormat;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.drip.provisioner.utils.PropertyValues;
 
 /**
  *
@@ -34,10 +37,7 @@ import java.util.logging.Logger;
  */
 public class RPCServer {
 
-    private static final String RPC_QUEUE_NAME = "provisioner_queue";
-    private static String HOST = "127.0.0.1";
-
-    public static void main(String[] argv) {
+    public static void main(String[] argv) throws MalformedURLException {
         Properties prop = new Properties();
         if (argv.length >= 1) {
             try {
@@ -54,26 +54,31 @@ public class RPCServer {
                 Logger.getLogger(RPCServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        HOST = prop.getProperty("rabbitmq.host", "127.0.0.1");
-        Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, MessageFormat.format("rabbitmq.host: {0}", HOST));
+        PropertyValues.setPropertyValues(prop);
+
         start();
     }
 
     private static void start() {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(HOST);
+        factory.setHost(PropertyValues.HOST);
         factory.setPassword("guest");
         factory.setUsername("guest");
         factory.setPort(AMQP.PROTOCOL.PORT);
-        Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, "Connected to: {0}", HOST);
+        Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, "Connected to: {0}", PropertyValues.HOST);
         try (Connection connection = factory.newConnection()) {
             Channel channel = connection.createChannel();
             //We define the queue name 
-            channel.queueDeclare(RPC_QUEUE_NAME, false, false, false, null);
-            //Set our own customized consummer 
-            Consumer c = new Consumer(channel);
+            channel.queueDeclare(PropertyValues.RPC_QUEUE_NAME, false, false, false, null);
+            DefaultConsumer c;
+            if (PropertyValues.RPC_QUEUE_NAME.endsWith("v0")) {
+                c = new nl.uva.sne.drip.drip.provisioner.v0.Consumer(channel);
+            } else {
+                c = new nl.uva.sne.drip.drip.provisioner.v1.Consumer(channel);
+            }
+
             //Start listening for messages 
-            channel.basicConsume(RPC_QUEUE_NAME, false, c);
+            channel.basicConsume(PropertyValues.RPC_QUEUE_NAME, false, c);
 
             //Block so we don't close the channel
             while (true) {

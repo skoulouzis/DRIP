@@ -17,7 +17,7 @@ package nl.uva.sne.drip.api.v1.rest;
 
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
-import nl.uva.sne.drip.data.v1.external.ProvisionRequest;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.service.ProvisionService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionResponse;
 import org.json.JSONException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -72,6 +72,10 @@ public class ProvisionController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     ProvisionResponse get(@PathVariable("id") String id) {
+        ProvisionResponse pro = provisionService.findOne(id);
+        if (pro == null) {
+            throw new NotFoundException();
+        }
         return provisionService.findOne(id);
     }
 
@@ -85,10 +89,15 @@ public class ProvisionController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        ProvisionRequest provPlan = provisionService.findOne(id);
+        ProvisionResponse provPlan = provisionService.findOne(id);
         if (provPlan != null) {
-            provisionService.delete(id);
-            return "Deleted : " + id;
+            try {
+                provisionService.deleteProvisionedResources(provPlan);
+                ProvisionResponse provisionInfo = provisionService.delete(id);
+                return "Deleted : " + id;
+            } catch (IOException | TimeoutException | InterruptedException | JSONException ex) {
+                Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         throw new NotFoundException();
     }
@@ -99,7 +108,6 @@ public class ProvisionController {
     String deleteAll() {
         provisionService.deleteAll();
         return "Done";
-
     }
 
     /**
@@ -137,11 +145,13 @@ public class ProvisionController {
             throw new BadRequestException();
         }
         try {
-            req = provisionService.provisionResources(req);
+            req = provisionService.provisionResources(req, 1);
 
             return req.getId();
 
         } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {
+            Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -158,7 +168,7 @@ public class ProvisionController {
         req.setCloudCredentialsIDs(cloudCredentialsIDs);
         List<String> keyPairIDs = new ArrayList<>();
         keyPairIDs.add("58f8da042af45d6621813c4e");
-        req.setKeyPairIDs(keyPairIDs);
+        req.setUserKeyPairIDs(keyPairIDs);
         req.setPlanID("58da51f7f7b42e7d967752a1");
         return req;
     }

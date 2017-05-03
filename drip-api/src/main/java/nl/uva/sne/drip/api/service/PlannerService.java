@@ -29,12 +29,13 @@ import nl.uva.sne.drip.api.dao.PlanDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
-import nl.uva.sne.drip.data.internal.Message;
-import nl.uva.sne.drip.data.internal.MessageParameter;
-import nl.uva.sne.drip.data.v1.external.PlanResponse;
-import nl.uva.sne.drip.data.v1.external.ToscaRepresentation;
+import nl.uva.sne.drip.commons.utils.Constants;
+import nl.uva.sne.drip.drip.commons.data.internal.Message;
+import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
+import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
-import nl.uva.sne.drip.data.v1.external.User;
+import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import nl.uva.sne.drip.drip.converter.P2PConverter;
 import nl.uva.sne.drip.drip.converter.SimplePlanContainer;
 import org.json.JSONException;
@@ -63,7 +64,7 @@ public class PlannerService {
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-    public PlanResponse getPlan(String toscaId) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
+    public PlanResponse getPlan(String toscaId, String clusterType) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
 
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);
@@ -84,7 +85,7 @@ public class PlannerService {
             }
             jsonArrayString.append("]");
 
-            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", "swarm");
+            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", clusterType);
             PlanResponse topLevel = new PlanResponse();
             topLevel.setTimestamp(System.currentTimeMillis());
             topLevel.setLevel(0);
@@ -117,7 +118,7 @@ public class PlannerService {
         }
         Map<String, Object> map = t2.getKeyValue();
         String json = Converter.map2JsonString(map);
-        json = json.replaceAll("\\uff0E", "\\.");
+        json = json.replaceAll("\\uff0E", ".");
         byte[] bytes = json.getBytes();
 
         Message invokationMessage = new Message();
@@ -143,24 +144,25 @@ public class PlannerService {
         Map<String, Object> map = plan.getKeyValue();
         Set<String> ids = plan.getLoweLevelPlanIDs();
         for (String lowID : ids) {
-            Map<String, Object> lowLevelMap = findOne(lowID).getKeyValue();
+            PlanResponse ll = findOne(lowID);
+            Map<String, Object> lowLevelMap = ll.getKeyValue();
             if (lowLevelMap != null) {
-                map.putAll(lowLevelMap);
+                map.put(ll.getName(), lowLevelMap);
             }
         }
 
         if (fromat != null && fromat.equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);
-            ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+            ymlStr = ymlStr.replaceAll("\\uff0E", ".");
             return ymlStr;
         }
         if (fromat != null && fromat.equals("json")) {
             String jsonStr = Converter.map2JsonString(map);
-            jsonStr = jsonStr.replaceAll("\\uff0E", "\\.");
+            jsonStr = jsonStr.replaceAll("\\uff0E", ".");
             return jsonStr;
         }
         String ymlStr = Converter.map2YmlString(map);
-        ymlStr = ymlStr.replaceAll("\\uff0E", "\\.");
+        ymlStr = ymlStr.replaceAll("\\uff0E", ".");
         return ymlStr;
     }
 
@@ -188,12 +190,11 @@ public class PlannerService {
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public PlanResponse findOne(String lowiID) {
-        PlanResponse plan = planDao.findOne(lowiID);
+    public PlanResponse findOne(String id) {
+        PlanResponse plan = planDao.findOne(id);
         if (plan == null) {
             throw new NotFoundException();
         }
-
         return plan;
     }
 
@@ -203,6 +204,12 @@ public class PlannerService {
         if (plan == null) {
             throw new NotFoundException();
         }
+        Set<String> lowIds = plan.getLoweLevelPlanIDs();
+        if (lowIds != null) {
+            for (String lId : lowIds) {
+                planDao.delete(lId);
+            }
+        }
         planDao.delete(plan);
         return plan;
     }
@@ -210,6 +217,40 @@ public class PlannerService {
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")
     public void deleteAll() {
         planDao.deleteAll();
+    }
+
+    public String saveStringContents(String ymlContents, Integer level, String name) {
+        //Remove '\' and 'n' if they are together and replace them with '\n'
+        char[] array = ymlContents.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        int prevChar = -1;
+        for (int i = 0; i < array.length; i++) {
+            int currentChar = (int) array[i];
+            if (prevChar > 0 && prevChar == 92 && currentChar == 110) {
+                sb.delete(sb.length() - 1, sb.length());
+                sb.append('\n');
+
+            } else {
+                sb.append((char) currentChar);
+            }
+            prevChar = (int) array[i];
+        }
+        ymlContents = sb.toString();
+        ymlContents = ymlContents.replaceAll("(?m)^[ \t]*\r?\n", "");
+        for (int i = 0; i < Constants.BAD_CHARS.length; i++) {
+            int hex = Constants.BAD_CHARS[i];
+            ymlContents = ymlContents.replaceAll(String.valueOf((char) hex), "");
+        }
+
+        ymlContents = ymlContents.replaceAll("\\.", "\uff0E");
+//        ymlContents = ymlContents.replaceAll("\uff0E", ".");
+        Map<String, Object> map = Converter.ymlString2Map(ymlContents);
+        PlanResponse pr = new PlanResponse();
+        pr.setKvMap(map);
+        pr.setLevel(level);
+        pr.setName(name);
+        save(pr);
+        return pr.getId();
     }
 
 }

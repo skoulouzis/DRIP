@@ -15,7 +15,7 @@
  */
 package nl.uva.sne.drip.api.dao;
 
-import nl.uva.sne.drip.data.v1.external.PlaybookRepresentation;
+import nl.uva.sne.drip.drip.commons.data.v1.external.PlaybookRepresentation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**

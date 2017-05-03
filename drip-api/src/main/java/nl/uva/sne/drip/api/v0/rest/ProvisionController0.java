@@ -16,7 +16,7 @@
 package nl.uva.sne.drip.api.v0.rest;
 
 import java.io.IOException;
-import nl.uva.sne.drip.data.v1.external.ProvisionRequest;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionRequest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,13 +39,13 @@ import nl.uva.sne.drip.api.service.ProvisionService;
 import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.ScriptService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v0.external.Execute;
-import nl.uva.sne.drip.data.v0.external.Attribute;
-import nl.uva.sne.drip.data.v0.external.Result;
-import nl.uva.sne.drip.data.v0.external.Upload;
-import nl.uva.sne.drip.data.v1.external.CloudCredentials;
-import nl.uva.sne.drip.data.v1.external.KeyPair;
-import nl.uva.sne.drip.data.v1.external.ProvisionResponse;
+import nl.uva.sne.drip.drip.commons.data.v0.external.Execute;
+import nl.uva.sne.drip.drip.commons.data.v0.external.Attribute;
+import nl.uva.sne.drip.drip.commons.data.v0.external.Result;
+import nl.uva.sne.drip.drip.commons.data.v0.external.Upload;
+import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
+import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionResponse;
 import org.json.JSONException;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -90,12 +90,12 @@ public class ProvisionController0 {
         List<String> idList = new ArrayList<>();
         idList.add(cloudCredID);
         resp.setCloudCredentialsIDs(idList);
-        List<nl.uva.sne.drip.data.v0.external.Attribute> plans = upload.file;
-        nl.uva.sne.drip.data.v1.external.PlanResponse topLevelPlan = null;
+        List<nl.uva.sne.drip.drip.commons.data.v0.external.Attribute> plans = upload.file;
+        nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse topLevelPlan = null;
         Set<String> loweLevelPlansIDs = new HashSet<>();
 
-        for (nl.uva.sne.drip.data.v0.external.Attribute p : plans) {
-            nl.uva.sne.drip.data.v1.external.PlanResponse plan1 = Converter.File2Plan1(p);
+        for (nl.uva.sne.drip.drip.commons.data.v0.external.Attribute p : plans) {
+            nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse plan1 = Converter.File2Plan1(p);
             if (plan1.getLevel() == 0) {
                 topLevelPlan = plan1;
             } else {
@@ -114,7 +114,7 @@ public class ProvisionController0 {
                 String userKeyID = keyPair.getId();
                 keyPairIDs.add(userKeyID);
             }
-            resp.setKeyPairIDs(keyPairIDs);
+            resp.setUserKeyPairIDs(keyPairIDs);
         }
         resp = provisionService.save(resp);
         return "Success: Infrastructure files are uploaded! Action number: "
@@ -128,7 +128,7 @@ public class ProvisionController0 {
 
         try {
             ProvisionRequest req = provisionService.findOne(exc.action);
-            req = provisionService.provisionResources(req);
+            req = provisionService.provisionResources(req,0);
             Map<String, Object> map = req.getKeyValue();
             String yaml = Converter.map2YmlString(map);
             yaml = yaml.replaceAll("\n", "\\\\n");
@@ -145,6 +145,8 @@ public class ProvisionController0 {
             res.file = files;
             return res;
         } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {
+            Logger.getLogger(ProvisionController0.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(ProvisionController0.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;

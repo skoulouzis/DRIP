@@ -16,7 +16,7 @@
 package nl.uva.sne.drip.api.auth;
 
 import java.io.Serializable;
-import nl.uva.sne.drip.data.v1.external.User;
+import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 

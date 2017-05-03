@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.core.MediaType;
-import nl.uva.sne.drip.data.v1.external.CloudCredentials;
+import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,8 +40,8 @@ import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v1.external.Key;
-import nl.uva.sne.drip.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
+import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -105,11 +105,12 @@ public class CloudCredentialsController {
      * @param file
      * @param id
      * @return the CloudCredentials id
+     * @throws java.lang.Exception
      */
     @RequestMapping(value = "/upload/{id}", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String addLogineKey(@RequestParam("file") MultipartFile file, @PathVariable("id") String id) {
+    String addLogineKey(@RequestParam("file") MultipartFile file, @PathVariable("id") String id) throws Exception {
         try {
 
             CloudCredentials cloudCredentials = cloudCredentialsService.findOne(id);
@@ -206,16 +207,19 @@ public class CloudCredentialsController {
     @RequestMapping(value = "/sample", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    CloudCredentials geta() {
+    CloudCredentials getSample() {
         CloudCredentials cloudCredentials = new CloudCredentials();
-        cloudCredentials.setTimestamp(System.currentTimeMillis());
-        cloudCredentials.setAccessKeyId("AKIAITY3KHZUQ6M7YBSQ");
-        cloudCredentials.setCloudProviderName("ec2");
-        cloudCredentials.setSecretKey("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");
+        cloudCredentials.setAccessKeyId("AKIAITWERHZUQ6M7YBSQ");
+        cloudCredentials.setCloudProviderName("egi");
+        cloudCredentials.setSecretKey("6J7uo99ifrff45sa6Gsy5vgb3b3ewdsdtwY6hBxtYt9y");
         List<String> keyIDs = new ArrayList<>();
         keyIDs.add("58da4c91f7b43a3282cacdbb");
         keyIDs.add("58da4d2af7b43a3282cacdbd");
         cloudCredentials.setKeyIDs(keyIDs);
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("myProxyEndpoint", "myproxy.egee.host.com");
+        attributes.put("trustedCertificatesURL", "https://dist.eugridpma.info/distribution/igtf/current/accredited/igtf-preinstalled-bundle-classic.tar.gz");
+        cloudCredentials.setAttributes(attributes);
         return cloudCredentials;
     }
 

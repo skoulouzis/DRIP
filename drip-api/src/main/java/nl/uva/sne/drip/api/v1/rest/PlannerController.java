@@ -19,7 +19,9 @@ import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,8 +36,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.data.v1.external.PlanResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -51,7 +54,7 @@ import org.springframework.web.bind.annotation.RequestParam;
     @ResponseCode(code = 401, condition = "Bad credentials")
 })
 public class PlannerController {
-    
+
     @Autowired
     private PlannerService plannerService;
 
@@ -67,7 +70,7 @@ public class PlannerController {
     String plan(@PathVariable("tosca_id") String toscaId) {
 
         try {
-            PlanResponse plan = plannerService.getPlan(toscaId);
+            PlanResponse plan = plannerService.getPlan(toscaId, "swarm");
             if (plan == null) {
                 throw new NotFoundException("Could not make plan");
             }
@@ -145,9 +148,39 @@ public class PlannerController {
         List<PlanResponse> all = plannerService.findAll();
         List<String> ids = new ArrayList<>();
         for (PlanResponse tr : all) {
-            ids.add(tr.getId());
+            if (tr.getLevel() == 0) {
+                ids.add(tr.getId());
+            }
         }
         return ids;
+    }
+
+    @RequestMapping(value = "/post/{name}", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String postTop(@RequestBody String toscaContents, @PathVariable("name") String name) {
+        return plannerService.saveStringContents(toscaContents, 0, name);
+    }
+
+    @RequestMapping(value = "/post/{level}/{name}/{id}", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String postLow(@RequestBody String toscaContents, @PathVariable("level") String level, @PathVariable("name") String name, @PathVariable("id") String id) {
+        int intLevel = Integer.valueOf(level);
+        if (intLevel == 0) {
+            return plannerService.saveStringContents(toscaContents, 0, name);
+        }
+
+        PlanResponse topPlan = plannerService.findOne(id);
+        Set<String> lowIDs = topPlan.getLoweLevelPlanIDs();
+        if (lowIDs == null) {
+            lowIDs = new HashSet<>();
+        }
+        String lowPlanID = plannerService.saveStringContents(toscaContents, intLevel, name);
+        lowIDs.add(lowPlanID);
+        topPlan.setLoweLevelPlansIDs(lowIDs);
+        topPlan = plannerService.save(topPlan);
+        return topPlan.getId();
     }
 
 }
