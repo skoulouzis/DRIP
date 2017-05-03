@@ -88,7 +88,7 @@ public class DeployService {
     @Autowired
     private BenchmarkResultService benchmarkResultService;
 
-    private static final String[] CLOUD_SITE_NAMES = new String[]{"nodeType", "VMResourceID"};
+    private static final String[] CLOUD_SITE_NAMES = new String[]{"domain", "VMResourceID"};
     private static final String[] PUBLIC_ADRESS_NAMES = new String[]{"public_address", "publicAddress"};
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")

@@ -239,7 +239,7 @@ public class MessageParsing {
     public static void pipeStream(InputStream input, OutputStream output)
             throws IOException {
         byte buffer[] = new byte[1024];
-        int numRead = 0;
+        int numRead;
 
         do {
             numRead = input.read(buffer);
