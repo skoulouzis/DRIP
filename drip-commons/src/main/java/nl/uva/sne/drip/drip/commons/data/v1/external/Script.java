@@ -15,8 +15,8 @@
  */
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.webcohesion.enunciate.metadata.DocumentationExample;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -25,6 +25,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Script extends OwnedObject {
 
     private String contents;

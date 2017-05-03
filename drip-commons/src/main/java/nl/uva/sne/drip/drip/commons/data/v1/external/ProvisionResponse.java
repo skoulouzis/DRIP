@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import java.util.List;
  *
  * @author S. Koulouzis
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProvisionResponse extends ProvisionRequest {
 
     private List<DeployParameter> deployParameters;

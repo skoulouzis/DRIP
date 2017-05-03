@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -26,6 +27,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @Document
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProvisionRequest extends KeyValueHolder {
 
     private List<String> cloudCredentialsIDs;

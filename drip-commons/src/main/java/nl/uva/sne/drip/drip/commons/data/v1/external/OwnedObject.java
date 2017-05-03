@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.webcohesion.enunciate.metadata.DocumentationExample;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
@@ -27,6 +28,7 @@ import org.springframework.data.annotation.Id;
  * @author S. Koulouzis
  */
 @MappedSuperclass
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OwnedObject {
 
     @Id
