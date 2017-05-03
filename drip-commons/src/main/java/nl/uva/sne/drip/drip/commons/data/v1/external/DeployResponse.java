@@ -17,7 +17,6 @@ package nl.uva.sne.drip.drip.commons.data.v1.external;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
-import nl.uva.sne.drip.data.v1.external.ansible.AnsibleOutput;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
