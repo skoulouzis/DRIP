@@ -143,11 +143,13 @@ public class PlannerService {
 
         Map<String, Object> map = plan.getKeyValue();
         Set<String> ids = plan.getLoweLevelPlanIDs();
-        for (String lowID : ids) {
-            PlanResponse ll = findOne(lowID);
-            Map<String, Object> lowLevelMap = ll.getKeyValue();
-            if (lowLevelMap != null) {
-                map.put(ll.getName(), lowLevelMap);
+        if (ids != null) {
+            for (String lowID : ids) {
+                PlanResponse ll = findOne(lowID);
+                Map<String, Object> lowLevelMap = ll.getKeyValue();
+                if (lowLevelMap != null) {
+                    map.put(ll.getName(), lowLevelMap);
+                }
             }
         }
 

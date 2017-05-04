@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.drip.provisioner.utils;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -40,7 +41,7 @@ public class PropertyValues {
         PropertyValues.HOST = prop.getProperty("rabbitmq.host", "127.0.0.1");
         PropertyValues.RPC_QUEUE_NAME = prop.getProperty("rpc.queue.name",
                 "provisioner_queue_v1");
-        PropertyValues.TRUSTED_CERTIFICATE_FOLDER = prop.getProperty("trusted.certificates.folder", "/etc/grid-security/certificates");
+        PropertyValues.TRUSTED_CERTIFICATE_FOLDER = prop.getProperty("trusted.certificates.folder", System.getProperty("user.home") + File.separator + ".globus" + File.separator + "certificates");
         CA_BUNDLE_URL = new URL(prop.getProperty("ca.bundle.url",
                 "https://dist.eugridpma.info/distribution/igtf/current/accredited/igtf-preinstalled-bundle-classic.tar.gz"));
 
