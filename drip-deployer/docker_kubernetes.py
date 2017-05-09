@@ -35,6 +35,10 @@ def PrintException():
 def install_manager(vm):
 	try:
 		print "%s: ====== Start Kubernetes Master Installing ======" % (vm.ip)
+                parentDir = os.path.dirname(os.path.abspath(vm.key))
+                os.chmod(parentDir, 0o700)
+                os.chmod(vm.key, 0o600)
+                
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
@@ -48,8 +52,10 @@ def install_manager(vm):
 		stdout.read()
 		stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/kubernetes_setup.sh")
 		stdout.read()
+                stdin, stdout, stderr = ssh.exec_command("sudo kubeadm reset")
+		stdout.read()
 				
-		stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init --api-advertise-addresses=%s" % (vm.ip))
+		stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init --apiserver-advertise-address=%s" % (vm.ip))
 		retstr = stdout.readlines()
 				
 		stdin, stdout, stderr = ssh.exec_command("sudo cp /etc/kubernetes/admin.conf /tmp/")
@@ -87,6 +93,8 @@ def install_worker(join_cmd, vm):
 		stdout.read()
 		stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/kubernetes_setup.sh")
 		stdout.read()
+                stdin, stdout, stderr = ssh.exec_command("sudo kubeadm reset")
+		stdout.read()
 		stdin, stdout, stderr = ssh.exec_command("sudo %s" % (join_cmd))
 		stdout.read()
 		print "%s: ========= Kubernetes Slave Installed =========" % (vm.ip)
@@ -113,6 +121,7 @@ def run(vm_list):
 			if "ERROR" in worker_cmd:
 				return worker_cmd
 
+        file_path = os.path.dirname(os.path.abspath(__file__))
 	kuber_file = open(file_path + "/admin.conf", "r")
 	kuber_string = kuber_file.read()
 	kuber_file.close()
