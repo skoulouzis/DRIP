@@ -18,6 +18,20 @@ __author__ = 'Yang Hu'
 
 import paramiko, os
 from vm_info import VmInfo
+import linecache
+import sys
+
+def PrintException():
+    exc_type, exc_obj, tb = sys.exc_info()
+    f = tb.tb_frame
+    lineno = tb.tb_lineno
+    filename = f.f_code.co_filename
+    linecache.checkcache(filename)
+    line = linecache.getline(filename, lineno, f.f_globals)
+    print 'EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj)
+    
+    
+
 def install_manager(vm):
 	try:
 		print "%s: ====== Start Kubernetes Master Installing ======" % (vm.ip)
@@ -34,9 +48,10 @@ def install_manager(vm):
 		stdout.read()
 		stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/kubernetes_setup.sh")
 		stdout.read()
-		
+				
 		stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init --api-advertise-addresses=%s" % (vm.ip))
 		retstr = stdout.readlines()
+				
 		stdin, stdout, stderr = ssh.exec_command("sudo cp /etc/kubernetes/admin.conf /tmp/")
 		stdout.read()
 		stdin, stdout, stderr = ssh.exec_command("sudo chown %s /tmp/admin.conf" % (vm.user))
@@ -47,6 +62,7 @@ def install_manager(vm):
 		print "%s: ========= Kubernetes Master Installed =========" % (vm.ip)
 	except Exception as e:
 		print '%s: %s' % (vm.ip, e)
+		PrintException()
 		return "ERROR:"+vm.ip+" "+str(e)
 	ssh.close()
 	return retstr[-1]
@@ -57,6 +73,11 @@ def install_worker(join_cmd, vm):
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+                
+                parentDir = os.path.dirname(os.path.abspath(vm.key))
+                os.chmod(parentDir, 0o700)
+                os.chmod(vm.key, 0o600)
+		
 		sftp = ssh.open_sftp()
 		sftp.chdir('/tmp/')
 		file_path = os.path.dirname(os.path.abspath(__file__))

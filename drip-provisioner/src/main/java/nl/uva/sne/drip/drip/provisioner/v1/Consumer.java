@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.commons.data.internal.Message;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.provisioner.utils.MessageParsing;
@@ -169,8 +170,17 @@ public class Consumer extends DefaultConsumer {
 //                FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
 //            }
 
-            Map<String, Object> map = MessageParsing.ymlStream2Map(new FileInputStream(topTopologyLoadingPath));
-            String userPublicKeyName = ((String) map.get("publicKeyPath")).split("@")[1].replaceAll("\"", "");
+            Map<String, Object> map = Converter.ymlStream2Map(new FileInputStream(topTopologyLoadingPath));
+            String userPublicKeyName = ((String) map.get("publicKeyPath"));
+            if (userPublicKeyName != null) {
+                userPublicKeyName = userPublicKeyName.split("@")[1].replaceAll("\"", "");
+            } else if (userPublicKeyName == null) {
+                userPublicKeyName = "id_rsa.pub";
+                map.put("publicKeyPath", "name@" + userPublicKeyName);
+                String cont = Converter.map2YmlString(map);
+                MessageParsing.writeValueToFile(cont, new File(topTopologyLoadingPath));
+            }
+
             String userPrivateName = FilenameUtils.removeExtension(userPublicKeyName);
             List<File> sshKeys = MessageParsing.getSSHKeys(parameters, tempInputDirPath, userPublicKeyName, "user_ssh_key");
             if (sshKeys == null || sshKeys.isEmpty()) {
@@ -428,7 +438,9 @@ public class Consumer extends DefaultConsumer {
         } catch (Throwable ex) {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            return mapper.readValue(generateExeptionResponse(ex), Message.class);
+
+            return mapper.readValue(generateExeptionResponse(ex), Message.class
+            );
         }
         MessageParameter param = new MessageParameter();
         param.setName("topology_killed");

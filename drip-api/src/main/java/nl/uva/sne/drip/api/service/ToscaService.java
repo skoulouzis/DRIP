@@ -102,7 +102,8 @@ public class ToscaService {
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public ToscaRepresentation findOne(String id) {
-        return dao.findOne(id);
+        ToscaRepresentation tr = dao.findOne(id);
+        return tr;
     }
 
     private ToscaRepresentation save(ToscaRepresentation t) {

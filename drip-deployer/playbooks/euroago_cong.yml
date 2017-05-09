@@ -1,0 +1,16 @@
+---
+- hosts: all
+  tasks:
+  - name: install sysbench
+    apt: name="{{ item }}" update_cache=yes state=latest
+    with_items: [python, tcsh, expect]
+    become: true
+  - {name: download irods, get_url: 'url=ftp://ftp.renci.org/pub/irods/releases/4.1.10/ubuntu14/irods-icommands-4.1.10-ubuntu14-x86_64.deb
+      dest=/tmp/'}
+  - {name: Install irods, apt: deb=/tmp/irods-icommands-4.1.10-ubuntu14-x86_64.deb,
+    become: true}
+  - {name: Copy file, copy: src=/tmp/scripts/ArgoDiffusion/scripts dest=/tmp/scripts owner=vm_user group=vm_user mode=755}
+  - {name: create dir, file: path=/home/vm_user/.irods/ state=directory owner=vm_user group=vm_user}
+  - {name: Copy file, copy: src=/tmp/conf/irods_environment.json dest=/home/vm_user/.irods/ owner=vm_user group=vm_user mode=755}
+  - {name: Run iinit, command: expect -c "spawn iinit; expect \"Enter your current iRODS password\"; send \"PASSWORD\n\";interact;", register: streamoutput}
+  - debug: msg="{{ streamoutput.stdout }}"
