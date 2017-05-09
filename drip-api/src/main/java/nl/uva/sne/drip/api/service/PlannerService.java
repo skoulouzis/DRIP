@@ -38,6 +38,8 @@ import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import nl.uva.sne.drip.drip.converter.P2PConverter;
 import nl.uva.sne.drip.drip.converter.SimplePlanContainer;
+import nl.uva.sne.drip.drip.converter.plannerOut.Parameter;
+import nl.uva.sne.drip.drip.converter.plannerOut.PlannerOutput;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,7 +66,7 @@ public class PlannerService {
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-    public PlanResponse getPlan(String toscaId, String clusterType) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
+    public PlanResponse getPlan(String toscaId, String clusterType, String vmUser, String cloudProvider, String OSType, String domainName) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
 
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);
@@ -85,7 +87,9 @@ public class PlannerService {
             }
             jsonArrayString.append("]");
 
-            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", clusterType);
+//            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", clusterType);
+            SimplePlanContainer simplePlan = P2PConverter.transfer(jsonArrayString.toString(), vmUser, OSType, domainName, clusterType, cloudProvider);
+
             PlanResponse topLevel = new PlanResponse();
             topLevel.setTimestamp(System.currentTimeMillis());
             topLevel.setLevel(0);

@@ -1,6 +1,5 @@
 package nl.uva.sne.drip.drip.converter;
 
-import nl.uva.sne.drip.drip.converter.planner.out.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,74 +8,148 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.util.List;
-
-import nl.uva.sne.drip.drip.converter.provisioner.in.Eth;
-import nl.uva.sne.drip.drip.converter.provisioner.in.SubTopology;
-import nl.uva.sne.drip.drip.converter.provisioner.in.SubTopologyInfo;
-import nl.uva.sne.drip.drip.converter.provisioner.in.Subnet;
-import nl.uva.sne.drip.drip.converter.provisioner.in.TopTopology;
-import nl.uva.sne.drip.drip.converter.provisioner.in.VM;
+import nl.uva.sne.drip.drip.converter.plannerOut.*;
+import nl.uva.sne.drip.drip.converter.provisionerIn.*;
+import nl.uva.sne.drip.drip.converter.provisionerIn.EC2.*;
+import nl.uva.sne.drip.drip.converter.provisionerIn.provisionerIn.EGI.*;
 
 public class P2PConverter {
 
-    public static SimplePlanContainer convert(String plannerOutputJson, String userName, String OStype, String clusterType) throws JsonParseException, JsonMappingException, IOException {
+    public static SimplePlanContainer transfer(String plannerOutputJson, 
+            String userName, String OStype, String domainName, String clusterType, String cloudProvider) throws JsonParseException, JsonMappingException, IOException {
 
-        List<Component> components = getInfoFromPlanner(plannerOutputJson);
+        Parameter plannerOutput = getInfoFromPlanner(plannerOutputJson);
 
         TopTopology topTopology = new TopTopology();
-        SubTopology subTopology = new SubTopology();
+        SubTopology subTopology = null;
+        switch (cloudProvider.trim().toLowerCase()) {
+            case "ec2":
+                subTopology = new EC2SubTopology();
+                break;
+            case "egi":
+                subTopology = new EGISubTopology();
+                break;
+            default:
+                System.out.println("The " + cloudProvider + " is not supported yet!");
+                return null;
+        }
         SubTopologyInfo sti = new SubTopologyInfo();
 
-        sti.cloudProvider = "EC2";
+        sti.cloudProvider = cloudProvider;
         sti.topology = UUID.randomUUID().toString();
+        sti.domain = domainName;
+        sti.status = "fresh";
+        sti.tag = "fixed";
 
-        subTopology.publicKeyPath = "~/.ssh/id_dsa.pub";
-        subTopology.userName = userName;
+        topTopology.publicKeyPath = null;
+        topTopology.userName = userName;
 
-        Subnet s = new Subnet();
-        s.name = "s1";
-        s.subnet = "192.168.10.0";
-        s.netmask = "255.255.255.0";
+        if (cloudProvider.trim().toLowerCase().equals("ec2")) {
+            Subnet s = new Subnet();
+            s.name = "s1";
+            s.subnet = "192.168.10.0";
+            s.netmask = "255.255.255.0";
+            subTopology.subnets = new ArrayList<>();
+            subTopology.subnets.add(s);
+        }
 
-        subTopology.subnets = new ArrayList<>();
-        subTopology.subnets.add(s);
-
-        subTopology.components = new ArrayList<>();
+        switch (cloudProvider.trim().toLowerCase()) {
+            case "ec2":
+                ((EC2SubTopology) subTopology).components = new ArrayList<>();
+                break;
+            case "egi":
+                ((EGISubTopology) subTopology).components = new ArrayList<>();
+                break;
+            default:
+                System.out.println("The " + cloudProvider + " is not supported yet!");
+                return null;
+        }
 
         boolean firstVM = true;
-        int count = 0;
-        for (Component cmp : components) {
-
-            VM curVM = new VM();
-            curVM.name = cmp.getName();
+        for (int vi = 0; vi < plannerOutput.value.size(); vi++) {
+            Value curValue = plannerOutput.value.get(vi);
+            VM curVM;
+            switch (cloudProvider.trim().toLowerCase()) {
+                case "ec2":
+                    curVM = new EC2VM();
+                    break;
+                case "egi":
+                    curVM = new EGIVM();
+                    break;
+                default:
+                    System.out.println("The " + cloudProvider + " is not supported yet!");
+                    return null;
+            }
+            curVM.name = curValue.getName();
             curVM.type = "Switch.nodes.Compute";
             curVM.OStype = OStype;
-            curVM.domain = "ec2.us-east-1.amazonaws.com";
             curVM.clusterType = clusterType;
-            curVM.dockers = cmp.getDocker();
-            curVM.public_address = cmp.getName();
-            curVM.nodeType = "t2." + cmp.getSize().toLowerCase();
+            curVM.dockers = curValue.getDocker();
 
-            Eth eth = new Eth();
-            eth.name = "p1";
-            eth.subnet_name = "s1";
-            int hostNum = 10 + count++;
-            String priAddress = "192.168.10." + hostNum;
-            eth.address = priAddress;
-            curVM.ethernet_port = new ArrayList<>();
-            curVM.ethernet_port.add(eth);
+            if (cloudProvider.trim().toLowerCase().equals("ec2")) {
+                switch (curValue.getSize().trim().toLowerCase()) {
+                    case "small":
+                        curVM.nodeType = "t2.small";
+                        break;
+                    case "medium":
+                        curVM.nodeType = "t2.medium";
+                        break;
+                    case "large":
+                        curVM.nodeType = "t2.large";
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid value for field 'size' in input JSON String");
+                }
+
+                Eth eth = new Eth();
+                eth.name = "p1";
+                eth.subnetName = "s1";
+                int hostNum = 10 + vi;
+                String priAddress = "192.168.10." + hostNum;
+                eth.address = priAddress;
+                curVM.ethernetPort = new ArrayList<Eth>();
+                curVM.ethernetPort.add(eth);
+            }
+
+            if (cloudProvider.trim().toLowerCase().equals("egi")) {
+                switch (curValue.getSize().trim().toLowerCase()) {
+                    case "small":
+                        curVM.nodeType = "small";
+                        break;
+                    case "medium":
+                        curVM.nodeType = "medium";
+                        break;
+                    case "large":
+                        curVM.nodeType = "large";
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid value for field 'size' in input JSON String");
+                }
+            }
+
             if (firstVM) {
                 curVM.role = "master";
                 firstVM = false;
             } else {
                 curVM.role = "slave";
             }
-            subTopology.components.add(curVM);
+
+            switch (cloudProvider.trim().toLowerCase()) {
+                case "ec2":
+                    ((EC2SubTopology) subTopology).components.add((EC2VM) curVM);
+                    break;
+                case "egi":
+                    ((EGISubTopology) subTopology).components.add((EGIVM) curVM);
+                    break;
+                default:
+                    System.out.println("The " + cloudProvider + " is not supported yet!");
+                    return null;
+            }
         }
 
         sti.subTopology = subTopology;
@@ -89,12 +162,16 @@ public class P2PConverter {
         return spc;
     }
 
-    private static List<Component> getInfoFromPlanner(String json) throws IOException {
+    private static Parameter getInfoFromPlanner(String json) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper mapper = new ObjectMapper();
-        TypeReference<List<Component>> mapType = new TypeReference<List<Component>>() {
-        };
-        List<Component> components = mapper.readValue(json, mapType);
-        return components;
+
+        List<Value> outputList = mapper.readValue(json, new TypeReference<List<Value>>() {
+        });
+//        PlannerOutput po = mapper.readValue(json, PlannerOutput.class);
+//        System.out.println("");
+        Parameter param = new Parameter();
+        param.value = outputList;
+        return param;
     }
 
     private static SimplePlanContainer generateInfo(TopTopology topTopology) throws JsonProcessingException {

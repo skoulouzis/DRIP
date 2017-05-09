@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.UserService;
+import nl.uva.sne.drip.drip.commons.data.v1.external.PlanRequest;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,7 +71,27 @@ public class PlannerController {
     String plan(@PathVariable("tosca_id") String toscaId) {
 
         try {
-            PlanResponse plan = plannerService.getPlan(toscaId, "swarm");
+            PlanResponse plan = plannerService.getPlan(toscaId, "swarm",
+                    "vm_user", "EC2", "Ubuntu 16.04", "Virginia");
+            if (plan == null) {
+                throw new NotFoundException("Could not make plan");
+            }
+            return plan.getId();
+        } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
+            Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    @RequestMapping(value = "/plan/", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String plan(@RequestBody PlanRequest planRequest) {
+
+        try {
+            PlanResponse plan = plannerService.getPlan(planRequest.getToscaID(),
+                    planRequest.getManagerType(), planRequest.getVmUserName(),
+                    planRequest.getCloudProvider(), planRequest.getOsType(), planRequest.getDomain());
             if (plan == null) {
                 throw new NotFoundException("Could not make plan");
             }
