@@ -156,11 +156,12 @@ public class DeployService {
             throw new NotFoundException();
         }
         List<String> loginKeysIDs = pro.getDeployerKeyPairIDs();
-        if (loginKeysIDs == null || loginKeysIDs.isEmpty()) {
-            List<String> cloudConfIDs = pro.getCloudCredentialsIDs();
-            CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfIDs.get(0));
-            loginKeysIDs = cCred.getkeyPairIDs();
-        }
+        
+//        if (loginKeysIDs == null || loginKeysIDs.isEmpty()) {
+//            List<String> cloudConfIDs = pro.getCloudCredentialsIDs();
+//            CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfIDs.get(0));
+//            loginKeysIDs = cCred.getkeyPairIDs();
+//        }
 
         List<KeyPair> loginKeys = new ArrayList<>();
         for (String keyID : loginKeysIDs) {

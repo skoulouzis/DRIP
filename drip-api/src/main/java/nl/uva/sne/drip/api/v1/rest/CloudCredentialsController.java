@@ -86,14 +86,14 @@ public class CloudCredentialsController {
         if (cloudCredentials.getAccessKeyId() == null) {
             throw new NullKeyException();
         }
-        List<String> ids = cloudCredentials.getkeyPairIDs();
-        if (ids != null) {
-            for (String id : ids) {
-                if (keyService.findOne(id) == null) {
-                    throw new NullKeyException();
-                }
-            }
-        }
+//        List<String> ids = cloudCredentials.getkeyPairIDs();
+//        if (ids != null) {
+//            for (String id : ids) {
+//                if (keyService.findOne(id) == null) {
+//                    throw new NullKeyException();
+//                }
+//            }
+//        }
         cloudCredentials = cloudCredentialsService.save(cloudCredentials);
         return cloudCredentials.getId();
     }
@@ -122,10 +122,10 @@ public class CloudCredentialsController {
             }
             String originalFileName = file.getOriginalFilename();
             byte[] bytes = file.getBytes();
-            List<String> loginKeyIDs = cloudCredentials.getkeyPairIDs();
-            if (loginKeyIDs == null) {
-                loginKeyIDs = new ArrayList<>();
-            }
+//            List<String> loginKeyIDs = cloudCredentials.getkeyPairIDs();
+//            if (loginKeyIDs == null) {
+//                loginKeyIDs = new ArrayList<>();
+//            }
             Key key = new Key();
             key.setKey(new String(bytes, "UTF-8"));
             if (cloudCredentials.getCloudProviderName().toLowerCase().equals("ec2")) {
@@ -136,9 +136,9 @@ public class CloudCredentialsController {
                 pair.setTimestamp(System.currentTimeMillis());
                 pair.setPrivateKey(key);
                 pair = keyService.save(pair);
-                loginKeyIDs.add(pair.getId());
+//                loginKeyIDs.add(pair.getId());
             }
-            cloudCredentials.setKeyIDs(loginKeyIDs);
+//            cloudCredentials.setKeyIDs(loginKeyIDs);
             cloudCredentials = cloudCredentialsService.save(cloudCredentials);
             return cloudCredentials.getId();
         } catch (IOException | KeyException ex) {
@@ -215,7 +215,7 @@ public class CloudCredentialsController {
         List<String> keyIDs = new ArrayList<>();
         keyIDs.add("58da4c91f7b43a3282cacdbb");
         keyIDs.add("58da4d2af7b43a3282cacdbd");
-        cloudCredentials.setKeyIDs(keyIDs);
+//        cloudCredentials.setKeyIDs(keyIDs);
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("myProxyEndpoint", "myproxy.egee.host.com");
         attributes.put("trustedCertificatesURL", "https://dist.eugridpma.info/distribution/igtf/current/accredited/igtf-preinstalled-bundle-classic.tar.gz");

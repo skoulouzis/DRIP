@@ -92,7 +92,7 @@ public class CloudConfigurationController0 {
                 Logger.getLogger(CloudConfigurationController0.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        cloudCredentials.setKeyIDs(loginKeyIDs);
+//        cloudCredentials.setKeyIDs(loginKeyIDs);
         cloudCredentials.setCloudProviderName("ec2");
 
         cloudCredentials = cloudCredentialsService.save(cloudCredentials);
@@ -146,7 +146,7 @@ public class CloudConfigurationController0 {
                 Logger.getLogger(CloudConfigurationController0.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        cloudCredentials.setKeyIDs(loginKeyIDs);
+//        cloudCredentials.setKeyIDs(loginKeyIDs);
         cloudCredentials.setCloudProviderName("geni");
         cloudCredentialsService.save(cloudCredentials);
         return "Success: " + cloudCredentials.getId();

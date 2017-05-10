@@ -182,14 +182,14 @@ public class ProvisionService {
             cloudCred.setName("cloud_credential");
             cloudCred.setEncoding("UTF-8");
             List<KeyPair> keyPairs = new ArrayList<>();
-            List<String> keyPairIds = cred.getkeyPairIDs();
-            if (keyPairIds != null) {
-                for (String id : cred.getkeyPairIDs()) {
-                    KeyPair pair = keyDao.findOne(id);
-                    keyPairs.add(pair);
-                }
-                cred.setKeyPairs(keyPairs);
-            }
+//            List<String> keyPairIds = cred.getkeyPairIDs();
+//            if (keyPairIds != null) {
+//                for (String id : cred.getkeyPairIDs()) {
+//                    KeyPair pair = keyDao.findOne(id);
+//                    keyPairs.add(pair);
+//                }
+//                cred.setKeyPairs(keyPairs);
+//            }
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
@@ -205,12 +205,12 @@ public class ProvisionService {
     }
 
     private List<MessageParameter> buildCertificatesParam(CloudCredentials cred) {
-        List<String> loginKeysIDs = cred.getkeyPairIDs();
+//        List<String> loginKeysIDs = cred.getkeyPairIDs();
         List<KeyPair> loginKeys = new ArrayList<>();
-        for (String keyID : loginKeysIDs) {
-            KeyPair key = keyDao.findOne(keyID);
-            loginKeys.add(key);
-        }
+//        for (String keyID : loginKeysIDs) {
+//            KeyPair key = keyDao.findOne(keyID);
+//            loginKeys.add(key);
+//        }
         if (loginKeys.isEmpty()) {
             throw new BadRequestException("Log in keys can't be empty");
         }

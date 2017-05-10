@@ -37,9 +37,9 @@ public class CloudCredentials extends OwnedObject {
 
     private String accessKeyId;
 
-    private List<String> keyPairIDs;
+//    private List<String> keyPairIDs;
 
-    private List<KeyPair> keyPairs;
+//    private List<KeyPair> keyPairs;
 
     private String cloudProviderName;
 
@@ -93,36 +93,36 @@ public class CloudCredentials extends OwnedObject {
         this.accessKeyId = accessKeyId;
     }
 
-    /**
-     * The IDs of of the key pairs for accessing the VMs of that cloud provider.
-     *
-     * @return the keyPairIDs
-     */
-    @DocumentationExample("AKIKIQY9K1ZUQ6M7YBSQ, LKJ2KIQY9K1F236M7YASD")
-    public List<String> getkeyPairIDs() {
-        return keyPairIDs;
-    }
-
-    /**
-     * @param keyIDs the keyPairIDs to set
-     */
-    public void setKeyIDs(List<String> keyIDs) {
-        this.keyPairIDs = keyIDs;
-    }
-
-    /**
-     * @return the keyPairs
-     */
-    public List<KeyPair> getKeyPairs() {
-        return keyPairs;
-    }
-
-    /**
-     * @param keyPairs the keyPairs to set
-     */
-    public void setKeyPairs(List<KeyPair> keyPairs) {
-        this.keyPairs = keyPairs;
-    }
+//    /**
+//     * The IDs of of the key pairs for accessing the VMs of that cloud provider.
+//     *
+//     * @return the keyPairIDs
+//     */
+//    @DocumentationExample("AKIKIQY9K1ZUQ6M7YBSQ, LKJ2KIQY9K1F236M7YASD")
+//    public List<String> getkeyPairIDs() {
+//        return keyPairIDs;
+//    }
+//
+//    /**
+//     * @param keyIDs the keyPairIDs to set
+//     */
+//    public void setKeyIDs(List<String> keyIDs) {
+//        this.keyPairIDs = keyIDs;
+//    }
+//
+//    /**
+//     * @return the keyPairs
+//     */
+//    public List<KeyPair> getKeyPairs() {
+//        return keyPairs;
+//    }
+//
+//    /**
+//     * @param keyPairs the keyPairs to set
+//     */
+//    public void setKeyPairs(List<KeyPair> keyPairs) {
+//        this.keyPairs = keyPairs;
+//    }
 
     /**
      * @return the attributes

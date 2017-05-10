@@ -20,5 +20,5 @@ package nl.uva.sne.drip.commons.utils;
  * @author S. Koulouzis
  */
 public class Constants {
-     public static final int[] BAD_CHARS = {0x80};
+     public static final int[] BAD_CHARS = {0x80,0x99};
 }
