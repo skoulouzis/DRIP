@@ -116,31 +116,7 @@ public class PlaybookService {
     }
 
     public String saveStringContents(String playbookContents) throws IOException {
-
-        //Remove '\' and 'n' if they are together and replace them with '\n'
-        char[] array = playbookContents.toCharArray();
-        StringBuilder sb = new StringBuilder();
-        int prevChar = -1;
-        for (int i = 0; i < array.length; i++) {
-            int currentChar = (int) array[i];
-            if (prevChar > 0 && prevChar == 92 && currentChar == 110) {
-                sb.delete(sb.length() - 1, sb.length());
-                sb.append('\n');
-
-            } else {
-                sb.append((char) currentChar);
-            }
-            prevChar = (int) array[i];
-        }
-        playbookContents = sb.toString();
-        playbookContents = playbookContents.replaceAll("(?m)^[ \t]*\r?\n", "");
-        for (int i = 0; i < Constants.BAD_CHARS.length; i++) {
-            int hex = Constants.BAD_CHARS[i];
-            playbookContents = playbookContents.replaceAll(String.valueOf((char) hex), "");
-        }
-
-        playbookContents = playbookContents.replaceAll("\\.", "\uff0E");
-        Map<String, Object> map = Converter.ymlString2Map(playbookContents);
+        Map<String, Object> map = Converter.cleanStringContents(playbookContents);        
         PlaybookRepresentation t = new PlaybookRepresentation();
         t.setKvMap(map);
         save(t);
