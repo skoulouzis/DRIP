@@ -120,7 +120,7 @@ public class ToscaService {
 
     public String saveStringContents(String toscaContents, String name) throws IOException {
 
-        Map<String, Object> map = Converter.cleanStringContents(toscaContents);
+        Map<String, Object> map = Converter.cleanStringContents(toscaContents,true);
 
         ToscaRepresentation t = new ToscaRepresentation();
         t.setName(name);

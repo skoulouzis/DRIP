@@ -226,7 +226,7 @@ public class PlannerService {
     }
 
     public String saveStringContents(String ymlContents, Integer level, String name) {
-        Map<String, Object> map = Converter.cleanStringContents(ymlContents);
+        Map<String, Object> map = Converter.cleanStringContents(ymlContents,true);
         PlanResponse pr = new PlanResponse();
         pr.setKvMap(map);
         pr.setLevel(level);

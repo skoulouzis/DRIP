@@ -17,7 +17,6 @@ package nl.uva.sne.drip.drip.commons.data.v1.external;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.webcohesion.enunciate.metadata.DocumentationExample;
-import java.util.List;
 import java.util.Map;
 import org.springframework.data.mongodb.core.mapping.Document;
 

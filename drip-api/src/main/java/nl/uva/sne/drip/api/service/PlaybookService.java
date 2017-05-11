@@ -116,7 +116,7 @@ public class PlaybookService {
     }
 
     public String saveStringContents(String playbookContents) throws IOException {
-        Map<String, Object> map = Converter.cleanStringContents(playbookContents);        
+        Map<String, Object> map = Converter.cleanStringContents(playbookContents,false);        
         PlaybookRepresentation t = new PlaybookRepresentation();
         t.setKvMap(map);
         save(t);
