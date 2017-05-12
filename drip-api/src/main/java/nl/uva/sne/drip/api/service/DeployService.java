@@ -468,32 +468,33 @@ public class DeployService {
                     jo.put("result", result);
                 }
             }
-            JSONObject invocation = ((JSONObject) (result).get("invocation"));
-            if (invocation.has("module_args")) {
-                JSONObject module_args = (JSONObject) invocation.get("module_args");
-                if (module_args.has("msg")) {
-                    String msg;
-                    try {
-                        msg = (String) module_args.get("msg");
-                    } catch (java.lang.ClassCastException ex) {
-                        JSONObject message = (JSONObject) module_args.get("msg");
-                        msg = Converter.jsonObject2String(message.toString());
-                        module_args.put("msg", msg);
-                        invocation.put("module_args", module_args);
+            if (result.has("invocation")) {
+                JSONObject invocation = ((JSONObject) (result).get("invocation"));
+                if (invocation.has("module_args")) {
+                    JSONObject module_args = (JSONObject) invocation.get("module_args");
+                    if (module_args.has("msg")) {
+                        String msg;
+                        try {
+                            msg = (String) module_args.get("msg");
+                        } catch (java.lang.ClassCastException ex) {
+                            JSONObject message = (JSONObject) module_args.get("msg");
+                            msg = Converter.jsonObject2String(message.toString());
+                            module_args.put("msg", msg);
+                            invocation.put("module_args", module_args);
+                        }
                     }
                 }
-            }
-            if (invocation.has("msg")) {
-                String msg;
-                try {
-                    msg = (String) invocation.get("msg");
-                } catch (java.lang.ClassCastException ex) {
-                    JSONObject message = (JSONObject) invocation.get("msg");
-                    msg = Converter.jsonObject2String(message.toString());
-                    invocation.put("msg", msg);
-                    result.put("invocation", invocation);
+                if (invocation.has("msg")) {
+                    String msg;
+                    try {
+                        msg = (String) invocation.get("msg");
+                    } catch (java.lang.ClassCastException ex) {
+                        JSONObject message = (JSONObject) invocation.get("msg");
+                        msg = Converter.jsonObject2String(message.toString());
+                        invocation.put("msg", msg);
+                        result.put("invocation", invocation);
+                    }
                 }
-
             }
 
             newJa.put(jo);
