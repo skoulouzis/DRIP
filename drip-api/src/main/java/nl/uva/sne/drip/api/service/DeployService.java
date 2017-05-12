@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
@@ -50,11 +51,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.exception.KeyException;
+import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleOutput;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleResult;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.BenchmarkResult;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.SysbenchCPUBenchmark;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -156,13 +160,12 @@ public class DeployService {
             throw new NotFoundException();
         }
         List<String> loginKeysIDs = pro.getDeployerKeyPairIDs();
-        
+
 //        if (loginKeysIDs == null || loginKeysIDs.isEmpty()) {
 //            List<String> cloudConfIDs = pro.getCloudCredentialsIDs();
 //            CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfIDs.get(0));
 //            loginKeysIDs = cCred.getkeyPairIDs();
 //        }
-
         List<KeyPair> loginKeys = new ArrayList<>();
         for (String keyID : loginKeysIDs) {
             KeyPair key = keyDao.findOne(keyID);
@@ -258,6 +261,9 @@ public class DeployService {
                 String value = p.getValue();
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+                value = parseValue(value);
+
                 List<AnsibleOutput> outputList = mapper.readValue(value, new TypeReference<List<AnsibleOutput>>() {
                 });
 
@@ -442,6 +448,57 @@ public class DeployService {
 
     private double getApprox95Percentile(String string) {
         return Double.valueOf(string.replaceAll("approx.  95 percentile:", "").replaceAll("ms", "").trim());
+    }
+
+    private String parseValue(String value) throws JSONException {
+        JSONArray ja = new JSONArray(value);
+        JSONArray newJa = new JSONArray();
+
+        for (int i = 0; i < ja.length(); i++) {
+            JSONObject jo = ja.getJSONObject(i);
+            JSONObject result = ((JSONObject) jo.get("result"));
+            if (result.has("msg")) {
+                String msg;
+                try {
+                    msg = (String) result.get("msg");
+                } catch (java.lang.ClassCastException ex) {
+                    JSONObject message = (JSONObject) result.get("msg");
+                    msg = Converter.jsonObject2String(message.toString());
+                    result.put("msg", msg);
+                    jo.put("result", result);
+                }
+            }
+            JSONObject invocation = ((JSONObject) (result).get("invocation"));
+            if (invocation.has("module_args")) {
+                JSONObject module_args = (JSONObject) invocation.get("module_args");
+                if (module_args.has("msg")) {
+                    String msg;
+                    try {
+                        msg = (String) module_args.get("msg");
+                    } catch (java.lang.ClassCastException ex) {
+                        JSONObject message = (JSONObject) module_args.get("msg");
+                        msg = Converter.jsonObject2String(message.toString());
+                        module_args.put("msg", msg);
+                        invocation.put("module_args", module_args);
+                    }
+                }
+            }
+            if (invocation.has("msg")) {
+                String msg;
+                try {
+                    msg = (String) invocation.get("msg");
+                } catch (java.lang.ClassCastException ex) {
+                    JSONObject message = (JSONObject) invocation.get("msg");
+                    msg = Converter.jsonObject2String(message.toString());
+                    invocation.put("msg", msg);
+                    result.put("invocation", invocation);
+                }
+
+            }
+
+            newJa.put(jo);
+        }
+        return newJa.toString();
     }
 
 }

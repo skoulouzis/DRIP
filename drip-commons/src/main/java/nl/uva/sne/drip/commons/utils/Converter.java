@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
@@ -239,6 +240,12 @@ public class Converter {
         Map<String, Object> map = null;
         map = Converter.ymlString2Map(ymlContents);
         return map;
+    }
+
+    public static String jsonObject2String(String msg) {
+        msg = msg.replaceAll("\"", Matcher.quoteReplacement("\\\""));
+        msg = "\"" + msg + "\"";
+        return msg;
     }
 
 }
