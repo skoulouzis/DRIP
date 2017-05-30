@@ -3,7 +3,7 @@
   tasks:
   - name: install pre-req
     apt: name="{{ item }}" update_cache=yes state=latest
-    with_items: [python, tcsh, expect, jq , bc,  python-pip, python-dev, build-essential, libgeos-dev, nmap]
+    with_items: [python, tcsh, expect, jq , bc,  python-pip, python-dev, build-essential, libgeos-dev, nmap, git]
     become: true
   - {name: pip, pip: name=pyproj}
   - {name: pip, pip: name=shapely}  
@@ -15,12 +15,8 @@
   - {name: mount, command: mount /dev/vdc /mnt/data, become: yes}
   - {name: download dataset, get_url: 'url=ftp://ftp.ifremer.fr/ifremer/coriolis/co0547-bigdata-archive/envriplus_euroargo_bigdata.tar.gz dest=/mnt/data'}
   - {name: untar, unarchive: src=/mnt/data/envriplus_euroargo_bigdata.tar.gz dest=/mnt/data/ remote_src=true}
-  - {name: download partitioning script, get_url: 'url=https://raw.githubusercontent.com/skoulouzis/dockerfiles/master/ArgoDiffusion/scripts/partitioning.py dest=/mnt/data/source/'}
-  - {name: download getDelta for time_cover, get_url: 'url=https://raw.githubusercontent.com/skoulouzis/dockerfiles/master/ArgoDiffusion/scripts/getDelta.py dest=/mnt/data/source/'}
-  - {name: download ar_bigmetadata for the filter script, get_url: 'url=https://raw.githubusercontent.com/skoulouzis/dockerfiles/master/ArgoDiffusion/scripts/ar_bigmetadata.json dest=/mnt/data/source/'}
-  - {name: download for filter script, get_url: 'url=https://raw.githubusercontent.com/skoulouzis/dockerfiles/master/ArgoDiffusion/scripts/configuration.json dest=/mnt/data/source/'}
-  - {name: exec partitioning, command: python /mnt/data/source/partitioning.py /mnt/data/source/configuration.json, become_user: vm_user}
-  - {name: create data_argo.txt, file: path=//mnt/data/data_argo.txt state=touch owner=vm_user group=vm_user}
+  - {name: create workspace, file: path=/home/vm_user/workspace state=directory owner=vm_user group=vm_user}  
+  - {name: clone repo, git: 'repo=https://github.com/skoulouzis/dockerfiles.git dest=/home/vm_user/workspace/dockerfiles version=HEAD'}
   
   
   
