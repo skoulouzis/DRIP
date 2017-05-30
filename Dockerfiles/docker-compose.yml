@@ -2,23 +2,27 @@ version: '2'
 
 services:
     mongo:
-    image: mongo:3
-    ports:
-        - "27017:27017"
-    command: "mongod --port 27017"
-    restart: always
+        image: mongo:3
+        ports:
+            - "27017:27017"
+        command: "mongod --port 27017"
+        restart: always
     
     rabbit:
-    image: rabbitmq:latest
-    ports:
-        - "5671-5672:5671-5672"
-        - "15671:15671"
-    restart: always
+        image: rabbitmq:3-management
+        ports:
+            - "5671-5672:5671-5672"
+            - "15671:15671"
+        restart: always
     
     drip-planner:
         depends_on:
-            - rabbit
-        build: planner/Dockerfile
+            - rabbit        
+        build:
+            context: ./planner
+            dockerfile: Dockerfile
+        environment:
+            - RELESE_VERSION=0.3
         image: drip-planner:latest
         restart: always
         environment:
