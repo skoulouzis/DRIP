@@ -24,7 +24,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.text.MessageFormat;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
