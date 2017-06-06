@@ -2,8 +2,7 @@
 FROM ubuntu:latest
 
 
-ARG RABBITMQ_HOST=127.0.0.1
-ARG MONOG_HOST=127.0.0.1
+# ARG RABBITMQ_HOST=127.0.0.1
 ARG RELESE_VERSION=0.1
 ARG CERTS=/etc/grid-security/certificates
 
@@ -22,6 +21,7 @@ RUN pip install tosca-parser
 RUN pip install pika
 RUN export LC_ALL="en_US.UTF-8"
 RUN pip install paramiko
+RUN pip install ansible
 
 
 
@@ -30,8 +30,8 @@ WORKDIR /root/
 RUN wget https://github.com/QCAPI-DRIP/DRIP-integradation/releases/download/$RELESE_VERSION/drip-deployer.tar.gz
 RUN tar -xzvf drip-deployer.tar.gz
 
-WORKDIR drip-deployer
-ENTRYPOINT python rpc_server.py 172.17.0.2
+
+ENTRYPOINT sleep 10 && python /root/drip-deployer/rpc_server.py $RABBITMQ_HOST
 
 # docker build -t drip-deployer .
 # docker run --name drip-deployer-inst -d drip-deployer
