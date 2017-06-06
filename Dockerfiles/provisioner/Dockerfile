@@ -4,8 +4,8 @@ FROM ubuntu:latest
 MAINTAINER Huan "h.zhou@uva.nl"
 
 
-ARG RABBITMQ_HOST=127.0.0.1
-ARG MONOG_HOST=127.0.0.1
+# ARG RABBITMQ_HOST=127.0.0.1
+# ARG MONOG_HOST=127.0.0.1
 ARG RELESE_VERSION=0.1
 ARG CERTS=/etc/grid-security/certificates
 
@@ -37,12 +37,11 @@ RUN ./fedcloud-ui.sh
 RUN wget https://github.com/QCAPI-DRIP/DRIP-integradation/releases/download/$RELESE_VERSION/drip-provisioner-1.0-SNAPSHOT-jar-with-dependencies.jar
 RUN wget https://github.com/QCAPI-DRIP/DRIP-integradation/releases/download/$RELESE_VERSION/database.tar.gz
 RUN tar -xzvf database.tar.gz
-RUN echo rabbitmq.host=$RABBITMQ_HOST >> provisioner.properties
 RUN echo trusted.certificates.folder=$CERTS >> provisioner.properties
 RUN echo domain.info.path=/root/drip-provisioner >> provisioner.properties
 RUN cat provisioner.properties
 
-ENTRYPOINT java -jar /root/drip-provisioner/drip-provisioner-1.0-SNAPSHOT-jar-with-dependencies.jar /root/drip-provisioner/provisioner.properties
+ENTRYPOINT echo rabbitmq.host=$RABBITMQ_HOST >> /root/drip-provisioner/provisioner.propertie && sleep 10 & java -jar /root/drip-provisioner/drip-provisioner-1.0-SNAPSHOT-jar-with-dependencies.jar /root/drip-provisioner/provisioner.propertie
 
 #Build: docker build -t drip-pro .
 # Run: docker run --name drip-pro-inst -d drip-pro

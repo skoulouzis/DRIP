@@ -15,16 +15,51 @@ services:
             - "15671:15671"
         restart: always
     
-    drip-planner:
+    #drip-planner:
+        #depends_on:
+            #- rabbit
+        #build:
+            #context: ./planner
+            #dockerfile: Dockerfile
+        #image: drip-planner:latest
+        #restart: always
+        #environment:
+            #RABBITMQ_HOST: rabbit
+            
+    #drip-provisioner:
+        #depends_on:
+            #- rabbit
+        #build:
+            #context: ./provisioner
+            #dockerfile: Dockerfile
+        #image: drip-provisioner:latest
+        #restart: always
+        #environment:
+            #RABBITMQ_HOST: rabbit      
+            
+    drip-deployer:
         depends_on:
-            - rabbit        
+            - rabbit
         build:
-            context: ./planner
+            context: ./deployer
             dockerfile: Dockerfile
+        image: drip-deployer:latest
+        restart: always
         environment:
-            - RELESE_VERSION=0.3
-        image: drip-planner:latest
+            RABBITMQ_HOST: rabbit 
+            
+    drip-manager:
+        depends_on:
+            - rabbit
+        build:
+            context: ./manager
+            dockerfile: Dockerfile
+        image: drip-manager:latest
         restart: always
         environment:
             RABBITMQ_HOST: rabbit
-        command: "python rpc_server.py $RABBITMQ_HOST"
+            MONOG_HOST: mongo
+        ports:
+            - "8080:8080"        
+            
+#docker-compose up

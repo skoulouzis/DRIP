@@ -3,6 +3,8 @@ FROM ubuntu:latest
 
 MAINTAINER S. Koulouzis "S.Koulouzis@uva.nl"
 
+ARG RELESE_VERSION=0.1
+
 
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends 
@@ -22,12 +24,12 @@ RUN pip install paramiko
 
 
 
-# Install deployer
+# Install planner
 WORKDIR /root/
-RUN wget https://github.com/QCAPI-DRIP/DRIP-integradation/releases/download/$RELESE_VERSION/drip-deployer.tar.gz
-RUN tar -xzvf drip-deployer.tar.gz
+RUN wget https://github.com/QCAPI-DRIP/DRIP-integradation/releases/download/$RELESE_VERSION/drip-planner.tar.gz
+RUN tar -xzvf drip-planner.tar.gz
 
-ENTRYPOINT python /root/drip-planner/rpc_server.py $RABBITMQ_HOST
+ENTRYPOINT sleep 10 && python /root/drip-planner/rpc_server.py $RABBITMQ_HOST
 
 # docker build -t drip-planner .
 # docker run --name drip-planner-inst -d drip-planner

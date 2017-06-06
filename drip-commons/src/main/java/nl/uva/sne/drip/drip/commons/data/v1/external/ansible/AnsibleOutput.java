@@ -105,11 +105,6 @@ public class AnsibleOutput extends OwnedObject {
     public String getProvisionID() {
         return provisionID;
     }
-
-    public void setCloudProviderName(String cloudProvider) {
-        this.setCloudProvider(cloudProvider);
-    }
-
     /**
      * @return the cloudProvider
      */

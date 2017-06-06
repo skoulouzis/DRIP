@@ -26,13 +26,11 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import nl.uva.sne.drip.api.dao.DeployDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.DeployerCaller;
 import nl.uva.sne.drip.api.v1.rest.DeployController;
-import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import nl.uva.sne.drip.drip.commons.data.v1.external.DeployRequest;
 import nl.uva.sne.drip.drip.commons.data.v1.external.DeployParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.DeployResponse;
@@ -271,7 +269,7 @@ public class DeployService {
                 Map<String, String> nodeTypeCache = new HashMap<>();
                 Map<String, String> domainCache = new HashMap<>();
                 Map<String, String> osTypeCache = new HashMap<>();
-//                Map<String, String> cloudProviderCache = new HashMap<>();
+                Map<String, String> cloudProviderCache = new HashMap<>();
 
                 for (AnsibleOutput ansOut : outputList) {
                     Map<String, Object> map = provisionService.findOne(deployInfo.getProvisionID()).getKeyValue();
@@ -316,6 +314,7 @@ public class DeployService {
                                     }
                                 }
                                 os = (String) component.get("OStype");
+
                                 nodeTypeCache.put(ansOut.getHost(), nodeType);
                                 domainCache.put(ansOut.getHost(), domain);
                                 osTypeCache.put(ansOut.getHost(), os);
@@ -326,7 +325,8 @@ public class DeployService {
                     ansOut.setVmType(nodeType);
                     ansOut.setCloudDeploymentDomain(domain);
                     ansOut.setProvisionID(deployInfo.getProvisionID());
-                    ansOut.setCloudProviderName(os);
+//                    ansOut.setCloudProvider(provider); 
+
                     ansOut = ansibleOutputService.save(ansOut);
                     BenchmarkResult benchmarkResult = parseSaveBenchmarkResult(ansOut);
 
