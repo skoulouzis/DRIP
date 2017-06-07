@@ -84,17 +84,29 @@ def handleDelivery(message):
     #print deadline
     
     
-    #print len(nodesList)
-    #for i in len(nodesList):
+    #Spiros: Manually set price and preformace arrays. This is a hack to make the planner work
+    price = ""
+    prefix = ""
+    for i in reversed(xrange(len(nodesList))):
         #price += str(i)","
+        price = price+prefix+str(i+1)
+        prefix = ","
     
-    wfJson['price'] = "9,8,7,6,5,2,1"
+    prefix = ""
+    performance_str = ""
+    for j in range(1, len(nodesList)+1):
+        performance_str = performance_str+prefix+str(j)
+        prefix = ","
+    
+    
+    
+    wfJson['price'] = price #"9,8,7,6,5,2,1"
     wfJson['deadline'] = {'2': deadline}
 
     #generate performance
     performance = {}
     for key, value in sorted_nodeDic:
-        performance[str(value)] = "1,2,3,4,5,6,7"
+        performance[str(value)] = performance_str #"1,2,3,4,5,6,7"
     wfJson['performance'] = performance
     #print wfJson
 
@@ -118,7 +130,7 @@ def handleDelivery(message):
     
     for key, value in sorted_nodeDic:
         if json1[nodeDic1[value]].get('artifacts') is None:
-            print key
+            #print key
             #print json1[nodeDic1[value]]
             continue
         
