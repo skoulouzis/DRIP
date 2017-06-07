@@ -83,13 +83,18 @@ def handleDelivery(message):
     wfJson['workflow']['links'] = links
     #print deadline
     
-    wfJson['price'] = "5,2,1"
+    
+    #print len(nodesList)
+    #for i in len(nodesList):
+        #price += str(i)","
+    
+    wfJson['price'] = "9,8,7,6,5,2,1"
     wfJson['deadline'] = {'2': deadline}
 
     #generate performance
     performance = {}
     for key, value in sorted_nodeDic:
-        performance[str(value)] = "1,2,3"
+        performance[str(value)] = "1,2,3,4,5,6,7"
     wfJson['performance'] = performance
     #print wfJson
 
@@ -101,7 +106,6 @@ def handleDelivery(message):
     #print content['workflow']
     #return 
     res = wf.generateJSON()
-    
     end = time.time()
     #print (end - start)
     
@@ -113,6 +117,11 @@ def handleDelivery(message):
     outcontent["parameters"] = []
     
     for key, value in sorted_nodeDic:
+        if json1[nodeDic1[value]].get('artifacts') is None:
+            print key
+            #print json1[nodeDic1[value]]
+            continue
+        
         if "docker_image." not in json1[nodeDic1[value]].get('artifacts'):
             keys = json1[nodeDic1[value]].get('artifacts').keys()
             for k in keys:

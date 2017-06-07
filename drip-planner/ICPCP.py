@@ -37,7 +37,7 @@ class Workflow():
     def init(self, content):
         self.G = nx.DiGraph()
         self.vertex_num =0 
-         
+        
         for (key, value) in content['workflow'].items():
             if isinstance(value, list) :
                 if key == 'nodes' :
@@ -48,7 +48,6 @@ class Workflow():
                     for link in value:
                         self.G.add_weighted_edges_from([(link['source'], link['target'], link['weight'])])
         #print self.G.nodes
-        
         #parse the performance matrix
         p = []
         od = collections.OrderedDict(sorted(content['performance'].items()))
@@ -68,6 +67,7 @@ class Workflow():
         
         #parse the deadline
         self.d_list = []
+        
         for (key, value) in content['deadline'].items():
             self.d_list.append([int(key), int(value)])
         self.d_table = np.matrix(self.d_list)
@@ -86,61 +86,61 @@ class Workflow():
         self.instances = []
         self.G.node[0]['est'] = 0
         self.G.node[0]['eft'] = 0
+        
         self.cal_est(0)
         self.G.node[self.vertex_num-1]['lft'] = self.d_table[self.d_table.shape[0]-1,1]#self.p_table[0, child], self.p_table.shape[0]
         self.cal_lft(self.vertex_num-1)
     
-    def init1(self, workflow_file_name, performance_file_name, price_file_name, deadline_file_name):
-        
-        #Initialization
-        self.G=nx.DiGraph()
-        self.vertex_num = 0
-        self.successful = 0
-        #Read the workflow information
+    #def init1(self, workflow_file_name, performance_file_name, price_file_name, deadline_file_name):
+        ##Initialization
+        #self.G=nx.DiGraph()
+        #self.vertex_num = 0
+        #self.successful = 0
+        ##Read the workflow information
 
-        graph = pydot.graph_from_dot_file(workflow_file_name)
-        nx_graph = nx.from_pydot(graph)
-        self.G=nx.DiGraph()
-        for node in nx_graph:
-            #print node
-            self.G.add_node(int(node)+1, est = -1, eft = -1, lft =-1)
-            self.vertex_num += 1 
-        #print nx_graph.edge
-        #print workflow_file_name
-        for link in nx_graph.edges_iter():
-            #print link[0], link[1]
-            self.G.add_weighted_edges_from([(int(link[0])+1, int(link[1])+1, int(float(nx_graph[link[0]][link[1]][0]['weight'])))])   
+        #graph = pydot.graph_from_dot_file(workflow_file_name)
+        #nx_graph = nx.from_pydot(graph)
+        #self.G=nx.DiGraph()
+        #for node in nx_graph:
+            ##print node
+            #self.G.add_node(int(node)+1, est = -1, eft = -1, lft =-1)
+            #self.vertex_num += 1 
+        ##print nx_graph.edge
+        ##print workflow_file_name
+        #for link in nx_graph.edges_iter():
+            ##print link[0], link[1]
+            #self.G.add_weighted_edges_from([(int(link[0])+1, int(link[1])+1, int(float(nx_graph[link[0]][link[1]][0]['weight'])))])   
         
-        self.vertex_num += 2
-        self.add_entry_exit(self.G) 
+        #self.vertex_num += 2
+        #self.add_entry_exit(self.G) 
         
-        #test whether the DAG contains cycles
-        if len(list(nx.simple_cycles(self.G))) > 0:
-            print "the DAG contains cycles"
-            sys.exit()
-        #read performance table
-        l = [ map(int,line.split(',')) for line in open(performance_file_name, 'r')]
-        #append the entry and exit node information
-        for row in l:
-            row.insert(0, 0)
-            row.insert(len(row),0)
-        self.p_table = np.matrix(l)
+        ##test whether the DAG contains cycles
+        #if len(list(nx.simple_cycles(self.G))) > 0:
+            #print "the DAG contains cycles"
+            #sys.exit()
+        ##read performance table
+        #l = [ map(int,line.split(',')) for line in open(performance_file_name, 'r')]
+        ##append the entry and exit node information
+        #for row in l:
+            #row.insert(0, 0)
+            #row.insert(len(row),0)
+        #self.p_table = np.matrix(l)
         
-        self.assigned_list = [-1]*(self.vertex_num)
+        #self.assigned_list = [-1]*(self.vertex_num)
         
-        self.vm_price = map(int,open(price_file_name,'r').readline().split(','))
+        #self.vm_price = map(int,open(price_file_name,'r').readline().split(','))
         
-        self.instances = []
+        #self.instances = []
         
-        self.d_list = [ map(int,line.split('\t')) for line in open(deadline_file_name, 'r')]
-        tmpList = self.d_list[len(self.d_list)-1]
-        self.d_table = np.matrix(tmpList)
-        #deadline = open(deadline_file_name, 'r').readline()  
-        self.G.node[0]['est'] = 0
-        self.G.node[0]['eft'] = 0
-        self.cal_est(0)
-        self.G.node[self.vertex_num-1]['lft'] = self.d_table[self.d_table.shape[0]-1,1]#self.p_table[0, child], self.p_table.shape[0]
-        self.cal_lft(self.vertex_num-1)
+        #self.d_list = [ map(int,line.split('\t')) for line in open(deadline_file_name, 'r')]
+        #tmpList = self.d_list[len(self.d_list)-1]
+        #self.d_table = np.matrix(tmpList)
+        ##deadline = open(deadline_file_name, 'r').readline()  
+        #self.G.node[0]['est'] = 0
+        #self.G.node[0]['eft'] = 0
+        #self.cal_est(0)
+        #self.G.node[self.vertex_num-1]['lft'] = self.d_table[self.d_table.shape[0]-1,1]#self.p_table[0, child], self.p_table.shape[0]
+        #self.cal_lft(self.vertex_num-1)
         
     #The following two functions are to initialize the EST, EFT and LFT
     #calculate the earliest start time and earliest finish time    
@@ -149,7 +149,8 @@ class Workflow():
             est = self.G.node[i]['eft']+self.G[i][child]['weight']
             if est>self.G.node[child]['est']:
                 self.G.node[child]['est'] = est
-                self.G.node[child]['eft'] = est + self.p_table[0, child]
+                table_child = self.p_table[0, child]
+                self.G.node[child]['eft'] = est + table_child
                 self.cal_est(child)
     
     def cal_lft(self, d):
@@ -362,10 +363,12 @@ class Workflow():
         for i in xrange(1, self.vertex_num-1, 1):
             if self.assigned_list[i] == 0:
                 content[str(i)] = 'large'
-            if self.assigned_list[i] == 1:
+            elif self.assigned_list[i] == 1:
                 content[str(i)] = 'Medium'
-            if self.assigned_list[i] == 2:
+            elif self.assigned_list[i] == 2:
                 content[str(i)] = 'Small'
+            else:
+                content[str(i)] = 'Medium'
         return content
     
     #calculate the total execution cost

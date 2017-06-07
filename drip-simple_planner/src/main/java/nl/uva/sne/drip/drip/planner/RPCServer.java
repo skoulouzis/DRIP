@@ -39,7 +39,7 @@ public class RPCServer {
     /**
      * The IP or host name of the RabbitMQ server 
      */
-    private static final String HOST = "172.17.0.3";
+    private static final String HOST = "localhost";
 
     public static void main(String[] argv) {
         start();
