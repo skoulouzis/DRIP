@@ -83,13 +83,30 @@ def handleDelivery(message):
     wfJson['workflow']['links'] = links
     #print deadline
     
-    wfJson['price'] = "5,2,1"
+    
+    #Spiros: Manually set price and preformace arrays. This is a hack to make the planner work
+    price = ""
+    prefix = ""
+    for i in reversed(xrange(len(nodesList))):
+        #price += str(i)","
+        price = price+prefix+str(i+1)
+        prefix = ","
+    
+    prefix = ""
+    performance_str = ""
+    for j in range(1, len(nodesList)+1):
+        performance_str = performance_str+prefix+str(j)
+        prefix = ","
+    
+    
+    
+    wfJson['price'] = price #"9,8,7,6,5,2,1"
     wfJson['deadline'] = {'2': deadline}
 
     #generate performance
     performance = {}
     for key, value in sorted_nodeDic:
-        performance[str(value)] = "1,2,3"
+        performance[str(value)] = performance_str #"1,2,3,4,5,6,7"
     wfJson['performance'] = performance
     #print wfJson
 
@@ -101,7 +118,6 @@ def handleDelivery(message):
     #print content['workflow']
     #return 
     res = wf.generateJSON()
-    
     end = time.time()
     #print (end - start)
     
@@ -113,6 +129,11 @@ def handleDelivery(message):
     outcontent["parameters"] = []
     
     for key, value in sorted_nodeDic:
+        if json1[nodeDic1[value]].get('artifacts') is None:
+            #print key
+            #print json1[nodeDic1[value]]
+            continue
+        
         if "docker_image." not in json1[nodeDic1[value]].get('artifacts'):
             keys = json1[nodeDic1[value]].get('artifacts').keys()
             for k in keys:
