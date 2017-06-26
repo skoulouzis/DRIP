@@ -1,0 +1,140 @@
+version: "2"
+services:
+  kamailio:
+    #build: ./kamailio
+    image: wtelecom/kamailio:bs1
+    restart: always
+    depends_on:
+      - db
+      - rtpproxy
+    environment:
+      - constraint:node==192.168.10.10
+#      - PUBLICIP=10.128.19.60
+      - SWARM_MASTER_IP=192.168.10.10
+      - SWARM_MASTER_PORT=2377
+      - SUBNET_OVERLAY=192.168.2.0
+      - SUFFIX_OVERLAY=int
+      - SUFFIX_GWBRIDGE=ext
+    volumes:
+#      - ./kamailio/config/kamailio:/etc/kamailio
+      - ./kamailio/pcap:/pcap
+    ports:
+      - "5060:5060/udp"
+      - "5061:5061/udp"
+    hostname: kamailio
+    container_name: kamailio
+    networks:
+      - uc-ol
+
+  rtpproxy:
+    #build: ./rtpproxy
+    image: wtelecom/rtpproxy:bs1
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - SWARM_MASTER_IP=10.128.19.60
+      - SWARM_MASTER_PORT=3375
+      - PORT_MAX=10049
+#      - PORT_MAX=10099
+      - PORT_MIN=10000
+      - SUBNET_OVERLAY=192.168.2.0
+      - SUFFIX_OVERLAY=int
+      - SUFFIX_GWBRIDGE=ext
+      - PORT_RTPPROXY=7711
+      - DB_KAMAILIO=kamailio_db
+      - TABLE_RTPPROXY=rtpproxy
+      - DB_USER=kamailio_user
+      - DB_PWD=kamailiorw
+      - DB_HOST=db
+      - SSH_KAMAILIO_PASSWORD=docker
+      - SSH_KAMAILIO_USER=root
+      - KAMAILIO_HOST=kamailio
+    ports:
+      # - "10000-10399:10000-10399/udp"
+#      - "10000-10099/udp"
+      - "10000:10000/udp"
+      - "10001:10001/udp"
+      - "10002:10002/udp"
+      - "10003:10003/udp"
+      - "10004:10004/udp"
+      - "10005:10005/udp"
+      - "10006:10006/udp"
+      - "10007:10007/udp"
+      - "10008:10008/udp"
+      - "10009:10009/udp"
+      - "10010:10010/udp"
+      - "10011:10011/udp"
+      - "10012:10012/udp"
+      - "10013:10013/udp"
+      - "10014:10014/udp"
+      - "10015:10015/udp"
+      - "10016:10016/udp"
+      - "10017:10017/udp"
+      - "10018:10018/udp"
+      - "10019:10019/udp"
+      - "10020:10020/udp"
+      - "10021:10021/udp"
+      - "10022:10022/udp"
+      - "10023:10023/udp"
+      - "10024:10024/udp"
+      - "10025:10025/udp"
+      - "10026:10026/udp"
+      - "10027:10027/udp"
+      - "10028:10028/udp"
+      - "10029:10029/udp"
+      - "10030:10030/udp"
+      - "10031:10031/udp"
+      - "10032:10032/udp"
+      - "10033:10033/udp"
+      - "10034:10034/udp"
+      - "10035:10035/udp"
+      - "10036:10036/udp"
+      - "10037:10037/udp"
+      - "10038:10038/udp"
+      - "10039:10039/udp"
+      - "10040:10040/udp"
+      - "10041:10041/udp"
+      - "10042:10042/udp"
+      - "10043:10043/udp"
+      - "10044:10044/udp"
+      - "10045:10045/udp"
+      - "10046:10046/udp"
+      - "10047:10047/udp"
+      - "10048:10048/udp"
+      - "10049:10049/udp"
+
+    expose:
+      - "7711"
+#    volumes:
+#      - ./rtpproxy/docker-entrypoint-init:/docker-entrypoint-init
+    dns:
+      - 10.128.2.2
+      - 10.128.2.3
+    dns_search: wtelecom.es
+#    dns_opt: options ndots:1
+    networks:
+      - uc-ol
+
+  db:
+    #build: ./mysql
+    image: wtelecom/mysql:bs1
+    restart: always
+    environment:
+      - constraint:node==D-RSC-SWT-DOC01
+      - MYSQL_ROOT_PASSWORD=supersecret
+    volumes:
+      - ./mysql/dataDir:/var/lib/mysql
+    container_name: db
+    networks:
+      - uc-ol
+
+networks:
+  uc-ol:
+    driver: overlay
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.2.0/24
+          ip_range: 192.168.2.0/24
+          gateway: 192.168.2.1
