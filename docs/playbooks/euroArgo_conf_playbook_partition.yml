@@ -3,13 +3,16 @@
   tasks:
   - name: install pre-req
     apt: name="{{ item }}" update_cache=yes state=latest
-    with_items: [python, tcsh, expect, jq , bc,  python-pip, python-dev, build-essential, libgeos-dev, nmap, git, screen, parallel]
+    with_items: [python, tcsh, expect, jq , bc,  python-pip, python-dev, build-essential, libgeos-dev, nmap, git, screen, parallel, libffi-dev, libssl-dev,software-properties-common]
     become: true
   - {name: pip, pip: name=pyproj,become: yes}
   - {name: pip, pip: name=shapely, become: yes}  
   - {name: pip, pip: name=psutil, become: yes}
   - {name: pip pika, pip: name=pika, become: yes}
-  - {name: pip pika, pip: name=klepto, become: yes}
+  - {name: pip python-dateutil, pip: name=python-dateutil, become: yes}
+  - {name: pip pymongo, pip: name=pymongo version=2.7.2, become: yes}
+  - {name: pip numpy, pip: name=numpy, become: yes}
+  - {name: pip paramiko, pip: name=paramiko, become: yes}
   - {name: mkdir, command: mkfs.ext4 /dev/vdc, become: yes}
   - {name: create mount point data, file: path=/mnt/data/ state=directory owner=vm_user group=vm_user}
   - {name: create mount point source, file: path=/mnt/data/source/ state=directory owner=vm_user group=vm_user}

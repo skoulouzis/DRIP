@@ -232,6 +232,8 @@ public class MessageParsing {
             InputStream stdout = process.getInputStream();
             InputStream stderr = process.getErrorStream();
             pipeStream(fileIn, stdin);
+        }else if (source.equals(SOURCE.CERTIFICATE)) {
+            
         }
         return "/tmp/x509up_u0";
     }

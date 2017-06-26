@@ -67,6 +67,12 @@ def handleDelivery(message):
             fo = open(playbook, "w")
             fo.write(value)
             fo.close()
+        elif name == "composer":
+            value = param["value"]
+            docker-composer = path + "docker-composer.yml"
+            fo = open(docker-composer, "w")
+            fo.write(value)
+            fo.close()     
 
     if manager_type == "kubernetes":
         ret = docker_kubernetes.run(vm_list)
@@ -77,6 +83,7 @@ def handleDelivery(message):
         ret = docker_swarm.run(vm_list)
         if "ERROR" in ret: return ret
         ret1 = control_agent.run(vm_list)
+        #deploy_composer.run(vm_list,docker-composer)
         if "ERROR" in ret1: ret = ret1
         return ret
     elif manager_type == "ansible":
