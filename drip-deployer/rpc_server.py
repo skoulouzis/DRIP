@@ -8,6 +8,7 @@ from vm_info import VmInfo
 import docker_kubernetes
 import docker_engine
 import docker_swarm
+import docker_compose
 import control_agent
 import ansible_playbook
 import sys, argparse
@@ -69,8 +70,9 @@ def handleDelivery(message):
             fo.close()
         elif name == "composer":
             value = param["value"]
-            docker-composer = path + "docker-composer.yml"
-            fo = open(docker-composer, "w")
+            compose_file = path + "docker-compose.yml"
+            compose_name = param["attributes"]["name"]
+            fo = open(compose_file, "w")
             fo.write(value)
             fo.close()     
 
@@ -82,9 +84,8 @@ def handleDelivery(message):
         if "ERROR" in ret: return ret
         ret = docker_swarm.run(vm_list)
         if "ERROR" in ret: return ret
-        ret1 = control_agent.run(vm_list)
-        #deploy_composer.run(vm_list,docker-composer)
-        if "ERROR" in ret1: ret = ret1
+ #       ret1 = control_agent.run(vm_list)
+        ret = docker_compose.run(vm_list, compose_file, compose_name)
         return ret
     elif manager_type == "ansible":
         ret = ansible_playbook.run(vm_list,playbook)
