@@ -36,12 +36,13 @@ from sim.my_face import *
 import json
 import random
 import timeit
+import datetime
 
 
 class Consumer(object):
     '''Sends Interest, listens for data'''
 
-    def __init__(self, prefix, pipeline, count):
+    def __init__(self, prefix, pipeline, count,window,sequence):
         self.prefix = prefix
         self.pipeline = pipeline
         self.count = count
@@ -50,19 +51,20 @@ class Consumer(object):
         self.isDone = False
         self.face = MyFace(False)
         self.start_time = timeit.default_timer()
-        
+        self.window = window
+        self.seq = sequence
+        self.names = self.smart_alg()
+        self.name_index = 0
+        self.interest_count=0
 
     def run(self):
         try:
-            while not self.isDone:
+            while self.nextSegment < self.count:
                 name = self.get_next_name()
                 self._sendNextInterest(name)
                 self.nextSegment += 1
-            
-#            self.face.processEvents()
-#            time.sleep(0.01)
             elapsed = timeit.default_timer() - self.start_time
-            print "elapsed (sec): %s" %elapsed
+            print "elapsed (sec): %s, total_interest_count: %s, date: %s" %(elapsed, self.nextSegment,datetime.datetime.now())
         except RuntimeError as e:
             print "ERROR: %s" % e
 #        finally:
@@ -77,7 +79,6 @@ class Consumer(object):
         ndn_data.setContent(data['content'])
         payload = ndn_data.getContent()
         name = Name(data['name'])
-        self.nextSegment += 1
 #        print "Received data: %s\n" % payload.toRawStr()
         del self.outstanding[name.toUri()]
 
@@ -85,12 +86,61 @@ class Consumer(object):
     
         
     def get_next_name(self):
-        suf = str(random.randint(0,10))
-        name = Name("/ndn/"+suf)
+        if self.name_index >  (len(self.names)-1):
+            self.names = self.smart_alg()
+            self.name_index = 0
         
-        if self.nextSegment > self.count:
-             self.isDone = True
+        name = self.names[self.name_index]
+        name = Name(name)
+#        suf = str(random.randint(0,10))
+#        name = Name("/ndn/"+suf)
+#        print "Requesting: %s"%(name)
+        self.name_index +=1
         return name
+    
+    def dump_client(self):
+        size_list = [50,70,90,1000,3000,15000,20000,30000,50000,100000,200000,250000,400000,500000,700000,750000,800000,850000,1000000,1500000,1600000,1700000,1900000,2500000,5000000,5500000,7500000,8200000,9000000,10000000]
+        names = {}
+        for i in range(0,30,1):
+            key = "/ndn/" + str(i)
+            value = size_list[i]
+            names[key] = value
+        #print names
+        pick = random.choice(names.keys())
+        #print pick, str(names[pick])
+        #pick random element in the dictionery every 0.1 second
+        # while True:
+        #     pick = random.choice(names.keys())
+        #     print pick, str(names[pick])
+        #     time.sleep(0.1)
+        return pick + ":" + str(names[pick])
+    
+    def smart_alg(self):
+        patch = {}
+        for i in xrange (self.window):
+            from_dump = self.dump_client()
+            key,value= from_dump.split(':')
+            value = int(value)
+            patch[key] = value
+        keys = []
+        if self.seq == 1:
+            for key in patch:
+                 keys.append(key)
+            return keys
+        elif self.seq == 2:
+            patch = OrderedDict(sorted(patch.items(),key=lambda x:x[1]))
+            for key in patch:
+                keys.append(key) 
+            return keys
+        elif self.seq == 3:
+            patch = OrderedDict(sorted(patch.items(), key=lambda x:x[1]))
+            patch = OrderedDict(reversed(patch.items()))
+            for key in patch:
+                keys.append(key)
+            return keys
+        else:
+            print "Not a method!" 
+            return None
         
 
     def _sendNextInterest(self, name):
@@ -127,13 +177,17 @@ if __name__ == "__main__":
 
 #    parser.add_argument("-u", "--uri", required=True, help='ndn URI to retrieve')
     parser.add_argument("-c", "--count", required=False, help='number of (unique) Interests to send before exiting, default = repeat until final block', nargs='?', const=1,  type=int, default=None)
+    parser.add_argument("-w", "--window", required=True, help='Size of window', nargs='?', const=1,  type=int, default=1)
+    parser.add_argument("-s", "--sequence", required=True, help='sorting sequence', nargs='?', const=1,  type=int, default=1)
 
     arguments = parser.parse_args()
 
     try:
         count = arguments.count
+        window = arguments.window
+        sequence = arguments.sequence
         
-        Consumer(Name("uri"), None, count).run()
+        Consumer(Name("uri"), None, count,window,sequence).run()
 
     except:
         traceback.print_exc(file=sys.stdout)
