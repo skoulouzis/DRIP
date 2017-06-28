@@ -51,7 +51,7 @@ class Producer(object):
         self.max_cache_size = cache_size
         self.eviction_alg = eviction_alg
         self.interest_count=0
-        print "max_cache_size: %d, eviction_algorithm: %s, cache_miss_delay: %d"%(self.max_cache_size,self.eviction_alg,self.delay)
+        print "max_cache_size: %s, eviction_algorithm: %s, cache_miss_delay: %s"%(self.max_cache_size,self.eviction_alg,self.delay)
 
 
     def run(self, namespace):
@@ -122,7 +122,7 @@ class Producer(object):
         
     def calculate_hit_ratio(self):
         cache_hit_ratio = ( float(self.cache_hit) / (float(self.cache_hit) + float(self.cache_miss)) ) * 100
-        print "cache_hit_ratio: %s, total_interest_count: %d, date: %s"%(cache_hit_ratio,self.interest_count,datetime.datetime.now())
+        print "cache_hit_ratio: %s, total_interest_count: %s, date: %s"%(cache_hit_ratio,self.interest_count,datetime.datetime.now())
         
         
     def evict(self):
