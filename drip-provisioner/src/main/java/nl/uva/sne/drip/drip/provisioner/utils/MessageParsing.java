@@ -18,14 +18,12 @@ package nl.uva.sne.drip.drip.provisioner.utils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,11 +31,15 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import nl.uva.sne.drip.commons.utils.AAUtils;
+import nl.uva.sne.drip.commons.utils.AAUtils.SOURCE;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import org.globus.myproxy.MyProxyException;
+import org.ietf.jgss.GSSException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,11 +53,6 @@ import provisioning.credential.EGICredential;
  * @author S. Koulouzis
  */
 public class MessageParsing {
-
-    enum SOURCE {
-        MY_PROXY,
-        CERTIFICATE
-    }
 
     public static List<File> getTopologies(JSONArray parameters, String tempInputDirPath, int level) throws JSONException, IOException {
         List<File> topologyFiles = new ArrayList<>();
@@ -140,7 +137,7 @@ public class MessageParsing {
         return map;
     }
 
-    public static List<Credential> getCloudCredentials(JSONArray parameters, String tempInputDirPath) throws JSONException, FileNotFoundException, IOException, MyProxyException, CertificateEncodingException {
+    public static List<Credential> getCloudCredentials(JSONArray parameters, String tempInputDirPath) throws JSONException, FileNotFoundException, IOException, MyProxyException, CertificateEncodingException, GSSException {
         List<Credential> credentials = new ArrayList<>();
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
@@ -181,9 +178,11 @@ public class MessageParsing {
                         myProxyEndpoint = PropertyValues.MY_PROXY_ENDPOINT;
                     }
                     if (myProxyEndpoint != null) {
-                        egi.proxyFilePath = generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.MY_PROXY);
+                        String[] myVOs = ((String) att.get("vo_names")).split(",");
+                        List voNames = (List) Arrays.asList(myVOs);
+                        egi.proxyFilePath = AAUtils.generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.MY_PROXY, myProxyEndpoint, voNames);
                     } else {
-                        egi.proxyFilePath = generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.CERTIFICATE);
+                        egi.proxyFilePath = AAUtils.generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.CERTIFICATE);
                     }
                     egi.trustedCertPath = PropertyValues.TRUSTED_CERTIFICATE_FOLDER;
                     credential = egi;
@@ -208,47 +207,6 @@ public class MessageParsing {
         }
 
         return credentials;
-    }
-
-    private static String generateProxy(String accessKeyId, String secretKey, SOURCE source) throws MyProxyException, IOException, CertificateEncodingException {
-        if (source.equals(SOURCE.MY_PROXY)) {
-            //After 10 years of grid comuting and using certificates we still can't get it to work.             
-//            MyProxy myProxy = new MyProxy(PropertyValues.MY_PROXY_ENDPOINT, 7512);
-//            myProxy.writeTrustRoots(PropertyValues.TRUSTED_CERTIFICATE_FOLDER);
-//            
-//            GSSCredential cert = myProxy.get(accessKeyId, secretKey, 2 * 3600);
-//            X509Credential gCred = ((GlobusGSSCredentialImpl) cert).getX509Credential();
-//            gCred.save(new FileOutputStream("/tmp/x509up_u0"));
-            String cmd = "myproxy-logon "
-                    + "--voms fedcloud.egi.eu "
-                    + "-s " + PropertyValues.MY_PROXY_ENDPOINT
-                    + " -l " + accessKeyId
-                    + " --stdin_pass"
-                    + " --out /tmp/x509up_u0";
-//
-            InputStream fileIn = new ByteArrayInputStream(secretKey.getBytes());
-            Process process = Runtime.getRuntime().exec(cmd);
-            OutputStream stdin = process.getOutputStream();
-            InputStream stdout = process.getInputStream();
-            InputStream stderr = process.getErrorStream();
-            pipeStream(fileIn, stdin);
-        }else if (source.equals(SOURCE.CERTIFICATE)) {
-            
-        }
-        return "/tmp/x509up_u0";
-    }
-
-    public static void pipeStream(InputStream input, OutputStream output)
-            throws IOException {
-        byte buffer[] = new byte[1024];
-        int numRead;
-
-        do {
-            numRead = input.read(buffer);
-            output.write(buffer, 0, numRead);
-        } while (input.available() > 0);
-
-        output.flush();
     }
 
     private static void downloadCACertificates(URL url) throws MalformedURLException, IOException {

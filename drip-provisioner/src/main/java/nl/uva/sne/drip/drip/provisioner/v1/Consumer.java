@@ -44,6 +44,7 @@ import nl.uva.sne.drip.drip.provisioner.utils.PropertyValues;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.globus.myproxy.MyProxyException;
+import org.ietf.jgss.GSSException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -456,7 +457,7 @@ public class Consumer extends DefaultConsumer {
         EGIDatabase egiDatabase = new EGIDatabase();
         egiDatabase.loadDomainInfoFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "EGI_Domain_Info");
         EC2Database ec2Database = new EC2Database();
-        ec2Database.loadDomainFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "domains");
+        ec2Database.loadDomainInfoFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "domains");
         ec2Database.loadAmiFromFile(PropertyValues.DOMAIN_INFO_PATH + File.separator + "OS_Domain_AMI");
         if (userDatabase.databases == null) {
             userDatabase.databases = new HashMap<>();
@@ -466,7 +467,7 @@ public class Consumer extends DefaultConsumer {
         return userDatabase;
     }
 
-    private UserCredential getUserCredential(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException, FileNotFoundException, MyProxyException, CertificateEncodingException {
+    private UserCredential getUserCredential(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException, FileNotFoundException, MyProxyException, CertificateEncodingException, GSSException {
         UserCredential userCredential = new UserCredential();
         List<Credential> credentials = MessageParsing.getCloudCredentials(parameters, tempInputDirPath);
         for (Credential cred : credentials) {
