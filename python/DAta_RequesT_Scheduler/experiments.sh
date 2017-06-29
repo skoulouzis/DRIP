@@ -1,9 +1,9 @@
 #!/bin/bash
 
 cache_eviction=(lru lfu fifo rr)
-cache_size=("10000000" "15000000" "20000000" "50000000" "100000000")
-window=("5" "10" "15" "20" "25" "30" "35" "40" "45" "50")
-arr_method=("1" "2" "3")
+cache_size=("10000000" "15000000")
+window=("5" "10")
+arr_method=("1")
 
 for a in "${cache_eviction[@]}"; do
   for b in "${cache_size[@]}"; do
@@ -20,7 +20,7 @@ for a in "${cache_eviction[@]}"; do
          echo "consumer experiment ended!"
          mv producer_cache_size*.csv experiments-results/prod/exp-evict-$a-size-$b-win-$c-meth-$d-prod.csv
          
-         mv consumer_results.csv ./experiments-results/cons/exp-evict-$a-size-$b-win-$c-meth-$d-cons.txt
+         mv consumer_request_results.csv ./experiments-results/cons/exp-evict-$a-size-$b-win-$c-meth-$d-cons.txt
 #          sleep 1
          kill -9 $pid_prod
          echo "Producer killed"

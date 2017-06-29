@@ -51,33 +51,32 @@ class Consumer(object):
         self.outstanding = dict()
         self.isDone = False
         self.face = MyFace(False)
-        self.start_time = timeit.default_timer()
         self.window = window
         self.seq = sequence
-        self.names = self.smart_alg()
         self.name_index = 0
         self.interest_count=0
+        self.request_elapsed_min = sys.maxint
+        self.request_elapsed_max = -sys.maxint - 1
+        self.request_elapsed_avg = 0
+        self.request_elapsed_sum = 0
+        self.names = []
 
     def run(self):
         try:
             while self.nextSegment < self.count:
+                self.request_start_time = timeit.default_timer()
                 name = self.get_next_name()
                 self._sendNextInterest(name)
                 self.nextSegment += 1
-            elapsed = timeit.default_timer() - self.start_time
-            
-            filename = str('consumer_results.csv')
-#        
-            if os.path.exists(filename):
-                append_write = 'a'
-                line = (str(elapsed)+","+str(self.nextSegment)+","+str(datetime.datetime.now()))
-            else:
-                append_write = 'w'
-                line = "elapsed (sec), total_interest_count, date\n"+(str(elapsed)+","+str(self.nextSegment)+","+str(datetime.datetime.now()))
-#
-            report = open(filename,append_write)
-            report.write(line + '\n')
-            report.close()
+                self.request_elapsed = timeit.default_timer() - self.request_start_time
+                if self.request_elapsed > self.request_elapsed_max:
+                    self.request_elapsed_max = self.request_elapsed
+                
+                if self.request_elapsed < self.request_elapsed_min:
+                    self.request_elapsed_min = self.request_elapsed
+                    
+                self.request_elapsed_sum += self.request_elapsed
+                self.request_elapsed_avg = float(self.request_elapsed_sum) / float(self.nextSegment)
             
         except RuntimeError as e:
             print "ERROR: %s" % e
@@ -100,10 +99,27 @@ class Consumer(object):
     
         
     def get_next_name(self):
+        batch_start_time = timeit.default_timer()
+        
+        if not self.names:
+            self.names = self.smart_alg()
         if self.name_index >  (len(self.names)-1):
             self.names = self.smart_alg()
             self.name_index = 0
-        
+            batch_elapsed = timeit.default_timer() - batch_start_time
+            
+            filename = str('consumer_request_results.csv')
+            if os.path.exists(filename):
+                append_write = 'a'
+                line = (str(batch_elapsed)+","+str(self.nextSegment)+","+str(self.request_elapsed_min)+","+str(self.request_elapsed_max)+","+str(self.request_elapsed_avg)+","+str(datetime.datetime.now()))
+            else:
+                append_write = 'w'
+                line = "batch_elapsed,interest_count,request_elapsed_min,request_elapsed_max,request_elapsed_avg, date\n"+(str(batch_elapsed)+","+str(self.nextSegment)+","+str(self.request_elapsed_min)+","+str(self.request_elapsed_max)+","+str(self.request_elapsed_avg)+","+str(datetime.datetime.now()))
+#
+            report = open(filename,append_write)
+            report.write(line + '\n')
+            report.close()
+
         name = self.names[self.name_index]
         name = Name(name)
 #        suf = str(random.randint(0,10))
@@ -114,43 +130,44 @@ class Consumer(object):
     
     def dump_client(self):
         size_list = [50,70,90,1000,3000,15000,20000,30000,50000,100000,200000,250000,400000,500000,700000,750000,800000,850000,1000000,1500000,1600000,1700000,1900000,2500000,5000000,5500000,7500000,8200000,9000000,10000000]
-        names = {}
+        names = []
         for i in range(0,30,1):
-            key = "/ndn/" + str(size_list[i]) #str(i)
-            value = size_list[i]
-            names[key] = value
-        #print names
-        pick = random.choice(names.keys())
+            names.append(size_list[i])
+#        print names
+#        pick = random.choice(names.keys())
+#        print k,v 
         #print pick, str(names[pick])
         #pick random element in the dictionery every 0.1 second
         # while True:
         #     pick = random.choice(names.keys())
         #     print pick, str(names[pick])
         #     time.sleep(0.1)
-        return pick + ":" + str(names[pick])
+        return random.choice(names)
     
     def smart_alg(self):
-        patch = {}
+        batch = []
         for i in xrange (self.window):
-            from_dump = self.dump_client()
-            key,value= from_dump.split(':')
-            value = int(value)
-            patch[key] = value
+            batch.append(self.dump_client())
         keys = []
         if self.seq == 1:
-            for key in patch:
-                 keys.append(key)
+            for key in batch:
+                name = "/ndn/"+str(key)
+                keys.append(name)
             return keys
         elif self.seq == 2:
-            patch = OrderedDict(sorted(patch.items(),key=lambda x:x[1]))
-            for key in patch:
-                keys.append(key) 
+#            batch = OrderedDict(sorted(batch.items(),key=lambda x:x[1]))
+            batch = sorted(batch, key=int)               # SF
+            for key in batch:
+                name = "/ndn/"+str(key)
+                keys.append(name) 
             return keys
         elif self.seq == 3:
-            patch = OrderedDict(sorted(patch.items(), key=lambda x:x[1]))
-            patch = OrderedDict(reversed(patch.items()))
-            for key in patch:
-                keys.append(key)
+#            batch = OrderedDict(sorted(batch.items(), key=lambda x:x[1]))
+#            batch = OrderedDict(reversed(batch.items()))
+            batch = sorted(batch, key=int, reverse=True) # BF
+            for key in batch:
+                name = "/ndn/"+str(key)
+                keys.append(name) 
             return keys
         else:
             print "Not a method!" 
@@ -183,7 +200,7 @@ class Consumer(object):
             self._sendNextInterestWithSegment(name)
         else:
             self.isDone = True
-
+10
 
 
 if __name__ == "__main__":
@@ -200,7 +217,8 @@ if __name__ == "__main__":
         count = arguments.count
         window = arguments.window
         sequence = arguments.sequence
-        
+        if count <= window:
+            print "count must be larger than window"
         Consumer(Name("uri"), None, count,window,sequence).run()
 
     except:
