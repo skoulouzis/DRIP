@@ -122,7 +122,18 @@ class Producer(object):
         
     def calculate_hit_ratio(self):
         cache_hit_ratio = ( float(self.cache_hit) / (float(self.cache_hit) + float(self.cache_miss)) ) * 100
-        print "cache_hit_ratio: %s, total_interest_count: %s, date: %s"%(cache_hit_ratio,self.interest_count,datetime.datetime.now())
+        filename = str('producer_cache_size-'+str(self.max_cache_size)+'_eviction_alg-'+self.eviction_alg+'_delay-'+str(self.delay)+'.csv')
+        
+        if os.path.exists(filename):
+            append_write = 'a'
+            line = (str(cache_hit_ratio)+","+str(self.interest_count)+","+str(datetime.datetime.now()))
+        else:
+            append_write = 'w'
+            line = "cache_hit_ratio, total_interest_count, date\n"+(str(cache_hit_ratio)+","+str(self.interest_count)+","+str(datetime.datetime.now()))
+            
+        report = open(filename,append_write)
+        report.write(line + '\n')
+        report.close()
         
         
     def evict(self):
@@ -206,4 +217,3 @@ if __name__ == '__main__':
 
     except:
         traceback.print_exc(file=sys.stdout)
-sys.exit(1)

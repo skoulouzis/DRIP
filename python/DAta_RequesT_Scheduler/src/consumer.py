@@ -37,6 +37,7 @@ import json
 import random
 import timeit
 import datetime
+from collections import OrderedDict
 
 
 class Consumer(object):
@@ -64,7 +65,20 @@ class Consumer(object):
                 self._sendNextInterest(name)
                 self.nextSegment += 1
             elapsed = timeit.default_timer() - self.start_time
-            print "elapsed (sec): %s, total_interest_count: %s, date: %s" %(elapsed, self.nextSegment,datetime.datetime.now())
+            
+            filename = str('consumer_results.csv')
+#        
+            if os.path.exists(filename):
+                append_write = 'a'
+                line = (str(elapsed)+","+str(self.nextSegment)+","+str(datetime.datetime.now()))
+            else:
+                append_write = 'w'
+                line = "elapsed (sec), total_interest_count, date\n"+(str(elapsed)+","+str(self.nextSegment)+","+str(datetime.datetime.now()))
+#
+            report = open(filename,append_write)
+            report.write(line + '\n')
+            report.close()
+            
         except RuntimeError as e:
             print "ERROR: %s" % e
 #        finally:
@@ -192,4 +206,3 @@ if __name__ == "__main__":
     except:
         traceback.print_exc(file=sys.stdout)
         print "Error parsing command line arguments"
-sys.exit(1)
