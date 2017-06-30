@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.commons.utils.AAUtils;
 import nl.uva.sne.drip.commons.utils.AAUtils.SOURCE;
+import static nl.uva.sne.drip.commons.utils.AAUtils.downloadCACertificates;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import org.globus.myproxy.MyProxyException;
@@ -166,9 +167,9 @@ public class MessageParsing {
                         trustedCertificatesURL = (String) att.get("trustedCertificatesURL");
                     }
                     if (trustedCertificatesURL != null) {
-                        downloadCACertificates(new URL(trustedCertificatesURL));
+                        downloadCACertificates(new URL(trustedCertificatesURL), PropertyValues.TRUSTED_CERTIFICATE_FOLDER);
                     } else {
-                        downloadCACertificates(PropertyValues.CA_BUNDLE_URL);
+                        downloadCACertificates(PropertyValues.CA_BUNDLE_URL, PropertyValues.TRUSTED_CERTIFICATE_FOLDER);
                     }
                     String myProxyEndpoint = null;
                     if (att != null && att.containsKey("myProxyEndpoint")) {
@@ -182,7 +183,7 @@ public class MessageParsing {
                         List voNames = (List) Arrays.asList(myVOs);
                         egi.proxyFilePath = AAUtils.generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.MY_PROXY, myProxyEndpoint, voNames);
                     } else {
-                        egi.proxyFilePath = AAUtils.generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.CERTIFICATE);
+                        egi.proxyFilePath = AAUtils.generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.PROXY_FILE, myProxyEndpoint, null);
                     }
                     egi.trustedCertPath = PropertyValues.TRUSTED_CERTIFICATE_FOLDER;
                     credential = egi;
@@ -207,85 +208,6 @@ public class MessageParsing {
         }
 
         return credentials;
-    }
-
-    private static void downloadCACertificates(URL url) throws MalformedURLException, IOException {
-        String[] parts = url.getFile().split("/");
-        String fileName = parts[parts.length - 1];
-        File bundle = new File(PropertyValues.TRUSTED_CERTIFICATE_FOLDER + File.separator + fileName);
-        if (!bundle.getParentFile().exists()) {
-            if (!bundle.getParentFile().mkdirs()) {
-                throw new IOException(bundle + " could not be created");
-            }
-        }
-
-        if (!bundle.exists()) {
-            URL website = new URL(url.toString());
-            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-
-            FileOutputStream fos = new FileOutputStream(bundle);
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            untar(new File(PropertyValues.TRUSTED_CERTIFICATE_FOLDER), bundle);
-        }
-    }
-
-    private static void untar(File dest, File tarFile) throws IOException {
-        Process p = Runtime.getRuntime().exec(" tar -xzvf " + tarFile.getAbsolutePath() + " -C " + dest.getAbsolutePath());
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        String s = null;
-        StringBuilder error = new StringBuilder();
-        while ((s = stdError.readLine()) != null) {
-            error.append(s);
-        }
-        if (s != null) {
-            throw new IOException(error.toString());
-        }
-//        dest.mkdir();
-//        TarArchiveInputStream tarIn;
-//
-//        tarIn = new TarArchiveInputStream(
-//                new GzipCompressorInputStream(
-//                        new BufferedInputStream(
-//                                new FileInputStream(
-//                                        tarFile
-//                                )
-//                        )
-//                )
-//        );
-//
-//        org.apache.commons.compress.archivers.tar.TarArchiveEntry tarEntry = tarIn.getNextTarEntry();
-//
-//        while (tarEntry != null) {
-//            File destPath = new File(dest, tarEntry.getName());
-//            if (tarEntry.isDirectory()) {
-//                destPath.mkdirs();
-//            } else {
-//                destPath.createNewFile();
-//                byte[] btoRead = new byte[1024];
-//                try (BufferedOutputStream bout = new BufferedOutputStream(new FileOutputStream(destPath))) {
-//                    int len;
-//
-//                    while ((len = tarIn.read(btoRead)) != -1) {
-//                        bout.write(btoRead, 0, len);
-//                    }
-//                }
-////                Set<PosixFilePermission> perms = new HashSet<>();
-////                perms.add(PosixFilePermission.OWNER_READ);
-////                perms.add(PosixFilePermission.OWNER_WRITE);
-////                perms.add(PosixFilePermission.OWNER_EXECUTE);
-////
-////                perms.add(PosixFilePermission.GROUP_READ);
-////                perms.add(PosixFilePermission.GROUP_WRITE);
-////                perms.add(PosixFilePermission.GROUP_EXECUTE);
-////
-////                perms.add(PosixFilePermission.OTHERS_READ);
-////                perms.add(PosixFilePermission.OTHERS_EXECUTE);
-////                perms.add(PosixFilePermission.OTHERS_EXECUTE);
-////                Files.setPosixFilePermissions(Paths.get(destPath.getAbsolutePath()), perms);
-//            }
-//            tarEntry = tarIn.getNextTarEntry();
-//        }
-//        tarIn.close();
     }
 
 }
