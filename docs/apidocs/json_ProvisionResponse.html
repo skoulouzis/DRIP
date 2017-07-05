@@ -80,18 +80,18 @@
         </thead>
         <tbody>
         <tr>
-          <td>  <span class="property-name">deployParameters</span>
+          <td>  <span class="property-name">cloudKeyPairIDs</span>
 </td>
-          <td>  <span class="datatype-reference">array of <a href="json_DeployParameter.html">DeployParameter</a>
+          <td>  <span class="datatype-reference">array of string
 </span>
 </td>
           <td>  <span class="property-description"></span>
 </td>
         </tr>
         <tr>
-          <td>  <span class="property-name">cloudKeyPairIDs</span>
+          <td>  <span class="property-name">deployParameters</span>
 </td>
-          <td>  <span class="datatype-reference">array of string
+          <td>  <span class="datatype-reference">array of <a href="json_DeployParameter.html">DeployParameter</a>
 </span>
 </td>
           <td>  <span class="property-description"></span>
@@ -115,13 +115,13 @@
           <td><span class="property-description"></span></td>
         </tr>
         <tr>
-          <td><span class="property-name">cloudCredentialsIDs</span></td>
+          <td><span class="property-name">userKeyPairIDs</span></td>
           <td><span class="datatype-reference">array of string
 </span></td>
           <td><span class="property-description"></span></td>
         </tr>
         <tr>
-          <td><span class="property-name">userKeyPairIDs</span></td>
+          <td><span class="property-name">cloudCredentialsIDs</span></td>
           <td><span class="datatype-reference">array of string
 </span></td>
           <td><span class="property-description"></span></td>
@@ -166,6 +166,7 @@
       <p class="lead">Example</p>
       
       <pre class="prettyprint language-js example">{
+  &quot;cloudKeyPairIDs&quot; : [ &quot;...&quot;, &quot;...&quot; ],
   &quot;deployParameters&quot; : [ {
     &quot;role&quot; : &quot;slave&quot;,
     &quot;user&quot; : &quot;vm_user&quot;,
@@ -175,11 +176,10 @@
     &quot;user&quot; : &quot;...&quot;,
     &quot;IP&quot; : &quot;...&quot;
   } ],
-  &quot;cloudKeyPairIDs&quot; : [ &quot;...&quot;, &quot;...&quot; ],
   &quot;planID&quot; : &quot;ASedsfd46b4fDFd83ba1q&quot;,
   &quot;deployerKeyPairIDs&quot; : [ &quot;...&quot;, &quot;...&quot; ],
-  &quot;cloudCredentialsIDs&quot; : [ &quot;58e3946e0fb4f562d84ba1ad&quot;, &quot;...&quot; ],
   &quot;userKeyPairIDs&quot; : [ &quot;ASedsfd46b4fFd344a1A&quot;, &quot;...&quot; ],
+  &quot;cloudCredentialsIDs&quot; : [ &quot;58e3946e0fb4f562d84ba1ad&quot;, &quot;...&quot; ],
   &quot;keyValue&quot; : {
     &quot;property1&quot; : { },
     &quot;property2&quot; : { }

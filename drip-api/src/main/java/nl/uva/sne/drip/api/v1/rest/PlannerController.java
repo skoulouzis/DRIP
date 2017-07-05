@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.PlannerService;
+import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanRequest;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
@@ -58,6 +59,22 @@ public class PlannerController {
 
     @Autowired
     private PlannerService plannerService;
+
+    @Autowired
+    private ToscaService toscaService;
+
+    /**
+     * verifies plan. Checks if this is a concrete plan
+     *
+     * @param toscaContents
+     * @return the id of the created plan
+     */
+    @RequestMapping(value = "/vereify_plan", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    Boolean verifyPlan(@RequestBody String toscaContents) {
+        return plannerService.verify(toscaContents);
+    }
 
     /**
      * Plans resources (number, size of VMs etc).

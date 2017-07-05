@@ -226,13 +226,35 @@ public class PlannerService {
     }
 
     public String saveStringContents(String ymlContents, Integer level, String name) {
-        Map<String, Object> map = Converter.cleanStringContents(ymlContents,true);
+        Map<String, Object> map = Converter.cleanStringContents(ymlContents, true);
         PlanResponse pr = new PlanResponse();
         pr.setKvMap(map);
         pr.setLevel(level);
         pr.setName(name);
         save(pr);
         return pr.getId();
+    }
+
+    public boolean verify(String ymlContents) {
+        Map<String, Object> map = Converter.cleanStringContents(ymlContents, true);
+        ArrayList<Map> topologies = topologies = (ArrayList) map.get("topologies");
+        ArrayList<String> topologyNames = new ArrayList();
+        for (Map<String, Object> m : topologies) {
+            String topology = (String) m.get("topology");
+            topologyNames.add(topology);
+        }
+        for (String name : topologyNames) {
+            Map<String, Object> topology = (Map<String, Object>) map.get(name);
+            ArrayList<Map> components = (ArrayList<Map>) topology.get("components");
+            for (Map<String, Object> component : components) {
+                String nodeType = (String) component.get("nodeType");
+                String OStype = (String) component.get("OStype");
+                if (nodeType != null && OStype != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
