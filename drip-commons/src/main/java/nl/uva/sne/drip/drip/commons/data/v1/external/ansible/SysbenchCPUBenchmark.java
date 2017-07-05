@@ -41,8 +41,10 @@ public class SysbenchCPUBenchmark extends BenchmarkResult {
     private String ansibleOutputID;
 
     /**
+     * The sysbench version
      * @return the sysbenchVersion
      */
+    
     public String getSysbenchVersion() {
         return sysbenchVersion;
     }

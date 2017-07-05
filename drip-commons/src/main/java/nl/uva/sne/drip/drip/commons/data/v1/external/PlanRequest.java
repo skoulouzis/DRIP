@@ -16,9 +16,11 @@
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
+ * This class represents a plan request sent to the planner.
  *
  * @author S. Koulouzis
  */
@@ -39,8 +41,11 @@ public class PlanRequest {
     private String domain;
 
     /**
+     * The ID of the tosca file the generated this plan
+     *
      * @return the toscaID
      */
+    @DocumentationExample("592d5884e452f1b9b666a657")
     public String getToscaID() {
         return toscaID;
     }
@@ -53,8 +58,11 @@ public class PlanRequest {
     }
 
     /**
+     * The type of cluster manager
+     *
      * @return the managerType
      */
+    @DocumentationExample("swarm")
     public String getManagerType() {
         return managerType;
     }
@@ -67,8 +75,11 @@ public class PlanRequest {
     }
 
     /**
+     * The default username to be set to all VMs
+     *
      * @return the vmUserName
      */
+    @DocumentationExample("vm_user")
     public String getVmUserName() {
         return vmUserName;
     }
@@ -81,8 +92,11 @@ public class PlanRequest {
     }
 
     /**
+     * The cloud provider
+     *
      * @return the cloudProvider
      */
+    @DocumentationExample("egi")
     public String getCloudProvider() {
         return cloudProvider;
     }
@@ -95,8 +109,11 @@ public class PlanRequest {
     }
 
     /**
+     * The type of OS for the VMs
+     *
      * @return the osType
      */
+    @DocumentationExample("Ubuntu16.04")
     public String getOsType() {
         return osType;
     }
@@ -109,8 +126,10 @@ public class PlanRequest {
     }
 
     /**
+     * The domain to request the VMs
      * @return the domain
      */
+    @DocumentationExample("us-east-1")
     public String getDomain() {
         return domain;
     }
