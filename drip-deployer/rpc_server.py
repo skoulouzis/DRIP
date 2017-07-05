@@ -69,8 +69,8 @@ def handleDelivery(message):
             fo.close()
         elif name == "composer":
             value = param["value"]
-            docker-composer = path + "docker-composer.yml"
-            fo = open(docker-composer, "w")
+            docker_composer = path + "docker-composer.yml"
+            fo = open(docker_composer, "w")
             fo.write(value)
             fo.close()     
 
@@ -83,7 +83,7 @@ def handleDelivery(message):
         ret = docker_swarm.run(vm_list)
         if "ERROR" in ret: return ret
         ret1 = control_agent.run(vm_list)
-        #deploy_composer.run(vm_list,docker-composer)
+        #deploy_composer.run(vm_list,docker_composer)
         if "ERROR" in ret1: ret = ret1
         return ret
     elif manager_type == "ansible":

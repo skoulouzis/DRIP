@@ -43,7 +43,7 @@ import nl.uva.sne.drip.drip.provisioner.utils.MessageParsing;
 import nl.uva.sne.drip.drip.provisioner.utils.PropertyValues;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.globus.myproxy.MyProxyException;
+//import org.globus.myproxy.MyProxyException;
 import org.ietf.jgss.GSSException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,6 +57,7 @@ import provisioning.database.EC2.EC2Database;
 import provisioning.database.EGI.EGIDatabase;
 import provisioning.database.UserDatabase;
 import provisioning.engine.TEngine.TEngine;
+import provisioning.engine.VEngine.EGI.EGIAgent;
 import topologyAnalysis.TopologyAnalysisMain;
 import topologyAnalysis.dataStructure.SubTopologyInfo;
 import topologyAnalysis.dataStructure.VM;
@@ -100,7 +101,7 @@ public class Consumer extends DefaultConsumer {
         String response = "";
 
         try {
-            //The queue only moves bytes so we need to convert them to stting 
+            //The queue only moves bytes so we need to convert them to string 
             String message = new String(body, "UTF-8");
 
             String tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
@@ -209,7 +210,7 @@ public class Consumer extends DefaultConsumer {
             }
 
             userDatabase = getUserDB();
-
+            
             /*ProvisionRequest pq = new ProvisionRequest();
 		pq.topologyName = "ec2_zh_b";
 		ArrayList<ProvisionRequest> provisionReqs = new ArrayList<ProvisionRequest>();
@@ -467,7 +468,7 @@ public class Consumer extends DefaultConsumer {
         return userDatabase;
     }
 
-    private UserCredential getUserCredential(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException, FileNotFoundException, MyProxyException, CertificateEncodingException, GSSException {
+    private UserCredential getUserCredential(JSONArray parameters, String tempInputDirPath) throws JSONException, IOException, FileNotFoundException, CertificateEncodingException, GSSException {
         UserCredential userCredential = new UserCredential();
         List<Credential> credentials = MessageParsing.getCloudCredentials(parameters, tempInputDirPath);
         for (Credential cred : credentials) {

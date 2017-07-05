@@ -74,7 +74,7 @@
             <version>4.2.1.RELEASE</version>
             <type>jar</type>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.jglobus</groupId>
             <artifactId>ssl-proxies</artifactId>
             <version>2.1.0</version>
@@ -85,7 +85,7 @@
             <artifactId>myproxy</artifactId>
             <version>2.1.0</version>
             <type>jar</type>
-        </dependency>        
+        </dependency>        -->
     </dependencies>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

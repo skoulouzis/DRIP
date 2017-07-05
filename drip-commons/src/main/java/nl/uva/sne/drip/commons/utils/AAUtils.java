@@ -24,18 +24,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.cert.CertificateEncodingException;
 import java.util.List;
 import static nl.uva.sne.drip.commons.utils.FileUtils.untar;
-import org.globus.common.CoGProperties;
-import org.globus.myproxy.GetParams;
-import org.globus.myproxy.MyProxyException;
-import org.globus.util.Util;
-import org.gridforum.jgss.ExtendedGSSCredential;
-import org.gridforum.jgss.ExtendedGSSManager;
-import org.ietf.jgss.GSSCredential;
-import org.ietf.jgss.GSSException;
-import org.ietf.jgss.GSSManager;
+//import org.globus.common.CoGProperties;
+//import org.globus.myproxy.GetParams;
+//import org.globus.myproxy.MyProxyException;
+//import org.globus.util.Util;
+//import org.gridforum.jgss.ExtendedGSSCredential;
+//import org.gridforum.jgss.ExtendedGSSManager;
+//import org.ietf.jgss.GSSCredential;
+//import org.ietf.jgss.GSSException;
+//import org.ietf.jgss.GSSManager;
 
 /**
  *
@@ -48,32 +50,40 @@ public class AAUtils {
         CERTIFICATE, PROXY_FILE
     }
 
-    public static String generateProxy(String accessKeyId, String secretKey, SOURCE source, String myProxyEndpoint, List voname) throws IOException, CertificateEncodingException, GSSException, MyProxyException {
+    public static String generateProxy(String accessKeyId, String secretKey, SOURCE source, String myProxyEndpoint, List voname) throws IOException, CertificateEncodingException {
         File proxy_file = null;
         switch (source) {
             case MY_PROXY:
-                GetParams getRequest = new GetParams();
-                getRequest.setUserName(accessKeyId);
-                getRequest.setCredentialName(null);
-                getRequest.setLifetime(43200);
-                getRequest.setWantTrustroots(false);
-                getRequest.setPassphrase(secretKey);
-                getRequest.setVoname(voname);
-                GSSManager manager = ExtendedGSSManager.getInstance();
-                GSSCredential credential = manager.createCredential(GSSCredential.INITIATE_ONLY);
-                org.globus.myproxy.MyProxy myProxy = new org.globus.myproxy.MyProxy(myProxyEndpoint, 7512);
-                GSSCredential newCred = myProxy.get(credential, getRequest);
-                CoGProperties properties = CoGProperties.getDefault();
-                String outputFile = properties.getProxyFile();
-                proxy_file = new File(outputFile);
-                String path = proxy_file.getPath();
-                try (FileOutputStream out = new FileOutputStream(path);) {
-                    Util.setOwnerAccessOnly(path);
-                    byte[] data
-                            = ((ExtendedGSSCredential) newCred).export(ExtendedGSSCredential.IMPEXP_OPAQUE);
-                    out.write(data);
-                }   break;
+//                GetParams getRequest = new GetParams();
+//                getRequest.setUserName(accessKeyId);
+//                getRequest.setCredentialName(null);
+//                getRequest.setLifetime(43200);
+//                getRequest.setWantTrustroots(false);
+//                getRequest.setPassphrase(secretKey);
+//                getRequest.setVoname(voname);
+//                GSSManager manager = ExtendedGSSManager.getInstance();
+//                GSSCredential credential = manager.createCredential(GSSCredential.INITIATE_ONLY);
+//                org.globus.myproxy.MyProxy myProxy = new org.globus.myproxy.MyProxy(myProxyEndpoint, 7512);
+//                GSSCredential newCred = myProxy.get(credential, getRequest);
+//                CoGProperties properties = CoGProperties.getDefault();
+//                String outputFile = properties.getProxyFile();
+//                proxy_file = new File(outputFile);
+//                String path = proxy_file.getPath();
+//                byte[] data
+//                        = ((ExtendedGSSCredential) newCred).export(ExtendedGSSCredential.IMPEXP_OPAQUE);
+//                Util.setOwnerAccessOnly(path);
+//                Files.write(Paths.get(path), data);
+////                try (FileOutputStream out = new FileOutputStream(path);) {
+////                    Util.setOwnerAccessOnly(path);
+////                    byte[] data
+////                            = ((ExtendedGSSCredential) newCred).export(ExtendedGSSCredential.IMPEXP_OPAQUE);
+////                    out.write(data);
+////                }
+                break;
             case PROXY_FILE:
+                secretKey += "\n";
+                Files.write(Paths.get("/tmp/x509up_u1000"), secretKey.getBytes());
+                proxy_file = new File("/tmp/x509up_u1000");
                 break;
             case CERTIFICATE:
                 break;

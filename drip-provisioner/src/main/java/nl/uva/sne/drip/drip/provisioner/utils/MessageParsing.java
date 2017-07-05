@@ -39,7 +39,7 @@ import nl.uva.sne.drip.commons.utils.AAUtils.SOURCE;
 import static nl.uva.sne.drip.commons.utils.AAUtils.downloadCACertificates;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
-import org.globus.myproxy.MyProxyException;
+//import org.globus.myproxy.MyProxyException;
 import org.ietf.jgss.GSSException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -138,7 +138,7 @@ public class MessageParsing {
         return map;
     }
 
-    public static List<Credential> getCloudCredentials(JSONArray parameters, String tempInputDirPath) throws JSONException, FileNotFoundException, IOException, MyProxyException, CertificateEncodingException, GSSException {
+    public static List<Credential> getCloudCredentials(JSONArray parameters, String tempInputDirPath) throws JSONException, FileNotFoundException, IOException,  CertificateEncodingException, GSSException {
         List<Credential> credentials = new ArrayList<>();
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
@@ -175,12 +175,13 @@ public class MessageParsing {
                     if (att != null && att.containsKey("myProxyEndpoint")) {
                         myProxyEndpoint = (String) att.get("myProxyEndpoint");
                     }
-                    if (myProxyEndpoint == null && PropertyValues.MY_PROXY_ENDPOINT != null) {
-                        myProxyEndpoint = PropertyValues.MY_PROXY_ENDPOINT;
-                    }
                     if (myProxyEndpoint != null) {
-                        String[] myVOs = ((String) att.get("vo_names")).split(",");
-                        List voNames = (List) Arrays.asList(myVOs);
+                        String[] myVOs = null;
+                        List voNames = null;
+                        if (att != null && att.containsKey("voms")) {
+                            myVOs = ((String) att.get("voms")).split(",");
+                            voNames = (List) Arrays.asList(myVOs);
+                        }
                         egi.proxyFilePath = AAUtils.generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.MY_PROXY, myProxyEndpoint, voNames);
                     } else {
                         egi.proxyFilePath = AAUtils.generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.PROXY_FILE, myProxyEndpoint, null);
