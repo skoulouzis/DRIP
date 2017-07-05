@@ -23,7 +23,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- *
+ *This class represents an benchmark result for a specific VM.
  * @author S. Koulouzis
  */
 @Document

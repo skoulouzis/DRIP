@@ -15,10 +15,7 @@
  */
 package nl.uva.sne.drip.drip.commons.data.v1.external.ansible;
 
-/**
- *
- * @author S. Koulouzis
- */
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
@@ -26,6 +23,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 
+/**
+ * This class represents an ansible execution result.  This can be 
+ * used as a archive / log of ansible executions for example how much time it took for execution, errors etc. 
+ *
+ * @author S. Koulouzis
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnsibleResult {

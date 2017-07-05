@@ -33,6 +33,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * This controller is responsible for showing the output from ansible executions 
+ *
+ * @author S. Koulouzis
+ */
 @RestController
 @RequestMapping("/user/v1.0/deployer/ansible")
 @Controller

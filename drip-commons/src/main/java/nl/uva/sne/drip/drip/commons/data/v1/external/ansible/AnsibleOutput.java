@@ -15,10 +15,7 @@
  */
 package nl.uva.sne.drip.drip.commons.data.v1.external.ansible;
 
-/**
- *
- * @author S. Koulouzis
- */
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -26,6 +23,13 @@ import nl.uva.sne.drip.drip.commons.data.v1.external.OwnedObject;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+
+/**
+ * This class represents the the ansible out put for a specific VM. This can be 
+ * used as a archive / log of ansible executions 
+ *
+ * @author S. Koulouzis
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "host",

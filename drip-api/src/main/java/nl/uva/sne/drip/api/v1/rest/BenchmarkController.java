@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * This controller is responsible for handling cloud benchmark tests like sysbench
  *
  * @author S. Koulouzis
  */
