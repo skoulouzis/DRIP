@@ -22,9 +22,15 @@ from vm_info import VmInfo
 def install_manager(vm):
 	try:
 		print "%s: ====== Start Swarm Manager Installing ======" % (vm.ip)
+		paramiko.util.log_to_file("deployment.log")
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+		stdin, stdout, stderr = ssh.exec_command("sudo docker info | grep Swarm")
+		temp_list = stdout.readlines()
+		temp_str = ""
+		for i in temp_list: temp_str += i
+		if temp_str.find("Swarm: active") != -1: return "SUCCESS"
 		stdin, stdout, stderr = ssh.exec_command("sudo docker swarm leave --force")
 		stdout.read()
 		stdin, stdout, stderr = ssh.exec_command("sudo docker swarm init --advertise-addr %s" % (vm.ip))
@@ -39,6 +45,7 @@ def install_manager(vm):
 def install_worker(join_cmd, vm):
 	try:
 		print "%s: ====== Start Swarm Worker Installing ======" % (vm.ip)
+		paramiko.util.log_to_file("deployment.log")
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
@@ -62,6 +69,11 @@ def run(vm_list):
 			join_cmd = install_manager(i)
 			if "ERROR" in join_cmd:
 				return join_cmd
+			elif "SUCCESS" in join_cmd:
+				swarm_file = open(i.key)
+				swarm_string = swarm_file.read()
+				swarm_file.close()
+				return swarm_string
 			else:
 				join_cmd = join_cmd.encode()
 				join_cmd = join_cmd.replace("\n" , "")
