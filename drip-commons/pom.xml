@@ -97,22 +97,18 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.webcohesion.enunciate</groupId>
-                <artifactId>enunciate-maven-plugin</artifactId>
-                <version>2.8.1</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>docs</goal>
+                            <goal>jar</goal>
                         </goals>
-                        <configuration>
-                            <docsDir>${project.basedir}/../docs</docsDir>
-                            <configFile>enunciate.xml</configFile>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
-            
         </plugins>
     </build>
         

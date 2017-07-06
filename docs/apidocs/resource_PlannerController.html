@@ -310,12 +310,12 @@ Accept: application/json
 
                 <code class="prettyprint language-js">
 {
+  &quot;vmUserName&quot; : &quot;vm_user&quot;,
+  &quot;toscaID&quot; : &quot;592d5884e452f1b9b666a657&quot;,
+  &quot;domain&quot; : &quot;us-east-1&quot;,
   &quot;osType&quot; : &quot;Ubuntu16.04&quot;,
   &quot;cloudProvider&quot; : &quot;egi&quot;,
-  &quot;managerType&quot; : &quot;swarm&quot;,
-  &quot;toscaID&quot; : &quot;592d5884e452f1b9b666a657&quot;,
-  &quot;vmUserName&quot; : &quot;vm_user&quot;,
-  &quot;domain&quot; : &quot;us-east-1&quot;
+  &quot;managerType&quot; : &quot;swarm&quot;
 }
                 </code>
               </pre>
@@ -454,6 +454,7 @@ Content-Type: application/json
             <th>name</th>
             <th>type</th>
             <th>description</th>
+            <th>constraints</th>
           </tr>
           </thead>
           <tbody>
@@ -461,6 +462,7 @@ Content-Type: application/json
             <td><span class="parameter-name">id</span></td>
             <td>path</td>
             <td><span class="parameter-description">. The ID of the plan</span></td>
+            <td><span class="parameter-constraints">required</span></td>
           </tr>
           </tbody>
         </table>
@@ -548,6 +550,7 @@ Content-Type: application/json
             <th>name</th>
             <th>type</th>
             <th>description</th>
+            <th>constraints</th>
           </tr>
           </thead>
           <tbody>
@@ -555,11 +558,13 @@ Content-Type: application/json
             <td><span class="parameter-name">id</span></td>
             <td>path</td>
             <td><span class="parameter-description">&nbsp;</span></td>
+            <td><span class="parameter-constraints">required</span></td>
           </tr>
           <tr>
             <td><span class="parameter-name">format</span></td>
             <td>query</td>
             <td><span class="parameter-description">&nbsp;</span></td>
+            <td><span class="parameter-constraints">required</span></td>
           </tr>
           </tbody>
         </table>
@@ -647,6 +652,7 @@ Content-Type: application/json
             <th>name</th>
             <th>type</th>
             <th>description</th>
+            <th>constraints</th>
           </tr>
           </thead>
           <tbody>
@@ -654,6 +660,7 @@ Content-Type: application/json
             <td><span class="parameter-name">tosca_id</span></td>
             <td>path</td>
             <td><span class="parameter-description">&nbsp;</span></td>
+            <td><span class="parameter-constraints">required</span></td>
           </tr>
           </tbody>
         </table>
@@ -741,6 +748,7 @@ Content-Type: application/json
             <th>name</th>
             <th>type</th>
             <th>description</th>
+            <th>constraints</th>
           </tr>
           </thead>
           <tbody>
@@ -748,6 +756,7 @@ Content-Type: application/json
             <td><span class="parameter-name">name</span></td>
             <td>path</td>
             <td><span class="parameter-description">&nbsp;</span></td>
+            <td><span class="parameter-constraints">required</span></td>
           </tr>
           </tbody>
         </table>
@@ -860,6 +869,7 @@ The plan is represented by its ID</p>
             <th>name</th>
             <th>type</th>
             <th>description</th>
+            <th>constraints</th>
           </tr>
           </thead>
           <tbody>
@@ -867,6 +877,7 @@ The plan is represented by its ID</p>
             <td><span class="parameter-name">id</span></td>
             <td>path</td>
             <td><span class="parameter-description">&nbsp;</span></td>
+            <td><span class="parameter-constraints">required</span></td>
           </tr>
           </tbody>
         </table>
@@ -954,6 +965,7 @@ Content-Type: application/json
             <th>name</th>
             <th>type</th>
             <th>description</th>
+            <th>constraints</th>
           </tr>
           </thead>
           <tbody>
@@ -961,16 +973,19 @@ Content-Type: application/json
             <td><span class="parameter-name">id</span></td>
             <td>path</td>
             <td><span class="parameter-description">&nbsp;</span></td>
+            <td><span class="parameter-constraints">required</span></td>
           </tr>
           <tr>
             <td><span class="parameter-name">level</span></td>
             <td>path</td>
             <td><span class="parameter-description">&nbsp;</span></td>
+            <td><span class="parameter-constraints">required</span></td>
           </tr>
           <tr>
             <td><span class="parameter-name">name</span></td>
             <td>path</td>
             <td><span class="parameter-description">&nbsp;</span></td>
+            <td><span class="parameter-constraints">required</span></td>
           </tr>
           </tbody>
         </table>

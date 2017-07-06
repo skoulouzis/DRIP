@@ -15,7 +15,6 @@
  */
 package nl.uva.sne.drip.drip.commons.data.v1.external.ansible;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
@@ -24,8 +23,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 
 /**
- * This class represents an ansible execution result.  This can be 
- * used as a archive / log of ansible executions for example how much time it took for execution, errors etc. 
+ * This class represents an ansible execution result. This can be used as a
+ * archive / log of ansible executions for example how much time it took for
+ * execution, errors etc.
  *
  * @author S. Koulouzis
  */
@@ -33,36 +33,27 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnsibleResult {
 
-    @JsonProperty("msg")
     private String msg;
-    
-    @JsonProperty("changed")
+
     private Boolean changed;
 
-    @JsonProperty("end")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
     private Date end;
 
-    @JsonProperty("start")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
     private Date start;
 
-    @JsonProperty("delta")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss.SSSSSS")
     private Date delta;
 
-    @JsonProperty("stdout")
     private String stdout;
 
-    @JsonProperty("stderr")
     private String stderr;
 
-    @JsonProperty("cmd")
     private List<String> cmd;
 
 //    @JsonProperty("stdout_lines")
 //    private List<String> stdout_lines;
-
 //    @JsonProperty("results")
 //    private List<AnsibleResult_> results = null;
     @JsonProperty("msg")
@@ -163,5 +154,4 @@ public class AnsibleResult {
 //    public void setStdout_lines(List<String> stdout_lines) {
 //        this.stdout_lines = stdout_lines;
 //    }
-
 }

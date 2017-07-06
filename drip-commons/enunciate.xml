@@ -13,6 +13,10 @@
         <exclude pattern="nl.uva.sne.drip.drip.commons.data.internal.*"/>
     </api-classes>
 
+  <api-import pattern="nl.uva.sne.drip.api.v1.rest.*"/>
+  <api-import pattern="nl.uva.sne.drip.api.v0.rest.*"/>
+  
+
 
     <modules>
         <swagger disabled="true" />

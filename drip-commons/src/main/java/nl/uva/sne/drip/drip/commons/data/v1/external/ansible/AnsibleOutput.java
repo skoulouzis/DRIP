@@ -30,33 +30,24 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author S. Koulouzis
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "host",
-    "result"
-})
 @Document
 public class AnsibleOutput extends OwnedObject {
 
     @Indexed
-    @JsonProperty("host")
     private String host;
 
     @Indexed
-    @JsonProperty("cloudDeploymentDomain")
     private String cloudDeploymentDomain;
 
     @Indexed
-    @JsonProperty("vmType")
     private String vmType;
 
-    @JsonProperty("result")
     private AnsibleResult result;
 
-    @JsonProperty("provisionID")
+
     private String provisionID;
 
     @Indexed
-    @JsonProperty("cloudProvider")
     private String cloudProvider;
 
     /**
@@ -64,8 +55,8 @@ public class AnsibleOutput extends OwnedObject {
      *
      * @return the host
      */
-    @DocumentationExample("147.228.242.58")
     @JsonProperty("host")
+    @DocumentationExample("147.228.242.58")
     public String getHost() {
         return host;
     }

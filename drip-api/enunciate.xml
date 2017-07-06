@@ -11,7 +11,11 @@
         <include pattern="nl.uva.sne.drip.api.v0.rest.*" />
     </api-classes>
 
-
+  <api-import pattern="nl.uva.sne.drip.drip.commons.data.v1.external.*"/>
+  <api-import pattern="nl.uva.sne.drip.drip.commons.data.v1.external.ansible.*"/>
+  <api-import pattern="nl.uva.sne.drip.drip.commons.data.v0.external.*"/>
+  
+  
     <modules>
         <swagger disabled="true" />
     </modules>
