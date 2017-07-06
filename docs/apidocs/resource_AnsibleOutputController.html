@@ -74,7 +74,7 @@
       <p>This controller is responsible for showing the output from ansible executions</p>
 
       <div id="resource_AnsibleOutputController_getByCommand_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ansible/ <a href="../user/v1.0/deployer/ansible/" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ansible/ <a href="./user/v1.0/deployer/ansible/" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p>Query AnsibleOutput by executing command.</p>
 
@@ -164,24 +164,24 @@ Content-Type: application/json
 
                 <code class="prettyprint language-js">
 [ {
-  &quot;host&quot; : &quot;...&quot;,
+  &quot;host&quot; : &quot;147.228.242.58&quot;,
   &quot;result&quot; : {
+    &quot;msg&quot; : &quot;...&quot;,
     &quot;changed&quot; : true,
-    &quot;stderr&quot; : &quot;...&quot;,
+    &quot;end&quot; : 12345,
     &quot;stdout&quot; : &quot;...&quot;,
     &quot;cmd&quot; : [ &quot;...&quot;, &quot;...&quot; ],
-    &quot;delta&quot; : &quot;...&quot;,
-    &quot;end&quot; : &quot;...&quot;,
-    &quot;start&quot; : &quot;...&quot;,
-    &quot;msg&quot; : &quot;...&quot;
+    &quot;start&quot; : 12345,
+    &quot;stderr&quot; : &quot;...&quot;,
+    &quot;delta&quot; : 12345
   },
-  &quot;vmType&quot; : &quot;...&quot;,
-  &quot;cloudDeploymentDomain&quot; : &quot;...&quot;,
-  &quot;cloudProvider&quot; : &quot;...&quot;,
-  &quot;provisionID&quot; : &quot;...&quot;,
-  &quot;timestamp&quot; : 12345,
+  &quot;cloudDeploymentDomain&quot; : &quot;https://carach5.ics.muni.cz:11443&quot;,
+  &quot;vmType&quot; : &quot;medium&quot;,
+  &quot;provisionID&quot; : &quot;59172db6e452f1b9b666a621&quot;,
+  &quot;cloudProvider&quot; : &quot;ec2&quot;,
   &quot;owner&quot; : &quot;user1&quot;,
-  &quot;id&quot; : &quot;58e3946e0fb4f562d84ba1ad&quot;
+  &quot;id&quot; : &quot;58e3946e0fb4f562d84ba1ad&quot;,
+  &quot;timestamp&quot; : 12345
 } ]
                 </code>
               </pre>
@@ -191,7 +191,7 @@ Content-Type: application/json
       </div>
 
       <div id="resource_AnsibleOutputController_deleteAll_DELETE">
-        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/deployer/ansible/all <a href="../user/v1.0/deployer/ansible/all" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/deployer/ansible/all <a href="./user/v1.0/deployer/ansible/all" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p>Deletes all entries. Use with caution !</p>
 
@@ -269,7 +269,7 @@ Content-Type: application/json
       </div>
 
       <div id="resource_AnsibleOutputController_getCommands_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ansible/commands <a href="../user/v1.0/deployer/ansible/commands" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ansible/commands <a href="./user/v1.0/deployer/ansible/commands" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p>Query for used (unique) commands</p>
 
@@ -347,7 +347,7 @@ Content-Type: application/json
       </div>
 
       <div id="resource_AnsibleOutputController_getIds_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ansible/ids <a href="../user/v1.0/deployer/ansible/ids" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ansible/ids <a href="./user/v1.0/deployer/ansible/ids" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p>Returns the ids of stored objects. Empty list if non stored</p>
 
@@ -425,7 +425,7 @@ Content-Type: application/json
       </div>
 
       <div id="resource_AnsibleOutputController_delete_DELETE">
-        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/deployer/ansible/{id} <a href="../user/v1.0/deployer/ansible/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">DELETE</span> <span class="resource-path">/user/v1.0/deployer/ansible/{id} <a href="./user/v1.0/deployer/ansible/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p>Deletes object</p>
 
@@ -527,7 +527,7 @@ Content-Type: application/json
       </div>
 
       <div id="resource_AnsibleOutputController_get_GET">
-        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ansible/{id} <a href="../user/v1.0/deployer/ansible/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
+        <h3><span class="label label-default resource-method">GET</span> <span class="resource-path">/user/v1.0/deployer/ansible/{id} <a href="./user/v1.0/deployer/ansible/{id}" class="glyphicon glyphicon-new-window" target="_blank"></a></span></h3>
 
         <p>Returns an AnsibleOutput.</p>
 
@@ -621,24 +621,24 @@ Content-Type: application/json
 
                 <code class="prettyprint language-js">
 {
-  &quot;host&quot; : &quot;...&quot;,
+  &quot;host&quot; : &quot;147.228.242.58&quot;,
   &quot;result&quot; : {
+    &quot;msg&quot; : &quot;...&quot;,
     &quot;changed&quot; : true,
-    &quot;stderr&quot; : &quot;...&quot;,
+    &quot;end&quot; : 12345,
     &quot;stdout&quot; : &quot;...&quot;,
     &quot;cmd&quot; : [ &quot;...&quot;, &quot;...&quot; ],
-    &quot;delta&quot; : &quot;...&quot;,
-    &quot;end&quot; : &quot;...&quot;,
-    &quot;start&quot; : &quot;...&quot;,
-    &quot;msg&quot; : &quot;...&quot;
+    &quot;start&quot; : 12345,
+    &quot;stderr&quot; : &quot;...&quot;,
+    &quot;delta&quot; : 12345
   },
-  &quot;vmType&quot; : &quot;...&quot;,
-  &quot;cloudDeploymentDomain&quot; : &quot;...&quot;,
-  &quot;cloudProvider&quot; : &quot;...&quot;,
-  &quot;provisionID&quot; : &quot;...&quot;,
-  &quot;timestamp&quot; : 12345,
+  &quot;cloudDeploymentDomain&quot; : &quot;https://carach5.ics.muni.cz:11443&quot;,
+  &quot;vmType&quot; : &quot;medium&quot;,
+  &quot;provisionID&quot; : &quot;59172db6e452f1b9b666a621&quot;,
+  &quot;cloudProvider&quot; : &quot;ec2&quot;,
   &quot;owner&quot; : &quot;user1&quot;,
-  &quot;id&quot; : &quot;58e3946e0fb4f562d84ba1ad&quot;
+  &quot;id&quot; : &quot;58e3946e0fb4f562d84ba1ad&quot;,
+  &quot;timestamp&quot; : 12345
 }
                 </code>
               </pre>

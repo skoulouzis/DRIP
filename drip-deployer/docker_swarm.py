@@ -55,6 +55,9 @@ def install_worker(join_cmd, vm):
 
 def run(vm_list):
 	for i in vm_list:
+                parentDir = os.path.dirname(os.path.abspath(i.key))
+                os.chmod(parentDir, 0o700)
+                os.chmod(i.key, 0o600)
 		if i.role == "master": 
 			join_cmd = install_manager(i)
 			if "ERROR" in join_cmd:

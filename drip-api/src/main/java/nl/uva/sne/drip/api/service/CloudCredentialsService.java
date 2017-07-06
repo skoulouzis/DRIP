@@ -17,6 +17,7 @@ package nl.uva.sne.drip.api.service;
 
 import java.util.List;
 import nl.uva.sne.drip.api.dao.CloudCredentialsDao;
+import nl.uva.sne.drip.api.exception.CloudCredentialsNotFoundException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
@@ -50,7 +51,7 @@ public class CloudCredentialsService {
     public CloudCredentials findOne(String id) {
         CloudCredentials creds = dao.findOne(id);
         if (creds == null) {
-            throw new NotFoundException();
+            throw new CloudCredentialsNotFoundException();
         }
         return creds;
     }

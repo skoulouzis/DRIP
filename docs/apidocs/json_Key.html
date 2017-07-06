@@ -64,7 +64,9 @@
 
       <h1 class="page-header">Key <small>Data Type</small></h1>
 
-      <p></p>
+      <p>This class represents a key. This key can be used to either login to a VM
+created by the provisiner or by the VM to allow the user to login to the VMs
+from the machine the keys correspond to.</p>
 
       <dl class="dl-horizontal">
       </dl>
@@ -85,7 +87,7 @@
           <td>  <span class="datatype-reference">string
 </span>
 </td>
-          <td>  <span class="property-description"></span>
+          <td>  <span class="property-description">The name of the key.</span>
 </td>
         </tr>
         <tr>
@@ -94,7 +96,7 @@
           <td>  <span class="datatype-reference"><a href="json_KeyType.html">KeyType</a>
 </span>
 </td>
-          <td>  <span class="property-description"></span>
+          <td>  <span class="property-description">The type of key</span>
 </td>
         </tr>
         <tr>
@@ -103,7 +105,8 @@
           <td>  <span class="datatype-reference">map of string
 </span>
 </td>
-          <td>  <span class="property-description"></span>
+          <td>  <span class="property-description">A general use key,value. In the case of the cloud credentials it's used
+to specify the domain name for ec2</span>
 </td>
         </tr>
         <tr>
@@ -112,7 +115,7 @@
           <td>  <span class="datatype-reference">string
 </span>
 </td>
-          <td>  <span class="property-description"></span>
+          <td>  <span class="property-description">The contents of the key.</span>
 </td>
         </tr>
         </tbody>

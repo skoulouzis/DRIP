@@ -211,7 +211,7 @@
                             <goal>docs</goal>
                         </goals>
                         <configuration>
-                            <docsDir>${project.basedir}/../docs</docsDir>
+                            <docsDir>${project.basedir}/../docs/apidocs</docsDir>
                             <configFile>enunciate.xml</configFile>
                             <sourcepath-includes>
                                 <include>
