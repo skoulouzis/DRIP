@@ -23,12 +23,12 @@ public class ExceptionHandler {
 
     public static RuntimeException generateException(String name, String value) {
         if (value == null) {
-            return new InternalServerErrorExeption();
+            return new InternalServerErrorException();
         }
         if (value.contains("The maximum number of VPCs has been reached")) {
             return new VMLimitException(name + "." + value);
         } else {
-            return new InternalServerErrorExeption();
+            return new InternalServerErrorException();
         }
     }
 

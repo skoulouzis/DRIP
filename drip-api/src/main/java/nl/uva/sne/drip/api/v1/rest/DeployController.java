@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.exception.BadRequestException;
+import nl.uva.sne.drip.api.exception.InternalServerErrorException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,8 +55,20 @@ public class DeployController {
     @Autowired
     private DeployService deployService;
 
+    /**
+     * Deploys software (inc. swarm ,kubernetes) to provisioned VMs.
+     *
+     * @param deployRequest
+     * @return
+     */
     @RequestMapping(value = "/deploy", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 400, condition = "Empty manager type. Aveliable: ansible, swarm ,kubernetes"),
+        @ResponseCode(code = 400, condition = "Empty provision ID"),
+        @ResponseCode(code = 500, condition = "Deploymet failed"),
+        @ResponseCode(code = 200, condition = "Successful deploymet")
+    })
     public @ResponseBody
     String deploy(@RequestBody DeployRequest deployRequest) {
         try {
@@ -68,9 +81,8 @@ public class DeployController {
             DeployResponse deploy = deployService.deploySoftware(deployRequest);
             return deploy.getId();
         } catch (Exception ex) {
-            Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
+            throw new InternalServerErrorException(ex.getMessage());
         }
-        return null;
     }
 
     @RequestMapping(value = "/sample", method = RequestMethod.GET)
@@ -84,8 +96,18 @@ public class DeployController {
         return req;
     }
 
+    /**
+     * Returns a deployment description
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 404, condition = "Object not found"),
+        @ResponseCode(code = 200, condition = "Object not found")
+    })
     public @ResponseBody
     DeployResponse get(@PathVariable("id") String id) {
         DeployResponse resp = deployService.findOne(id);
@@ -95,8 +117,16 @@ public class DeployController {
         return resp;
     }
 
+    /**
+     * Gets the IDs of all the stored deployment descriptions.
+     *
+     * @return a list of all the IDs
+     */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful query")
+    })
     public @ResponseBody
     List<String> getIds() {
         List<DeployResponse> all = deployService.findAll();
@@ -107,8 +137,18 @@ public class DeployController {
         return ids;
     }
 
+    /**
+     * Deletes entry
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful delete"),
+        @ResponseCode(code = 404, condition = "Object not found")
+    })
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
         DeployResponse Key = deployService.findOne(id);
@@ -119,8 +159,16 @@ public class DeployController {
         throw new NotFoundException();
     }
 
+    /**
+     * Deletes all entries. Use with caution !
+     *
+     * @return
+     */
     @RequestMapping(value = "/all", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful delete")
+    })
     public @ResponseBody
     String deleteAll() {
         deployService.deleteAll();

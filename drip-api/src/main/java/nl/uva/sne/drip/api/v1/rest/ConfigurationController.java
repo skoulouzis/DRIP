@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PathVariable;
 import nl.uva.sne.drip.api.exception.BadRequestException;
+import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.service.PlaybookService;
 import nl.uva.sne.drip.api.service.UserService;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,17 +57,26 @@ public class ConfigurationController {
     @Autowired
     private PlaybookService playbookService;
 
+    /**
+     * Post a deployment configuration.
+     *
+     * @param yamlContents
+     * @return
+     */
     @RequestMapping(value = "/post", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful post"),
+        @ResponseCode(code = 400, condition = "contents are not valid (e.g. not a yaml format)")
+    })
     public @ResponseBody
     String post(@RequestBody String yamlContents) {
         try {
-
             return playbookService.saveStringContents(yamlContents);
         } catch (IOException ex) {
-            Logger.getLogger(ConfigurationController.class.getName()).log(Level.SEVERE, null, ex);
+            throw new BadRequestException("Not valid contents");
         }
-        return null;
+
     }
 
     /**
@@ -77,6 +87,10 @@ public class ConfigurationController {
      */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful upload"),
+        @ResponseCode(code = 400, condition = "Didn't upload (multipart) file or contents are not valid (e.g. not a yaml format)")
+    })
     public @ResponseBody
     String toscaUpload(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
@@ -85,9 +99,8 @@ public class ConfigurationController {
         try {
             return playbookService.saveFile(file);
         } catch (IOException | IllegalStateException ex) {
-            Logger.getLogger(ConfigurationController.class.getName()).log(Level.SEVERE, null, ex);
+            throw new BadRequestException("Not valid contents");
         }
-        return null;
     }
 
     /**
@@ -99,14 +112,18 @@ public class ConfigurationController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"format"})
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Object found"),
+        @ResponseCode(code = 400, condition = "contents are not valid (e.g. not a yaml format)"),
+        @ResponseCode(code = 404, condition = "Object not found")
+    })
     public @ResponseBody
     String get(@PathVariable("id") String id, @RequestParam(value = "format") String format) {
         try {
             return playbookService.get(id, format);
-        } catch (JSONException ex) {
-            Logger.getLogger(ConfigurationController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException | NotFoundException ex) {
+            throw new BadRequestException("Not valid contents");
         }
-        return null;
     }
 
     /**
@@ -117,6 +134,9 @@ public class ConfigurationController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful delete")
+    })
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
         playbookService.delete(id);
@@ -130,6 +150,9 @@ public class ConfigurationController {
      */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful query")
+    })
     public @ResponseBody
     List<String> getIds() {
         List<PlaybookRepresentation> all = playbookService.findAll();
@@ -141,12 +164,15 @@ public class ConfigurationController {
     }
 
     /**
-     * Gets the IDs of all the stored PlayBook descriptions.
+     * Deletes all entries. Use with caution !
      *
-     * @return a list of all the IDs
+     * @return
      */
     @RequestMapping(value = "/all", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful delete")
+    })
     public @ResponseBody
     String deleteAll() {
         playbookService.deleteAll();

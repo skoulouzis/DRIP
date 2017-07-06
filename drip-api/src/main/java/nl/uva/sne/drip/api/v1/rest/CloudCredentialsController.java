@@ -78,7 +78,7 @@ public class CloudCredentialsController {
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 400, condition = "Access key ID can't be empty"),
+        @ResponseCode(code = 404, condition = "Access key ID can't be empty"),
         @ResponseCode(code = 200, condition = "At least one key ID is posted")
     })
     public @ResponseBody
@@ -109,6 +109,11 @@ public class CloudCredentialsController {
      */
     @RequestMapping(value = "/upload/{id}", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 404, condition = "Credential not found"),
+        @ResponseCode(code = 400, condition = "Did not upload file"),
+        @ResponseCode(code = 200, condition = "Key added to credential")
+    })
     public @ResponseBody
     String addLogineKey(@RequestParam("file") MultipartFile file, @PathVariable("id") String id) throws Exception {
         try {
@@ -155,6 +160,10 @@ public class CloudCredentialsController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 404, condition = "Credential not found"),
+        @ResponseCode(code = 200, condition = "Credential exists")
+    })
     public @ResponseBody
     CloudCredentials get(@PathVariable("id") String id) {
 //        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -173,14 +182,25 @@ public class CloudCredentialsController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Credential exists")
+    })
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
         cloudCredentialsService.delete(id);
         return "Deleted :" + id;
     }
 
+    /**
+     * Deletes all credentials. Use with caution !
+     *
+     * @return
+     */
     @RequestMapping(value = "/all", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Credentiasl exist")
+    })
     public @ResponseBody
     String deleteAll() {
         cloudCredentialsService.deleteAll();
@@ -194,6 +214,9 @@ public class CloudCredentialsController {
      */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Credentials exist")
+    })
     public @ResponseBody
     List<String> getIds() {
         List<CloudCredentials> all = cloudCredentialsService.findAll();
