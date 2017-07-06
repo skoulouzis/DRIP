@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * This controller is responsible for handling cloud benchmark tests like
+ * sysbench
  *
  * @author S. Koulouzis
  */
@@ -47,8 +49,18 @@ public class BenchmarkController {
     @Autowired
     private BenchmarkResultService benchmarkResultService;
 
+    /**
+     * Returns a BenchmarkResult
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 404, condition = "BenchmarkResult not found"),
+        @ResponseCode(code = 200, condition = "BenchmarkResult exists")
+    })
     public @ResponseBody
     BenchmarkResult get(@PathVariable("id") String id) {
         BenchmarkResult resp = benchmarkResultService.findOne(id);
@@ -58,15 +70,31 @@ public class BenchmarkController {
         return resp;
     }
 
+    /**
+     * Returns sysbench results only. Not Not supported yet
+     *
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful query")
+    })
     public @ResponseBody
     List<BenchmarkResult> getBySysbench() {
         return benchmarkResultService.findBySysbench();
     }
 
+    /**
+     * Returns the ids of stored objects. Empty list if non stored
+     *
+     * @return
+     */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful query")
+    })
     public @ResponseBody
     List<String> getIds() {
         List<BenchmarkResult> all = benchmarkResultService.findAll();
@@ -77,8 +105,18 @@ public class BenchmarkController {
         return ids;
     }
 
+    /**
+     * Deletes object
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful delete"),
+        @ResponseCode(code = 404, condition = "Non existing id")
+    })
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
         BenchmarkResult Key = benchmarkResultService.findOne(id);
@@ -89,8 +127,16 @@ public class BenchmarkController {
         throw new NotFoundException();
     }
 
+    /**
+     * Deletes all entries. Use with caution !
+     *
+     * @return
+     */
     @RequestMapping(value = "/all", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful delete")
+    })
     public @ResponseBody
     String deleteAll() {
         benchmarkResultService.deleteAll();

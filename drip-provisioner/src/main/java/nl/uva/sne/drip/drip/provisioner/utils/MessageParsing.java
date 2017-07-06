@@ -18,14 +18,12 @@ package nl.uva.sne.drip.drip.provisioner.utils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,11 +31,16 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import nl.uva.sne.drip.commons.utils.AAUtils;
+import nl.uva.sne.drip.commons.utils.AAUtils.SOURCE;
+import static nl.uva.sne.drip.commons.utils.AAUtils.downloadCACertificates;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
-import org.globus.myproxy.MyProxyException;
+//import org.globus.myproxy.MyProxyException;
+import org.ietf.jgss.GSSException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,11 +54,6 @@ import provisioning.credential.EGICredential;
  * @author S. Koulouzis
  */
 public class MessageParsing {
-
-    enum SOURCE {
-        MY_PROXY,
-        CERTIFICATE
-    }
 
     public static List<File> getTopologies(JSONArray parameters, String tempInputDirPath, int level) throws JSONException, IOException {
         List<File> topologyFiles = new ArrayList<>();
@@ -140,7 +138,7 @@ public class MessageParsing {
         return map;
     }
 
-    public static List<Credential> getCloudCredentials(JSONArray parameters, String tempInputDirPath) throws JSONException, FileNotFoundException, IOException, MyProxyException, CertificateEncodingException {
+    public static List<Credential> getCloudCredentials(JSONArray parameters, String tempInputDirPath) throws JSONException, FileNotFoundException, IOException,  CertificateEncodingException, GSSException {
         List<Credential> credentials = new ArrayList<>();
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);
@@ -169,21 +167,24 @@ public class MessageParsing {
                         trustedCertificatesURL = (String) att.get("trustedCertificatesURL");
                     }
                     if (trustedCertificatesURL != null) {
-                        downloadCACertificates(new URL(trustedCertificatesURL));
+                        downloadCACertificates(new URL(trustedCertificatesURL), PropertyValues.TRUSTED_CERTIFICATE_FOLDER);
                     } else {
-                        downloadCACertificates(PropertyValues.CA_BUNDLE_URL);
+                        downloadCACertificates(PropertyValues.CA_BUNDLE_URL, PropertyValues.TRUSTED_CERTIFICATE_FOLDER);
                     }
                     String myProxyEndpoint = null;
                     if (att != null && att.containsKey("myProxyEndpoint")) {
                         myProxyEndpoint = (String) att.get("myProxyEndpoint");
                     }
-                    if (myProxyEndpoint == null && PropertyValues.MY_PROXY_ENDPOINT != null) {
-                        myProxyEndpoint = PropertyValues.MY_PROXY_ENDPOINT;
-                    }
                     if (myProxyEndpoint != null) {
-                        egi.proxyFilePath = generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.MY_PROXY);
+                        String[] myVOs = null;
+                        List voNames = null;
+                        if (att != null && att.containsKey("voms")) {
+                            myVOs = ((String) att.get("voms")).split(",");
+                            voNames = (List) Arrays.asList(myVOs);
+                        }
+                        egi.proxyFilePath = AAUtils.generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.MY_PROXY, myProxyEndpoint, voNames);
                     } else {
-                        egi.proxyFilePath = generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.CERTIFICATE);
+                        egi.proxyFilePath = AAUtils.generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.PROXY_FILE, myProxyEndpoint, null);
                     }
                     egi.trustedCertPath = PropertyValues.TRUSTED_CERTIFICATE_FOLDER;
                     credential = egi;
@@ -208,126 +209,6 @@ public class MessageParsing {
         }
 
         return credentials;
-    }
-
-    private static String generateProxy(String accessKeyId, String secretKey, SOURCE source) throws MyProxyException, IOException, CertificateEncodingException {
-        if (source.equals(SOURCE.MY_PROXY)) {
-            //After 10 years of grid comuting and using certificates we still can't get it to work.             
-//            MyProxy myProxy = new MyProxy(PropertyValues.MY_PROXY_ENDPOINT, 7512);
-//            myProxy.writeTrustRoots(PropertyValues.TRUSTED_CERTIFICATE_FOLDER);
-//            
-//            GSSCredential cert = myProxy.get(accessKeyId, secretKey, 2 * 3600);
-//            X509Credential gCred = ((GlobusGSSCredentialImpl) cert).getX509Credential();
-//            gCred.save(new FileOutputStream("/tmp/x509up_u0"));
-            String cmd = "myproxy-logon "
-                    + "--voms fedcloud.egi.eu "
-                    + "-s " + PropertyValues.MY_PROXY_ENDPOINT
-                    + " -l " + accessKeyId
-                    + " --stdin_pass"
-                    + " --out /tmp/x509up_u0";
-//
-            InputStream fileIn = new ByteArrayInputStream(secretKey.getBytes());
-            Process process = Runtime.getRuntime().exec(cmd);
-            OutputStream stdin = process.getOutputStream();
-            InputStream stdout = process.getInputStream();
-            InputStream stderr = process.getErrorStream();
-            pipeStream(fileIn, stdin);
-        }else if (source.equals(SOURCE.CERTIFICATE)) {
-            
-        }
-        return "/tmp/x509up_u0";
-    }
-
-    public static void pipeStream(InputStream input, OutputStream output)
-            throws IOException {
-        byte buffer[] = new byte[1024];
-        int numRead;
-
-        do {
-            numRead = input.read(buffer);
-            output.write(buffer, 0, numRead);
-        } while (input.available() > 0);
-
-        output.flush();
-    }
-
-    private static void downloadCACertificates(URL url) throws MalformedURLException, IOException {
-        String[] parts = url.getFile().split("/");
-        String fileName = parts[parts.length - 1];
-        File bundle = new File(PropertyValues.TRUSTED_CERTIFICATE_FOLDER + File.separator + fileName);
-        if (!bundle.getParentFile().exists()) {
-            if (!bundle.getParentFile().mkdirs()) {
-                throw new IOException(bundle + " could not be created");
-            }
-        }
-
-        if (!bundle.exists()) {
-            URL website = new URL(url.toString());
-            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-
-            FileOutputStream fos = new FileOutputStream(bundle);
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            untar(new File(PropertyValues.TRUSTED_CERTIFICATE_FOLDER), bundle);
-        }
-    }
-
-    private static void untar(File dest, File tarFile) throws IOException {
-        Process p = Runtime.getRuntime().exec(" tar -xzvf " + tarFile.getAbsolutePath() + " -C " + dest.getAbsolutePath());
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        String s = null;
-        StringBuilder error = new StringBuilder();
-        while ((s = stdError.readLine()) != null) {
-            error.append(s);
-        }
-        if (s != null) {
-            throw new IOException(error.toString());
-        }
-//        dest.mkdir();
-//        TarArchiveInputStream tarIn;
-//
-//        tarIn = new TarArchiveInputStream(
-//                new GzipCompressorInputStream(
-//                        new BufferedInputStream(
-//                                new FileInputStream(
-//                                        tarFile
-//                                )
-//                        )
-//                )
-//        );
-//
-//        org.apache.commons.compress.archivers.tar.TarArchiveEntry tarEntry = tarIn.getNextTarEntry();
-//
-//        while (tarEntry != null) {
-//            File destPath = new File(dest, tarEntry.getName());
-//            if (tarEntry.isDirectory()) {
-//                destPath.mkdirs();
-//            } else {
-//                destPath.createNewFile();
-//                byte[] btoRead = new byte[1024];
-//                try (BufferedOutputStream bout = new BufferedOutputStream(new FileOutputStream(destPath))) {
-//                    int len;
-//
-//                    while ((len = tarIn.read(btoRead)) != -1) {
-//                        bout.write(btoRead, 0, len);
-//                    }
-//                }
-////                Set<PosixFilePermission> perms = new HashSet<>();
-////                perms.add(PosixFilePermission.OWNER_READ);
-////                perms.add(PosixFilePermission.OWNER_WRITE);
-////                perms.add(PosixFilePermission.OWNER_EXECUTE);
-////
-////                perms.add(PosixFilePermission.GROUP_READ);
-////                perms.add(PosixFilePermission.GROUP_WRITE);
-////                perms.add(PosixFilePermission.GROUP_EXECUTE);
-////
-////                perms.add(PosixFilePermission.OTHERS_READ);
-////                perms.add(PosixFilePermission.OTHERS_EXECUTE);
-////                perms.add(PosixFilePermission.OTHERS_EXECUTE);
-////                Files.setPosixFilePermissions(Paths.get(destPath.getAbsolutePath()), perms);
-//            }
-//            tarEntry = tarIn.getNextTarEntry();
-//        }
-//        tarIn.close();
     }
 
 }

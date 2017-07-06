@@ -16,13 +16,14 @@
 package nl.uva.sne.drip.drip.commons.data.v1.external.ansible;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.Date;
 import nl.uva.sne.drip.drip.commons.data.v1.external.OwnedObject;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
+ * This class represents an benchmark result for a specific VM.
  *
  * @author S. Koulouzis
  */
@@ -35,27 +36,24 @@ public class BenchmarkResult extends OwnedObject {
     private String cloudDeploymentDomain;
 
     @Indexed
-    @JsonProperty("vmType")
     private String vmType;
 
     @Indexed
-    @JsonProperty("end")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
     private Date end;
 
     @Indexed
-    @JsonProperty("start")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
     private Date start;
 
     @Indexed
-    @JsonProperty("delta")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss.SSSSSS")
     private Date delta;
 
     /**
      * @return the host
      */
+    @DocumentationExample("147.228.242.58")
     public String getHost() {
         return host;
     }
@@ -70,6 +68,7 @@ public class BenchmarkResult extends OwnedObject {
     /**
      * @return the cloudDeploymentDomain
      */
+    @DocumentationExample("us-east-1")
     public String getCloudDeploymentDomain() {
         return cloudDeploymentDomain;
     }

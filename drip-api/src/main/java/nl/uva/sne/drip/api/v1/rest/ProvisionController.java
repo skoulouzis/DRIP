@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import nl.uva.sne.drip.api.exception.BadRequestException;
+import nl.uva.sne.drip.api.exception.CloudCredentialsNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,11 +58,6 @@ public class ProvisionController {
     @Autowired
     private ProvisionService provisionService;
 
-//    @Autowired
-//    private CloudCredentialsService cloudCredentialService;
-//
-//    @Autowired
-//    private PlannerService plannServcie;
     /**
      * Gets the ProvisionRequest
      *
@@ -136,12 +132,16 @@ public class ProvisionController {
      */
     @RequestMapping(value = "/provision", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 400, condition = "Plan not found or credentials not found"),
+        @ResponseCode(code = 200, condition = "provision success")
+    })
     public @ResponseBody
     String provision(@RequestBody ProvisionRequest req) {
         if (req.getCloudCredentialsIDs() == null) {
             throw new BadRequestException();
         }
-        if (req.getPlanID() == null) {
+        if (req.getPlanID() == null || req.getPlanID().length() < 2) {
             throw new BadRequestException();
         }
         try {
@@ -149,12 +149,44 @@ public class ProvisionController {
 
             return req.getId();
 
-        } catch (IOException | TimeoutException | JSONException | InterruptedException ex) {
-            Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
+            if (ex instanceof nl.uva.sne.drip.api.exception.PlanNotFoundException
+                    || ex instanceof nl.uva.sne.drip.api.exception.NotFoundException
+                    || ex instanceof CloudCredentialsNotFoundException) {
+                throw new BadRequestException(ex.getMessage());
+            }
             Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    /**
+     * Updates or creates a new ProvisionResponse.
+     *
+     * @param resp
+     * @return
+     */
+    @RequestMapping(value = "/post/provision", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 400, condition = "Plan not found or credentials not found or something important"),
+        @ResponseCode(code = 200, condition = "provision success")
+    })
+    public @ResponseBody
+    String postProvisionResponse(@RequestBody ProvisionResponse resp) {
+        if (resp.getCloudCredentialsIDs() == null || resp.getCloudCredentialsIDs().get(0) == null
+                || resp.getCloudCredentialsIDs().get(0).length() < 2) {
+            throw new BadRequestException();
+        }
+        if (resp.getPlanID() == null || resp.getPlanID().length() < 2) {
+            throw new BadRequestException();
+        }
+        if (resp.getDeployParameters() == null || resp.getDeployParameters().get(0) == null) {
+            throw new BadRequestException();
+        }
+        resp = provisionService.save(resp);
+
+        return resp.getId();
     }
 
     @RequestMapping(value = "/sample", method = RequestMethod.GET)

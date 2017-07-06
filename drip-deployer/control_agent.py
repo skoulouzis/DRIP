@@ -52,6 +52,9 @@ def install_agent(vm, vm_list):
 
 def run(vm_list):
     for i in vm_list:
+        parentDir = os.path.dirname(os.path.abspath(i.key))
+        os.chmod(parentDir, 0o700)
+        os.chmod(i.key, 0o600)
         if i.role == "master":
             ret = install_agent(i, vm_list)
             if "ERROR" in ret: return ret

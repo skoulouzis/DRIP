@@ -15,48 +15,48 @@
  */
 package nl.uva.sne.drip.drip.commons.data.v1.external.ansible;
 
-/**
- *
- * @author S. Koulouzis
- */
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import nl.uva.sne.drip.drip.commons.data.v1.external.OwnedObject;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * This class represents the the ansible out put for a specific VM. This can be
+ * used as a archive / log of ansible executions
+ *
+ * @author S. Koulouzis
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "host",
-    "result"
-})
 @Document
 public class AnsibleOutput extends OwnedObject {
 
     @Indexed
-    @JsonProperty("host")
     private String host;
 
     @Indexed
-    @JsonProperty("cloudDeploymentDomain")
     private String cloudDeploymentDomain;
 
     @Indexed
-    @JsonProperty("vmType")
     private String vmType;
 
-    @JsonProperty("result")
     private AnsibleResult result;
 
-    @JsonProperty("provisionID")
+
     private String provisionID;
 
     @Indexed
-    @JsonProperty("cloudProvider")
     private String cloudProvider;
 
+    /**
+     * The host (IP) of the VM that executed the playbook
+     *
+     * @return the host
+     */
     @JsonProperty("host")
+    @DocumentationExample("147.228.242.58")
     public String getHost() {
         return host;
     }
@@ -66,6 +66,11 @@ public class AnsibleOutput extends OwnedObject {
         this.host = host;
     }
 
+    /**
+     * The output of the playbook execution
+     *
+     * @return the result
+     */
     @JsonProperty("result")
     public AnsibleResult getAnsibleResult() {
         return result;
@@ -76,6 +81,12 @@ public class AnsibleOutput extends OwnedObject {
         this.result = result;
     }
 
+    /**
+     * The cloud domain where the VM that run the playbook
+     *
+     * @return the domain
+     */
+    @DocumentationExample("https://carach5.ics.muni.cz:11443")
     @JsonProperty("cloudDeploymentDomain")
     public String getCloudDeploymentDomain() {
         return cloudDeploymentDomain;
@@ -86,6 +97,12 @@ public class AnsibleOutput extends OwnedObject {
         this.cloudDeploymentDomain = cloudDeploymentDomain;
     }
 
+    /**
+     * The type of VM that run the playbook
+     *
+     * @return
+     */
+    @DocumentationExample("medium")
     @JsonProperty("vmType")
     public String getVmType() {
         return vmType;
@@ -101,13 +118,24 @@ public class AnsibleOutput extends OwnedObject {
         this.provisionID = provisionID;
     }
 
+    /**
+     * The provision used to spawn the VM for this playbook execution
+     *
+     * @return the provision ID
+     */
+    @DocumentationExample("59172db6e452f1b9b666a621")
     @JsonProperty("provisionID")
     public String getProvisionID() {
         return provisionID;
     }
+
     /**
+     * The cloud provider
+     *
      * @return the cloudProvider
      */
+    @DocumentationExample("ec2")
+    @JsonProperty("cloudProvider")
     public String getCloudProvider() {
         return cloudProvider;
     }

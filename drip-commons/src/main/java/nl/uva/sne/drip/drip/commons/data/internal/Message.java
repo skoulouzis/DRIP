@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author S. Koulouzis.
  */
-public class Message implements Serializable {
+    public class Message implements Serializable {
 
     private Long creationDate;
 

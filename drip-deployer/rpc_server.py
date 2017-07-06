@@ -84,7 +84,6 @@ def handleDelivery(message):
         if "ERROR" in ret: return ret
         ret = docker_swarm.run(vm_list)
         if "ERROR" in ret: return ret
- #       ret1 = control_agent.run(vm_list)
         ret = docker_compose.run(vm_list, compose_file, compose_name)
         return ret
     elif manager_type == "ansible":

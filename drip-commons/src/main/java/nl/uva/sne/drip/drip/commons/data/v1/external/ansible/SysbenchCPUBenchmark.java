@@ -18,7 +18,7 @@ package nl.uva.sne.drip.drip.commons.data.v1.external.ansible;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- *
+ *This class represents a sysbench CPU Benchmark for a specific VM.
  * @author S. Koulouzis
  */
 @Document
@@ -41,8 +41,10 @@ public class SysbenchCPUBenchmark extends BenchmarkResult {
     private String ansibleOutputID;
 
     /**
+     * The sysbench version
      * @return the sysbenchVersion
      */
+    
     public String getSysbenchVersion() {
         return sysbenchVersion;
     }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<enunciate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://enunciate.webcohesion.com/schemas/enunciate-1.30.xsd">
+
+    <facets>
+        <exclude name="internal_api" />
+    </facets>
+
+    <api-classes>
+        <include pattern="nl.uva.sne.drip.drip.commons.data.v1.external.*" />
+        <include pattern="nl.uva.sne.drip.drip.commons.data.v1.external.ansible.*" />
+        <include pattern="nl.uva.sne.drip.drip.commons.data.v0.external.*" />
+        <exclude pattern="nl.uva.sne.drip.drip.commons.data.internal.*"/>
+    </api-classes>
+
+  <api-import pattern="nl.uva.sne.drip.api.v1.rest.*"/>
+  <api-import pattern="nl.uva.sne.drip.api.v0.rest.*"/>
+  
+
+
+    <modules>
+        <swagger disabled="true" />
+    </modules>
+
+</enunciate>

@@ -33,6 +33,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * This controller is responsible for showing the output from ansible executions
+ *
+ * @author S. Koulouzis
+ */
 @RestController
 @RequestMapping("/user/v1.0/deployer/ansible")
 @Controller
@@ -44,8 +49,18 @@ public class AnsibleOutputController {
     @Autowired
     private AnsibleOutputService ansibleOutputService;
 
+    /**
+     * Returns an AnsibleOutput.
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 404, condition = "AnsibleOutput not found"),
+        @ResponseCode(code = 200, condition = "AnsibleOutput exists")
+    })
     public @ResponseBody
     AnsibleOutput get(@PathVariable("id") String id) {
         AnsibleOutput resp = ansibleOutputService.findOne(id);
@@ -55,15 +70,32 @@ public class AnsibleOutputController {
         return resp;
     }
 
+    /**
+     * Query AnsibleOutput by executing command.
+     *
+     * @param command
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, params = {"command"})
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful query")
+    })
     public @ResponseBody
     List<AnsibleOutput> getByCommand(@RequestParam(value = "command") String command) {
         return ansibleOutputService.findByCommand(command);
     }
 
+    /**
+     * Returns the ids of stored objects. Empty list if non stored
+     *
+     * @return
+     */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful query")
+    })
     public @ResponseBody
     List<String> getIds() {
         List<AnsibleOutput> all = ansibleOutputService.findAll();
@@ -74,15 +106,33 @@ public class AnsibleOutputController {
         return ids;
     }
 
+    /**
+     * Query for used (unique) commands
+     *
+     * @return
+     */
     @RequestMapping(value = "/commands", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful query")
+    })
     public @ResponseBody
     List<String> getCommands() {
         return ansibleOutputService.findAllCommands();
     }
 
+    /**
+     * Deletes object
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful delete"),
+        @ResponseCode(code = 404, condition = "Non existing id")
+    })
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
         AnsibleOutput Key = ansibleOutputService.findOne(id);
@@ -93,8 +143,16 @@ public class AnsibleOutputController {
         throw new NotFoundException();
     }
 
+    /**
+     * Deletes all entries. Use with caution !
+     *
+     * @return
+     */
     @RequestMapping(value = "/all", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful delete")
+    })
     public @ResponseBody
     String deleteAll() {
         ansibleOutputService.deleteAll();

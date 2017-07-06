@@ -44,7 +44,7 @@ public class PlaybookService {
     @Autowired
     private PlaybookDao dao;
 
-    public String get(String id, String fromat) throws JSONException {
+    public String get(String id, String fromat) throws JSONException, NotFoundException {
         PlaybookRepresentation playbook = findOne(id);
         if (playbook == null) {
             throw new NotFoundException();
@@ -116,7 +116,7 @@ public class PlaybookService {
     }
 
     public String saveStringContents(String playbookContents) throws IOException {
-        Map<String, Object> map = Converter.cleanStringContents(playbookContents,false);        
+        Map<String, Object> map = Converter.cleanStringContents(playbookContents, false);
         PlaybookRepresentation t = new PlaybookRepresentation();
         t.setKvMap(map);
         save(t);

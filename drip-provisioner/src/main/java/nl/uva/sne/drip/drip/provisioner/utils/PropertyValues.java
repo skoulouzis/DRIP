@@ -34,7 +34,7 @@ public class PropertyValues {
     public static String HOST = "127.0.0.1";
     public static String TRUSTED_CERTIFICATE_FOLDER;
     public static URL CA_BUNDLE_URL;
-    public static String MY_PROXY_ENDPOINT = "myproxy1.egee.cesnet.cz";
+//    public static String MY_PROXY_ENDPOINT;
     public static String DOMAIN_INFO_PATH = "etc";
 
     public static void setPropertyValues(Properties prop) throws MalformedURLException {
@@ -45,8 +45,7 @@ public class PropertyValues {
         CA_BUNDLE_URL = new URL(prop.getProperty("ca.bundle.url",
                 "https://dist.eugridpma.info/distribution/igtf/current/accredited/igtf-preinstalled-bundle-classic.tar.gz"));
 
-        MY_PROXY_ENDPOINT = prop.getProperty("my.proxy.endpoint",
-                "myproxy1.egee.cesnet.cz");
+//        MY_PROXY_ENDPOINT = prop.getProperty("my.proxy.endpoint");
 
         DOMAIN_INFO_PATH = prop.getProperty("domain.info.path",
                 "etc");
