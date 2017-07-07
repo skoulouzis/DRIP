@@ -14,6 +14,7 @@ import ansible_playbook
 import sys, argparse
 from threading import Thread
 from time import sleep
+import os.path
 
 
 if len(sys.argv) > 1:
@@ -41,7 +42,12 @@ def handleDelivery(message):
     node_num = 0
     vm_list = []
     current_milli_time = lambda: int(round(time.time() * 1000))
-    path = os.path.dirname(os.path.abspath(__file__)) + "/"+ str(current_milli_time()) + "/"
+    try:
+        path = os.path.dirname(os.path.abspath(__file__)) + "/"+ str(current_milli_time()) + "/"
+    except NameError:        
+        import sys
+        path = os.path.dirname(os.path.abspath(sys.argv[0])) + "/"+ str(current_milli_time()) + "/"
+        
     if not os.path.exists(path):
         os.makedirs(path)
         
@@ -71,7 +77,11 @@ def handleDelivery(message):
         elif name == "composer":
             value = param["value"]
             compose_file = path + "docker-compose.yml"
-            compose_name = param["attributes"]["name"]
+            if not param["attributes"] == None and not param["attributes"]["name"] == None : 
+                compose_name = param["attributes"]["name"]
+            else:
+                current_milli_time = lambda: int(round(time.time() * 1000))
+                compose_name = "service_"+str(current_milli_time())
             fo = open(compose_file, "w")
             fo.write(value)
             fo.close()     

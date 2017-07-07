@@ -78,14 +78,13 @@ public class DeployService {
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-    @Autowired
-    private CloudCredentialsService cloudCredentialsService;
-
+//    @Autowired
+//    private CloudCredentialsService cloudCredentialsService;
     @Autowired
     private ProvisionService provisionService;
 
     @Autowired
-    private PlaybookService playbookService;
+    private ConfigurationService configurationService;
 
     @Autowired
     private BenchmarkResultService benchmarkResultService;
@@ -186,6 +185,11 @@ public class DeployService {
             parameters.add(ansibleParameter);
         }
 
+        if (managerType.toLowerCase().equals("swarm") && configurationID != null) {
+            MessageParameter composerParameter = createComposerParameter(configurationID);
+            parameters.add(composerParameter);
+        }
+
         Message deployInvokationMessage = new Message();
         deployInvokationMessage.setParameters(parameters);
         deployInvokationMessage.setCreationDate(System.currentTimeMillis());
@@ -228,12 +232,24 @@ public class DeployService {
     }
 
     private MessageParameter createAnsibleParameter(String configurationID) throws JSONException {
-        String playbook = playbookService.get(configurationID, "yml");
-        MessageParameter ansibleParameter = new MessageParameter();
-        ansibleParameter.setName("playbook");
-        ansibleParameter.setEncoding("UTF-8");
-        ansibleParameter.setValue(playbook);
-        return ansibleParameter;
+        return createConfigurationParameter(configurationID, "ansible");
+    }
+
+    private MessageParameter createComposerParameter(String configurationID) throws JSONException {
+        MessageParameter configurationParameter = createConfigurationParameter(configurationID, "composer");
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("name", configurationID);
+        configurationParameter.setAttributes(attributes);
+        return configurationParameter;
+    }
+
+    private MessageParameter createConfigurationParameter(String configurationID, String confType) throws JSONException {
+        String configuration = configurationService.get(configurationID, "yml");
+        MessageParameter configurationParameter = new MessageParameter();
+        configurationParameter.setName(confType);
+        configurationParameter.setEncoding("UTF-8");
+        configurationParameter.setValue(configuration);
+        return configurationParameter;
     }
 
     private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException, Exception {

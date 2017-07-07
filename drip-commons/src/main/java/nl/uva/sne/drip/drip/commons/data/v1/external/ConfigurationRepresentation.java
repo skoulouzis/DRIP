@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.api.dao;
+package nl.uva.sne.drip.drip.commons.data.v1.external;
 
-import nl.uva.sne.drip.drip.commons.data.v1.external.PlaybookRepresentation;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
+ * This class represents a configuration ( playbook used by ansible manager or 
+ * composer for docker-composer) to deploy software.
  *
  * @author S. Koulouzis
  */
-public interface PlaybookDao extends MongoRepository<PlaybookRepresentation, String> {
-
+@Document
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ConfigurationRepresentation extends KeyValueHolder {
 }
