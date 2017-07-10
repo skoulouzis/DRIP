@@ -85,6 +85,11 @@ def handleDelivery(message):
             fo = open(compose_file, "w")
             fo.write(value)
             fo.close()     
+        elif name == "scale":         
+            name_of_deployment = param["value"]
+            name_of_service = param["attributes"]["service"]
+            number_of_containers = param["attributes"]["number"]
+            
 
     if manager_type == "kubernetes":
         ret = docker_kubernetes.run(vm_list)
