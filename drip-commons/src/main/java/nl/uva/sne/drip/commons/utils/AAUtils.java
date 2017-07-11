@@ -26,8 +26,11 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
 import java.security.cert.CertificateEncodingException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import static nl.uva.sne.drip.commons.utils.FileUtils.untar;
 //import org.globus.common.CoGProperties;
 //import org.globus.myproxy.GetParams;
@@ -82,14 +85,21 @@ public class AAUtils {
                 break;
             case PROXY_FILE:
                 secretKey += "\n";
-                Files.write(Paths.get("/tmp/x509up_u1000"), secretKey.getBytes());
                 proxy_file = new File("/tmp/x509up_u1000");
+                Set<PosixFilePermission> perm = new HashSet<>();
+                perm.add(PosixFilePermission.OWNER_WRITE);
+                Files.setPosixFilePermissions(proxy_file.toPath(), perm);
+                
+                Files.write(proxy_file.toPath(), secretKey.getBytes());
                 break;
             case CERTIFICATE:
                 break;
             default:
                 break;
         }
+        Set<PosixFilePermission> perm = new HashSet<>();
+        perm.add(PosixFilePermission.OWNER_READ);
+        Files.setPosixFilePermissions(proxy_file.toPath(), perm);
         return proxy_file.getAbsolutePath();
     }
 

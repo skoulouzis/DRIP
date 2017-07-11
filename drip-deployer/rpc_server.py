@@ -86,7 +86,7 @@ def handleDelivery(message):
             fo = open(compose_file, "w")
             fo.write(value)
             fo.close()     
-        elif name == "scale":         
+        elif name == "scale":
             name_of_deployment = param["value"]
             name_of_service = param["attributes"]["service"]
             number_of_containers = param["attributes"]["number"]
