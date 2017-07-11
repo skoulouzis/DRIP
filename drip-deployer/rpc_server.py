@@ -9,6 +9,7 @@ import docker_kubernetes
 import docker_engine
 import docker_swarm
 import docker_compose
+import docker_service
 import control_agent
 import ansible_playbook
 import sys, argparse
@@ -104,6 +105,9 @@ def handleDelivery(message):
     elif manager_type == "ansible":
         ret = ansible_playbook.run(vm_list,playbook)
         return ret
+    elif manager_type == "scale":
+        ret = docker_service.run(vm_list, name_of_deployment, name_of_service, number_of_containers)
+        return ret
     else:
         return "ERROR: invalid cluster"
     
@@ -125,6 +129,8 @@ def on_request(ch, method, props, body):
         res_name = "error"
     elif manager_type == "ansible":
         res_name = "ansible_output"
+    elif manager_type == "scale":
+        res_name = "status"
     else:
         res_name = "credential"
             
