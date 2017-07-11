@@ -89,6 +89,9 @@ public class ConfigurationService {
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public ConfigurationRepresentation delete(String id) {
         ConfigurationRepresentation tr = dao.findOne(id);
+        if(tr == null){
+            throw new NotFoundException();
+        }
         dao.delete(tr);
         return tr;
     }

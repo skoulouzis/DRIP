@@ -135,11 +135,16 @@ public class ConfigurationController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 200, condition = "Successful delete")
+        @ResponseCode(code = 200, condition = "Successful delete"),
+        @ResponseCode(code = 404, condition = "Object not found")
     })
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        configurationService.delete(id);
+        try {
+            configurationService.delete(id);
+        } catch (NotFoundException ex) {
+            throw ex;
+        }
         return "Deleted : " + id;
     }
 

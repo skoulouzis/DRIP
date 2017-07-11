@@ -250,18 +250,20 @@ public class ProvisionService {
         parameters.add(topology);
 
         Set<String> ids = plan.getLoweLevelPlanIDs();
-        for (String lowID : ids) {
-            PlanResponse lowPlan = planService.getDao().findOne(lowID);
-            topology = new MessageParameter();
-            topology.setName("topology");
-            String value = Converter.map2YmlString(lowPlan.getKeyValue());
-            value = value.replaceAll("\\uff0E", ".");
-            topology.setValue(value);
-            attributes = new HashMap<>();
-            attributes.put("level", String.valueOf(lowPlan.getLevel()));
-            attributes.put("filename", FilenameUtils.removeExtension(lowPlan.getName()));
-            topology.setAttributes(attributes);
-            parameters.add(topology);
+        if (ids != null) {
+            for (String lowID : ids) {
+                PlanResponse lowPlan = planService.getDao().findOne(lowID);
+                topology = new MessageParameter();
+                topology.setName("topology");
+                String value = Converter.map2YmlString(lowPlan.getKeyValue());
+                value = value.replaceAll("\\uff0E", ".");
+                topology.setValue(value);
+                attributes = new HashMap<>();
+                attributes.put("level", String.valueOf(lowPlan.getLevel()));
+                attributes.put("filename", FilenameUtils.removeExtension(lowPlan.getName()));
+                topology.setAttributes(attributes);
+                parameters.add(topology);
+            }
         }
         return parameters;
     }
