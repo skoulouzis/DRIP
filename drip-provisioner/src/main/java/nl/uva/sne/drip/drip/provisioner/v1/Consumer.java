@@ -149,6 +149,9 @@ public class Consumer extends DefaultConsumer {
                     case "kill_topology":
                         jo = new JSONObject(messageStr);
                         return killTopology(jo.getJSONArray("parameters"), tempInputDirPath);
+                    case "scale_topology":
+                        jo = new JSONObject(messageStr);
+                        return scaleTopology(jo.getJSONArray("parameters"), tempInputDirPath);
                 }
             }
         }
@@ -210,7 +213,7 @@ public class Consumer extends DefaultConsumer {
             }
 
             userDatabase = getUserDB();
-            
+
             /*ProvisionRequest pq = new ProvisionRequest();
 		pq.topologyName = "ec2_zh_b";
 		ArrayList<ProvisionRequest> provisionReqs = new ArrayList<ProvisionRequest>();
@@ -451,6 +454,75 @@ public class Consumer extends DefaultConsumer {
         response.setParameters(messageParameters);
         response.setCreationDate(System.currentTimeMillis());
         return response;
+    }
+
+    private Message scaleTopology(JSONArray parameters, String tempInputDirPath) throws IOException, JSONException, Exception {
+        TEngine tEngine = new TEngine();
+        TopologyAnalysisMain tam;
+
+        File topologyFile = MessageParsing.getTopologies(parameters, tempInputDirPath, 0).get(0);
+        File mainTopologyFile = new File(tempInputDirPath + "topology_main.yml");
+        String topTopologyLoadingPath = mainTopologyFile.getAbsolutePath();
+
+        List<File> topologyFiles = MessageParsing.getTopologies(parameters, tempInputDirPath, 1);
+//        for (File lowLevelTopologyFile : topologyFiles) {
+//            File secondaryTopologyFile = new File(tempInputDirPath + File.separator + lowLevelTopologyFile.getName() + ".yml");
+//            FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
+//        }
+
+        File clusterDir = new File(tempInputDirPath + File.separator + "clusterKeyPair");
+        clusterDir.mkdir();
+        List<File> public_deployer_key = MessageParsing.getSSHKeys(parameters, clusterDir.getAbsolutePath(), "id_rsa.pub", "public_deployer_key");
+        List<File> private_deployer_key = MessageParsing.getSSHKeys(parameters, clusterDir.getAbsolutePath(), "id_rsa", "private_deployer_key");
+
+        Map<String, Object> map = MessageParsing.ymlStream2Map(new FileInputStream(topTopologyLoadingPath));
+        String userPublicKeyName = ((String) map.get("publicKeyPath")).split("@")[1].replaceAll("\"", "");
+        String userPrivateName = FilenameUtils.removeExtension(userPublicKeyName);
+
+        List<File> public_user_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, userPublicKeyName, "public_user_key");
+        List<File> private_user_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "id_rsa", "private_user_key");
+        FileUtils.moveFile(private_user_key.get(0), new File(private_user_key.get(0).getParent() + File.separator + userPrivateName));
+
+        List<File> public_cloud_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "name.pub", "public_cloud_key");
+        List<File> private_cloud_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "id_rsa", "private_cloud_key");
+
+        UserCredential userCredential = getUserCredential(parameters, tempInputDirPath);
+        UserDatabase userDatabase = getUserDB();
+
+        tam = new TopologyAnalysisMain(topTopologyLoadingPath);
+        if (!tam.fullLoadWholeTopology()) {
+            throw new Exception("sth wrong!");
+        }
+
+        ArrayList<SSHKeyPair> sshKeyPairs = userCredential.
+                loadSSHKeyPairFromFile(tempInputDirPath);
+        if (sshKeyPairs == null) {
+            throw new NullPointerException("ssh key pairs are null");
+        }
+        if (sshKeyPairs.isEmpty()) {
+            throw new IOException("No ssh key pair is loaded!");
+        } else if (!userCredential.initial(sshKeyPairs, tam.wholeTopology)) {
+            throw new IOException("ssh key pair initilaziation error");
+        }
+        Message response = new Message();
+        try {
+            tEngine.autoScal(tam.wholeTopology, userCredential, userDatabase, tam.wholeTopology.topologies.get(0).topology , true, scalDCs);
+        } catch (Throwable ex) {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+
+            return mapper.readValue(generateExeptionResponse(ex), Message.class
+            );
+        }
+        MessageParameter param = new MessageParameter();
+        param.setName("topology_scaled");
+        param.setValue("true");
+        List<MessageParameter> messageParameters = new ArrayList<>();
+        messageParameters.add(param);
+        response.setParameters(messageParameters);
+        response.setCreationDate(System.currentTimeMillis());
+        return response;
+
     }
 
     private UserDatabase getUserDB() {
