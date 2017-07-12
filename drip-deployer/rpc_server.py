@@ -67,6 +67,10 @@ def handleDelivery(message):
             fo = open(key, "w")
             fo.write(value)
             fo.close()
+            parentDir = os.path.dirname(os.path.abspath(key))
+            os.chmod(parentDir, 0o700)
+            os.chmod(key, 0o600)   
+            
             vm = VmInfo(ip, user, key, role)
             vm_list.append(vm)
         elif name == "playbook":
@@ -89,7 +93,7 @@ def handleDelivery(message):
         elif name == "scale":
             name_of_deployment = param["value"]
             name_of_service = param["attributes"]["service"]
-            number_of_containers = param["attributes"]["number"]
+            number_of_containers = param["attributes"]["number_of_containers"]
             
 
     if manager_type == "kubernetes":
@@ -130,7 +134,7 @@ def on_request(ch, method, props, body):
     elif manager_type == "ansible":
         res_name = "ansible_output"
     elif manager_type == "scale":
-        res_name = "status"
+        res_name = "scale_status"
     else:
         res_name = "credential"
             

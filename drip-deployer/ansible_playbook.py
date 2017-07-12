@@ -57,10 +57,7 @@ def install_prerequisites(vm):
 		
                 stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/ansible_setup.sh")
 		stdout.read()
-                
-                parentDir = os.path.dirname(os.path.abspath(vm.key))
-                os.chmod(parentDir, 0o700)
-                os.chmod(vm.key, 0o600)
+		
 		print "Ansible prerequisites installed in: %s " % (vm.ip)
 	except Exception as e:
 		print '%s: %s' % (vm.ip, e)

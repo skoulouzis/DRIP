@@ -69,8 +69,10 @@ public class OwnedObject {
     }
 
     /**
+     * The object's creation date in unix time stamp
      * @return the timestamp
      */
+    @DocumentationExample("1499793079011")
     public Long getTimestamp() {
         return timestamp;
     }
