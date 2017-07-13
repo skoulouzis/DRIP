@@ -198,7 +198,7 @@ public class Consumer extends DefaultConsumer {
 
             tam = new TopologyAnalysisMain(topTopologyLoadingPath);
             if (!tam.fullLoadWholeTopology()) {
-                throw new Exception("sth wrong!");
+                throw new Exception("Could not load topology");
             }
 
             userCredential = getUserCredential(parameters, tempInputDirPath);
