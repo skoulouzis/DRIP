@@ -58,6 +58,7 @@ import provisioning.database.EGI.EGIDatabase;
 import provisioning.database.UserDatabase;
 import provisioning.engine.TEngine.TEngine;
 import provisioning.engine.VEngine.EGI.EGIAgent;
+import provisioning.request.ScalingRequest;
 import topologyAnalysis.TopologyAnalysisMain;
 import topologyAnalysis.dataStructure.SubTopologyInfo;
 import topologyAnalysis.dataStructure.VM;
@@ -506,7 +507,15 @@ public class Consumer extends DefaultConsumer {
         }
         Message response = new Message();
         try {
-            tEngine.autoScal(tam.wholeTopology, userCredential, userDatabase, tam.wholeTopology.topologies.get(0).topology , true, scalDCs);
+            ScalingRequest scalReq = new ScalingRequest();
+            scalReq.cloudProvider = "ec2";
+            scalReq.domain = "Ohio";
+            scalReq.satisfied = false;
+            ArrayList<ScalingRequest> scalDCs = new ArrayList<>();
+            scalDCs.add(scalReq);
+
+            tEngine.autoScal(tam.wholeTopology, userCredential, userDatabase, "ec2_zh_b", true, scalDCs);
+
         } catch (Throwable ex) {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);

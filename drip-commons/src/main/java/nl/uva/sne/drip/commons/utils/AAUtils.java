@@ -86,10 +86,11 @@ public class AAUtils {
             case PROXY_FILE:
                 secretKey += "\n";
                 proxy_file = new File("/tmp/x509up_u1000");
-                Set<PosixFilePermission> perm = new HashSet<>();
-                perm.add(PosixFilePermission.OWNER_WRITE);
-                Files.setPosixFilePermissions(proxy_file.toPath(), perm);
-                
+                if (proxy_file.exists()) {
+                    Set<PosixFilePermission> perm = new HashSet<>();
+                    perm.add(PosixFilePermission.OWNER_WRITE);
+                    Files.setPosixFilePermissions(proxy_file.toPath(), perm);
+                }
                 Files.write(proxy_file.toPath(), secretKey.getBytes());
                 break;
             case CERTIFICATE:
