@@ -53,7 +53,7 @@ import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
-import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleDeploymetRequest;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleOutput;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleResult;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.BenchmarkResult;
@@ -274,19 +274,19 @@ public class DeployService {
         return scaleParameter;
     }
 
-    public DeployResponse scale(ScaleDeploymetRequest scaleReq) throws IOException, TimeoutException, InterruptedException, JSONException, Exception {
+    public DeployResponse scale(ScaleRequest scaleReq) throws IOException, TimeoutException, InterruptedException, JSONException, Exception {
         //Deployer needs configurationID -> name_of_deployment
-        String deployId = scaleReq.getDeployID();
+        String deployId = scaleReq.getScaleTargetID();
         DeployResponse deployment = this.findOne(deployId);
         String confID = deployment.getConfigurationID();
         ConfigurationRepresentation configuration = configurationService.findOne(confID);
         Map<String, Object> map = configuration.getKeyValue();
         Map<String, Object> services = (Map<String, Object>) map.get("services");
-        if (!services.containsKey(scaleReq.getServiceName())) {
+        if (!services.containsKey(scaleReq.getScaleTargetName())) {
             throw new BadRequestException("Service name does not exist in this deployment");
         }
 
-        Message message = buildDeployerMessage(deployment.getProvisionID(), "scale", confID, scaleReq.getServiceName(), scaleReq.getNumOfInstances());
+        Message message = buildDeployerMessage(deployment.getProvisionID(), "scale", confID, scaleReq.getScaleTargetName(), scaleReq.getNumOfInstances());
 
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             Message response = (deployer.call(message));

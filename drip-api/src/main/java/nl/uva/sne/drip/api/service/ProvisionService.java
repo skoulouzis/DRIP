@@ -58,10 +58,10 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import nl.uva.sne.drip.api.dao.ProvisionResponseDao;
-import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller1;
 import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
 
 /**
  *
@@ -75,13 +75,10 @@ public class ProvisionService {
     private ProvisionResponseDao provisionDao;
 
     @Autowired
-    private KeyPairDao keyDao;
-
-    @Autowired
     private CloudCredentialsService cloudCredentialsService;
 
     @Autowired
-    private SimplePlannerService planService;
+    private SimplePlannerService simplePlanService;
 
     @Autowired
     private ScriptService userScriptService;
@@ -232,7 +229,7 @@ public class ProvisionService {
     }
 
     private List<MessageParameter> buildTopologyParams(String planID) throws JSONException, FileNotFoundException {
-        PlanResponse plan = planService.getDao().findOne(planID);
+        PlanResponse plan = simplePlanService.getDao().findOne(planID);
 
         if (plan == null) {
             throw new PlanNotFoundException();
@@ -252,7 +249,7 @@ public class ProvisionService {
         Set<String> ids = plan.getLoweLevelPlanIDs();
         if (ids != null) {
             for (String lowID : ids) {
-                PlanResponse lowPlan = planService.getDao().findOne(lowID);
+                PlanResponse lowPlan = simplePlanService.getDao().findOne(lowID);
                 topology = new MessageParameter();
                 topology.setName("topology");
                 String value = Converter.map2YmlString(lowPlan.getKeyValue());
@@ -446,7 +443,7 @@ public class ProvisionService {
 //                    + File.separator + "docs" + File.separator + "json_samples"
 //                    + File.separator + "ec2_provisioner_provisoned3.json");
 
-            return parseCreateResourcesResponse(response.getParameters(), provisionRequest);
+            return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null);
 
         }
 
@@ -454,23 +451,68 @@ public class ProvisionService {
 
     private ProvisionResponse callProvisioner1(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
         try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
-            Message provisionerInvokationMessage = buildProvisione1Message(provisionRequest);
+            Message provisionerInvokationMessage = buildProvisioner1Message(provisionRequest);
             Message response = (provisioner.call(provisionerInvokationMessage));
-            return parseCreateResourcesResponse(response.getParameters(), provisionRequest);
+            return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null);
         }
 
     }
 
     public void deleteProvisionedResources(ProvisionResponse provisionInfo) throws IOException, TimeoutException, InterruptedException, JSONException {
         try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
-            Message deleteInvokationMessage = buildDeleteMessage(provisionInfo);
+            Message deleteInvokationMessage = buildTopoplogyModificationMessage(provisionInfo, "kill_topology", null);
             Message response = (provisioner.call(deleteInvokationMessage));
             parseDeleteResourcesResponse(response.getParameters(), provisionInfo);
         }
-
     }
 
-    private Message buildProvisione1Message(ProvisionRequest provisionRequest) throws JSONException, FileNotFoundException, IOException {
+    public ProvisionResponse scale(ScaleRequest scaleRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
+        String provisionID = scaleRequest.getScaleTargetID();
+        String scaleName = scaleRequest.getScaleTargetName();
+        if (scaleName == null || scaleName.length() < 1) {
+            throw new BadRequestException("Must specify wich topology to scale. \'scaleName\' was empty ");
+        }
+        ProvisionResponse provisionInfo = findOne(provisionID);
+        boolean scaleNameExists = false;
+        Map<String, Object> plan = provisionInfo.getKeyValue();
+        String cloudProvider = null;
+        String domain = null;
+        for (String key : plan.keySet()) {
+            Map<String, Object> subMap = (Map<String, Object>) plan.get(key);
+            if (subMap.containsKey("topologies")) {
+                List< Map<String, Object>> topologies = (List< Map<String, Object>>) subMap.get("topologies");
+                for (Map<String, Object> topology : topologies) {
+                    if (topology.get("tag").equals("scaling") && topology.get("topology").equals(scaleName)) {
+                        cloudProvider = (String) topology.get("cloudProvider");
+                        domain = (String) topology.get("domain");
+                        scaleNameExists = true;
+                        break;
+                    }
+                }
+            }
+            if (scaleNameExists) {
+                break;
+            }
+        }
+        if (!scaleNameExists) {
+            throw new BadRequestException("Name of topology dosen't exist");
+        }
+        try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
+            Map<String, String> extra = new HashMap<>();
+            extra.put("scale_topology_name", scaleName);
+            extra.put("number_of_instances", String.valueOf(scaleRequest.getNumOfInstances()));
+            extra.put("cloud_provider", cloudProvider);
+            extra.put("domain", domain);
+
+            Message scaleMessage = buildTopoplogyModificationMessage(provisionInfo, "scale_topology", extra);
+            Message response = provisioner.call(scaleMessage);
+            parseCreateResourcesResponse(response.getParameters(), null, provisionInfo);
+
+        }
+        return provisionInfo;
+    }
+
+    private Message buildProvisioner1Message(ProvisionRequest provisionRequest) throws JSONException, FileNotFoundException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
 
@@ -512,13 +554,13 @@ public class ProvisionService {
 
     }
 
-    private Message buildDeleteMessage(ProvisionResponse provisionInfo) throws JSONException, IOException {
+    private Message buildTopoplogyModificationMessage(ProvisionResponse provisionInfo, String actionName, Map<String, String> extraAttributes) throws JSONException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
 
         MessageParameter action = new MessageParameter();
         action.setName("action");
-        action.setValue("kill_topology");
+        action.setValue(actionName);
         parameters.add(action);
 
         List<MessageParameter> topologies = buildProvisionedTopologyParams(provisionInfo);
@@ -541,7 +583,17 @@ public class ProvisionService {
             List<MessageParameter> cloudCredentialParams = buildCloudCredentialParam(cred, 1);
             parameters.addAll(cloudCredentialParams);
         }
-
+        if (extraAttributes != null && extraAttributes.containsKey("scale_topology_name")) {
+            MessageParameter scale = new MessageParameter();
+            scale.setName("scale_topology_name");
+            scale.setValue(extraAttributes.get("scale_topology_name"));
+            Map<String, String> attributes = new HashMap<>();
+            attributes.put("number_of_instances", extraAttributes.get("number_of_instances"));
+            attributes.put("cloud_provider", extraAttributes.get("cloud_provider"));
+            attributes.put("domain", extraAttributes.get("domain"));
+            scale.setAttributes(attributes);
+            parameters.add(scale);
+        }
         invokationMessage.setParameters(parameters);
         invokationMessage.setCreationDate(System.currentTimeMillis());
         return invokationMessage;
@@ -563,9 +615,12 @@ public class ProvisionService {
         return parameters;
     }
 
-    private ProvisionResponse parseCreateResourcesResponse(List<MessageParameter> parameters, ProvisionRequest provisionRequest) throws Exception {
-        ProvisionResponse provisionResponse = new ProvisionResponse();
-        provisionResponse.setTimestamp(System.currentTimeMillis());
+    private ProvisionResponse parseCreateResourcesResponse(List<MessageParameter> parameters, ProvisionRequest provisionRequest, ProvisionResponse provisionResponse) throws Exception {
+        if (provisionResponse == null) {
+            provisionResponse = new ProvisionResponse();
+            provisionResponse.setTimestamp(System.currentTimeMillis());
+        }
+
         List<DeployParameter> deployParameters = new ArrayList<>();
         Map<String, Object> kvMap = null;
         KeyPair userKey = new KeyPair();
@@ -658,8 +713,13 @@ public class ProvisionService {
                     break;
             }
         }
+        List<String> userKeyIds = null;
+        if (provisionRequest != null) {
+            userKeyIds = provisionRequest.getUserKeyPairIDs();
+        } else {
+            userKeyIds = provisionResponse.getCloudKeyPairIDs();
+        }
 
-        List<String> userKeyIds = provisionRequest.getUserKeyPairIDs();
         if (userKeyIds != null && !userKeyIds.isEmpty()) {
         } else {
             userKeyIds = new ArrayList<>();
@@ -688,16 +748,16 @@ public class ProvisionService {
 
         provisionResponse.setDeployParameters(deployParameters);
         provisionResponse.setKvMap(kvMap);
-        provisionResponse.setCloudCredentialsIDs(provisionRequest.getCloudCredentialsIDs());
+        if (provisionRequest != null) {
+            provisionResponse.setCloudCredentialsIDs(provisionRequest.getCloudCredentialsIDs());
+            provisionResponse.setPlanID(provisionRequest.getPlanID());
+        }
 
         provisionResponse.setUserKeyPairIDs(userKeyIds);
         provisionResponse.setDeployerKeyPairIDs(deployerKeyIds);
 
-        provisionResponse.setPlanID(provisionRequest.getPlanID());
-
         provisionResponse = save(provisionResponse);
         return provisionResponse;
-
     }
 
     private void parseDeleteResourcesResponse(List<MessageParameter> parameters, ProvisionResponse provisionInfo) {
@@ -705,5 +765,4 @@ public class ProvisionService {
 //            System.err.println(p.getName() + " : " + p.getValue());
 //        }
     }
-
 }

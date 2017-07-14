@@ -35,7 +35,6 @@ import nl.uva.sne.drip.api.service.DeployService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.drip.commons.data.v1.external.DeployRequest;
 import nl.uva.sne.drip.drip.commons.data.v1.external.DeployResponse;
-import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleDeploymetRequest;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
 import org.json.JSONException;
 import org.springframework.stereotype.Controller;
@@ -91,9 +90,8 @@ public class DeployController {
 
     @RequestMapping(value = "/scale", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
-
     public @ResponseBody
-    String scaleDeployment(@RequestBody ScaleDeploymetRequest scaleRequest) {
+    String scaleDeployment(@RequestBody ScaleRequest scaleRequest) {
         try {
             return deployService.scale(scaleRequest).getId();
 

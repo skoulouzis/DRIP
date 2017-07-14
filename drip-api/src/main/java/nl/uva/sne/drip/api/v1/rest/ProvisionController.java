@@ -37,6 +37,7 @@ import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.service.ProvisionService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
 import org.json.JSONException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -187,6 +188,19 @@ public class ProvisionController {
         resp = provisionService.save(resp);
 
         return resp.getId();
+    }
+        @RequestMapping(value = "/scale", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String scaleDeployment(@RequestBody ScaleRequest scaleRequest) {
+        try {
+            return provisionService.scale(scaleRequest).getId();
+        } catch (IOException | TimeoutException | JSONException ex) {
+            Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @RequestMapping(value = "/sample", method = RequestMethod.GET)
