@@ -1211,32 +1211,161 @@ module V1
 
 module External
 
+  # (no documentation provided)
+  class ScaleRequest < Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::OwnedObject 
+
+    # the scaleTargetID
+    attr_accessor :scaleTargetID
+    # the scaleTargetName
+    attr_accessor :scaleTargetName
+    # the numOfInstances
+    attr_accessor :numOfInstances
+
+    # the json hash for this ScaleRequest
+    def to_jaxb_json_hash
+      _h = super
+      _h['scaleTargetID'] = scaleTargetID.to_jaxb_json_hash unless scaleTargetID.nil?
+      _h['scaleTargetName'] = scaleTargetName.to_jaxb_json_hash unless scaleTargetName.nil?
+      _h['numOfInstances'] = numOfInstances.to_jaxb_json_hash unless numOfInstances.nil?
+      return _h
+    end
+
+    #initializes this ScaleRequest with a json hash
+    def init_jaxb_json_hash(_o)
+      super _o
+        if !_o['scaleTargetID'].nil?
+          _oa = _o['scaleTargetID']
+            if(_oa.is_a? Hash)
+              @scaleTargetID = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @scaleTargetID =  String.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @scaleTargetID = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @scaleTargetID.push String.from_json(_item)
+                 else
+                   @scaleTargetID.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @scaleTargetID = _oa
+            end
+          end
+        if !_o['scaleTargetName'].nil?
+          _oa = _o['scaleTargetName']
+            if(_oa.is_a? Hash)
+              @scaleTargetName = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @scaleTargetName =  String.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @scaleTargetName = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @scaleTargetName.push String.from_json(_item)
+                 else
+                   @scaleTargetName.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @scaleTargetName = _oa
+            end
+          end
+        if !_o['numOfInstances'].nil?
+          _oa = _o['numOfInstances']
+            if(_oa.is_a? Hash)
+              @numOfInstances = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @numOfInstances =  Fixnum.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @numOfInstances = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @numOfInstances.push Fixnum.from_json(_item)
+                 else
+                   @numOfInstances.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @numOfInstances = _oa
+            end
+          end
+    end
+
+    # constructs a ScaleRequest from a (parsed) JSON hash
+    def self.from_json(o)
+      if o.nil?
+        return nil
+      else
+        inst = new
+        inst.init_jaxb_json_hash o
+        return inst
+      end
+    end
+  end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+module Nl
+
+module Uva
+
+module Sne
+
+module Drip
+
+module Drip
+
+module Commons
+
+module Data
+
+module V1
+
+module External
+
 module Ansible
 
   # (no documentation provided)
   class BenchmarkResult < Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::OwnedObject 
 
     # (no documentation provided)
-    attr_accessor :cloudDeploymentDomain
-    # (no documentation provided)
-    attr_accessor :start
-    # (no documentation provided)
     attr_accessor :vmType
+    # (no documentation provided)
+    attr_accessor :end
     # (no documentation provided)
     attr_accessor :delta
     # (no documentation provided)
-    attr_accessor :end
+    attr_accessor :cloudDeploymentDomain
+    # (no documentation provided)
+    attr_accessor :start
     # (no documentation provided)
     attr_accessor :host
 
     # the json hash for this BenchmarkResult
     def to_jaxb_json_hash
       _h = super
+      _h['vmType'] = vmType.to_jaxb_json_hash unless vmType.nil?
+      _h['end'] = end.to_jaxb_json_hash unless end.nil?
+      _h['delta'] = delta.to_jaxb_json_hash unless delta.nil?
       _h['cloudDeploymentDomain'] = cloudDeploymentDomain.to_jaxb_json_hash unless cloudDeploymentDomain.nil?
       _h['start'] = start.to_jaxb_json_hash unless start.nil?
-      _h['vmType'] = vmType.to_jaxb_json_hash unless vmType.nil?
-      _h['delta'] = delta.to_jaxb_json_hash unless delta.nil?
-      _h['end'] = end.to_jaxb_json_hash unless end.nil?
       _h['host'] = host.to_jaxb_json_hash unless host.nil?
       return _h
     end
@@ -1244,6 +1373,63 @@ module Ansible
     #initializes this BenchmarkResult with a json hash
     def init_jaxb_json_hash(_o)
       super _o
+        if !_o['vmType'].nil?
+          _oa = _o['vmType']
+            if(_oa.is_a? Hash)
+              @vmType = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @vmType =  String.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @vmType = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @vmType.push String.from_json(_item)
+                 else
+                   @vmType.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @vmType = _oa
+            end
+          end
+        if !_o['end'].nil?
+          _oa = _o['end']
+            if(_oa.is_a? Hash)
+              @end = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @end =  Time.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @end = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @end.push Time.from_json(_item)
+                 else
+                   @end.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @end = _oa
+            end
+          end
+        if !_o['delta'].nil?
+          _oa = _o['delta']
+            if(_oa.is_a? Hash)
+              @delta = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @delta =  Time.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @delta = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @delta.push Time.from_json(_item)
+                 else
+                   @delta.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @delta = _oa
+            end
+          end
         if !_o['cloudDeploymentDomain'].nil?
           _oa = _o['cloudDeploymentDomain']
             if(_oa.is_a? Hash)
@@ -1280,63 +1466,6 @@ module Ansible
                }
             else
                 @start = _oa
-            end
-          end
-        if !_o['vmType'].nil?
-          _oa = _o['vmType']
-            if(_oa.is_a? Hash)
-              @vmType = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @vmType =  String.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @vmType = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @vmType.push String.from_json(_item)
-                 else
-                   @vmType.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @vmType = _oa
-            end
-          end
-        if !_o['delta'].nil?
-          _oa = _o['delta']
-            if(_oa.is_a? Hash)
-              @delta = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @delta =  Time.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @delta = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @delta.push Time.from_json(_item)
-                 else
-                   @delta.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @delta = _oa
-            end
-          end
-        if !_o['end'].nil?
-          _oa = _o['end']
-            if(_oa.is_a? Hash)
-              @end = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @end =  Time.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @end = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @end.push Time.from_json(_item)
-                 else
-                   @end.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @end = _oa
             end
           end
         if !_o['host'].nil?
@@ -1562,113 +1691,6 @@ module V1
 module External
 
   # (no documentation provided)
-  class Script < Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::OwnedObject 
-
-    # the name
-    attr_accessor :name
-    # the contents
-    attr_accessor :contents
-
-    # the json hash for this Script
-    def to_jaxb_json_hash
-      _h = super
-      _h['name'] = name.to_jaxb_json_hash unless name.nil?
-      _h['contents'] = contents.to_jaxb_json_hash unless contents.nil?
-      return _h
-    end
-
-    #initializes this Script with a json hash
-    def init_jaxb_json_hash(_o)
-      super _o
-        if !_o['name'].nil?
-          _oa = _o['name']
-            if(_oa.is_a? Hash)
-              @name = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @name =  String.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @name = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @name.push String.from_json(_item)
-                 else
-                   @name.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @name = _oa
-            end
-          end
-        if !_o['contents'].nil?
-          _oa = _o['contents']
-            if(_oa.is_a? Hash)
-              @contents = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @contents =  String.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @contents = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @contents.push String.from_json(_item)
-                 else
-                   @contents.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @contents = _oa
-            end
-          end
-    end
-
-    # constructs a Script from a (parsed) JSON hash
-    def self.from_json(o)
-      if o.nil?
-        return nil
-      else
-        inst = new
-        inst.init_jaxb_json_hash o
-        return inst
-      end
-    end
-  end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-end
-
-module Nl
-
-module Uva
-
-module Sne
-
-module Drip
-
-module Drip
-
-module Commons
-
-module Data
-
-module V1
-
-module External
-
-  # (no documentation provided)
   class KeyType
 
     #  For private keys
@@ -1715,87 +1737,43 @@ module V1
 module External
 
   # (no documentation provided)
-  class ScaleDeploymetRequest < Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::OwnedObject 
+  class KeyValueHolder < Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::OwnedObject 
 
-    # the deployID
-    attr_accessor :deployID
-    # the serviceName
-    attr_accessor :serviceName
-    # the numOfInstances
-    attr_accessor :numOfInstances
+    # the keyValue
+    attr_accessor :keyValue
 
-    # the json hash for this ScaleDeploymetRequest
+    # the json hash for this KeyValueHolder
     def to_jaxb_json_hash
       _h = super
-      _h['deployID'] = deployID.to_jaxb_json_hash unless deployID.nil?
-      _h['serviceName'] = serviceName.to_jaxb_json_hash unless serviceName.nil?
-      _h['numOfInstances'] = numOfInstances.to_jaxb_json_hash unless numOfInstances.nil?
+      _h['keyValue'] = keyValue.to_jaxb_json_hash unless keyValue.nil?
       return _h
     end
 
-    #initializes this ScaleDeploymetRequest with a json hash
+    #initializes this KeyValueHolder with a json hash
     def init_jaxb_json_hash(_o)
       super _o
-        if !_o['deployID'].nil?
-          _oa = _o['deployID']
+        if !_o['keyValue'].nil?
+          _oa = _o['keyValue']
             if(_oa.is_a? Hash)
-              @deployID = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @deployID =  String.from_json(_oa) unless _oa['@class']
+              @keyValue = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @keyValue =  Hash.from_json(_oa) unless _oa['@class']
             elsif (_oa.is_a? Array)
               #an array(of hashes hopefully) or scalar
-              @deployID = Array.new
+              @keyValue = Array.new
               _oa.each { | _item | 
                  if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @deployID.push String.from_json(_item)
+                   @keyValue.push Hash.from_json(_item)
                  else
-                   @deployID.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                   @keyValue.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
                  end
                }
             else
-                @deployID = _oa
-            end
-          end
-        if !_o['serviceName'].nil?
-          _oa = _o['serviceName']
-            if(_oa.is_a? Hash)
-              @serviceName = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @serviceName =  String.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @serviceName = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @serviceName.push String.from_json(_item)
-                 else
-                   @serviceName.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @serviceName = _oa
-            end
-          end
-        if !_o['numOfInstances'].nil?
-          _oa = _o['numOfInstances']
-            if(_oa.is_a? Hash)
-              @numOfInstances = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @numOfInstances =  Fixnum.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @numOfInstances = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @numOfInstances.push Fixnum.from_json(_item)
-                 else
-                   @numOfInstances.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @numOfInstances = _oa
+                @keyValue = _oa
             end
           end
     end
 
-    # constructs a ScaleDeploymetRequest from a (parsed) JSON hash
+    # constructs a KeyValueHolder from a (parsed) JSON hash
     def self.from_json(o)
       if o.nil?
         return nil
@@ -1973,43 +1951,65 @@ module V1
 module External
 
   # (no documentation provided)
-  class KeyValueHolder < Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::OwnedObject 
+  class Script < Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::OwnedObject 
 
-    # the keyValue
-    attr_accessor :keyValue
+    # the name
+    attr_accessor :name
+    # the contents
+    attr_accessor :contents
 
-    # the json hash for this KeyValueHolder
+    # the json hash for this Script
     def to_jaxb_json_hash
       _h = super
-      _h['keyValue'] = keyValue.to_jaxb_json_hash unless keyValue.nil?
+      _h['name'] = name.to_jaxb_json_hash unless name.nil?
+      _h['contents'] = contents.to_jaxb_json_hash unless contents.nil?
       return _h
     end
 
-    #initializes this KeyValueHolder with a json hash
+    #initializes this Script with a json hash
     def init_jaxb_json_hash(_o)
       super _o
-        if !_o['keyValue'].nil?
-          _oa = _o['keyValue']
+        if !_o['name'].nil?
+          _oa = _o['name']
             if(_oa.is_a? Hash)
-              @keyValue = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @keyValue =  Hash.from_json(_oa) unless _oa['@class']
+              @name = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @name =  String.from_json(_oa) unless _oa['@class']
             elsif (_oa.is_a? Array)
               #an array(of hashes hopefully) or scalar
-              @keyValue = Array.new
+              @name = Array.new
               _oa.each { | _item | 
                  if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @keyValue.push Hash.from_json(_item)
+                   @name.push String.from_json(_item)
                  else
-                   @keyValue.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                   @name.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
                  end
                }
             else
-                @keyValue = _oa
+                @name = _oa
+            end
+          end
+        if !_o['contents'].nil?
+          _oa = _o['contents']
+            if(_oa.is_a? Hash)
+              @contents = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @contents =  String.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @contents = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @contents.push String.from_json(_item)
+                 else
+                   @contents.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @contents = _oa
             end
           end
     end
 
-    # constructs a KeyValueHolder from a (parsed) JSON hash
+    # constructs a Script from a (parsed) JSON hash
     def self.from_json(o)
       if o.nil?
         return nil
@@ -2616,13 +2616,13 @@ module External
           _oa = _o['scale']
             if(_oa.is_a? Hash)
               @scale = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @scale =  Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::ScaleDeploymetRequest.from_json(_oa) unless _oa['@class']
+              @scale =  Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::ScaleRequest.from_json(_oa) unless _oa['@class']
             elsif (_oa.is_a? Array)
               #an array(of hashes hopefully) or scalar
               @scale = Array.new
               _oa.each { | _item | 
                  if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @scale.push Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::ScaleDeploymetRequest.from_json(_item)
+                   @scale.push Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::ScaleRequest.from_json(_item)
                  else
                    @scale.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
                  end

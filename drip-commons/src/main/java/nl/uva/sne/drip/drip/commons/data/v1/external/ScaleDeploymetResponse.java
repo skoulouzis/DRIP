@@ -26,6 +26,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @author S. Koulouzis
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ScaleDeploymetResponse extends ScaleDeploymetRequest {
+public class ScaleDeploymetResponse extends ScaleRequest {
 
 }

@@ -57,7 +57,6 @@ import provisioning.database.EC2.EC2Database;
 import provisioning.database.EGI.EGIDatabase;
 import provisioning.database.UserDatabase;
 import provisioning.engine.TEngine.TEngine;
-import provisioning.engine.VEngine.EGI.EGIAgent;
 import provisioning.request.ScalingRequest;
 import topologyAnalysis.TopologyAnalysisMain;
 import topologyAnalysis.dataStructure.SubTopologyInfo;
@@ -78,17 +77,6 @@ public class Consumer extends DefaultConsumer {
     public Consumer(Channel channel) throws IOException {
         super(channel);
         this.channel = channel;
-//        em.put("Virginia", "ec2.us-east-1.amazonaws.com");
-//        em.put("California", "ec2.us-west-1.amazonaws.com");
-//        em.put("Oregon", "ec2.us-west-2.amazonaws.com");
-//        em.put("Mumbai", "ec2.ap-south-1.amazonaws.com");
-//        em.put("Singapore", "ec2.ap-southeast-1.amazonaws.com");
-//        em.put("Seoul", "ec2.ap-northeast-2.amazonaws.com");
-//        em.put("Sydney", "ec2.ap-southeast-2.amazonaws.com");
-//        em.put("Tokyo", "ec2.ap-northeast-1.amazonaws.com");
-//        em.put("Frankfurt", "ec2.eu-central-1.amazonaws.com");
-//        em.put("Ireland", "ec2.eu-west-1.amazonaws.com");
-//        em.put("Paulo", "ec2.sa-east-1.amazonaws.com");
     }
 
     @Override
@@ -215,152 +203,9 @@ public class Consumer extends DefaultConsumer {
 
             userDatabase = getUserDB();
 
-            /*ProvisionRequest pq = new ProvisionRequest();
-		pq.topologyName = "ec2_zh_b";
-		ArrayList<ProvisionRequest> provisionReqs = new ArrayList<ProvisionRequest>();
-		provisionReqs.add(pq);*/
-            //tEngine.provision(tam.wholeTopology, userCredential, userDatabase, provisionReqs);
             tEngine.provisionAll(tam.wholeTopology, userCredential, userDatabase);
-            String topologyUserName = tam.wholeTopology.userName;
+            return buildTopologuResponse(tam, tempInputDirPath, userPublicKeyName, userPrivateName);
 
-            String charset = "UTF-8";
-            List<MessageParameter> responseParameters = new ArrayList<>();
-            MessageParameter param = new MessageParameter();
-            param.setEncoding(charset);
-            String fileName = tam.wholeTopology.loadingPath;
-            if (!fileName.endsWith(".yml")) {
-                fileName += ".yml";
-            }
-            File f = new File(fileName);
-            if (f.exists()) {
-                param.setName(FilenameUtils.removeExtension(FilenameUtils.getBaseName(fileName)));
-                byte[] bytes = Files.readAllBytes(Paths.get(f.getAbsolutePath()));
-                param.setValue(new String(bytes, charset));
-                responseParameters.add(param);
-            } else {
-                param.setName(FilenameUtils.removeExtension(FilenameUtils.getBaseName(fileName)));
-                param.setValue("ERROR::There is no output for topology topology_main");
-                responseParameters.add(param);
-            }
-
-            for (SubTopologyInfo sub : tam.wholeTopology.topologies) {
-                param = new MessageParameter();
-                param.setEncoding(charset);
-                fileName = tempInputDirPath + File.separator + sub.topology;
-                if (!fileName.endsWith(".yml")) {
-                    fileName += ".yml";
-                }
-                f = new File(fileName);
-                if (f.exists()) {
-                    param.setName(sub.topology);
-                    byte[] bytes = Files.readAllBytes(Paths.get(f.getAbsolutePath()));
-                    param.setValue(new String(bytes, charset));
-                    responseParameters.add(param);
-                } else {
-                    param.setName(sub.topology);
-                    param.setValue("ERROR::There is no output for topology " + sub.topology);
-                    responseParameters.add(param);
-                }
-            }
-
-            param = new MessageParameter();
-            param.setEncoding(charset);
-            param.setName("public_user_key");
-            byte[] bytes = Files.readAllBytes(Paths.get(tempInputDirPath + File.separator + userPublicKeyName));
-            param.setValue(new String(bytes, charset));
-            Map<String, String> attributes = new HashMap<>();
-            attributes.put("name", userPublicKeyName);
-            param.setAttributes(attributes);
-            responseParameters.add(param);
-
-            param = new MessageParameter();
-            param.setEncoding(charset);
-            param.setName("private_user_key");
-            bytes = Files.readAllBytes(Paths.get(tempInputDirPath + File.separator + userPrivateName));
-            param.setValue(new String(bytes, charset));
-            attributes = new HashMap<>();
-            attributes.put("name", userPrivateName);
-//            attributes.put("username",  sub.userName);
-            param.setAttributes(attributes);
-            responseParameters.add(param);
-
-            param = new MessageParameter();
-            param.setEncoding(charset);
-            param.setName("private_deployer_key");
-            bytes = Files.readAllBytes(Paths.get(tempInputDirPath + File.separator + "clusterKeyPair" + File.separator + "id_rsa"));
-            param.setValue(new String(bytes, charset));
-            attributes = new HashMap<>();
-            attributes.put("name", "id_rsa");
-            param.setAttributes(attributes);
-            responseParameters.add(param);
-
-            param = new MessageParameter();
-            param.setEncoding(charset);
-            param.setName("public_deployer_key");
-            bytes = Files.readAllBytes(Paths.get(tempInputDirPath + File.separator + "clusterKeyPair" + File.separator + "id_rsa.pub"));
-            param.setValue(new String(bytes, charset));
-            attributes = new HashMap<>();
-            attributes.put("name", "id_rsa.pub");
-            param.setAttributes(attributes);
-            responseParameters.add(param);
-
-            File dir = new File(tempInputDirPath);
-            for (File d : dir.listFiles()) {
-                if (d.isDirectory() && !d.getName().equals("clusterKeyPair")) {
-                    param = new MessageParameter();
-                    param.setEncoding(charset);
-                    param.setName("public_cloud_key");
-                    File publicKey = new File(d.getAbsolutePath() + File.separator + "name.pub");
-                    if (!publicKey.exists()) {
-                        publicKey = new File(d.getAbsolutePath() + File.separator + "id_rsa.pub");
-                    }
-                    bytes = Files.readAllBytes(Paths.get(publicKey.getAbsolutePath()));
-                    param.setValue(new String(bytes, charset));
-                    attributes = new HashMap<>();
-                    attributes.put("name", publicKey.getName());
-                    attributes.put("key_pair_id", d.getName());
-                    param.setAttributes(attributes);
-                    responseParameters.add(param);
-
-                    param = new MessageParameter();
-                    param.setEncoding(charset);
-                    param.setName("private_cloud_key");
-                    bytes = Files.readAllBytes(Paths.get(d.getAbsolutePath() + File.separator + "id_rsa"));
-                    param.setValue(new String(bytes, charset));
-                    attributes = new HashMap<>();
-                    attributes.put("name", "id_rsa");
-                    attributes.put("key_pair_id", d.getName());
-                    param.setAttributes(attributes);
-                    responseParameters.add(param);
-                }
-
-            }
-
-            param = new MessageParameter();
-            param.setEncoding(charset);
-            param.setName("deploy_parameters");
-            String paramValue = "";
-            for (SubTopologyInfo sub : tam.wholeTopology.topologies) {
-                ArrayList<VM> vms = sub.subTopology.getVMsinSubClass();
-                for (VM vm : vms) {
-                    if (vm != null) {
-                        paramValue += vm.publicAddress + " ";
-                        paramValue += sub.userName + " ";
-//                        paramValue += tempInputDirPath + File.separator + sub.subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
-                        paramValue += vm.role + "\n";
-                    }
-                }
-//            String accessKeyPath = tempInputDirPath + File.separator + sub.subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
-//            System.err.println("accessKeyPath: " + accessKeyPath);
-            }
-            param.setValue(paramValue);
-            responseParameters.add(param);
-
-            Message response = new Message();
-            response.setCreationDate(System.currentTimeMillis());
-            response.setParameters(responseParameters);
-
-            return response;
         } catch (Throwable ex) {
             if (tam != null) {
                 tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
@@ -466,10 +311,6 @@ public class Consumer extends DefaultConsumer {
         String topTopologyLoadingPath = mainTopologyFile.getAbsolutePath();
 
         List<File> topologyFiles = MessageParsing.getTopologies(parameters, tempInputDirPath, 1);
-//        for (File lowLevelTopologyFile : topologyFiles) {
-//            File secondaryTopologyFile = new File(tempInputDirPath + File.separator + lowLevelTopologyFile.getName() + ".yml");
-//            FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
-//        }
 
         File clusterDir = new File(tempInputDirPath + File.separator + "clusterKeyPair");
         clusterDir.mkdir();
@@ -506,16 +347,23 @@ public class Consumer extends DefaultConsumer {
             throw new IOException("ssh key pair initilaziation error");
         }
         Message response = new Message();
+        MessageParameter scaleInfo = MessageParsing.getScaleInfo(parameters);
+        String nameOfScalingTopology = scaleInfo.getValue();
+        String cloudProvider = scaleInfo.getAttributes().get("cloud_provider");
+        String cloudDomain = scaleInfo.getAttributes().get("domain");
+        Integer numOfInst = Integer.valueOf(scaleInfo.getAttributes().get("number_of_instances"));
         try {
-            ScalingRequest scalReq = new ScalingRequest();
-            scalReq.cloudProvider = "ec2";
-            scalReq.domain = "Ohio";
-            scalReq.satisfied = false;
             ArrayList<ScalingRequest> scalDCs = new ArrayList<>();
-            scalDCs.add(scalReq);
+            for (int i = 0; i < numOfInst; i++) {
+                ScalingRequest scalReq = new ScalingRequest();
+                scalReq.cloudProvider = cloudProvider;
+                scalReq.domain = cloudDomain;
+                scalReq.satisfied = false;
+                scalDCs.add(scalReq);
+            }
 
-            tEngine.autoScal(tam.wholeTopology, userCredential, userDatabase, "ec2_zh_b", true, scalDCs);
-
+            tEngine.autoScal(tam.wholeTopology, userCredential, userDatabase, nameOfScalingTopology, true, scalDCs);
+            return buildTopologuResponse(tam, tempInputDirPath, userPublicKeyName, userPrivateName);
         } catch (Throwable ex) {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
@@ -523,14 +371,6 @@ public class Consumer extends DefaultConsumer {
             return mapper.readValue(generateExeptionResponse(ex), Message.class
             );
         }
-        MessageParameter param = new MessageParameter();
-        param.setName("topology_scaled");
-        param.setValue("true");
-        List<MessageParameter> messageParameters = new ArrayList<>();
-        messageParameters.add(param);
-        response.setParameters(messageParameters);
-        response.setCreationDate(System.currentTimeMillis());
-        return response;
 
     }
 
@@ -565,5 +405,149 @@ public class Consumer extends DefaultConsumer {
             }
         }
         return userCredential;
+    }
+
+    private Message buildTopologuResponse(TopologyAnalysisMain tam, String tempInputDirPath, String userPublicKeyName, String userPrivateName) throws IOException {
+        String topologyUserName = tam.wholeTopology.userName;
+
+        String charset = "UTF-8";
+        List<MessageParameter> responseParameters = new ArrayList<>();
+        MessageParameter param = new MessageParameter();
+        param.setEncoding(charset);
+        String fileName = tam.wholeTopology.loadingPath;
+        if (!fileName.endsWith(".yml")) {
+            fileName += ".yml";
+        }
+        File f = new File(fileName);
+        if (f.exists()) {
+            param.setName(FilenameUtils.removeExtension(FilenameUtils.getBaseName(fileName)));
+            byte[] bytes = Files.readAllBytes(Paths.get(f.getAbsolutePath()));
+            param.setValue(new String(bytes, charset));
+            responseParameters.add(param);
+        } else {
+            param.setName(FilenameUtils.removeExtension(FilenameUtils.getBaseName(fileName)));
+            param.setValue("ERROR::There is no output for topology topology_main");
+            responseParameters.add(param);
+        }
+
+        for (SubTopologyInfo sub : tam.wholeTopology.topologies) {
+            param = new MessageParameter();
+            param.setEncoding(charset);
+            fileName = tempInputDirPath + File.separator + sub.topology;
+            if (!fileName.endsWith(".yml")) {
+                fileName += ".yml";
+            }
+            f = new File(fileName);
+            if (f.exists()) {
+                param.setName(sub.topology);
+                byte[] bytes = Files.readAllBytes(Paths.get(f.getAbsolutePath()));
+                param.setValue(new String(bytes, charset));
+                responseParameters.add(param);
+            } else {
+                param.setName(sub.topology);
+                param.setValue("ERROR::There is no output for topology " + sub.topology);
+                responseParameters.add(param);
+            }
+        }
+
+        param = new MessageParameter();
+        param.setEncoding(charset);
+        param.setName("public_user_key");
+        byte[] bytes = Files.readAllBytes(Paths.get(tempInputDirPath + File.separator + userPublicKeyName));
+        param.setValue(new String(bytes, charset));
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("name", userPublicKeyName);
+        param.setAttributes(attributes);
+        responseParameters.add(param);
+
+        param = new MessageParameter();
+        param.setEncoding(charset);
+        param.setName("private_user_key");
+        bytes = Files.readAllBytes(Paths.get(tempInputDirPath + File.separator + userPrivateName));
+        param.setValue(new String(bytes, charset));
+        attributes = new HashMap<>();
+        attributes.put("name", userPrivateName);
+//            attributes.put("username",  sub.userName);
+        param.setAttributes(attributes);
+        responseParameters.add(param);
+
+        param = new MessageParameter();
+        param.setEncoding(charset);
+        param.setName("private_deployer_key");
+        bytes = Files.readAllBytes(Paths.get(tempInputDirPath + File.separator + "clusterKeyPair" + File.separator + "id_rsa"));
+        param.setValue(new String(bytes, charset));
+        attributes = new HashMap<>();
+        attributes.put("name", "id_rsa");
+        param.setAttributes(attributes);
+        responseParameters.add(param);
+
+        param = new MessageParameter();
+        param.setEncoding(charset);
+        param.setName("public_deployer_key");
+        bytes = Files.readAllBytes(Paths.get(tempInputDirPath + File.separator + "clusterKeyPair" + File.separator + "id_rsa.pub"));
+        param.setValue(new String(bytes, charset));
+        attributes = new HashMap<>();
+        attributes.put("name", "id_rsa.pub");
+        param.setAttributes(attributes);
+        responseParameters.add(param);
+
+        File dir = new File(tempInputDirPath);
+        for (File d : dir.listFiles()) {
+            if (d.isDirectory() && !d.getName().equals("clusterKeyPair")) {
+                param = new MessageParameter();
+                param.setEncoding(charset);
+                param.setName("public_cloud_key");
+                File publicKey = new File(d.getAbsolutePath() + File.separator + "name.pub");
+                if (!publicKey.exists()) {
+                    publicKey = new File(d.getAbsolutePath() + File.separator + "id_rsa.pub");
+                }
+                bytes = Files.readAllBytes(Paths.get(publicKey.getAbsolutePath()));
+                param.setValue(new String(bytes, charset));
+                attributes = new HashMap<>();
+                attributes.put("name", publicKey.getName());
+                attributes.put("key_pair_id", d.getName());
+                param.setAttributes(attributes);
+                responseParameters.add(param);
+
+                param = new MessageParameter();
+                param.setEncoding(charset);
+                param.setName("private_cloud_key");
+                bytes = Files.readAllBytes(Paths.get(d.getAbsolutePath() + File.separator + "id_rsa"));
+                param.setValue(new String(bytes, charset));
+                attributes = new HashMap<>();
+                attributes.put("name", "id_rsa");
+                attributes.put("key_pair_id", d.getName());
+                param.setAttributes(attributes);
+                responseParameters.add(param);
+            }
+
+        }
+
+        param = new MessageParameter();
+        param.setEncoding(charset);
+        param.setName("deploy_parameters");
+        String paramValue = "";
+        for (SubTopologyInfo sub : tam.wholeTopology.topologies) {
+            ArrayList<VM> vms = sub.subTopology.getVMsinSubClass();
+            for (VM vm : vms) {
+                if (vm != null) {
+                    paramValue += vm.publicAddress + " ";
+                    paramValue += sub.userName + " ";
+//                        paramValue += tempInputDirPath + File.separator + sub.subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
+                    paramValue += vm.role + "\n";
+                }
+            }
+//            String accessKeyPath = tempInputDirPath + File.separator + sub.subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
+//            System.err.println("accessKeyPath: " + accessKeyPath);
+        }
+        param.setValue(paramValue);
+        responseParameters.add(param);
+
+        Message response = new Message();
+        response.setCreationDate(System.currentTimeMillis());
+        response.setParameters(responseParameters);
+
+        return response;
+
     }
 }

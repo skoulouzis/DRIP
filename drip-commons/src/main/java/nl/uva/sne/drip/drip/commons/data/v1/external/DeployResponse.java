@@ -34,7 +34,7 @@ public class DeployResponse extends DeployRequest {
 
     private List<String> ansibleOutputListIDs;
     
-    private ScaleDeploymetRequest scale;
+    private ScaleRequest scale;
 
     public void setAnsibleOutputList(List<String> outputListIDs) {
         this.ansibleOutputListIDs = outputListIDs;
@@ -64,14 +64,14 @@ public class DeployResponse extends DeployRequest {
      * The scale information if any for this deployment 
      * @return the scale
      */
-    public ScaleDeploymetRequest getScale() {
+    public ScaleRequest getScale() {
         return scale;
     }
 
     /**
      * @param scale the scale to set
      */
-    public void setScale(ScaleDeploymetRequest scale) {
+    public void setScale(ScaleRequest scale) {
         this.scale = scale;
     }
 
