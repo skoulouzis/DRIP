@@ -189,7 +189,8 @@ public class ProvisionController {
 
         return resp.getId();
     }
-        @RequestMapping(value = "/scale", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/scale", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String scaleDeployment(@RequestBody ScaleRequest scaleRequest) {

@@ -108,7 +108,9 @@ public class ProvisionService {
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public ProvisionResponse delete(String id) {
         ProvisionResponse provisionInfo = provisionDao.findOne(id);
-        provisionDao.delete(provisionInfo);
+        if (provisionInfo != null) {
+            provisionDao.delete(provisionInfo);
+        }
         return provisionInfo;
     }
 
