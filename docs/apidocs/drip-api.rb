@@ -1416,50 +1416,50 @@ module Ansible
   class BenchmarkResult < Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::OwnedObject 
 
     # (no documentation provided)
-    attr_accessor :start
+    attr_accessor :vmType
     # (no documentation provided)
     attr_accessor :end
     # (no documentation provided)
-    attr_accessor :delta
+    attr_accessor :start
     # (no documentation provided)
     attr_accessor :host
     # (no documentation provided)
-    attr_accessor :cloudDeploymentDomain
+    attr_accessor :delta
     # (no documentation provided)
-    attr_accessor :vmType
+    attr_accessor :cloudDeploymentDomain
 
     # the json hash for this BenchmarkResult
     def to_jaxb_json_hash
       _h = super
-      _h['start'] = start.to_jaxb_json_hash unless start.nil?
-      _h['end'] = end.to_jaxb_json_hash unless end.nil?
-      _h['delta'] = delta.to_jaxb_json_hash unless delta.nil?
-      _h['host'] = host.to_jaxb_json_hash unless host.nil?
-      _h['cloudDeploymentDomain'] = cloudDeploymentDomain.to_jaxb_json_hash unless cloudDeploymentDomain.nil?
       _h['vmType'] = vmType.to_jaxb_json_hash unless vmType.nil?
+      _h['end'] = end.to_jaxb_json_hash unless end.nil?
+      _h['start'] = start.to_jaxb_json_hash unless start.nil?
+      _h['host'] = host.to_jaxb_json_hash unless host.nil?
+      _h['delta'] = delta.to_jaxb_json_hash unless delta.nil?
+      _h['cloudDeploymentDomain'] = cloudDeploymentDomain.to_jaxb_json_hash unless cloudDeploymentDomain.nil?
       return _h
     end
 
     #initializes this BenchmarkResult with a json hash
     def init_jaxb_json_hash(_o)
       super _o
-        if !_o['start'].nil?
-          _oa = _o['start']
+        if !_o['vmType'].nil?
+          _oa = _o['vmType']
             if(_oa.is_a? Hash)
-              @start = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @start =  Time.from_json(_oa) unless _oa['@class']
+              @vmType = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @vmType =  String.from_json(_oa) unless _oa['@class']
             elsif (_oa.is_a? Array)
               #an array(of hashes hopefully) or scalar
-              @start = Array.new
+              @vmType = Array.new
               _oa.each { | _item | 
                  if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @start.push Time.from_json(_item)
+                   @vmType.push String.from_json(_item)
                  else
-                   @start.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                   @vmType.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
                  end
                }
             else
-                @start = _oa
+                @vmType = _oa
             end
           end
         if !_o['end'].nil?
@@ -1481,23 +1481,23 @@ module Ansible
                 @end = _oa
             end
           end
-        if !_o['delta'].nil?
-          _oa = _o['delta']
+        if !_o['start'].nil?
+          _oa = _o['start']
             if(_oa.is_a? Hash)
-              @delta = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @delta =  Time.from_json(_oa) unless _oa['@class']
+              @start = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @start =  Time.from_json(_oa) unless _oa['@class']
             elsif (_oa.is_a? Array)
               #an array(of hashes hopefully) or scalar
-              @delta = Array.new
+              @start = Array.new
               _oa.each { | _item | 
                  if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @delta.push Time.from_json(_item)
+                   @start.push Time.from_json(_item)
                  else
-                   @delta.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                   @start.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
                  end
                }
             else
-                @delta = _oa
+                @start = _oa
             end
           end
         if !_o['host'].nil?
@@ -1519,6 +1519,25 @@ module Ansible
                 @host = _oa
             end
           end
+        if !_o['delta'].nil?
+          _oa = _o['delta']
+            if(_oa.is_a? Hash)
+              @delta = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @delta =  Time.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @delta = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @delta.push Time.from_json(_item)
+                 else
+                   @delta.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @delta = _oa
+            end
+          end
         if !_o['cloudDeploymentDomain'].nil?
           _oa = _o['cloudDeploymentDomain']
             if(_oa.is_a? Hash)
@@ -1536,25 +1555,6 @@ module Ansible
                }
             else
                 @cloudDeploymentDomain = _oa
-            end
-          end
-        if !_o['vmType'].nil?
-          _oa = _o['vmType']
-            if(_oa.is_a? Hash)
-              @vmType = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @vmType =  String.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @vmType = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @vmType.push String.from_json(_item)
-                 else
-                   @vmType.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @vmType = _oa
             end
           end
     end

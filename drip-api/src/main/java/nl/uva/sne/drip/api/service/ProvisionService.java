@@ -110,8 +110,10 @@ public class ProvisionService {
         ProvisionResponse provisionInfo = provisionDao.findOne(id);
         if (provisionInfo != null) {
             provisionDao.delete(provisionInfo);
+            return provisionInfo;
+        } else {
+            throw new NotFoundException();
         }
-        return provisionInfo;
     }
 
 //    @PreAuthorize(" (hasRole('ROLE_ADMIN')) or (hasRole('ROLE_USER'))")
@@ -440,12 +442,8 @@ public class ProvisionService {
             Message provisionerInvokationMessage = buildProvisioner0Message(provisionRequest);
 
             Message response = (provisioner.call(provisionerInvokationMessage));
-//            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
-//                    + File.separator + "workspace" + File.separator + "DRIP"
-//                    + File.separator + "docs" + File.separator + "json_samples"
-//                    + File.separator + "ec2_provisioner_provisoned3.json");
 
-            return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null);
+            return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null, true, true);
 
         }
 
@@ -455,7 +453,7 @@ public class ProvisionService {
         try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisioner1Message(provisionRequest);
             Message response = (provisioner.call(provisionerInvokationMessage));
-            return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null);
+            return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null, true, true);
         }
 
     }
@@ -476,6 +474,7 @@ public class ProvisionService {
         }
         ProvisionResponse provisionInfo = findOne(provisionID);
         boolean scaleNameExists = false;
+        int currentNumOfInstances = 0;
         Map<String, Object> plan = provisionInfo.getKeyValue();
         String cloudProvider = null;
         String domain = null;
@@ -483,33 +482,48 @@ public class ProvisionService {
             Map<String, Object> subMap = (Map<String, Object>) plan.get(key);
             if (subMap.containsKey("topologies")) {
                 List< Map<String, Object>> topologies = (List< Map<String, Object>>) subMap.get("topologies");
+
                 for (Map<String, Object> topology : topologies) {
-                    if (topology.get("tag").equals("scaling") && topology.get("topology").equals(scaleName)) {
+                    if (topology.get("tag").equals("scaling") && topology.get("topology").equals(scaleName) && !scaleNameExists) {
                         cloudProvider = (String) topology.get("cloudProvider");
                         domain = (String) topology.get("domain");
                         scaleNameExists = true;
-                        break;
+                    } else if (topology.get("tag").equals("scaled") && topology.get("copyOf").equals(scaleName)) {
+                        currentNumOfInstances++;
                     }
                 }
             }
-            if (scaleNameExists) {
-                break;
-            }
         }
+
         if (!scaleNameExists) {
             throw new BadRequestException("Name of topology dosen't exist");
         }
-        try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
-            Map<String, String> extra = new HashMap<>();
-            extra.put("scale_topology_name", scaleName);
-            extra.put("number_of_instances", String.valueOf(scaleRequest.getNumOfInstances()));
-            extra.put("cloud_provider", cloudProvider);
-            extra.put("domain", domain);
+        int numOfInstances = Math.abs(currentNumOfInstances - scaleRequest.getNumOfInstances());
 
-            Message scaleMessage = buildTopoplogyModificationMessage(provisionInfo, "scale_topology", extra);
-            Message response = provisioner.call(scaleMessage);
-            parseCreateResourcesResponse(response.getParameters(), null, provisionInfo);
+        if (currentNumOfInstances > scaleRequest.getNumOfInstances() && currentNumOfInstances != 0) {
+            try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
+                Map<String, String> extra = new HashMap<>();
+                extra.put("scale_topology_name", scaleName);
+                extra.put("number_of_instances", String.valueOf(numOfInstances));
+                extra.put("cloud_provider", cloudProvider);
+                extra.put("domain", domain);
 
+                Message scaleMessage = buildTopoplogyModificationMessage(provisionInfo, "scale_topology_down", extra);
+                Message response = provisioner.call(scaleMessage);
+                parseCreateResourcesResponse(response.getParameters(), null, provisionInfo, false, false);
+            }
+        } else if (currentNumOfInstances < scaleRequest.getNumOfInstances() || currentNumOfInstances == 0) {
+            try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
+                Map<String, String> extra = new HashMap<>();
+                extra.put("scale_topology_name", scaleName);
+                extra.put("number_of_instances", String.valueOf(numOfInstances));
+                extra.put("cloud_provider", cloudProvider);
+                extra.put("domain", domain);
+
+                Message scaleMessage = buildTopoplogyModificationMessage(provisionInfo, "scale_topology_up", extra);
+                Message response = provisioner.call(scaleMessage);
+                parseCreateResourcesResponse(response.getParameters(), null, provisionInfo, false, false);
+            }
         }
         return provisionInfo;
     }
@@ -617,7 +631,8 @@ public class ProvisionService {
         return parameters;
     }
 
-    private ProvisionResponse parseCreateResourcesResponse(List<MessageParameter> parameters, ProvisionRequest provisionRequest, ProvisionResponse provisionResponse) throws Exception {
+    private ProvisionResponse parseCreateResourcesResponse(List<MessageParameter> parameters,
+            ProvisionRequest provisionRequest, ProvisionResponse provisionResponse, boolean saveUserKeys, boolean saveDeployerKeyI) throws Exception {
         if (provisionResponse == null) {
             provisionResponse = new ProvisionResponse();
             provisionResponse.setTimestamp(System.currentTimeMillis());
@@ -719,34 +734,59 @@ public class ProvisionService {
         if (provisionRequest != null) {
             userKeyIds = provisionRequest.getUserKeyPairIDs();
         } else {
-            userKeyIds = provisionResponse.getCloudKeyPairIDs();
+            userKeyIds = provisionResponse.getUserKeyPairIDs();
         }
 
-        if (userKeyIds != null && !userKeyIds.isEmpty()) {
-        } else {
-            userKeyIds = new ArrayList<>();
-            if (userKey.getPublicKey() != null) {
-                userKey = keyPairService.save(userKey);
-                userKeyIds.add(userKey.getId());
+        if (saveUserKeys) {
+            if (userKeyIds != null && !userKeyIds.isEmpty()) {
+            } else {
+                userKeyIds = new ArrayList<>();
+                if (userKey.getPublicKey() != null) {
+                    userKey = keyPairService.save(userKey);
+                    userKeyIds.add(userKey.getId());
+                }
             }
         }
-        ArrayList<String> deployerKeyIds = new ArrayList<>();
-        if (deployerKey.getPublicKey() != null) {
-            deployerKey = keyPairService.save(deployerKey);
-            deployerKeyIds.add(deployerKey.getId());
+        ArrayList<String> deployerKeyIds = null;
+        if (saveDeployerKeyI) {
+            deployerKeyIds = new ArrayList<>();
+            if (deployerKey.getPublicKey() != null) {
+                deployerKey = keyPairService.save(deployerKey);
+                deployerKeyIds.add(deployerKey.getId());
+            }
         }
 
         ArrayList<String> cloudKeyPairIDs = new ArrayList<>();
+        List<KeyPair> allPirs = keyPairService.findAll();
         for (String id : publicCloudKeys.keySet()) {
-            KeyPair cloudPair = new KeyPair();
-            cloudPair.setPrivateKey(privateCloudKeys.get(id));
-            cloudPair.setPublicKey(publicCloudKeys.get(id));
-            cloudPair.setKeyPairId(id);
-            cloudPair = keyPairService.save(cloudPair);
-            cloudKeyPairIDs.add(cloudPair.getId());
-        }
+            boolean save = true;
+            String key_pair_id = privateCloudKeys.get(id).getAttributes().get("key_pair_id");
+            for (KeyPair p : allPirs) {
+                Key pk = p.getPrivateKey();
+                if (pk != null && pk.getAttributes() != null && pk.getAttributes().containsKey("key_pair_id")) {
+                    if (key_pair_id.equals(pk.getAttributes().get("key_pair_id"))) {
+                        save = false;
+                        break;
+                    }
+                }
+            }
+            if (save) {
+                KeyPair cloudPair = new KeyPair();
+                cloudPair.setPrivateKey(privateCloudKeys.get(id));
+                cloudPair.setPublicKey(publicCloudKeys.get(id));
+                cloudPair.setKeyPairId(id);
+                cloudPair = keyPairService.save(cloudPair);
+                cloudKeyPairIDs.add(cloudPair.getId());
+            }
 
-        provisionResponse.setCloudKeyPairIDs(cloudKeyPairIDs);
+        }
+        ArrayList<String> existingCloudKeyPairIDs = provisionResponse.getCloudKeyPairIDs();
+        if (existingCloudKeyPairIDs != null) {
+            existingCloudKeyPairIDs.addAll(cloudKeyPairIDs);
+        } else {
+            existingCloudKeyPairIDs = cloudKeyPairIDs;
+        }
+        provisionResponse.setCloudKeyPairIDs(existingCloudKeyPairIDs);
 
         provisionResponse.setDeployParameters(deployParameters);
         provisionResponse.setKvMap(kvMap);
@@ -755,8 +795,12 @@ public class ProvisionService {
             provisionResponse.setPlanID(provisionRequest.getPlanID());
         }
 
-        provisionResponse.setUserKeyPairIDs(userKeyIds);
-        provisionResponse.setDeployerKeyPairIDs(deployerKeyIds);
+        if (userKeyIds != null) {
+            provisionResponse.setUserKeyPairIDs(userKeyIds);
+        }
+        if (deployerKeyIds != null) {
+            provisionResponse.setDeployerKeyPairIDs(deployerKeyIds);
+        }
 
         provisionResponse = save(provisionResponse);
         return provisionResponse;

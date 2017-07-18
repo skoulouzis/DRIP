@@ -67,6 +67,10 @@ public class ProvisionController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 404, condition = "object not found"),
+        @ResponseCode(code = 200, condition = "object exists")
+    })
     public @ResponseBody
     ProvisionResponse get(@PathVariable("id") String id) {
         ProvisionResponse pro = provisionService.findOne(id);
@@ -84,6 +88,10 @@ public class ProvisionController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 404, condition = "object not found"),
+        @ResponseCode(code = 200, condition = "delete successful")
+    })
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
         ProvisionResponse provPlan = provisionService.findOne(id);
@@ -99,8 +107,16 @@ public class ProvisionController {
         throw new NotFoundException();
     }
 
+    /**
+     * Deletes all entries. Use with caution !
+     *
+     * @return
+     */
     @RequestMapping(value = "/all", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful delete")
+    })
     public @ResponseBody
     String deleteAll() {
         provisionService.deleteAll();
@@ -114,6 +130,9 @@ public class ProvisionController {
      */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "Successful query")
+    })
     public @ResponseBody
     List<String> getIds() {
         List<ProvisionResponse> all = provisionService.findAll();
