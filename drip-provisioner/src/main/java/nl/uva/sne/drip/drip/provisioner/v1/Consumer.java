@@ -438,6 +438,7 @@ public class Consumer extends DefaultConsumer {
             }
 
             tEngine.autoScal(tam.wholeTopology, userCredential, userDatabase, nameOfScalingTopology, false, scalDCs);
+
             return buildTopologuResponse(tam, tempInputDirPath, null, null);
         } catch (Throwable ex) {
             ObjectMapper mapper = new ObjectMapper();
