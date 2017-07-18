@@ -482,13 +482,14 @@ public class ProvisionService {
             Map<String, Object> subMap = (Map<String, Object>) plan.get(key);
             if (subMap.containsKey("topologies")) {
                 List< Map<String, Object>> topologies = (List< Map<String, Object>>) subMap.get("topologies");
-
                 for (Map<String, Object> topology : topologies) {
                     if (topology.get("tag").equals("scaling") && topology.get("topology").equals(scaleName) && !scaleNameExists) {
                         cloudProvider = (String) topology.get("cloudProvider");
                         domain = (String) topology.get("domain");
                         scaleNameExists = true;
-                    } else if (topology.get("tag").equals("scaled") && topology.get("copyOf").equals(scaleName)) {
+                    } else if (topology.get("tag").equals("scaled") 
+                            && topology.get("status").equals("running")
+                            && topology.get("copyOf").equals(scaleName)) {
                         currentNumOfInstances++;
                     }
                 }

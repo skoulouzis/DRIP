@@ -611,7 +611,7 @@ public class Consumer extends DefaultConsumer {
         for (SubTopologyInfo sub : tam.wholeTopology.topologies) {
             ArrayList<VM> vms = sub.subTopology.getVMsinSubClass();
             for (VM vm : vms) {
-                if (vm != null) {
+                if (vm != null && sub.status.equals("running")) {
                     paramValue += vm.publicAddress + " ";
                     paramValue += sub.userName + " ";
 //                        paramValue += tempInputDirPath + File.separator + sub.subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
