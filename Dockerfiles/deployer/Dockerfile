@@ -1,16 +1,15 @@
 # Pull base image  
-FROM ubuntu:latest
+FROM ubuntu:16.04
 
 
 # ARG RABBITMQ_HOST=127.0.0.1
-ARG RELESE_VERSION=0.1
-ARG CERTS=/etc/grid-security/certificates
+ARG RELESE_VERSION=0.2
 
 
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends 
 RUN apt-get upgrade -y
-RUN apt-get install -y wget software-properties-common build-essential libssl-dev libffi-dev python-dev graphviz graphviz-dev python-pip 
+RUN apt-get install -y wget software-properties-common python-pip 
 
 RUN pip install --upgrade pip
 RUN pip install pydot
@@ -30,8 +29,9 @@ WORKDIR /root/
 RUN wget https://github.com/QCAPI-DRIP/DRIP-integradation/releases/download/$RELESE_VERSION/drip-deployer.tar.gz
 RUN tar -xzvf drip-deployer.tar.gz
 
-
-ENTRYPOINT sleep 10 && python /root/drip-deployer/rpc_server.py $RABBITMQ_HOST
+ENTRYPOINT sleep 10 && \
+ python /root/drip-deployer/rpc_server.py $RABBITMQ_HOST
 
 # docker build -t drip-deployer .
-# docker run --name drip-deployer-inst -d drip-deployer
+# docker run -e RABBITMQ_HOST=172.17.0.2 drip-deployer 
+
