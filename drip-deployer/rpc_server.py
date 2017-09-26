@@ -10,6 +10,7 @@ import docker_engine
 import docker_swarm
 import docker_compose
 import docker_service
+import docker_check
 import control_agent
 import ansible_playbook
 import sys, argparse
@@ -111,6 +112,9 @@ def handleDelivery(message):
         return ret
     elif manager_type == "scale":
         ret = docker_service.run(vm_list, name_of_deployment, name_of_service, number_of_containers)
+        return ret
+    elif manager_type == "service check":
+        ret = docker_check.run(vm_list, compose_name)
         return ret
     else:
         return "ERROR: invalid cluster"
