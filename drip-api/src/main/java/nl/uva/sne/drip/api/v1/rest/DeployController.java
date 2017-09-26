@@ -19,6 +19,7 @@ import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
@@ -34,6 +35,8 @@ import nl.uva.sne.drip.api.service.DeployService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.drip.commons.data.v1.external.DeployRequest;
 import nl.uva.sne.drip.drip.commons.data.v1.external.DeployResponse;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
+import org.json.JSONException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -85,6 +88,25 @@ public class DeployController {
         }
     }
 
+    @RequestMapping(value = "/scale", method = RequestMethod.POST)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String scaleDeployment(@RequestBody ScaleRequest scaleRequest) {
+        try {
+            return deployService.scale(scaleRequest).getId();
+
+        } catch (TimeoutException ex) {
+            Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     @RequestMapping(value = "/sample", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -106,7 +128,7 @@ public class DeployController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
         @ResponseCode(code = 404, condition = "Object not found"),
-        @ResponseCode(code = 200, condition = "Object not found")
+        @ResponseCode(code = 200, condition = "Object found")
     })
     public @ResponseBody
     DeployResponse get(@PathVariable("id") String id) {

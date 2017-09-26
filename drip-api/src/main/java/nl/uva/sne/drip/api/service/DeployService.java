@@ -48,9 +48,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
+import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleOutput;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleResult;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.BenchmarkResult;
@@ -78,14 +81,13 @@ public class DeployService {
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-    @Autowired
-    private CloudCredentialsService cloudCredentialsService;
-
+//    @Autowired
+//    private CloudCredentialsService cloudCredentialsService;
     @Autowired
     private ProvisionService provisionService;
 
     @Autowired
-    private PlaybookService playbookService;
+    private ConfigurationService configurationService;
 
     @Autowired
     private BenchmarkResultService benchmarkResultService;
@@ -129,7 +131,9 @@ public class DeployService {
             Message deployerInvokationMessage = buildDeployerMessage(
                     deployInfo.getProvisionID(),
                     deployInfo.getManagerType().toLowerCase(),
-                    deployInfo.getConfigurationID());
+                    deployInfo.getConfigurationID(),
+                    null,
+                    null);
 
 //            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
 //                    + File.separator + "workspace" + File.separator + "DRIP"
@@ -152,7 +156,7 @@ public class DeployService {
         return null;
     }
 
-    private Message buildDeployerMessage(String provisionID, String managerType, String configurationID) throws JSONException {
+    private Message buildDeployerMessage(String provisionID, String managerType, String configurationID, String serviceName, Integer numOfCont) throws JSONException {
         ProvisionResponse pro = provisionService.findOne(provisionID);
         if (pro == null) {
             throw new NotFoundException();
@@ -184,6 +188,16 @@ public class DeployService {
         if (managerType.toLowerCase().equals("ansible") && configurationID != null) {
             MessageParameter ansibleParameter = createAnsibleParameter(configurationID);
             parameters.add(ansibleParameter);
+        }
+
+        if (managerType.toLowerCase().equals("swarm") && configurationID != null) {
+            MessageParameter composerParameter = createComposerParameter(configurationID);
+            parameters.add(composerParameter);
+        }
+
+        if (managerType.toLowerCase().equals("scale") && configurationID != null) {
+            MessageParameter scaleParameter = createScaleParameter(configurationID, serviceName, numOfCont);
+            parameters.add(scaleParameter);
         }
 
         Message deployInvokationMessage = new Message();
@@ -228,12 +242,60 @@ public class DeployService {
     }
 
     private MessageParameter createAnsibleParameter(String configurationID) throws JSONException {
-        String playbook = playbookService.get(configurationID, "yml");
-        MessageParameter ansibleParameter = new MessageParameter();
-        ansibleParameter.setName("playbook");
-        ansibleParameter.setEncoding("UTF-8");
-        ansibleParameter.setValue(playbook);
-        return ansibleParameter;
+        return createConfigurationParameter(configurationID, "ansible");
+    }
+
+    private MessageParameter createComposerParameter(String configurationID) throws JSONException {
+        MessageParameter configurationParameter = createConfigurationParameter(configurationID, "composer");
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("name", configurationID);
+        configurationParameter.setAttributes(attributes);
+        return configurationParameter;
+    }
+
+    private MessageParameter createConfigurationParameter(String configurationID, String confType) throws JSONException {
+        String configuration = configurationService.get(configurationID, "yml");
+        MessageParameter configurationParameter = new MessageParameter();
+        configurationParameter.setName(confType);
+        configurationParameter.setEncoding("UTF-8");
+        configurationParameter.setValue(configuration);
+        return configurationParameter;
+    }
+
+    private MessageParameter createScaleParameter(String configurationID, String serviceName, int numOfContainers) throws JSONException {
+        MessageParameter scaleParameter = new MessageParameter();
+        scaleParameter.setName("scale");
+        scaleParameter.setEncoding("UTF-8");
+        scaleParameter.setValue(configurationID);
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("service", serviceName);
+        attributes.put("number_of_containers", String.valueOf(numOfContainers));
+        scaleParameter.setAttributes(attributes);
+        return scaleParameter;
+    }
+
+    public DeployResponse scale(ScaleRequest scaleReq) throws IOException, TimeoutException, InterruptedException, JSONException, Exception {
+        //Deployer needs configurationID -> name_of_deployment
+        String deployId = scaleReq.getScaleTargetID();
+        DeployResponse deployment = this.findOne(deployId);
+        String confID = deployment.getConfigurationID();
+        ConfigurationRepresentation configuration = configurationService.findOne(confID);
+        Map<String, Object> map = configuration.getKeyValue();
+        Map<String, Object> services = (Map<String, Object>) map.get("services");
+        if (!services.containsKey(scaleReq.getScaleTargetName())) {
+            throw new BadRequestException("Service name does not exist in this deployment");
+        }
+
+        Message message = buildDeployerMessage(deployment.getProvisionID(), "scale", confID, scaleReq.getScaleTargetName(), scaleReq.getNumOfInstances());
+
+        try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
+            Message response = (deployer.call(message));
+            List<MessageParameter> params = response.getParameters();
+            handleResponse(params, null);
+        }
+        deployment.setScale(scaleReq);
+        save(deployment);
+        return deployment;
     }
 
     private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException, Exception {

@@ -16,14 +16,16 @@
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * This class represents a playbook used by ansible manager to deploy software.
+ *
+ * This class represents a scale response for a deployment. At the moment we
+ * only support swarm.
+ *
  *
  * @author S. Koulouzis
  */
-@Document
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PlaybookRepresentation extends KeyValueHolder {
+public class ScaleDeploymetResponse extends ScaleRequest {
+
 }

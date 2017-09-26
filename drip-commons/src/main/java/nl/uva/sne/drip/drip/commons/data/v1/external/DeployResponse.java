@@ -33,6 +33,8 @@ public class DeployResponse extends DeployRequest {
     private KeyPair key;
 
     private List<String> ansibleOutputListIDs;
+    
+    private ScaleRequest scale;
 
     public void setAnsibleOutputList(List<String> outputListIDs) {
         this.ansibleOutputListIDs = outputListIDs;
@@ -56,6 +58,21 @@ public class DeployResponse extends DeployRequest {
      */
     public KeyPair getKeyPair() {
         return key;
+    }
+
+    /**
+     * The scale information if any for this deployment 
+     * @return the scale
+     */
+    public ScaleRequest getScale() {
+        return scale;
+    }
+
+    /**
+     * @param scale the scale to set
+     */
+    public void setScale(ScaleRequest scale) {
+        this.scale = scale;
     }
 
 }

@@ -15,13 +15,13 @@
  */
 package nl.uva.sne.drip.api.dao;
 
-import nl.uva.sne.drip.drip.commons.data.v1.external.PlaybookRepresentation;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  *
  * @author S. Koulouzis
  */
-public interface PlaybookDao extends MongoRepository<PlaybookRepresentation, String> {
+public interface ConfigurationDao extends MongoRepository<ConfigurationRepresentation, String> {
 
 }

@@ -17,18 +17,12 @@ package nl.uva.sne.drip.drip.provisioner.utils;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -132,13 +126,30 @@ public class MessageParsing {
         return sshKeys;
     }
 
+    public static MessageParameter getScaleInfo(JSONArray parameters) throws JSONException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+
+        for (int i = 0; i < parameters.length(); i++) {
+            JSONObject param = (JSONObject) parameters.get(i);
+            MessageParameter messageParam = mapper.readValue(param.toString(), MessageParameter.class);
+            String name = messageParam.getName();
+            String value = messageParam.getValue();
+            if(name.equals("scale_topology_name")){
+                return messageParam;
+            }
+        }
+        
+        return null;
+    }
+
     public static Map<String, Object> ymlStream2Map(InputStream in) {
         Yaml yaml = new Yaml();
         Map<String, Object> map = (Map<String, Object>) yaml.load(in);
         return map;
     }
 
-    public static List<Credential> getCloudCredentials(JSONArray parameters, String tempInputDirPath) throws JSONException, FileNotFoundException, IOException,  CertificateEncodingException, GSSException {
+    public static List<Credential> getCloudCredentials(JSONArray parameters, String tempInputDirPath) throws JSONException, FileNotFoundException, IOException, CertificateEncodingException, GSSException {
         List<Credential> credentials = new ArrayList<>();
         for (int i = 0; i < parameters.length(); i++) {
             JSONObject param = (JSONObject) parameters.get(i);

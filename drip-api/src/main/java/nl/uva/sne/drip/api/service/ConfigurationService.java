@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.commons.utils.Constants;
-import nl.uva.sne.drip.drip.commons.data.v1.external.PlaybookRepresentation;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import org.json.JSONException;
@@ -31,7 +31,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import nl.uva.sne.drip.api.dao.PlaybookDao;
+import nl.uva.sne.drip.api.dao.ConfigurationDao;
 
 /**
  *
@@ -39,18 +39,18 @@ import nl.uva.sne.drip.api.dao.PlaybookDao;
  */
 @Service
 @PreAuthorize("isAuthenticated()")
-public class PlaybookService {
+public class ConfigurationService {
 
     @Autowired
-    private PlaybookDao dao;
+    private ConfigurationDao dao;
 
     public String get(String id, String fromat) throws JSONException, NotFoundException {
-        PlaybookRepresentation playbook = findOne(id);
-        if (playbook == null) {
+        ConfigurationRepresentation configuration = findOne(id);
+        if (configuration == null) {
             throw new NotFoundException();
         }
 
-        Map<String, Object> map = playbook.getKeyValue();
+        Map<String, Object> map = configuration.getKeyValue();
 
         if (fromat != null && fromat.toLowerCase().equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);
@@ -80,30 +80,33 @@ public class PlaybookService {
     public String saveYamlString(String yamlString, String name) throws IOException {
         yamlString = yamlString.replaceAll("\\.", "\uff0E");
         Map<String, Object> map = Converter.ymlString2Map(yamlString);
-        PlaybookRepresentation t = new PlaybookRepresentation();
+        ConfigurationRepresentation t = new ConfigurationRepresentation();
         t.setKvMap(map);
         save(t);
         return t.getId();
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public PlaybookRepresentation delete(String id) {
-        PlaybookRepresentation tr = dao.findOne(id);
+    public ConfigurationRepresentation delete(String id) {
+        ConfigurationRepresentation tr = dao.findOne(id);
+        if(tr == null){
+            throw new NotFoundException();
+        }
         dao.delete(tr);
         return tr;
     }
 
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public List<PlaybookRepresentation> findAll() {
+    public List<ConfigurationRepresentation> findAll() {
         return dao.findAll();
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public PlaybookRepresentation findOne(String id) {
+    public ConfigurationRepresentation findOne(String id) {
         return dao.findOne(id);
     }
 
-    private PlaybookRepresentation save(PlaybookRepresentation t) {
+    private ConfigurationRepresentation save(ConfigurationRepresentation t) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         t.setOwner(owner);
@@ -115,9 +118,9 @@ public class PlaybookService {
         dao.deleteAll();
     }
 
-    public String saveStringContents(String playbookContents) throws IOException {
-        Map<String, Object> map = Converter.cleanStringContents(playbookContents, false);
-        PlaybookRepresentation t = new PlaybookRepresentation();
+    public String saveStringContents(String yamlContents) throws IOException {
+        Map<String, Object> map = Converter.cleanStringContents(yamlContents, false);
+        ConfigurationRepresentation t = new ConfigurationRepresentation();
         t.setKvMap(map);
         save(t);
         return t.getId();

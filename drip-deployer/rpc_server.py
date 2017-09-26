@@ -9,11 +9,13 @@ import docker_kubernetes
 import docker_engine
 import docker_swarm
 import docker_compose
+import docker_service
 import control_agent
 import ansible_playbook
 import sys, argparse
 from threading import Thread
 from time import sleep
+import os.path
 
 
 if len(sys.argv) > 1:
@@ -41,7 +43,12 @@ def handleDelivery(message):
     node_num = 0
     vm_list = []
     current_milli_time = lambda: int(round(time.time() * 1000))
-    path = os.path.dirname(os.path.abspath(__file__)) + "/"+ str(current_milli_time()) + "/"
+    try:
+        path = os.path.dirname(os.path.abspath(__file__)) + "/"+ str(current_milli_time()) + "/"
+    except NameError:        
+        import sys
+        path = os.path.dirname(os.path.abspath(sys.argv[0])) + "/"+ str(current_milli_time()) + "/"
+        
     if not os.path.exists(path):
         os.makedirs(path)
         
@@ -60,6 +67,10 @@ def handleDelivery(message):
             fo = open(key, "w")
             fo.write(value)
             fo.close()
+            parentDir = os.path.dirname(os.path.abspath(key))
+            os.chmod(parentDir, 0o700)
+            os.chmod(key, 0o600)   
+            
             vm = VmInfo(ip, user, key, role)
             vm_list.append(vm)
         elif name == "playbook":
@@ -71,10 +82,19 @@ def handleDelivery(message):
         elif name == "composer":
             value = param["value"]
             compose_file = path + "docker-compose.yml"
-            compose_name = param["attributes"]["name"]
+            if not param["attributes"] == None and not param["attributes"]["name"] == None : 
+                compose_name = param["attributes"]["name"]
+            else:
+                current_milli_time = lambda: int(round(time.time() * 1000))
+                compose_name = "service_"+str(current_milli_time())
             fo = open(compose_file, "w")
             fo.write(value)
             fo.close()     
+        elif name == "scale":
+            name_of_deployment = param["value"]
+            name_of_service = param["attributes"]["service"]
+            number_of_containers = param["attributes"]["number_of_containers"]
+            
 
     if manager_type == "kubernetes":
         ret = docker_kubernetes.run(vm_list)
@@ -88,6 +108,9 @@ def handleDelivery(message):
         return ret
     elif manager_type == "ansible":
         ret = ansible_playbook.run(vm_list,playbook)
+        return ret
+    elif manager_type == "scale":
+        ret = docker_service.run(vm_list, name_of_deployment, name_of_service, number_of_containers)
         return ret
     else:
         return "ERROR: invalid cluster"
@@ -110,6 +133,8 @@ def on_request(ch, method, props, body):
         res_name = "error"
     elif manager_type == "ansible":
         res_name = "ansible_output"
+    elif manager_type == "scale":
+        res_name = "scale_status"
     else:
         res_name = "credential"
             

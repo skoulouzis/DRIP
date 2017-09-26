@@ -17,7 +17,7 @@ package nl.uva.sne.drip.api.v1.rest;
 
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
-import nl.uva.sne.drip.drip.commons.data.v1.external.PlaybookRepresentation;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PathVariable;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.api.service.PlaybookService;
+import nl.uva.sne.drip.api.service.ConfigurationService;
 import nl.uva.sne.drip.api.service.UserService;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -55,7 +55,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class ConfigurationController {
 
     @Autowired
-    private PlaybookService playbookService;
+    private ConfigurationService configurationService;
 
     /**
      * Post a deployment configuration.
@@ -72,7 +72,7 @@ public class ConfigurationController {
     public @ResponseBody
     String post(@RequestBody String yamlContents) {
         try {
-            return playbookService.saveStringContents(yamlContents);
+            return configurationService.saveStringContents(yamlContents);
         } catch (IOException ex) {
             throw new BadRequestException("Not valid contents");
         }
@@ -97,7 +97,7 @@ public class ConfigurationController {
             throw new BadRequestException("Must uplaod a file");
         }
         try {
-            return playbookService.saveFile(file);
+            return configurationService.saveFile(file);
         } catch (IOException | IllegalStateException ex) {
             throw new BadRequestException("Not valid contents");
         }
@@ -120,7 +120,7 @@ public class ConfigurationController {
     public @ResponseBody
     String get(@PathVariable("id") String id, @RequestParam(value = "format") String format) {
         try {
-            return playbookService.get(id, format);
+            return configurationService.get(id, format);
         } catch (JSONException | NotFoundException ex) {
             throw new BadRequestException("Not valid contents");
         }
@@ -135,11 +135,16 @@ public class ConfigurationController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 200, condition = "Successful delete")
+        @ResponseCode(code = 200, condition = "Successful delete"),
+        @ResponseCode(code = 404, condition = "Object not found")
     })
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        playbookService.delete(id);
+        try {
+            configurationService.delete(id);
+        } catch (NotFoundException ex) {
+            throw ex;
+        }
         return "Deleted : " + id;
     }
 
@@ -155,9 +160,9 @@ public class ConfigurationController {
     })
     public @ResponseBody
     List<String> getIds() {
-        List<PlaybookRepresentation> all = playbookService.findAll();
+        List<ConfigurationRepresentation> all = configurationService.findAll();
         List<String> ids = new ArrayList<>();
-        for (PlaybookRepresentation tr : all) {
+        for (ConfigurationRepresentation tr : all) {
             ids.add(tr.getId());
         }
         return ids;
@@ -175,7 +180,7 @@ public class ConfigurationController {
     })
     public @ResponseBody
     String deleteAll() {
-        playbookService.deleteAll();
+        configurationService.deleteAll();
         return "Done";
     }
 
