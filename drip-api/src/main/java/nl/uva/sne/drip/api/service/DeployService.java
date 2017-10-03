@@ -54,6 +54,7 @@ import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
+import nl.uva.sne.drip.drip.commons.data.v1.external.SwarmInfo;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleOutput;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleResult;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.BenchmarkResult;
@@ -96,12 +97,15 @@ public class DeployService {
     private static final String[] PUBLIC_ADRESS_NAMES = new String[]{"public_address", "publicAddress"};
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public DeployResponse findOne(String id) {
-        DeployResponse creds = deployDao.findOne(id);
-        if (creds == null) {
+    public DeployResponse findOne(String id) throws JSONException, IOException, TimeoutException, InterruptedException {
+        DeployResponse deployDescription = deployDao.findOne(id);
+        if (deployDescription == null) {
             throw new NotFoundException();
         }
-        return creds;
+        if (deployDescription.getManagerType().equals("swarm")) {
+            SwarmInfo swarmInfo = getSwarmInfo(deployDescription);
+        }
+        return deployDescription;
     }
 
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
@@ -156,6 +160,22 @@ public class DeployService {
         return null;
     }
 
+    private SwarmInfo getSwarmInfo(DeployResponse deployResp) throws JSONException, IOException, TimeoutException, InterruptedException {
+        Message deployerInvokationMessage = buildDeployerMessage(
+                deployResp.getProvisionID(),
+                "swarm_info",
+                deployResp.getConfigurationID(),
+                null,
+                null);
+        SwarmInfo info;
+        try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
+            Message response = (deployer.call(deployerInvokationMessage));
+            List<MessageParameter> params = response.getParameters();
+            info = buildSwarmInfo(params);
+        }
+        return info;
+    }
+
     private Message buildDeployerMessage(String provisionID, String managerType, String configurationID, String serviceName, Integer numOfCont) throws JSONException {
         ProvisionResponse pro = provisionService.findOne(provisionID);
         if (pro == null) {
@@ -199,7 +219,10 @@ public class DeployService {
             MessageParameter scaleParameter = createScaleParameter(configurationID, serviceName, numOfCont);
             parameters.add(scaleParameter);
         }
-
+        if (managerType.toLowerCase().equals("swarm_info") && configurationID != null) {
+            MessageParameter swarmInfo = createSwarmInforparameter(configurationID, serviceName);
+            parameters.add(swarmInfo);
+        }
         Message deployInvokationMessage = new Message();
         deployInvokationMessage.setParameters(parameters);
         deployInvokationMessage.setCreationDate(System.currentTimeMillis());
@@ -270,6 +293,18 @@ public class DeployService {
         Map<String, String> attributes = new HashMap<>();
         attributes.put("service", serviceName);
         attributes.put("number_of_containers", String.valueOf(numOfContainers));
+        scaleParameter.setAttributes(attributes);
+        return scaleParameter;
+    }
+
+    private MessageParameter createSwarmInforparameter(String configurationID, String serviceName) {
+        MessageParameter scaleParameter = new MessageParameter();
+        scaleParameter.setName("swarm_info");
+        scaleParameter.setEncoding("UTF-8");
+        scaleParameter.setValue(configurationID);
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("service", serviceName);
+
         scaleParameter.setAttributes(attributes);
         return scaleParameter;
     }
@@ -562,6 +597,10 @@ public class DeployService {
             newJa.put(jo);
         }
         return newJa.toString();
+    }
+
+    private SwarmInfo buildSwarmInfo(List<MessageParameter> params) {
+        return null;
     }
 
 }

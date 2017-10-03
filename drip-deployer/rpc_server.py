@@ -55,6 +55,7 @@ def handleDelivery(message):
         
     for param in params:
         name = param["name"]
+        print name
         if name == "cluster":
             manager_type = param["value"]
         elif name == "credential":
@@ -95,6 +96,9 @@ def handleDelivery(message):
             name_of_deployment = param["value"]
             name_of_service = param["attributes"]["service"]
             number_of_containers = param["attributes"]["number_of_containers"]
+        elif name == "swarm_info":
+            name_of_deployment = param["value"]
+            name_of_service = param["attributes"]["service"]  
             
 
     if manager_type == "kubernetes":
@@ -113,7 +117,7 @@ def handleDelivery(message):
     elif manager_type == "scale":
         ret = docker_service.run(vm_list, name_of_deployment, name_of_service, number_of_containers)
         return ret
-    elif manager_type == "service check":
+    elif manager_type == "swarm_info":
         ret = docker_check.run(vm_list, compose_name)
         return ret
     else:

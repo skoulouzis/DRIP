@@ -17,6 +17,7 @@ package nl.uva.sne.drip.api.v1.rest;
 
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -132,7 +133,12 @@ public class DeployController {
     })
     public @ResponseBody
     DeployResponse get(@PathVariable("id") String id) {
-        DeployResponse resp = deployService.findOne(id);
+        DeployResponse resp = null;
+        try {
+            resp = deployService.findOne(id);
+        } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
+            Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (resp == null) {
             throw new NotFoundException();
         }
@@ -173,7 +179,12 @@ public class DeployController {
     })
     public @ResponseBody
     String delete(@PathVariable("id") String id) {
-        DeployResponse Key = deployService.findOne(id);
+        DeployResponse Key = null;
+        try {
+            Key = deployService.findOne(id);
+        } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
+            Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (Key != null) {
             deployService.delete(id);
             return "Deleted : " + id;
