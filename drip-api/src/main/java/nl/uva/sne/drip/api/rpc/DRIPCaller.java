@@ -128,7 +128,7 @@ public abstract class DRIPCaller implements AutoCloseable {
             clean = clean.replaceAll("\"null\"", "null");
         }
         Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", clean);
-
+        
         return mapper.readValue(clean, Message.class);
     }
 }

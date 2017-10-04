@@ -13,3 +13,5 @@
 /drip-tests/target/
 /docs/playbooks/euroArgo_conf_playbook2.yml
 /Dockerfiles/env_file
+/argo_optimizer/nbproject/private/
+/drip_planner2/nbproject/private/
