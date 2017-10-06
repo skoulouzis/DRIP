@@ -2,26 +2,18 @@
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
 
-import argparse
-import getopt
-import json
-import networkx as nx
-import numpy as np
-import operator
-import os
 import pika
-import random
-import re
+from planner.dump_planner import *
 import sys
-import time
 from toscaparser import *
 from toscaparser.tosca_template import ToscaTemplate
+from toscaparser.elements.entity_type import EntityType
 
 
 
 def init_chanel(args):
     if len(args) > 1:
-        rabbitmq_host = args[1]#sys.argv[1]
+        rabbitmq_host = args[1]
     else:
         rabbitmq_host = '127.0.0.1'
         
@@ -55,42 +47,36 @@ def handle_delivery(message):
     value = param["value"]
     
     parsed_json_value = json.loads(value)
-    topology_template = parsed_json_value['topology_template']
-    node_templates = topology_template["node_templates"]
-    
-    response = {}
-    current_milli_time = lambda: int(round(time.time() * 1000))
-    response["creationDate"] = current_milli_time()   
-    response["parameters"] = []
-    
-    for nodes in node_templates:
-        if "Switch.nodes.Application.Container.Docker." in node_templates[nodes]['type']:
-            node_keys = node_templates[nodes].keys()     
-            if 'artifacts' in node_keys:
-                artifact_key = next(iter(node_templates[nodes]['artifacts']))
-                artifact_keys = node_templates[nodes]['artifacts'][artifact_key].keys()   
-                if 'file' in artifact_keys:
-                    docker = node_templates[nodes]['artifacts'][artifact_key]['file']
-                elif 'docker_image' in artifact_keys:
-                    docker = node_templates[nodes]['artifacts']['docker_image']['file']
-                result = {}
-                parameter = {}
-                result['name'] = nodes
-                result['size'] = 'Medium'
-                result['docker'] = docker
-                parameter['value'] = str(json.dumps(result))
-                parameter['attributes'] = 'null'
-                parameter["url"] = "null"
-                parameter["encoding"] = "UTF-8"
-                response["parameters"].append(parameter)
-    print ("Output message: %s" % json.dumps(response))            
-    return json.dumps(response)
+    planner = DumpPlanner();
+    response = planner.plan(parsed_json_value);
+            
+    return response
 
 if __name__ == "__main__":
-    print sys.argv
-    channel = init_chanel(sys.argv)
-    start(channel)
+#    print sys.argv
+#    channel = init_chanel(sys.argv)
+#    start(channel)
+    tosca = ToscaTemplate('/home/alogo/workspace/DRIP/docs/input_tosca_files/tosca_MOG_input.yaml')
+#    for node in tosca.nodetemplates:
+#        print "Name %s Type: %s " %(node.name,node.type)
+#    
+#    for input in tosca.inputs:
+#        print input.name
+
+#    for node in tosca.nodetemplates:
+#        for relationship, trgt in node.relationships.items():
+#            rel_template = trgt.get_relationship_template()
+#            for rel in rel_template:
+#                print "source %s Relationship: %s target: %s" %(rel.source.type,rel.type,rel.target.type)
+#                print dir(rel)
     
-    
+    for node in tosca.nodetemplates:
+        for relationship, trgt in node.relationships.items():
+#            print EntityType.HOSTEDON
+#            print type(EntityType.HOSTEDON)
+#            print relationship.type
+#            print type(relationship.type)
+            if relationship.type == EntityType.HOSTEDON:
+                print relationship.type
     
         

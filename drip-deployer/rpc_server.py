@@ -98,7 +98,8 @@ def handleDelivery(message):
             number_of_containers = param["attributes"]["number_of_containers"]
         elif name == "swarm_info":
             name_of_deployment = param["value"]
-            name_of_service = param["attributes"]["service"]  
+            name_of_service = param["attributes"]["service"]
+            compose_name = param["attributes"]["name"]
             
 
     if manager_type == "kubernetes":
