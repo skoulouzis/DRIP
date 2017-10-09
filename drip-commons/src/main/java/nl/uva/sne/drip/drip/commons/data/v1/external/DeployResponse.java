@@ -16,7 +16,9 @@
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.List;
+import java.util.Map;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -33,8 +35,10 @@ public class DeployResponse extends DeployRequest {
     private KeyPair key;
 
     private List<String> ansibleOutputListIDs;
-    
+
     private ScaleRequest scale;
+
+    private Map<String, Object> managerInfo;
 
     public void setAnsibleOutputList(List<String> outputListIDs) {
         this.ansibleOutputListIDs = outputListIDs;
@@ -61,7 +65,8 @@ public class DeployResponse extends DeployRequest {
     }
 
     /**
-     * The scale information if any for this deployment 
+     * The scale information if any for this deployment
+     *
      * @return the scale
      */
     public ScaleRequest getScale() {
@@ -75,4 +80,19 @@ public class DeployResponse extends DeployRequest {
         this.scale = scale;
     }
 
+    public void setManagerInfo(Map<String, Object> managerInfo) {
+        this.managerInfo = managerInfo;
+    }
+
+    /**
+     * Returns manager info e.g. service status etc.
+     *
+     * @return
+     */
+    @DocumentationExample("{\"services_info\": {\"status\": \"Ready\", \"hostname\": "
+            + "\"stoor74\", \"ID\": \"v5y8cs7zd5atej53buq86g8j7\", \"availability\": \"Active\"}, ."
+            + "\"cluster_node_info\": {\"status\": \"Ready\", \"hostname\": \"stoor74\", \"ID\": \"v5y8cs7zd5atej53buq86g8j7\", \"availability\": \"Active\"}}")
+    public Map<String, Object> getManagerInfo() {
+        return this.managerInfo;
+    }
 }

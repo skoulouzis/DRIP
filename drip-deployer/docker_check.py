@@ -19,6 +19,7 @@ __author__ = 'Yang Hu'
 
 import paramiko, os
 from vm_info import VmInfo
+import json
 
 
 def docker_check(vm, compose_name):
@@ -28,21 +29,34 @@ def docker_check(vm, compose_name):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
-        retstr = "\n===========  Cluster Node Information =============== \n"
-        stdin, stdout, stderr = ssh.exec_command("sudo docker node ls")
-        ret = stdout.readlines()
-        for i in ret: retstr += i.encode()
-
-        retstr += "\n============  Services Information ================ \n"
-        stdin, stdout, stderr = ssh.exec_command("sudo docker stack ps %s" % (compose_name))
-        ret = stdout.readlines()
-        for i in ret: retstr += i.encode()
+        node_format = '\'{\"ID\":\"{{.ID}}\",\"hostname\":\"{{.Hostname}}\",\"status\":\"{{.Status}}\",\"availability\":\"{{.Availability}}\",\"status\":\"{{.Status}}\"}\''
+        cmd = 'sudo docker node ls --format ' + (node_format)
+        json_response = {}
+        stdin, stdout, stderr = ssh.exec_command(cmd)
+        node_ls_resp = stdout.readlines()
+        retstr = ""
+        for i in node_ls_resp: 
+            if i.encode():
+                retstr += i.encode()
+        cluster_node_info = json.loads(retstr.strip('\n'))
+        
+        json_response ['cluster_node_info'] = cluster_node_info
+        services_format = '{\"ID\":\"{{.ID}}\","\"name\":\"{{.Name}}\","\"image\":\"{{.Image}}\","\"node\":\"{{.Node}}\","\"desired_state\":\"{{.DesiredState}}\","\"current_state\":\"{{.CurrentState}}\","\"error\":\"{{.Error}}\","\"ports\":\"{{.Ports}}\"}'
+        cmd = 'sudo docker stack ps '+ compose_name +' --format ' + services_format
+        stdin, stdout, stderr = ssh.exec_command(cmd)
+        stack_ps_resp = stdout.readlines()
+        retstr = ""
+        for i in stack_ps_resp: 
+            if i.encode():
+                retstr += i.encode()        
+        services_info = json.loads(retstr.strip('\n'))
+        json_response ['services_info'] = services_info
         print "%s: =========== Check Finished ==============" % (vm.ip)
     except Exception as e:
         print '%s: %s' % (vm.ip, e)
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()
-    return retstr
+    return json_response
 
 
 

@@ -3,7 +3,6 @@ import pika
 import json
 import os
 import time
-import json
 from vm_info import VmInfo
 import docker_kubernetes
 import docker_engine
@@ -55,7 +54,6 @@ def handleDelivery(message):
         
     for param in params:
         name = param["name"]
-        print name
         if name == "cluster":
             manager_type = param["value"]
         elif name == "credential":
@@ -97,8 +95,6 @@ def handleDelivery(message):
             name_of_service = param["attributes"]["service"]
             number_of_containers = param["attributes"]["number_of_containers"]
         elif name == "swarm_info":
-            name_of_deployment = param["value"]
-            name_of_service = param["attributes"]["service"]
             compose_name = param["attributes"]["name"]
             
 
@@ -120,6 +116,7 @@ def handleDelivery(message):
         return ret
     elif manager_type == "swarm_info":
         ret = docker_check.run(vm_list, compose_name)
+        ret = '"'+json.dumps(ret)+'"'
         return ret
     else:
         return "ERROR: invalid cluster"
@@ -144,6 +141,8 @@ def on_request(ch, method, props, body):
         res_name = "ansible_output"
     elif manager_type == "scale":
         res_name = "scale_status"
+    elif manager_type == "swarm_info":
+        res_name = "swarm_info"
     else:
         res_name = "credential"
             

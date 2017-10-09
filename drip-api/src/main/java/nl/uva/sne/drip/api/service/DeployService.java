@@ -54,7 +54,6 @@ import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
-import nl.uva.sne.drip.drip.commons.data.v1.external.SwarmInfo;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleOutput;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleResult;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.BenchmarkResult;
@@ -103,7 +102,8 @@ public class DeployService {
             throw new NotFoundException();
         }
         if (deployDescription.getManagerType().equals("swarm")) {
-            SwarmInfo swarmInfo = getSwarmInfo(deployDescription);
+            Map<String, Object> swarmInfo = getSwarmInfo(deployDescription);
+            deployDescription.setManagerInfo(swarmInfo);
         }
         return deployDescription;
     }
@@ -160,14 +160,14 @@ public class DeployService {
         return null;
     }
 
-    private SwarmInfo getSwarmInfo(DeployResponse deployResp) throws JSONException, IOException, TimeoutException, InterruptedException {
+    private Map<String, Object> getSwarmInfo(DeployResponse deployResp) throws JSONException, IOException, TimeoutException, InterruptedException {
         Message deployerInvokationMessage = buildDeployerMessage(
                 deployResp.getProvisionID(),
                 "swarm_info",
                 deployResp.getConfigurationID(),
                 null,
                 null);
-        SwarmInfo info;
+        Map<String, Object> info;
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             Message response = (deployer.call(deployerInvokationMessage));
             List<MessageParameter> params = response.getParameters();
@@ -298,15 +298,14 @@ public class DeployService {
     }
 
     private MessageParameter createSwarmInforparameter(String configurationID, String serviceName) {
-        MessageParameter scaleParameter = new MessageParameter();
-        scaleParameter.setName("swarm_info");
-        scaleParameter.setEncoding("UTF-8");
-        scaleParameter.setValue(configurationID);
+        MessageParameter swarmInfoParameter = new MessageParameter();
+        swarmInfoParameter.setName("swarm_info");
+        swarmInfoParameter.setEncoding("UTF-8");
         Map<String, String> attributes = new HashMap<>();
         attributes.put("service", serviceName);
-
-        scaleParameter.setAttributes(attributes);
-        return scaleParameter;
+        attributes.put("name", configurationID);
+        swarmInfoParameter.setAttributes(attributes);
+        return swarmInfoParameter;
     }
 
     public DeployResponse scale(ScaleRequest scaleReq) throws IOException, TimeoutException, InterruptedException, JSONException, Exception {
@@ -599,8 +598,14 @@ public class DeployService {
         return newJa.toString();
     }
 
-    private SwarmInfo buildSwarmInfo(List<MessageParameter> params) {
-        return null;
+    private Map<String, Object> buildSwarmInfo(List<MessageParameter> params) throws JSONException {
+        Map<String, Object> info = new HashMap();
+        for (MessageParameter param : params) {
+            String jsonResp = param.getValue().replaceAll("^\"|\"$", "");
+            Map<String, Object> kv = Converter.jsonString2Map(jsonResp);
+            info.putAll(kv);
+        }
+        return info;
     }
 
 }
