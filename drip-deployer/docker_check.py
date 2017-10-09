@@ -32,6 +32,7 @@ def docker_check(vm, compose_name):
         node_format = '\'{\"ID\":\"{{.ID}}\",\"hostname\":\"{{.Hostname}}\",\"status\":\"{{.Status}}\",\"availability\":\"{{.Availability}}\",\"status\":\"{{.Status}}\"}\''
         cmd = 'sudo docker node ls --format ' + (node_format)
         json_response = {}
+        #print cmd
         stdin, stdout, stderr = ssh.exec_command(cmd)
         node_ls_resp = stdout.readlines()
         retstr = ""
@@ -41,14 +42,16 @@ def docker_check(vm, compose_name):
         cluster_node_info = json.loads(retstr.strip('\n'))
         
         json_response ['cluster_node_info'] = cluster_node_info
-        services_format = '{\"ID\":\"{{.ID}}\","\"name\":\"{{.Name}}\","\"image\":\"{{.Image}}\","\"node\":\"{{.Node}}\","\"desired_state\":\"{{.DesiredState}}\","\"current_state\":\"{{.CurrentState}}\","\"error\":\"{{.Error}}\","\"ports\":\"{{.Ports}}\"}'
+        services_format = '\'{\"ID\":\"{{.ID}}\",\"name\":\"{{.Name}}\",\"image\":\"{{.Image}}\",\"node\":\"{{.Node}}\",\"desired_state\":\"{{.DesiredState}}\",\"current_state\":\"{{.CurrentState}}\",\"error\":\"{{.Error}}\",\"ports\":\"{{.Ports}}\"}\''
         cmd = 'sudo docker stack ps '+ compose_name +' --format ' + services_format
+        #print cmd
         stdin, stdout, stderr = ssh.exec_command(cmd)
         stack_ps_resp = stdout.readlines()
         retstr = ""
         for i in stack_ps_resp: 
             if i.encode():
-                retstr += i.encode()        
+                retstr += i.encode()
+                print i.encode().strip('\n')
         services_info = json.loads(retstr.strip('\n'))
         json_response ['services_info'] = services_info
         print "%s: =========== Check Finished ==============" % (vm.ip)

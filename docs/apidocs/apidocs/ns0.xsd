@@ -370,6 +370,25 @@ pair is only used by kubernetes]]>
                 </xs:documentation>
               </xs:annotation>
               </xs:element>
+              <xs:element name="managerInfo" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>
+                  <![CDATA[Returns manager info e.g. service status etc.]]>
+                </xs:documentation>
+              </xs:annotation>
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="key" minOccurs="1" type="xs:string"/>
+            <xs:element name="value" minOccurs="1" type="xs:anyType"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+              </xs:element>
       </xs:sequence>
     </xs:extension>
   </xs:complexContent>
@@ -804,17 +823,17 @@ class]]>
    <xs:complexContent>
     <xs:extension base="ownedObject">
       <xs:sequence>
-              <xs:element name="host" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="end" type="xs:dateTime" minOccurs="0">
-              </xs:element>
               <xs:element name="start" type="xs:dateTime" minOccurs="0">
+              </xs:element>
+              <xs:element name="delta" type="xs:dateTime" minOccurs="0">
               </xs:element>
               <xs:element name="cloudDeploymentDomain" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="vmType" type="xs:string" minOccurs="0">
+              <xs:element name="end" type="xs:dateTime" minOccurs="0">
               </xs:element>
-              <xs:element name="delta" type="xs:dateTime" minOccurs="0">
+              <xs:element name="host" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="vmType" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
     </xs:extension>
