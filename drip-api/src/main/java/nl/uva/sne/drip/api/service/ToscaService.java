@@ -16,16 +16,24 @@
 package nl.uva.sne.drip.api.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 import nl.uva.sne.drip.api.dao.ToscaDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.api.rpc.DRIPCaller;
+import nl.uva.sne.drip.api.rpc.DeployerCaller;
+import nl.uva.sne.drip.api.rpc.TransformerCaller;
 import nl.uva.sne.drip.commons.utils.Constants;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.drip.commons.data.internal.Message;
+import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,6 +52,25 @@ public class ToscaService {
     @Autowired
     private ToscaDao dao;
 
+    @Value("${message.broker.host}")
+    private String messageBrokerHost;
+
+    public String get(Map<String, Object> map, String fromat) throws JSONException {
+        if (fromat != null && fromat.equals("yml")) {
+            String ymlStr = Converter.map2YmlString(map);
+            ymlStr = ymlStr.replaceAll("\\uff0E", ".");
+            return ymlStr;
+        }
+        if (fromat != null && fromat.equals("json")) {
+            String jsonStr = Converter.map2JsonString(map);
+            jsonStr = jsonStr.replaceAll("\\uff0E", ".");
+            return jsonStr;
+        }
+        String ymlStr = Converter.map2YmlString(map);
+        ymlStr = ymlStr.replaceAll("\\uff0E", ".");
+        return ymlStr;
+    }
+
     public String get(String id, String fromat) throws JSONException {
         ToscaRepresentation tosca = findOne(id);
         if (tosca == null) {
@@ -51,7 +78,6 @@ public class ToscaService {
         }
 
         Map<String, Object> map = tosca.getKeyValue();
-
         if (fromat != null && fromat.equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);
             ymlStr = ymlStr.replaceAll("\\uff0E", ".");
@@ -119,14 +145,45 @@ public class ToscaService {
     }
 
     public String saveStringContents(String toscaContents, String name) throws IOException {
-
-        Map<String, Object> map = Converter.cleanStringContents(toscaContents,true);
-
+        Map<String, Object> map = Converter.cleanStringContents(toscaContents, true);
         ToscaRepresentation t = new ToscaRepresentation();
         t.setName(name);
         t.setKvMap(map);
         save(t);
         return t.getId();
+    }
+
+    public String transform(String id, String target) throws JSONException, IOException, TimeoutException, InterruptedException {
+        ToscaRepresentation toscaRep = findOne(id);
+        switch (target) {
+            case "docker_compose":
+                return getDockerCompose(toscaRep);
+        }
+
+        return null;
+    }
+
+    private String getDockerCompose(ToscaRepresentation toscaRep) throws IOException, TimeoutException, JSONException, InterruptedException {
+        try (DRIPCaller transformer = new TransformerCaller(messageBrokerHost);) {
+            Message transformerInvokationMessage = buildDockerComposeMessage(toscaRep);
+            Message response = (transformer.call(transformerInvokationMessage));
+            System.err.println(response.getParameters().get(0).getValue());
+        }
+        return null;
+    }
+
+    private Message buildDockerComposeMessage(ToscaRepresentation toscaRep) throws JSONException {
+        Message deployInvokationMessage = new Message();
+        List<MessageParameter> parameters = new ArrayList<>();
+        MessageParameter messageParam = new MessageParameter();
+
+        messageParam.setName(toscaRep.getName());
+        messageParam.setValue(get(toscaRep.getKeyValue(), "yml"));
+
+        parameters.add(messageParam);
+        deployInvokationMessage.setParameters(parameters);
+        deployInvokationMessage.setCreationDate(System.currentTimeMillis());
+        return deployInvokationMessage;
     }
 
 }

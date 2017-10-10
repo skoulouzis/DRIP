@@ -1,17 +1,32 @@
+
 from toscaparser import *
 from toscaparser.tosca_template import ToscaTemplate
-import json
-import time
+import toscaparser.utils.yamlparser
 
-class DumpPlanner:
+class DockerComposeTransformer:
     
-
-    def __init__(self,tosca):
-        self.tosca = tosca
-        self.tt = ToscaTemplate()
+    def __init__(self, tosca_file_path):
+        yaml_dict_tpl = toscaparser.utils.yamlparser.load_yaml(tosca_file_path)
+        self.tt = ToscaTemplate(path=None, yaml_dict_tpl=yaml_dict_tpl)
+        self.DOCKER_TYPE = 'Switch.nodes.Application.Container.Docker'
         
-    def plan(self):
-        self.tt
+        
+    def getnerate_compose(self):
+        dockers = []
+        print dir(self.tt.topology_template)
+        print dir(self.tt.outputs)
+        print dir(self.tt.nested_tosca_tpls_with_topology)
+        print dir(self.tt.nested_tosca_templates_with_topology)
+        print dir(self.tt.inputs)
+        print dir(self.tt.input_path)
+        print dir(self.tt.graph)
+        for node in self.tt.nodetemplates:
+            if node.parent_type.type == self.DOCKER_TYPE:
+                dockers.append(node)
+                print "Name %s Type: %s Parent: %s" %(node.name,node.type,node.parent_type.type)        
+
+
+        
         
 #        topology_template = parsed_json_value['topology_template']
 #        node_templates = topology_template["node_templates"]

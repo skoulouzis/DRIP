@@ -21,6 +21,7 @@ import nl.uva.sne.drip.drip.commons.data.v1.external.ToscaRepresentation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
@@ -61,7 +62,6 @@ public class ToscaController {
     public @ResponseBody
     String post(@RequestBody String toscaContents) {
         try {
-
             return toscaService.saveStringContents(toscaContents, String.valueOf(System.currentTimeMillis()));
         } catch (IOException ex) {
             Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
@@ -124,7 +124,7 @@ public class ToscaController {
     }
 
     /**
-     * Gets the IDs of all the stored TOSCA descriptionss.
+     * Gets the IDs of all the stored TOSCA descriptions.
      *
      * @return a list of all the IDs
      */
@@ -141,7 +141,26 @@ public class ToscaController {
     }
 
     /**
-     * Gets the IDs of all the stored TOSCA descriptionss.
+     * Transforms the TOSCA description to docker compose
+     *
+     * @param id the ID TOSCA description.
+     * @param type. Transform it to a specific type e.g. "docker_compose"
+     * @return the docker-compose.
+     */
+    @RequestMapping(value = "/transform/{id}", method = RequestMethod.GET, params = {"type"})
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    public @ResponseBody
+    String transform(@PathVariable("id") String id, @RequestParam(value = "type") String type) {
+        try {
+            return toscaService.transform(id, type);
+        } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
+            Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    /**
+     * Gets the IDs of all the stored TOSCA descriptions.
      *
      * @return a list of all the IDs
      */
