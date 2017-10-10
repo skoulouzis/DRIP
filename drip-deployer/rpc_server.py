@@ -44,10 +44,10 @@ def handleDelivery(message):
     vm_list = []
     current_milli_time = lambda: int(round(time.time() * 1000))
     try:
-        path = os.path.dirname(os.path.abspath(__file__)) + "/"+ str(current_milli_time()) + "/"
+        path = os.path.dirname(os.path.abspath(__file__)) + "/deployer_files/"+str(current_milli_time()) + "/"
     except NameError:        
         import sys
-        path = os.path.dirname(os.path.abspath(sys.argv[0])) + "/"+ str(current_milli_time()) + "/"
+        path = os.path.dirname(os.path.abspath(sys.argv[0])) + "/deployer_files/"+str(current_milli_time()) + "/"
         
     if not os.path.exists(path):
         os.makedirs(path)

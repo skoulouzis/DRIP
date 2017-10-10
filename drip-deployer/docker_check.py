@@ -32,28 +32,36 @@ def docker_check(vm, compose_name):
         node_format = '\'{\"ID\":\"{{.ID}}\",\"hostname\":\"{{.Hostname}}\",\"status\":\"{{.Status}}\",\"availability\":\"{{.Availability}}\",\"status\":\"{{.Status}}\"}\''
         cmd = 'sudo docker node ls --format ' + (node_format)
         json_response = {}
-        #print cmd
+        cluster_node_info = []
         stdin, stdout, stderr = ssh.exec_command(cmd)
         node_ls_resp = stdout.readlines()
-        retstr = ""
         for i in node_ls_resp: 
             if i.encode():
-                retstr += i.encode()
-        cluster_node_info = json.loads(retstr.strip('\n'))
+                json_str = json.loads(i.encode().strip('\n'))
+                cluster_node_info.append(json_str)
         
         json_response ['cluster_node_info'] = cluster_node_info
         services_format = '\'{\"ID\":\"{{.ID}}\",\"name\":\"{{.Name}}\",\"image\":\"{{.Image}}\",\"node\":\"{{.Node}}\",\"desired_state\":\"{{.DesiredState}}\",\"current_state\":\"{{.CurrentState}}\",\"error\":\"{{.Error}}\",\"ports\":\"{{.Ports}}\"}\''
         cmd = 'sudo docker stack ps '+ compose_name +' --format ' + services_format
-        #print cmd
         stdin, stdout, stderr = ssh.exec_command(cmd)
         stack_ps_resp = stdout.readlines()
-        retstr = ""
+        services_info = []
         for i in stack_ps_resp: 
             if i.encode():
-                retstr += i.encode()
-                print i.encode().strip('\n')
-        services_info = json.loads(retstr.strip('\n'))
+                json_str = json.loads(i.encode().strip('\n'))
+                services_info.append(json_str)
         json_response ['services_info'] = services_info
+        stack_format = '\'{"ID":"{{.ID}}","name":"{{.Name}}","mode":"{{.Mode}}","replicas":"{{.Replicas}}","image":"{{.Image}}"}\''
+        cmd = 'sudo docker stack services '+ compose_name +' --format ' + (stack_format)
+        stdin, stdout, stderr = ssh.exec_command(cmd)
+        stack_resp = stdout.readlines()
+        stack_info = []
+        for i in stack_resp:
+            if i.encode():
+                json_str = json.loads(i.encode().strip('\n'))
+                stack_info.append(json_str)
+        json_response ['stack_info'] = stack_info   
+        
         print "%s: =========== Check Finished ==============" % (vm.ip)
     except Exception as e:
         print '%s: %s' % (vm.ip, e)

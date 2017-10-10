@@ -602,6 +602,7 @@ public class DeployService {
         Map<String, Object> info = new HashMap();
         for (MessageParameter param : params) {
             String jsonResp = param.getValue().replaceAll("^\"|\"$", "");
+            
             Map<String, Object> kv = Converter.jsonString2Map(jsonResp);
             info.putAll(kv);
         }
