@@ -56,27 +56,59 @@ if __name__ == "__main__":
 #    print sys.argv
 #    channel = init_chanel(sys.argv)
 #    start(channel)
-    tosca = ToscaTemplate('/home/alogo/workspace/DRIP/docs/input_tosca_files/tosca_MOG_input.yaml')
-#    for node in tosca.nodetemplates:
-#        print "Name %s Type: %s " %(node.name,node.type)
+    try:
+#        tosca = ToscaTemplate('/home/alogo/workspace/DRIP/docs/input_tosca_files/tosca_MOG_input.yaml')       
+        tosca = ToscaTemplate('/home/alogo/workspace/DRIP/docs/input_tosca_files/input.yaml')
+#        for node in tosca.nodetemplates:
+#                print "Name %s Type: %s " %(node.name,node.type)
 #    
-#    for input in tosca.inputs:
-#        print input.name
+#        for input in tosca.inputs:
+#            print input.name
 
-#    for node in tosca.nodetemplates:
-#        for relationship, trgt in node.relationships.items():
-#            rel_template = trgt.get_relationship_template()
-#            for rel in rel_template:
-#                print "source %s Relationship: %s target: %s" %(rel.source.type,rel.type,rel.target.type)
-#                print dir(rel)
+#        for node in tosca.nodetemplates:
+#            for relationship, trgt in node.relationships.items():
+#                rel_template = trgt.get_relationship_template()
+#                for rel in rel_template:
+#                    print "source %s Relationship: %s target: %s" %(rel.source.type,rel.type,rel.target.type)
+#                    print dir(rel)
+        response = {}
+        current_milli_time = lambda: int(round(time.time() * 1000))
+        response["creationDate"] = current_milli_time()   
+        response["parameters"] = []
+        
+        compute_nodes =  []
+                
+        for node in tosca.nodetemplates:
+#            print dir(node)
+            print "Name: %s Type: %s props: %s"%(node.name,node.type,node.get_properties().keys())
+            for relationship, trgt in node.relationships.items():
+                if relationship.type == EntityType.HOSTEDON:
+                    rel_template = trgt.get_relationship_template()
+                    for rel in rel_template:
+                        compute_nodes.append(rel.target)
+
+        for compute_node in compute_nodes:
+            result = {}
+            parameter = {}
+            result['name'] = node.name
+            result['size'] = 'Medium'
+            result['docker'] = compute_node.get_properties()['dockers'].value
+#            print dir(compute_node.get_properties()['dockers'] )
+#            print "dockers. Name: %s Type: %s Value: %s" % (compute_node.get_properties()['dockers'].name, compute_node.get_properties()['dockers'].type, compute_node.get_properties()['dockers'].value )
+            parameter['value'] = str(json.dumps(result))
+            parameter['attributes'] = 'null'
+            parameter["url"] = "null"
+            parameter["encoding"] = "UTF-8"
+            response["parameters"].append(parameter)           
+#            print "Name: %s Type: %s properties: %s" %(compute_node.name,compute_node.type,compute_node.get_properties().keys())
+
+        print ("Output message: %s" % json.dumps(response))
+
+    except AttributeError as e:
+        z = e
+        print z
     
-    for node in tosca.nodetemplates:
-        for relationship, trgt in node.relationships.items():
-#            print EntityType.HOSTEDON
-#            print type(EntityType.HOSTEDON)
-#            print relationship.type
-#            print type(relationship.type)
-            if relationship.type == EntityType.HOSTEDON:
-                print relationship.type
+    
+    
     
         
