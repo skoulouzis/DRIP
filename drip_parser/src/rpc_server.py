@@ -10,6 +10,7 @@ import tempfile
 import time
 import json
 from transformer.docker_compose_transformer import *
+from os.path import expanduser
 
 
 
@@ -69,12 +70,14 @@ def handle_delivery(message):
     return "response"
 
 if __name__ == "__main__":
-    print sys.argv
-    channel = init_chanel(sys.argv)
-    global queue_name
-    queue_name = sys.argv[2]
-
-    start(channel)
+    home = expanduser("~")
+    transformer = DockerComposeTransformer(home+"/workspace/DRIP/docs/input_tosca_files/MOG_cardif.yml")
+    transformer.getnerate_compose()
+#    print sys.argv
+#    channel = init_chanel(sys.argv)
+#    global queue_name
+#    queue_name = sys.argv[2]
+#    start(channel)
 #    try:
 ##        for node in tosca.nodetemplates:
 ##                print "Name %s Type: %s " %(node.name,node.type)
