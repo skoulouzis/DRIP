@@ -73,6 +73,8 @@ if __name__ == "__main__":
     home = expanduser("~")
     transformer = DockerComposeTransformer(home+"/workspace/DRIP/docs/input_tosca_files/MOG_cardif.yml")
     transformer.getnerate_compose()
+    
+
 #    print sys.argv
 #    channel = init_chanel(sys.argv)
 #    global queue_name

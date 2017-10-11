@@ -8,12 +8,12 @@ class DockerComposeTransformer:
     def __init__(self, tosca_file_path):
         self.yaml_dict_tpl = toscaparser.utils.yamlparser.load_yaml(tosca_file_path)
         self.errors =[]
-        self.wornings = []
+        self.warnings = []
         self.tt = None
         try:
             self.tt = ToscaTemplate(path=None, yaml_dict_tpl=self.yaml_dict_tpl)
         except:
-            self.wornings.append("Not a valid tosca file")
+            self.warnings.append("Not a valid tosca file")
         self.DOCKER_TYPE = 'Switch.nodes.Application.Container.Docker'
         
         
@@ -23,19 +23,27 @@ class DockerComposeTransformer:
         else:
             self.analyze_yaml()
 
-
-    def analyze_yaml(self):
-        node_types = self.yaml_dict_tpl['node_types']
-        docker_types  = []
+    def get_node_types(self):
+        return self.yaml_dict_tpl['node_types']
+    
+    def get_docker_types(self):
+        docker_types = []
+        node_types = self.get_node_types()
         for node_type_key in node_types:
             if node_types[node_type_key] and 'derived_from' in node_types[node_type_key].keys():
                 if node_types[node_type_key]['derived_from'] == self.DOCKER_TYPE:
                     docker_types.append(node_type_key)
-        node_templates =  self.yaml_dict_tpl['topology_template']['node_templates']
+        return  docker_types
+    
+    def get_node_templates(self):
+        return self.yaml_dict_tpl['topology_template']['node_templates']
+    
+    def analyze_yaml(self):
+        docker_types  = self.get_docker_types()
+        node_templates =  self.get_node_templates() 
         
         services = {}
         for node_template_key in node_templates:
-#            print node_templates[node_template_key]
             for docker_type in docker_types:
                 if docker_type in node_templates[node_template_key]['type']:
                     if 'artifacts' in node_templates[node_template_key]:
