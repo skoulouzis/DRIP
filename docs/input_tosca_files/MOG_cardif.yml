@@ -4,7 +4,7 @@ topology_template:
       artifacts: 
         "inputdistributor.cardiff_image": 
           type: "tosca.artifacts.Deployment.Image.Container.Docker"
-          file: null
+          file: "mogswitch/InputDistributor:1.0"
           repository: SWITCH_docker_hub
       requirements: 
         - host: 
@@ -46,7 +46,7 @@ topology_template:
       artifacts: 
         "inputdistributor.cardiff_image": 
           type: "tosca.artifacts.Deployment.Image.Container.Docker"
-          file: null
+          file: "mogswitch/InputDistributor:1.0"
           repository: SWITCH_docker_hub
       requirements: 
         - host: 
@@ -243,6 +243,9 @@ topology_template:
           port_mapping_0: 
             host_port: 8085
             container_port: 80
+          port_mapping_1: 
+            host_port: 8086
+            container_port: 81
     "849ea5ba-9938-46aa-8d3d-d525f5d87102": 
       type: "Switch.nodes.Application.Connection"
       properties: 
