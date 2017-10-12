@@ -100,6 +100,7 @@ public class PlannerController {
         return null;
     }
 
+    
     @RequestMapping(value = "/plan/", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
