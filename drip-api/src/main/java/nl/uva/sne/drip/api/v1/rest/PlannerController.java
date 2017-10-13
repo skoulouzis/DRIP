@@ -87,8 +87,7 @@ public class PlannerController {
     String plan(@PathVariable("tosca_id") String toscaId) {
 
         try {
-            PlanResponse plan = plannerService.getPlan(toscaId,
-                    "vm_user", "EC2", "Virginia");
+            PlanResponse plan = plannerService.getPlan(toscaId);
             if (plan == null) {
                 throw new NotFoundException("Could not make plan");
             }

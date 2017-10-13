@@ -61,12 +61,11 @@ public class PlannerController0 {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result plan(@RequestBody Plan plan0) {
-
         try {
             String yaml = plan0.file;
             yaml = yaml.replaceAll("\\\\n", "\n");
             String id = toscaService.saveYamlString(yaml, null);
-            nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse plan1 = plannerService.getPlan(id, "vm_user", "EC2", "Virginia");
+            nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse plan1 = plannerService.getPlan(id);
             Result r = new Result();
             r.info = ("INFO");
             r.status = ("Success");

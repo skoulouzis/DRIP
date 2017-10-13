@@ -34,6 +34,7 @@ import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import nl.uva.sne.drip.drip.converter.P2PConverter;
 import nl.uva.sne.drip.drip.converter.SimplePlanContainer;
@@ -58,12 +59,15 @@ public class PlannerService {
     private ToscaService toscaService;
 
     @Autowired
+    private CloudCredentialsService credentialService;
+
+    @Autowired
     private PlanDao planDao;
 
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-    public PlanResponse getPlan(String toscaId, String vmUser, String cloudProvider, String domainName) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
+    public PlanResponse getPlan(String toscaId) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);
             Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
@@ -83,8 +87,11 @@ public class PlannerService {
             }
             jsonArrayString.append("]");
 
+            String cloudProvider = getBestCloudProvider();
+            String domainName = getBestDomain(cloudProvider);
+
 //            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", clusterType);
-            SimplePlanContainer simplePlan = P2PConverter.transfer(jsonArrayString.toString(), vmUser, domainName, cloudProvider);
+            SimplePlanContainer simplePlan = P2PConverter.transfer(jsonArrayString.toString(), "vm_user", domainName, cloudProvider);
 
             PlanResponse topLevel = new PlanResponse();
             topLevel.setTimestamp(System.currentTimeMillis());
@@ -251,6 +258,21 @@ public class PlannerService {
             }
         }
         return false;
+    }
+
+    private String getBestCloudProvider() {
+        List<CloudCredentials> creds = credentialService.findAll();
+        return creds.get(0).getCloudProviderName();
+    }
+
+    private String getBestDomain(String cloudProvider) {
+        switch (cloudProvider.trim().toLowerCase()) {
+            case "ec2":
+                return "Virginia";
+            case "egi":
+                return "CESNET";
+        }
+        return null;
     }
 
 }
