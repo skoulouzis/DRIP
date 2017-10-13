@@ -17,7 +17,7 @@ from os.path import expanduser
 def init_chanel(args):
     if len(args) > 1:
         rabbitmq_host = args[1]
-        queue_name = args[2] #tosca_2_docker_compose_queue
+        queue_name = args[2] #planner_queue
     else:
         rabbitmq_host = '127.0.0.1'
         
@@ -48,75 +48,49 @@ def handle_delivery(message):
     parsed_json_message = json.loads(message)
     params = parsed_json_message["parameters"]
     param = params[0]
-    value = param["value"]
+    value = json.loads( param['value'])
     tosca_file_name = param["name"]
     current_milli_time = lambda: int(round(time.time() * 1000))
     
     try:
-        tosca_file_path = tempfile.gettempdir() + "/transformer_files/" + str(current_milli_time()) + "/"
+        tosca_file_path = tempfile.gettempdir() + "/planner_files/" + str(current_milli_time()) + "/"
     except NameError:        
         import sys
-        tosca_file_path = os.path.dirname(os.path.abspath(sys.argv[0])) + "/transformer_files/" + str(current_milli_time()) + "/"
+        tosca_file_path = os.path.dirname(os.path.abspath(sys.argv[0])) + "/planner_files/" + str(current_milli_time()) + "/"
     
     if not os.path.exists(tosca_file_path):
         os.makedirs(tosca_file_path)    
     with open(tosca_file_path + "/" + tosca_file_name + ".yml", 'w') as outfile:
-        outfile.write(str(value))
+        outfile.write(json.dumps(value))
     
-    if queue_name == "tosca_2_docker_compose_queue":
+    response = {}
+    current_milli_time = lambda: int(round(time.time() * 1000))
+    response["creationDate"] = current_milli_time()   
+    response["parameters"] = []
+    if queue_name == "planner_queue":
         planner = DumpPlanner(tosca_file_path + "/" + tosca_file_name + ".yml");
-        planner.plan()
-                
-    return "response"
+        vm_nodes = planner.plan()
+        for vm in vm_nodes:
+            parameter = {}
+            parameter['value'] = str(json.dumps(vm))
+            parameter['name'] = 'vm'
+            parameter['encoding'] = 'UTF-8'
+            response["parameters"].append(parameter)         
+    
+    print ("Output message: %s" % json.dumps(response))            
+    return json.dumps(response)
 
 if __name__ == "__main__":
-    home = expanduser("~")
-    planner = DumpPlanner(home+"/workspace/DRIP/docs/input_tosca_files/MOG_cardif.yml")
-    planner.plan()
+#    home = expanduser("~")
+#    planner = DumpPlanner(home+"/workspace/DRIP/docs/input_tosca_files/MOG_cardif.yml")
+#    planner.plan()
+    print sys.argv
+    channel = init_chanel(sys.argv)
+    global queue_name
+    queue_name = sys.argv[2]
+    start(channel)
     
-
-#    print sys.argv
-#    channel = init_chanel(sys.argv)
-#    global queue_name
-#    queue_name = sys.argv[2]
-#    start(channel)
-#    try:
-##        for node in tosca.nodetemplates:
-##                print "Name %s Type: %s " %(node.name,node.type)
-##    
-##        for input in tosca.inputs:
-##            print input.name
-#
-##        for node in tosca.nodetemplates:
-##            for relationship, trgt in node.relationships.items():
-##                rel_template = trgt.get_relationship_template()
-##                for rel in rel_template:
-##                    print "source %s Relationship: %s target: %s" %(rel.source.type,rel.type,rel.target.type)
-##                    print dir(rel)
-#        response = {}
-#        current_milli_time = lambda: int(round(time.time() * 1000))
-#        response["creationDate"] = current_milli_time()   
-#        response["parameters"] = []
-#        vm_nodes =  []
-#                
-#        for node in tosca.nodetemplates:
-#            if not node.relationships.items() and 'docker' in node.type.lower():
-#                print "1Adding: %s , %s" %(node.name,node.type)
-#                vm_nodes.append(node)
-##            else:
-#            for relationship, trgt in node.relationships.items():
-#                if relationship.type == EntityType.HOSTEDON:
-#                    rel_template = trgt.get_relationship_template()
-#                    for rel in rel_template:
-#                        print "2Adding: %s , %s" %(rel.target.name,rel.target.type)                        
-##                        print "Name: %s Type: %s " %(node.name, node.type)
-#                        vm_nodes.append(rel.target)
-#                        
-#        
-##        if not compute_nodes:
-##            for node in tosca.nodetemplates:
-###                print dir(node)
-##                print "Name: %s Type: %s props: %s"%(node.name,node.type,node.get_properties().keys())         
+    
 #            
 #        for vm in vm_nodes:
 #            result = {}

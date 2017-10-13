@@ -41,35 +41,8 @@ class DumpPlanner:
     def get_artifacts(self, node):
         if 'artifacts' in node:
             return node['artifacts']
-        
-    def get_properties(self, node):
-        if 'properties' in node:
-            return node['properties']
-    
-    def get_enviroment_vars(self, properties):
-        environment = []
-        for prop in properties:
-            if properties[prop] and not isinstance(properties[prop], dict):
-                environment.append(prop + "=" + str(properties[prop]))
-        return environment
-    
-    def get_port_map(self, properties):
-        if 'ports_mapping' in properties:
-            ports_mappings = properties['ports_mapping']
-            
-            port_maps = []
-            for port_map_key in ports_mappings:            
-                host_port = ports_mappings[port_map_key]['host_port']
-                if not isinstance(host_port, (int, long, float, complex)):
-                    host_port_var = host_port.replace('${', '').replace('}', '')
-                    host_port = properties[host_port_var]
-
-                container_port = ports_mappings[port_map_key]['container_port']
-                if not isinstance(container_port, (int, long, float, complex)):
-                    container_port_var = container_port.replace('${', '').replace('}', '')
-                    container_port = properties[container_port_var]
-                port_maps.append(str(host_port) + ':' + str(container_port))
-        return port_maps
+         
+ 
     
     def get_hosted_nodes(self, node_templates):
         docker_types = self.get_docker_types()
@@ -84,6 +57,10 @@ class DumpPlanner:
                     break
         return hosted_nodes
     
+    def get_properties(self, node):
+        if 'properties' in node:
+            return node['properties']
+        
     def plan(self):
         node_templates = self.get_node_templates() 
         hosted_nodes = self.get_hosted_nodes(node_templates)
@@ -93,17 +70,30 @@ class DumpPlanner:
             vm['name'] = node['id']
             vm['type'] = self.COMPUTE_TYPE
             
-            for req in node['requirements']:
-                vm['host'] = req['host']['node_filter']['capabilities']['host']
-                vm['OStype'] = req['host']['node_filter']['capabilities']['os']['distribution'] + " " + str(req['host']['node_filter']['capabilities']['os']['os_version'])
-#            vm['nodeType'] = 'medium'
-#            vm['dockers']  = 
-#            artifacts = self.get_artifacts(node)
-#            if artifacts:
-#                key =  next(iter(artifacts))
-#                docker_file =  artifacts[key]['file']
-#                vm['dockers'] = docker_file
-#            vm['cloudProvider']
+            if 'requirements' in node:
+                for req in node['requirements']:
+                    if 'host' in req and 'node_filter' in req['host']:
+                        vm['host'] = req['host']['node_filter']['capabilities']['host']
+                        vm['os'] = req['host']['node_filter']['capabilities']['os']
+            if 'host' not in vm:
+                host = {}
+                host['cpu_frequency'] = '2GHz'
+                host['mem_size'] = '4GB'
+                host['num_cpus'] = '1'
+                host['disk_size'] = '10GB'
+                vm['host'] = host
+            if 'os' not in vm:
+                os = {}
+                os['os_version'] = 16.04
+                os['distribution'] = 'ubuntu'
+                os['type'] = 'linux'
+                os['architecture'] = 'x86_64'
+                vm['os'] = os
+            
+            properties = self.get_properties(node)
+            if properties and 'scaling_mode' in properties:
+                vm['scaling_mode'] = properties['scaling_mode']
+            else:
+                vm['scaling_mode'] = 'single'
             vms.append(vm)
-        print len(vms)
         return vms

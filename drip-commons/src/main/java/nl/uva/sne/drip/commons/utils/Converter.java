@@ -85,6 +85,11 @@ public class Converter {
         return jsonObject2Map(jsonObject);
     }
 
+    public static List<Object> jsonString2List(String jsonString) throws JSONException {
+        JSONArray jSONArray = new JSONArray(jsonString);
+        return jsonArray2List(jSONArray);
+    }
+
     public static Map<String, Object> jsonObject2Map(JSONObject object) throws JSONException {
         Map<String, Object> map = new HashMap();
 
@@ -115,7 +120,6 @@ public class Converter {
             list.add(value);
         }
         return list;
-
     }
 
     public static String json2Yml2(String jsonString) throws JSONException {
