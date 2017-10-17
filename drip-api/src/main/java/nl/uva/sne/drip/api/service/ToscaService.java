@@ -164,12 +164,13 @@ public class ToscaService {
     }
 
     private String getDockerCompose(ToscaRepresentation toscaRep) throws IOException, TimeoutException, JSONException, InterruptedException {
+        String dockerCompose;
         try (DRIPCaller transformer = new TransformerCaller(messageBrokerHost);) {
             Message transformerInvokationMessage = buildDockerComposeMessage(toscaRep);
             Message response = (transformer.call(transformerInvokationMessage));
-            System.err.println(response.getParameters().get(0).getValue());
+            dockerCompose = response.getParameters().get(0).getValue();
         }
-        return null;
+        return dockerCompose;
     }
 
     private Message buildDockerComposeMessage(ToscaRepresentation toscaRep) throws JSONException {

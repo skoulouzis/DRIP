@@ -9,6 +9,7 @@ import sys
 import tempfile
 import time
 import json
+import yaml
 from transformer.docker_compose_transformer import *
 from os.path import expanduser
 
@@ -48,7 +49,7 @@ def handle_delivery(message):
     parsed_json_message = json.loads(message)
     params = parsed_json_message["parameters"]
     param = params[0]
-    value = param["value"]
+    value = yaml.load(param['value'])
     tosca_file_name = param["name"]
     current_milli_time = lambda: int(round(time.time() * 1000))
     
@@ -65,21 +66,46 @@ def handle_delivery(message):
     
     if queue_name == "tosca_2_docker_compose_queue":
         transformer = DockerComposeTransformer(tosca_file_path + "/" + tosca_file_name + ".yml");
-        transformer.getnerate_compose()
-                
-    return "response"
+        compose = transformer.getnerate_compose()
+    response = {}
+    current_milli_time = lambda: int(round(time.time() * 1000))
+    response["creationDate"] = current_milli_time()   
+    response["parameters"] = []
+    
+    parameter = {}
+    parameter['value'] = str(yaml.dump(compose))
+    parameter['name'] = 'docker-compose.yml'
+    parameter['encoding'] = 'UTF-8'
+    response["parameters"].append(parameter)     
+    print ("Output message: %s" % json.dumps(response))         
+    return response
 
-if __name__ == "__main__":
+def test_local():
+    test_local()
     home = expanduser("~")
     transformer = DockerComposeTransformer(home+"/workspace/DRIP/docs/input_tosca_files/MOG_cardif.yml")
-    transformer.getnerate_compose()
+    compose =  transformer.getnerate_compose()
+    response = {}
+    current_milli_time = lambda: int(round(time.time() * 1000))
+    response["creationDate"] = current_milli_time()   
+    response["parameters"] = []
     
+    parameter = {}
+    parameter['value'] = str(yaml.dump(compose))
+    parameter['name'] = 'docker-compose.yml'
+    parameter['encoding'] = 'UTF-8'
+    response["parameters"].append(parameter)
+    print response
 
-#    print sys.argv
-#    channel = init_chanel(sys.argv)
-#    global queue_name
-#    queue_name = sys.argv[2]
-#    start(channel)
+if __name__ == "__main__":
+#    test_local()
+    print sys.argv
+    channel = init_chanel(sys.argv)
+    global queue_name
+    queue_name = sys.argv[2]
+    start(channel)
+
+
 #    try:
 ##        for node in tosca.nodetemplates:
 ##                print "Name %s Type: %s " %(node.name,node.type)
