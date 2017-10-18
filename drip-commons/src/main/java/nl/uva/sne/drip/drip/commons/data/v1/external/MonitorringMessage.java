@@ -15,13 +15,19 @@
  */
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.webcohesion.enunciate.metadata.DocumentationExample;
+import java.util.Date;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MonitorringMessage extends OwnedObject {
+
+    private Date date;
+
+    private Date time;
 
     private String metricMame;
 
@@ -89,6 +95,38 @@ public class MonitorringMessage extends OwnedObject {
      */
     public void setMessageType(String messageType) {
         this.messageType = messageType;
+    }
+
+    /**
+     * @return the date
+     */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @DocumentationExample("2017-08-25")
+    public Date getDate() {
+        return date;
+    }
+
+    /**
+     * @param date the date to set
+     */
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    /**
+     * @return the time
+     */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm:ss")
+    @DocumentationExample("11:30:00")
+    public Date getTime() {
+        return time;
+    }
+
+    /**
+     * @param time the time to set
+     */
+    public void setTime(Date time) {
+        this.time = time;
     }
 
 }
