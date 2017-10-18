@@ -123,11 +123,12 @@ public class DeployService {
         return creds;
     }
 
-    public DeployResponse save(DeployResponse clusterCred) {
+    public DeployResponse save(DeployResponse ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        clusterCred.setOwner(owner);
-        return deployDao.save(clusterCred);
+        ownedObject.setOwner(owner);
+        ownedObject.setTimestamp(System.currentTimeMillis());
+        return deployDao.save(ownedObject);
     }
 
     public DeployResponse deploySoftware(DeployRequest deployInfo) throws Exception {

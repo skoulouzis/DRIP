@@ -130,11 +130,12 @@ public class ToscaService {
         return tr;
     }
 
-    private ToscaRepresentation save(ToscaRepresentation t) {
+    private ToscaRepresentation save(ToscaRepresentation ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        t.setOwner(owner);
-        return dao.save(t);
+        ownedObject.setOwner(owner);
+        ownedObject.setTimestamp(System.currentTimeMillis());
+        return dao.save(ownedObject);
     }
 
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")

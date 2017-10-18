@@ -191,11 +191,12 @@ public class PlannerService {
         return topLevel;
     }
 
-    public PlanResponse save(PlanResponse plan) {
+    public PlanResponse save(PlanResponse ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        plan.setOwner(owner);
-        return planDao.save(plan);
+        ownedObject.setOwner(owner);
+        ownedObject.setTimestamp(System.currentTimeMillis());
+        return planDao.save(ownedObject);
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")

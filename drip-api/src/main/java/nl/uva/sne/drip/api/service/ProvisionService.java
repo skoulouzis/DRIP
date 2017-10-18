@@ -89,11 +89,12 @@ public class ProvisionService {
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-    public ProvisionResponse save(ProvisionResponse provision) {
+    public ProvisionResponse save(ProvisionResponse ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        provision.setOwner(owner);
-        return provisionDao.save(provision);
+        ownedObject.setOwner(owner);
+        ownedObject.setTimestamp(System.currentTimeMillis());
+        return provisionDao.save(ownedObject);
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
@@ -487,7 +488,7 @@ public class ProvisionService {
                         cloudProvider = (String) topology.get("cloudProvider");
                         domain = (String) topology.get("domain");
                         scaleNameExists = true;
-                    } else if (topology.get("tag").equals("scaled") 
+                    } else if (topology.get("tag").equals("scaled")
                             && topology.get("status").equals("running")
                             && topology.get("copyOf").equals(scaleName)) {
                         currentNumOfInstances++;

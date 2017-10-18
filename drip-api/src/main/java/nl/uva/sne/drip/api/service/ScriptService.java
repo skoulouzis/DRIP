@@ -38,11 +38,12 @@ public class ScriptService {
     @Autowired
     ScriptDao dao;
 
-    public Script save(Script script) {
+    public Script save(Script ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        script.setOwner(owner);
-        return dao.save(script);
+        ownedObject.setOwner(owner);
+        ownedObject.setTimestamp(System.currentTimeMillis());
+        return dao.save(ownedObject);
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")

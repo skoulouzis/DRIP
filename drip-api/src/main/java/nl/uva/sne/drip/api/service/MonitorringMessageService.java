@@ -64,10 +64,11 @@ public class MonitorringMessageService {
         dao.deleteAll();
     }
 
-    public MonitorringMessage save(MonitorringMessage message) {
+    public MonitorringMessage save(MonitorringMessage ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        message.setOwner(owner);
-        return dao.save(message);
+        ownedObject.setOwner(owner);
+        ownedObject.setTimestamp(System.currentTimeMillis());
+        return dao.save(ownedObject);
     }
 }
