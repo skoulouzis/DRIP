@@ -66,7 +66,7 @@ public class BenchmarkResultService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         ownedObject.setOwner(owner);
-        ownedObject.setTimestamp(System.currentTimeMillis());
+         
         return benchmarkResultDao.save(ownedObject);
     }
 

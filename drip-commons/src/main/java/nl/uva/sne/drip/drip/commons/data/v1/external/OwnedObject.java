@@ -34,7 +34,7 @@ public class OwnedObject {
     @Id
     private String id;
 
-    private Long timestamp;
+    private Long timestamp = System.currentTimeMillis();
 
     @NotNull
     private String owner;
@@ -75,11 +75,6 @@ public class OwnedObject {
     @DocumentationExample("1499793079011")
     public Long getTimestamp() {
         return timestamp;
-    }
-
- 
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
     }
 
 }

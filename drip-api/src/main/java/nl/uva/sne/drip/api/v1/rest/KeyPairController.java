@@ -139,7 +139,6 @@ public class KeyPairController {
     KeyPair geta() throws Exception {
         try {
             KeyPair pair = new KeyPair();
-            pair.setTimestamp(System.currentTimeMillis());
             Key pk = new Key();
             Map<String, String> attributes = new HashMap<>();
             attributes.put("domain_name", "Virginia");

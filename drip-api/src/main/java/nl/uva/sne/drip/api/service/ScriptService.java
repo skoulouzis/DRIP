@@ -42,7 +42,7 @@ public class ScriptService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         ownedObject.setOwner(owner);
-        ownedObject.setTimestamp(System.currentTimeMillis());
+         
         return dao.save(ownedObject);
     }
 

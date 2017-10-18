@@ -93,7 +93,7 @@ public class ProvisionService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         ownedObject.setOwner(owner);
-        ownedObject.setTimestamp(System.currentTimeMillis());
+         
         return provisionDao.save(ownedObject);
     }
 
@@ -637,7 +637,6 @@ public class ProvisionService {
             ProvisionRequest provisionRequest, ProvisionResponse provisionResponse, boolean saveUserKeys, boolean saveDeployerKeyI) throws Exception {
         if (provisionResponse == null) {
             provisionResponse = new ProvisionResponse();
-            provisionResponse.setTimestamp(System.currentTimeMillis());
         }
 
         List<DeployParameter> deployParameters = new ArrayList<>();

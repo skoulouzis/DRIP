@@ -138,7 +138,6 @@ public class CloudCredentialsController {
                 attributes.put("domain_name", FilenameUtils.removeExtension(originalFileName));
                 key.setAttributes(attributes);
                 KeyPair pair = new KeyPair();
-                pair.setTimestamp(System.currentTimeMillis());
                 pair.setPrivateKey(key);
                 pair = keyService.save(pair);
 //                loginKeyIDs.add(pair.getId());

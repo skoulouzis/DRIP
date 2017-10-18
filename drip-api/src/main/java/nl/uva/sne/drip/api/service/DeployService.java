@@ -127,7 +127,7 @@ public class DeployService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         ownedObject.setOwner(owner);
-        ownedObject.setTimestamp(System.currentTimeMillis());
+         
         return deployDao.save(ownedObject);
     }
 
@@ -335,7 +335,6 @@ public class DeployService {
 
     private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException, Exception {
         DeployResponse deployResponse = new DeployResponse();
-        deployResponse.setTimestamp(System.currentTimeMillis());
 
         for (MessageParameter p : params) {
             String name = p.getName();
@@ -346,7 +345,6 @@ public class DeployService {
                 k.setKey(value);
                 k.setType(Key.KeyType.PRIVATE);
                 KeyPair pair = new KeyPair();
-                pair.setTimestamp(System.currentTimeMillis());
                 pair.setPrivateKey(k);
                 deployResponse.setKey(pair);
                 save(deployResponse);

@@ -94,7 +94,6 @@ public class PlannerService {
             SimplePlanContainer simplePlan = P2PConverter.transfer(jsonArrayString.toString(), "vm_user", domainName, cloudProvider);
 
             PlanResponse topLevel = new PlanResponse();
-            topLevel.setTimestamp(System.currentTimeMillis());
             topLevel.setLevel(0);
             topLevel.setToscaID(toscaId);
             topLevel.setName("planner_output_all.yml");
@@ -103,7 +102,6 @@ public class PlannerService {
             Set<String> loweLevelPlansIDs = new HashSet<>();
             for (String lowLevelNames : map.keySet()) {
                 PlanResponse lowLevelPlan = new PlanResponse();
-                lowLevelPlan.setTimestamp(System.currentTimeMillis());
                 lowLevelPlan.setLevel(1);
                 lowLevelPlan.setToscaID(toscaId);
                 lowLevelPlan.setName(lowLevelNames);
@@ -195,7 +193,7 @@ public class PlannerService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         ownedObject.setOwner(owner);
-        ownedObject.setTimestamp(System.currentTimeMillis());
+         
         return planDao.save(ownedObject);
     }
 
