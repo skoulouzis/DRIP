@@ -495,6 +495,29 @@ abstract types such as TOSCA.]]>
   </xs:complexContent>
 </xs:complexType>
 
+<xs:complexType name="monitorringMessage">
+  <xs:annotation>
+    <xs:documentation>
+      <![CDATA[This is the base class for users to own resources. Many classes extend this
+class]]>
+    </xs:documentation>
+  </xs:annotation>
+   <xs:complexContent>
+    <xs:extension base="ownedObject">
+      <xs:sequence>
+              <xs:element name="metricMame" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="subid" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="value" type="xs:double" minOccurs="1">
+              </xs:element>
+              <xs:element name="messageType" type="xs:string" minOccurs="0">
+              </xs:element>
+      </xs:sequence>
+    </xs:extension>
+  </xs:complexContent>
+</xs:complexType>
+
 <xs:complexType name="ownedObject">
   <xs:annotation>
     <xs:documentation>
@@ -773,15 +796,15 @@ class]]>
       <xs:sequence>
               <xs:element name="start" type="xs:dateTime" minOccurs="0">
               </xs:element>
-              <xs:element name="cloudDeploymentDomain" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="end" type="xs:dateTime" minOccurs="0">
+              <xs:element name="vmType" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="host" type="xs:string" minOccurs="0">
               </xs:element>
+              <xs:element name="end" type="xs:dateTime" minOccurs="0">
+              </xs:element>
               <xs:element name="delta" type="xs:dateTime" minOccurs="0">
               </xs:element>
-              <xs:element name="vmType" type="xs:string" minOccurs="0">
+              <xs:element name="cloudDeploymentDomain" type="xs:string" minOccurs="0">
               </xs:element>
       </xs:sequence>
     </xs:extension>

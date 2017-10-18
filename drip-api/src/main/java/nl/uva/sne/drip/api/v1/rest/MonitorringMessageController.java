@@ -20,6 +20,7 @@ import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,13 +35,11 @@ import nl.uva.sne.drip.drip.commons.data.v1.external.MonitorringMessage;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
- * This controller is responsible for storing TOSCA descriptions that can be
- * used by the planner.
  *
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/v1.0/monitorring_message")
+@RequestMapping("/user/v1.0/monitoring_message")
 @Component
 @StatusCodes({
     @ResponseCode(code = 401, condition = "Bad credentials")
@@ -50,25 +49,20 @@ public class MonitorringMessageController {
     @Autowired
     private MonitorringMessageService monitorringMessageService;
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     String post(@RequestBody MonitorringMessage message) {
         return monitorringMessageService.save(message).getId();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"format"})
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    MonitorringMessage get(@PathVariable("id") String id, @RequestParam(value = "format") String format) {
+    MonitorringMessage get(@PathVariable("id") String id) {
         return monitorringMessageService.findOne(id);
     }
 
-    /**
-     * Gets the IDs of all the stored TOSCA descriptions.
-     *
-     * @return a list of all the IDs
-     */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody

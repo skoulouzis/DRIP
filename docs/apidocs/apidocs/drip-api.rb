@@ -1370,13 +1370,13 @@ module Ansible
     # (no documentation provided)
     attr_accessor :vmType
     # (no documentation provided)
+    attr_accessor :host
+    # (no documentation provided)
     attr_accessor :start
     # (no documentation provided)
     attr_accessor :end
     # (no documentation provided)
     attr_accessor :cloudDeploymentDomain
-    # (no documentation provided)
-    attr_accessor :host
     # (no documentation provided)
     attr_accessor :delta
 
@@ -1384,10 +1384,10 @@ module Ansible
     def to_jaxb_json_hash
       _h = super
       _h['vmType'] = vmType.to_jaxb_json_hash unless vmType.nil?
+      _h['host'] = host.to_jaxb_json_hash unless host.nil?
       _h['start'] = start.to_jaxb_json_hash unless start.nil?
       _h['end'] = end.to_jaxb_json_hash unless end.nil?
       _h['cloudDeploymentDomain'] = cloudDeploymentDomain.to_jaxb_json_hash unless cloudDeploymentDomain.nil?
-      _h['host'] = host.to_jaxb_json_hash unless host.nil?
       _h['delta'] = delta.to_jaxb_json_hash unless delta.nil?
       return _h
     end
@@ -1412,6 +1412,25 @@ module Ansible
                }
             else
                 @vmType = _oa
+            end
+          end
+        if !_o['host'].nil?
+          _oa = _o['host']
+            if(_oa.is_a? Hash)
+              @host = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @host =  String.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @host = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @host.push String.from_json(_item)
+                 else
+                   @host.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @host = _oa
             end
           end
         if !_o['start'].nil?
@@ -1471,25 +1490,6 @@ module Ansible
                 @cloudDeploymentDomain = _oa
             end
           end
-        if !_o['host'].nil?
-          _oa = _o['host']
-            if(_oa.is_a? Hash)
-              @host = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @host =  String.from_json(_oa) unless _oa['@class']
-            elsif (_oa.is_a? Array)
-              #an array(of hashes hopefully) or scalar
-              @host = Array.new
-              _oa.each { | _item | 
-                 if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @host.push String.from_json(_item)
-                 else
-                   @host.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
-                 end
-               }
-            else
-                @host = _oa
-            end
-          end
         if !_o['delta'].nil?
           _oa = _o['delta']
             if(_oa.is_a? Hash)
@@ -1524,6 +1524,91 @@ module Ansible
   end
 
 end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+end
+
+module Nl
+
+module Uva
+
+module Sne
+
+module Drip
+
+module Drip
+
+module Commons
+
+module Data
+
+module V1
+
+module External
+
+  # (no documentation provided)
+  class KeyValueHolder < Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::OwnedObject 
+
+    # the keyValue
+    attr_accessor :keyValue
+
+    # the json hash for this KeyValueHolder
+    def to_jaxb_json_hash
+      _h = super
+      _h['keyValue'] = keyValue.to_jaxb_json_hash unless keyValue.nil?
+      return _h
+    end
+
+    #initializes this KeyValueHolder with a json hash
+    def init_jaxb_json_hash(_o)
+      super _o
+        if !_o['keyValue'].nil?
+          _oa = _o['keyValue']
+            if(_oa.is_a? Hash)
+              @keyValue = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @keyValue =  Hash.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @keyValue = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @keyValue.push Hash.from_json(_item)
+                 else
+                   @keyValue.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @keyValue = _oa
+            end
+          end
+    end
+
+    # constructs a KeyValueHolder from a (parsed) JSON hash
+    def self.from_json(o)
+      if o.nil?
+        return nil
+      else
+        inst = new
+        inst.init_jaxb_json_hash o
+        return inst
+      end
+    end
+  end
 
 end
 
@@ -1608,43 +1693,109 @@ module V1
 module External
 
   # (no documentation provided)
-  class KeyValueHolder < Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::OwnedObject 
+  class MonitorringMessage < Nl::Uva::Sne::Drip::Drip::Commons::Data::V1::External::OwnedObject 
 
-    # the keyValue
-    attr_accessor :keyValue
+    # the metricMame
+    attr_accessor :metricMame
+    # the subid
+    attr_accessor :subid
+    # the value
+    attr_accessor :value
+    # the messageType
+    attr_accessor :messageType
 
-    # the json hash for this KeyValueHolder
+    # the json hash for this MonitorringMessage
     def to_jaxb_json_hash
       _h = super
-      _h['keyValue'] = keyValue.to_jaxb_json_hash unless keyValue.nil?
+      _h['metricMame'] = metricMame.to_jaxb_json_hash unless metricMame.nil?
+      _h['subid'] = subid.to_jaxb_json_hash unless subid.nil?
+      _h['value'] = value.to_jaxb_json_hash unless value.nil?
+      _h['messageType'] = messageType.to_jaxb_json_hash unless messageType.nil?
       return _h
     end
 
-    #initializes this KeyValueHolder with a json hash
+    #initializes this MonitorringMessage with a json hash
     def init_jaxb_json_hash(_o)
       super _o
-        if !_o['keyValue'].nil?
-          _oa = _o['keyValue']
+        if !_o['metricMame'].nil?
+          _oa = _o['metricMame']
             if(_oa.is_a? Hash)
-              @keyValue = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
-              @keyValue =  Hash.from_json(_oa) unless _oa['@class']
+              @metricMame = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @metricMame =  String.from_json(_oa) unless _oa['@class']
             elsif (_oa.is_a? Array)
               #an array(of hashes hopefully) or scalar
-              @keyValue = Array.new
+              @metricMame = Array.new
               _oa.each { | _item | 
                  if ((_item.nil? || _item['@class'].nil?)rescue true)
-                   @keyValue.push Hash.from_json(_item)
+                   @metricMame.push String.from_json(_item)
                  else
-                   @keyValue.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                   @metricMame.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
                  end
                }
             else
-                @keyValue = _oa
+                @metricMame = _oa
+            end
+          end
+        if !_o['subid'].nil?
+          _oa = _o['subid']
+            if(_oa.is_a? Hash)
+              @subid = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @subid =  String.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @subid = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @subid.push String.from_json(_item)
+                 else
+                   @subid.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @subid = _oa
+            end
+          end
+        if !_o['value'].nil?
+          _oa = _o['value']
+            if(_oa.is_a? Hash)
+              @value = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @value =  Float.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @value = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @value.push Float.from_json(_item)
+                 else
+                   @value.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @value = _oa
+            end
+          end
+        if !_o['messageType'].nil?
+          _oa = _o['messageType']
+            if(_oa.is_a? Hash)
+              @messageType = EnunciateHelpers::LAMB_CLASS_AWARE.call(_oa) if _oa['@class']
+              @messageType =  String.from_json(_oa) unless _oa['@class']
+            elsif (_oa.is_a? Array)
+              #an array(of hashes hopefully) or scalar
+              @messageType = Array.new
+              _oa.each { | _item | 
+                 if ((_item.nil? || _item['@class'].nil?)rescue true)
+                   @messageType.push String.from_json(_item)
+                 else
+                   @messageType.push EnunciateHelpers::LAMB_CLASS_AWARE.call(_item)
+                 end
+               }
+            else
+                @messageType = _oa
             end
           end
     end
 
-    # constructs a KeyValueHolder from a (parsed) JSON hash
+    # constructs a MonitorringMessage from a (parsed) JSON hash
     def self.from_json(o)
       if o.nil?
         return nil
