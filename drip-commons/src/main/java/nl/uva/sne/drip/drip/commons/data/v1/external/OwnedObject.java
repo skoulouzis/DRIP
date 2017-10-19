@@ -41,7 +41,8 @@ public class OwnedObject {
 
     /**
      * The owner (username) for the particular object. This value is set when
-     * the DAO saves the object based on the principal how made the call
+     * the DAO saves the object based on the principal who made the call.
+     * It is created automatically. No need to set during a POST
      *
      * @return the owner
      */
@@ -69,7 +70,8 @@ public class OwnedObject {
     }
 
     /**
-     * The object's creation date in unix time stamp
+     * The object's creation date in unix time stamp. It is created automatically.
+     * No need to set during a POST
      * @return the timestamp
      */
     @DocumentationExample("1499793079011")

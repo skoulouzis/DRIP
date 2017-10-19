@@ -18,7 +18,6 @@ package nl.uva.sne.drip.api.service;
 import java.util.List;
 import nl.uva.sne.drip.api.dao.MonitorringMessageDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.drip.commons.data.v1.external.DeployResponse;
 import nl.uva.sne.drip.drip.commons.data.v1.external.MonitorringMessage;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import org.springframework.beans.factory.annotation.Autowired;
