@@ -19,20 +19,34 @@ __author__ = 'Yang Hu'
 
 import paramiko, os
 from vm_info import VmInfo
+import logging
+
+# create logger
+logger = logging.getLogger('docker_swarm')
+logger.setLevel(logging.DEBUG)
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+# create formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# add formatter to ch
+ch.setFormatter(formatter)
+# add ch to logger
+logger.addHandler(ch)
 
 
 def scale_service(vm, application_name, service_name, service_num):
     try:
-        print "%s: ====== Start Docker Service Scaling ======" % (vm.ip)
+        logger.info("Starting docker service scaling on: "+vm.ip)
         paramiko.util.log_to_file("deployment.log")
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
         stdin, stdout, stderr = ssh.exec_command("sudo docker service scale %s_%s=%s" % (application_name, service_name, service_num))
         stdout.read()
-        print "%s: ======= Service Scaling Finished =========" % (vm.ip)
+        logger.info("Finished docker service scaling on: "+vm.ip)        
     except Exception as e:
-        print '%s: %s' % (vm.ip, e)
+        logger.error(vm.ip + " " + str(e))
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()
     return "SUCCESS"

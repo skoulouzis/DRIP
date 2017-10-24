@@ -39,6 +39,7 @@ import yaml
 import sys
 from results_collector import ResultsCollector
 
+   
 
 def install_prerequisites(vm):
 	try:

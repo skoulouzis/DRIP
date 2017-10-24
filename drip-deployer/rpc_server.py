@@ -16,6 +16,7 @@ import sys, argparse
 from threading import Thread
 from time import sleep
 import os.path
+import logging
 
 
 if len(sys.argv) > 1:
@@ -23,6 +24,19 @@ if len(sys.argv) > 1:
 else:
     rabbitmq_host = '127.0.0.1'
     
+logger = logging.getLogger('rpc_server')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
+fh = logging.FileHandler('deployer.log')
+fh.setLevel(logging.DEBUG)
+fh.setFormatter(formatter)
+logger.addHandler(fh)
+
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
 channel = connection.channel()
@@ -160,7 +174,8 @@ def on_request(ch, method, props, body):
     response["parameters"].append(par)
 
     response = json.dumps(response)
-    print "Response: %s " % response
+    logger.info("Response: " + response)
+    
     
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
@@ -176,7 +191,7 @@ channel.basic_consume(on_request, queue='deployer_queue')
 thread = Thread(target = threaded_function, args = (1, ))
 thread.start()
 
-print(" [x] Awaiting RPC requests")
+logger.info("Awaiting RPC requests")
 
 
 
@@ -186,4 +201,4 @@ except KeyboardInterrupt:
     #thread.stop()
     done = True
     thread.join()
-    print "threads successfully closed"
+    logger.info("Threads successfully closed")

@@ -81,10 +81,10 @@ def handle_delivery(message):
     return response
 
 def test_local():
-    test_local()
     home = expanduser("~")
-    transformer = DockerComposeTransformer(home+"/workspace/DRIP/docs/input_tosca_files/MOG_cardif.yml")
+    transformer = DockerComposeTransformer(home+"/workspace/DRIP/docs/input_tosca_files/BEIA_cardif.yml")
     compose =  transformer.getnerate_compose()
+    print yaml.dump(compose)
     response = {}
     current_milli_time = lambda: int(round(time.time() * 1000))
     response["creationDate"] = current_milli_time()   
@@ -98,12 +98,12 @@ def test_local():
     print response
 
 if __name__ == "__main__":
-#    test_local()
-    print sys.argv
-    channel = init_chanel(sys.argv)
-    global queue_name
-    queue_name = sys.argv[2]
-    start(channel)
+    test_local()
+#    print sys.argv
+#    channel = init_chanel(sys.argv)
+#    global queue_name
+#    queue_name = sys.argv[2]
+#    start(channel)
 
 
 #    try:

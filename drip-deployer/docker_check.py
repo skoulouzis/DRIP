@@ -20,11 +20,28 @@ __author__ = 'Yang Hu'
 import paramiko, os
 from vm_info import VmInfo
 import json
+import logging
+import linecache
+import sys
+
+# create logger
+logger = logging.getLogger('docker_swarm')
+logger.setLevel(logging.DEBUG)
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+# create formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# add formatter to ch
+ch.setFormatter(formatter)
+# add ch to logger
+logger.addHandler(ch)
+
 
 
 def docker_check(vm, compose_name):
     try:
-        print "%s: ====== Start Check Docker Services  ======" % (vm.ip)
+        logger.info("Starting docker info services on: "+vm.ip)        
         paramiko.util.log_to_file("deployment.log")
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -46,9 +63,12 @@ def docker_check(vm, compose_name):
         stdin, stdout, stderr = ssh.exec_command(cmd)
         stack_ps_resp = stdout.readlines()
         services_info = []
+        nodes_hostname = set()
         for i in stack_ps_resp: 
             if i.encode():
                 json_str = json.loads(i.encode().strip('\n'))
+                if json_str['node'] not in nodes_hostname:
+                    nodes_hostname.add(json_str['node'])
                 services_info.append(json_str)
         json_response ['services_info'] = services_info
         stack_format = '\'{"ID":"{{.ID}}","name":"{{.Name}}","mode":"{{.Mode}}","replicas":"{{.Replicas}}","image":"{{.Image}}"}\''
@@ -62,9 +82,34 @@ def docker_check(vm, compose_name):
                 stack_info.append(json_str)
         json_response ['stack_info'] = stack_info   
         
-        print "%s: =========== Check Finished ==============" % (vm.ip)
+        cmd = 'sudo docker node inspect '
+        for hostname in nodes_hostname:
+             cmd += hostname
+        
+        logger.info(cmd)
+        
+        stdin, stdout, stderr = ssh.exec_command(cmd)
+        inspect_resp = stdout.readlines()
+        nodes_info = []
+        #for i in inspect_resp: 
+            #if i.encode():
+                #json_str = json.loads(i.encode().strip('\n'))
+                #nodes_info.append(json_str)
+        
+        #json_response ['nodes_info'] = nodes_info
+        
+        logger.info("Finished docker info services on: "+vm.ip)                
     except Exception as e:
-        print '%s: %s' % (vm.ip, e)
+        exc_type, exc_obj, tb = sys.exc_info()
+        f = tb.tb_frame
+        lineno = tb.tb_lineno
+        filename = f.f_code.co_filename
+        linecache.checkcache(filename)
+        line = linecache.getline(filename, lineno, f.f_globals)
+
+        print 'EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj)
+        
+        logger.error(vm.ip + " " + str(e)+ " line:" +lineno)
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()
     return json_response

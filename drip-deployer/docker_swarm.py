@@ -19,9 +19,25 @@ __author__ = 'Yang Hu'
 
 import paramiko, os
 from vm_info import VmInfo
+import logging
+
+# create logger
+logger = logging.getLogger('docker_swarm')
+logger.setLevel(logging.DEBUG)
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+# create formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# add formatter to ch
+ch.setFormatter(formatter)
+# add ch to logger
+logger.addHandler(ch)
+
+
 def install_manager(vm):
 	try:
-		print "%s: ====== Start Swarm Manager Installing ======" % (vm.ip)
+		logger.info("Starting swarm manager installation on: "+(vm.ip))
 		paramiko.util.log_to_file("deployment.log")
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -42,16 +58,16 @@ def install_manager(vm):
 		stdin, stdout, stderr = ssh.exec_command("sudo docker swarm join-token worker")
 		retstr = stdout.readlines()
 		ret = retstr[2].encode()
-		print "%s: ========= Swarm Manager Installed =========" % (vm.ip)
+		logger.info("Finished swarm manager installation on: "+(vm.ip))
 	except Exception as e:
-		print '%s: %s' % (vm.ip, e)
+		logger.error(vm.ip + " " + str(e))
 		return "ERROR:" + vm.ip + " " + str(e)
 	ssh.close()
 	return ret
 
 def install_worker(join_cmd, vm):
 	try:
-		print "%s: ====== Start Swarm Worker Installing ======" % (vm.ip)
+		logger.info("Starting swarm worker installation on: "+(vm.ip))
 		paramiko.util.log_to_file("deployment.log")
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -63,9 +79,9 @@ def install_worker(join_cmd, vm):
 		stdout.read()
 		stdin, stdout, stderr = ssh.exec_command("sudo %s" % (join_cmd))
 		stdout.read()
-		print "%s: ========= Swarm Worker Installed =========" % (vm.ip)
+		logger.info("Finished swarm worker installation on: "+(vm.ip))
 	except Exception as e:
-		print '%s: %s' % (vm.ip, e)
+		logger.error(vm.ip + " " + str(e))
 		return "ERROR:" + vm.ip + " " + str(e)
 	ssh.close()
 	return "SUCCESS"

@@ -19,11 +19,25 @@ __author__ = 'Yang Hu'
 
 import paramiko, os
 from vm_info import VmInfo
+import logging
+
+# create logger
+logger = logging.getLogger('docker_swarm')
+logger.setLevel(logging.DEBUG)
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+# create formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# add formatter to ch
+ch.setFormatter(formatter)
+# add ch to logger
+logger.addHandler(ch)
 
 
 def deploy_compose(vm, compose_file, compose_name):
     try:
-        print "%s: ====== Start Docker Compose Deploying ======" % (vm.ip)
+        logger.info("Starting docker compose deployment on: "+vm.ip)        
         paramiko.util.log_to_file("deployment.log")
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -33,9 +47,9 @@ def deploy_compose(vm, compose_file, compose_name):
         sftp.put(compose_file, "docker-compose.yml")
         stdin, stdout, stderr = ssh.exec_command("sudo docker stack deploy --compose-file /tmp/docker-compose.yml %s" % (compose_name))
         stdout.read()
-        print "%s: ======= Deployment of Compose Finished =========" % (vm.ip)
+        logger.info("Finished docker compose deployment on: "+vm.ip)        
     except Exception as e:
-        print '%s: %s' % (vm.ip, e)
+        logger.error(vm.ip + " " + str(e))
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()
     return "SUCCESS"
