@@ -24,18 +24,14 @@ if len(sys.argv) > 1:
 else:
     rabbitmq_host = '127.0.0.1'
     
-logger = logging.getLogger('rpc_server')
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
-
-fh = logging.FileHandler('deployer.log')
-fh.setLevel(logging.DEBUG)
-fh.setFormatter(formatter)
-logger.addHandler(fh)
+logger = logging.getLogger(__name__)
+if not getattr(logger, 'handler_set', None):
+    logger.setLevel(logging.INFO)
+    h = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    h.setFormatter(formatter)
+    logger.addHandler(h)
+    logger.handler_set = True
 
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
@@ -55,7 +51,7 @@ def handleDelivery(message):
     parsed_json = json.loads(message)
     params = parsed_json["parameters"]  
     node_num = 0
-    vm_list = []
+    vm_list = set()
     current_milli_time = lambda: int(round(time.time() * 1000))
     try:
         path = os.path.dirname(os.path.abspath(__file__)) + "/deployer_files/"+str(current_milli_time()) + "/"
@@ -86,7 +82,7 @@ def handleDelivery(message):
             os.chmod(key, 0o600)   
             
             vm = VmInfo(ip, user, key, role)
-            vm_list.append(vm)
+            vm_list.add(vm)
         elif name == "playbook":
             value = param["value"]
             playbook = path + "playbook.yml"

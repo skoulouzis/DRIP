@@ -24,18 +24,14 @@ import logging
 import linecache
 import sys
 
-# create logger
-logger = logging.getLogger('docker_swarm')
-logger.setLevel(logging.DEBUG)
-# create console handler and set level to debug
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-# create formatter
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# add formatter to ch
-ch.setFormatter(formatter)
-# add ch to logger
-logger.addHandler(ch)
+logger = logging.getLogger(__name__)
+if not getattr(logger, 'handler_set', None):
+    logger.setLevel(logging.INFO)
+    h = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    h.setFormatter(formatter)
+    logger.addHandler(h)
+    logger.handler_set = True
 
 
 
@@ -80,23 +76,22 @@ def docker_check(vm, compose_name):
             if i.encode():
                 json_str = json.loads(i.encode().strip('\n'))
                 stack_info.append(json_str)
-        json_response ['stack_info'] = stack_info   
+        json_response ['stack_info'] = stack_info
         
         cmd = 'sudo docker node inspect '
         for hostname in nodes_hostname:
              cmd += hostname
         
-        logger.info(cmd)
-        
         stdin, stdout, stderr = ssh.exec_command(cmd)
         inspect_resp = stdout.readlines()
-        nodes_info = []
-        #for i in inspect_resp: 
-            #if i.encode():
-                #json_str = json.loads(i.encode().strip('\n'))
-                #nodes_info.append(json_str)
         
-        #json_response ['nodes_info'] = nodes_info
+        response_str = ""
+        for i in inspect_resp:
+            if i.encode():
+                response_str+=i.encode().strip('\n')
+                
+        json_str = json.loads(response_str.rstrip("\n\r").strip().encode('string_escape'))
+        json_response['nodes_info'] = json_str
         
         logger.info("Finished docker info services on: "+vm.ip)                
     except Exception as e:

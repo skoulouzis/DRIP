@@ -19,9 +19,22 @@ __author__ = 'Yang Hu'
 
 import paramiko, os
 import threading
+import logging
+
+logger = logging.getLogger(__name__)
+if not getattr(logger, 'handler_set', None):
+    logger.setLevel(logging.INFO)
+    h = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    h.setFormatter(formatter)
+    logger.addHandler(h)
+    logger.handler_set = True
+        
+
+
 def install_engine(vm):
 	try:
-		print "%s: ====== Start Docker Engine Installing ======" % (vm.ip)
+		logger.info("Starting docker engine installation on: "+(vm.ip))
 		paramiko.util.log_to_file("deployment.log")
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -38,9 +51,9 @@ def install_engine(vm):
 		sftp.put(install_script, "engine_setup.sh")
 		stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/engine_setup.sh")
 		stdout.read()
-		print "%s: ========= Docker Engine Installed =========" % (vm.ip)
+		logger.info("Finised docker engine installation on: "+(vm.ip))
 	except Exception as e:
-		print '%s: %s' % (vm.ip, e)
+		logger.error(vm.ip + " " + str(e))
 		return "ERROR:"+vm.ip+" "+str(e)
 	ssh.close()
 	return "SUCCESS"
