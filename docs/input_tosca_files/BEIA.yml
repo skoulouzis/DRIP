@@ -71,8 +71,8 @@ topology_template:
               name: volume_ID
               link: "/var/pool/bla"
               mount_type: r/rw
-        - monitoring_proxy: "Monitoring Proxy"
-        - sip_notifier: "SIPNotifyer"
+         - monitoring_proxy: "Monitoring Proxy"
+         - sip_notifier: "SIPNotifyer"
     # So this(below) should just map to
     # volumes:
     #   graphite_data:

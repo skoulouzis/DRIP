@@ -34,7 +34,8 @@ class DockerComposeTransformer:
             if node_types[node_type_key] and isinstance(node_types[node_type_key],dict) and'derived_from' in node_types[node_type_key].keys():
                 if node_types[node_type_key]['derived_from'] == self.DOCKER_TYPE:
                     docker_types.add(node_type_key)
-        return  docker_types
+                    print node_type_key
+        return docker_types
     
     def get_node_templates(self):
         return self.yaml_dict_tpl['topology_template']['node_templates']
@@ -80,7 +81,7 @@ class DockerComposeTransformer:
         services['services'] = {}
         for node_template_key in node_templates:
             for docker_type in docker_types:
-                if docker_type in node_templates[node_template_key]['type']:
+                if isinstance(node_templates[node_template_key],dict) and 'type' in node_templates[node_template_key] and docker_type in node_templates[node_template_key]['type']:
                     service = {}
                     artifacts = self.get_artifacts(node_templates[node_template_key])
                     if artifacts:
