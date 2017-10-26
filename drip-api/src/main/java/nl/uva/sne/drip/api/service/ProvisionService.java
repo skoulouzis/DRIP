@@ -93,7 +93,7 @@ public class ProvisionService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         ownedObject.setOwner(owner);
-         
+
         return provisionDao.save(ownedObject);
     }
 
@@ -658,13 +658,14 @@ public class ProvisionService {
                 case "deploy_parameters":
                     String value = p.getValue();
                     String[] lines = value.split("\n");
+                    if (value == null && value.length() < 2) {
+                        throw new Exception("Provision failed");
+                    }
                     for (String line : lines) {
                         DeployParameter deployParam = new DeployParameter();
                         String[] parts = line.split(" ");
                         String deployIP = parts[0];
-
                         String deployUser = parts[1];
-
 //                        String deployCertPath = parts[2];
 //                        String cloudCertificateName = FilenameUtils.removeExtension(FilenameUtils.getBaseName(deployCertPath));
                         String deployRole = parts[2];

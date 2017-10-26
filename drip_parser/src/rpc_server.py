@@ -84,7 +84,7 @@ def test_local():
     home = expanduser("~")
     transformer = DockerComposeTransformer(home+"/workspace/DRIP/docs/input_tosca_files/BEIA.yml")
     compose =  transformer.getnerate_compose()
-#    print yaml.dump(compose)
+    print yaml.dump(compose)
     response = {}
     current_milli_time = lambda: int(round(time.time() * 1000))
     response["creationDate"] = current_milli_time()   

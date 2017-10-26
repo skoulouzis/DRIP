@@ -34,7 +34,6 @@ class DockerComposeTransformer:
             if node_types[node_type_key] and isinstance(node_types[node_type_key],dict) and'derived_from' in node_types[node_type_key].keys():
                 if node_types[node_type_key]['derived_from'] == self.DOCKER_TYPE:
                     docker_types.add(node_type_key)
-                    print node_type_key
         return docker_types
     
     def get_node_templates(self):
@@ -49,17 +48,25 @@ class DockerComposeTransformer:
             return node['properties']
     
     def get_enviroment_vars(self,properties):
-        environment = []
+        environments = []
         for prop in properties:
-            if properties[prop] and not isinstance(properties[prop],dict):
-                environment.append(prop+"="+str(properties[prop]))
-        return environment
+            if prop == 'Environment_variables' or prop == 'Live_variables':
+                for var in properties[prop]:
+                    environment ={}
+                    environment[var] = properties[prop][var]
+                    environments.append(environment)
+#            if properties[prop] and not isinstance(properties[prop],dict):
+#                environment.append(prop+"="+str(properties[prop]))
+        return environments
+    
+    
     
     def get_port_map(self,properties):
         port_maps = []
         if 'ports_mapping' in properties:
             ports_mappings = properties['ports_mapping']
-            for port_map_key in ports_mappings:            
+            for port_map_key in ports_mappings:
+                port_map = {}
                 host_port =  ports_mappings[port_map_key]['host_port']
                 if not isinstance(host_port, (int, long, float, complex)):
                     host_port_var =  host_port.replace('${','').replace('}','')
@@ -69,9 +76,49 @@ class DockerComposeTransformer:
                 if not isinstance(container_port, (int, long, float, complex)):
                     container_port_var =  container_port.replace('${','').replace('}','')
                     container_port = properties[container_port_var]
-                port_maps.append(str(host_port)+':'+str(container_port))
+                port_map[host_port] = container_port
+                port_maps.append(port_map)
+        if 'in_ports' in properties:
+            ports_mappings = properties['in_ports']
+            for port_map_key in ports_mappings:
+                port_map = {}
+                host_port =  ports_mappings[port_map_key]['host_port']
+                container_port =  ports_mappings[port_map_key]['container_port']
+                if 'protocol' in ports_mappings[port_map_key]:
+                    protocol =  ports_mappings[port_map_key]['protocol']
+                    if protocol:
+                        container_port=container_port+'/'+protocol
+                port_map[host_port] = container_port    
+                port_maps.append(port_map)
+        if 'out_ports' in properties:
+            ports_mappings = properties['out_ports']
+            for port_map_key in ports_mappings:       
+                port_map = {}
+                if 'host_port' in ports_mappings[port_map_key] and 'container_port' in ports_mappings[port_map_key]:
+                    host_port =  ports_mappings[port_map_key]['host_port']
+                    container_port =  ports_mappings[port_map_key]['container_port']
+                    if 'protocol' in ports_mappings[port_map_key]:
+                        protocol =  ports_mappings[port_map_key]['protocol']
+                        if protocol:
+                            container_port=container_port+'/'+protocol
+                    port_map[host_port] = container_port
+                    port_maps.append(port_map)
         return port_maps
     
+    def get_requirements(self,node):
+        if 'requirements' in node:
+            return node['requirements']
+        
+    def get_volumes(self,requirements):
+        volumes = []
+        for req in requirements:
+            if 'volume' in req:
+                vol = {}
+                name = req['volume']['name']
+                path = req['volume']['link']
+                vol[name]=path
+                volumes.append(vol)
+        return volumes
     
     def analyze_yaml(self):
         docker_types  = self.get_docker_types()
@@ -79,6 +126,7 @@ class DockerComposeTransformer:
         services = {}
         services['version'] = '2'
         services['services'] = {}
+        all_volumes = []
         for node_template_key in node_templates:
             for docker_type in docker_types:
                 if isinstance(node_templates[node_template_key],dict) and 'type' in node_templates[node_template_key] and docker_type in node_templates[node_template_key]['type']:
@@ -102,46 +150,17 @@ class DockerComposeTransformer:
                     port_maps = self.get_port_map(properties)
                     if port_maps:
                         service['ports'] = port_maps
+                    
+                    requirements = self.get_requirements(node_templates[node_template_key])
+                    volumes = self.get_volumes(requirements)
+                    if volumes:
+                        service['volumes'] = volumes
+                        for vol in volumes:
+                            volume_id = {}
+                            volume_id[next(iter(vol))] = None
+                            all_volumes.append(volume_id)
                     services['services'][node_template_key] = service
-                    break                
+                    break
+        if all_volumes:
+            services['volumes'] = all_volumes
         return services
-
-#    def analize_tosca():
-#        dockers = []
-#        print dir(self.tt.topology_template)
-#        print dir(self.tt.outputs)
-#        print dir(self.tt.nested_tosca_tpls_with_topology)
-#        print dir(self.tt.nested_tosca_templates_with_topology)
-#        print dir(self.tt.inputs)
-#        print dir(self.tt.input_path)
-#        print dir(self.tt.graph)
-        
-#        for node in self.tt.nodetemplates:
-#            if node.parent_type.type == self.DOCKER_TYPE:
-#                dockers.append(node)
-#                print dir(node)
-#                print "Name %s Type: %s" %(node.name,node.type)        
-#                service = {}
-#                service['name'] = node.type
-#                print dir(node.get_properties_objects())
-#                for prop_obj in node.get_properties_objects():
-#                    print dir(prop_obj)
-#                    print "Name %s Type: %s Val: %s" %(prop_obj.name,prop_obj.type,prop_obj.value)        
-#                print (node.templates.keys())
-#                docker_file = ""
-#                for temp in node.templates:
-#                    print "\t template: %s" %(temp)
-#                    if 'artifacts' in node.templates[temp]:
-#                        key = next(iter(node.templates[temp]['artifacts']))
-#                        if 'file' in node.templates[temp]['artifacts'][key]:
-#                            docker_file = node.templates[temp]['artifacts'][key]['file']
-#                            print "\t\tdocker_file: %s"%(docker_file)
-#                            
-#                if docker_file:
-#                    container_name = docker_file.split("/")[1]
-#                    if ':' in container_name:
-#                        container_name = container_name.split(':')[0]
-#                    print container_name
-#                    service ['container_name'] = container_name
-#                    print "Name %s Type: %s Val: %s" %(prop_obj.name,prop_obj.type,prop_obj.value)                  
-#                service ['container_name'] = 

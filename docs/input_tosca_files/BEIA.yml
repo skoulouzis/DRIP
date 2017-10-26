@@ -505,6 +505,7 @@ node_types:
         repository: SWITCH_docker_hub
         file: "/???"
     derived_from: "tosca.nodes.Compute"
+  
   "Switch.nodes.Application.Container.Docker.VLAD_AlertChecker":
     artifacts:
       sipnotifier_image:
@@ -512,6 +513,17 @@ node_types:
         repository: SWITCH_docker_hub
         file: "beia/sip_notifier"
     derived_from: "Switch.nodes.Application.Container.Docker"
+    
+    
+  "Switch.nodes.Application.Container.Docker.VLAD_ConfigManager":
+    artifacts:
+      sipnotifier_image:
+        type: "tosca.artifacts.Deployment.Image.Container.Docker"
+        repository: SWITCH_docker_hub
+        file: "beia/config_manager"
+    derived_from: "Switch.nodes.Application.Container.Docker"
+
+    
   "switch.Component.Component.Docker":
     derived_from: "Switch.nodes.Application.Container.Docker"
   "Switch.nodes.Network":
