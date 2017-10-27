@@ -57,6 +57,7 @@ import provisioning.database.EC2.EC2Database;
 import provisioning.database.EGI.EGIDatabase;
 import provisioning.database.UserDatabase;
 import provisioning.engine.TEngine.TEngine;
+import provisioning.request.RecoverRequest;
 import provisioning.request.ScalingRequest;
 import topologyAnalysis.TopologyAnalysisMain;
 import topologyAnalysis.dataStructure.SubTopologyInfo;
@@ -215,6 +216,9 @@ public class Consumer extends DefaultConsumer {
             if (tam != null) {
                 tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
             }
+            if (ex.getMessage().equals("A VM failed to start. Deleteing all topology")) {
+            }
+
             throw ex;
         } finally {
 //            if (tam != null) {
@@ -486,7 +490,7 @@ public class Consumer extends DefaultConsumer {
     }
 
     private Message buildTopologuResponse(TopologyAnalysisMain tam,
-            String tempInputDirPath, String userPublicKeyName, String userPrivateName) throws IOException {
+            String tempInputDirPath, String userPublicKeyName, String userPrivateName) throws IOException, Exception {
         String topologyUserName = tam.wholeTopology.userName;
 
         String charset = "UTF-8";
@@ -619,6 +623,8 @@ public class Consumer extends DefaultConsumer {
                     paramValue += sub.userName + " ";
 //                        paramValue += tempInputDirPath + File.separator + sub.subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
                     paramValue += vm.role + "\n";
+                } else if (vm == null || !sub.status.equals("running")) {
+                    throw new Exception("A VM failed to start. Deleteing all topology");
                 }
             }
 //            String accessKeyPath = tempInputDirPath + File.separator + sub.subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
