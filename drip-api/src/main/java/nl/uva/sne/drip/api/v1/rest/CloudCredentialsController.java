@@ -84,10 +84,10 @@ public class CloudCredentialsController {
     })
     public @ResponseBody
     String postCredentials(@RequestBody CloudCredentials cloudCredentials) {
-        if (cloudCredentials.getAccessKeyId() == null) {
-            throw new NullKeyException();
-        }
-        if (cloudCredentials.getCloudProviderName() == null) {
+//        if (cloudCredentials.getAccessKeyId() == null || cloudCredentials.getAccessKeyId().length() < 1) {
+//            throw new NullKeyException();
+//        }
+        if (cloudCredentials.getCloudProviderName() == null || cloudCredentials.getCloudProviderName().length() < 1) {
             throw new NullCloudProviderException();
         }
         cloudCredentials = cloudCredentialsService.save(cloudCredentials);
