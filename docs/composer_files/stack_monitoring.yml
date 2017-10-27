@@ -2,7 +2,7 @@ version: '3'
 
 services:
     server:
-        image: salmant/ul_monitoring_server_container_image
+        image: salmant/ul_monitoring_server_container_image2
         ports:
             - "8080:8080/tcp"
     agent:
