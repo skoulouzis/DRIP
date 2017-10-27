@@ -658,7 +658,7 @@ public class ProvisionService {
                 case "deploy_parameters":
                     String value = p.getValue();
                     String[] lines = value.split("\n");
-                    if (value == null && value.length() < 2) {
+                    if (value.length() < 2) {
                         throw new Exception("Provision failed");
                     }
                     for (String line : lines) {

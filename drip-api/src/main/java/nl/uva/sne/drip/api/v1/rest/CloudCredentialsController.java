@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.api.exception.NullCloudProviderException;
 import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.KeyPairService;
@@ -86,14 +87,9 @@ public class CloudCredentialsController {
         if (cloudCredentials.getAccessKeyId() == null) {
             throw new NullKeyException();
         }
-//        List<String> ids = cloudCredentials.getkeyPairIDs();
-//        if (ids != null) {
-//            for (String id : ids) {
-//                if (keyService.findOne(id) == null) {
-//                    throw new NullKeyException();
-//                }
-//            }
-//        }
+        if (cloudCredentials.getCloudProviderName() == null) {
+            throw new NullCloudProviderException();
+        }
         cloudCredentials = cloudCredentialsService.save(cloudCredentials);
         return cloudCredentials.getId();
     }

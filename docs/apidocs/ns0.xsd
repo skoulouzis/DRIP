@@ -534,7 +534,8 @@ class]]>
               <xs:annotation>
                 <xs:documentation>
                   <![CDATA[The owner (username) for the particular object. This value is set when
-the DAO saves the object based on the principal how made the call]]>
+the DAO saves the object based on the principal who made the call.
+It is created automatically. No need to set during a POST]]>
                 </xs:documentation>
               </xs:annotation>
               </xs:element>
@@ -791,15 +792,15 @@ class]]>
    <xs:complexContent>
     <xs:extension base="ownedObject">
       <xs:sequence>
-              <xs:element name="vmType" type="xs:string" minOccurs="0">
-              </xs:element>
-              <xs:element name="end" type="xs:dateTime" minOccurs="0">
+              <xs:element name="cloudDeploymentDomain" type="xs:string" minOccurs="0">
               </xs:element>
               <xs:element name="host" type="xs:string" minOccurs="0">
               </xs:element>
-              <xs:element name="cloudDeploymentDomain" type="xs:string" minOccurs="0">
-              </xs:element>
               <xs:element name="start" type="xs:dateTime" minOccurs="0">
+              </xs:element>
+              <xs:element name="vmType" type="xs:string" minOccurs="0">
+              </xs:element>
+              <xs:element name="end" type="xs:dateTime" minOccurs="0">
               </xs:element>
               <xs:element name="delta" type="xs:dateTime" minOccurs="0">
               </xs:element>
