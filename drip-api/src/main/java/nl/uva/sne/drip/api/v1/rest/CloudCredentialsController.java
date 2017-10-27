@@ -79,14 +79,15 @@ public class CloudCredentialsController {
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 404, condition = "Access key ID can't be empty"),
+        @ResponseCode(code = 404, condition = "Key can't be empty"),
+        @ResponseCode(code = 404, condition = "Cloud provider's name can't be empty"),
         @ResponseCode(code = 200, condition = "At least one key ID is posted")
     })
     public @ResponseBody
     String postCredentials(@RequestBody CloudCredentials cloudCredentials) {
-//        if (cloudCredentials.getAccessKeyId() == null || cloudCredentials.getAccessKeyId().length() < 1) {
-//            throw new NullKeyException();
-//        }
+        if (cloudCredentials.getSecretKey() == null || cloudCredentials.getSecretKey().length() < 1) {
+            throw new NullKeyException();
+        }
         if (cloudCredentials.getCloudProviderName() == null || cloudCredentials.getCloudProviderName().length() < 1) {
             throw new NullCloudProviderException();
         }

@@ -70,33 +70,33 @@ import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
 @Service
 @PreAuthorize("isAuthenticated()")
 public class ProvisionService {
-
+    
     @Autowired
     private ProvisionResponseDao provisionDao;
-
+    
     @Autowired
     private CloudCredentialsService cloudCredentialsService;
-
+    
     @Autowired
     private SimplePlannerService simplePlanService;
-
+    
     @Autowired
     private ScriptService userScriptService;
-
+    
     @Autowired
     private KeyPairService keyPairService;
-
+    
     @Value("${message.broker.host}")
     private String messageBrokerHost;
-
+    
     public ProvisionResponse save(ProvisionResponse ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         ownedObject.setOwner(owner);
-
+        
         return provisionDao.save(ownedObject);
     }
-
+    
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public ProvisionResponse findOne(String id) {
         ProvisionResponse provisionInfo = provisionDao.findOne(id);
@@ -105,7 +105,7 @@ public class ProvisionService {
         }
         return provisionInfo;
     }
-
+    
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public ProvisionResponse delete(String id) {
         ProvisionResponse provisionInfo = provisionDao.findOne(id);
@@ -123,9 +123,9 @@ public class ProvisionService {
     public List<ProvisionResponse> findAll() {
         return provisionDao.findAll();
     }
-
+    
     public ProvisionResponse provisionResources(ProvisionRequest provisionRequest, int provisionerVersion) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
-
+        
         switch (provisionerVersion) {
             case 0:
                 return callProvisioner0(provisionRequest);
@@ -133,9 +133,9 @@ public class ProvisionService {
                 return callProvisioner1(provisionRequest);
         }
         return null;
-
+        
     }
-
+    
     private Message buildProvisioner0Message(ProvisionRequest pReq) throws JSONException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
@@ -145,24 +145,24 @@ public class ProvisionService {
         }
         MessageParameter conf = buildCloudCredentialParam(cred, 0).get(0);
         parameters.add(conf);
-
+        
         List<MessageParameter> certs = buildCertificatesParam(cred);
         parameters.addAll(certs);
-
+        
         List<MessageParameter> topologies = buildTopologyParams(pReq.getPlanID());
         parameters.addAll(topologies);
-
+        
         List<String> userKeyIDs = pReq.getUserKeyPairIDs();
         if (userKeyIDs != null) {
             List<MessageParameter> userKeys = buildUserKeysParams(userKeyIDs.get(0), 0);
             parameters.addAll(userKeys);
         }
-
+        
         invokationMessage.setParameters(parameters);
         invokationMessage.setCreationDate((System.currentTimeMillis()));
         return invokationMessage;
     }
-
+    
     private List<MessageParameter> buildCloudCredentialParam(CloudCredentials cred, int version) throws JsonProcessingException, JSONException, IOException {
         List<MessageParameter> cloudCredentialParams = new ArrayList<>();
         if (version == 0) {
@@ -197,15 +197,15 @@ public class ProvisionService {
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
             String jsonInString = mapper.writeValueAsString(cred);
             cloudCred.setValue("\"" + jsonInString + "\"");
-
+            
             cloudCredentialParams.add(cloudCred);
-
+            
             return cloudCredentialParams;
         }
         return null;
-
+        
     }
-
+    
     private List<MessageParameter> buildCertificatesParam(CloudCredentials cred) {
 //        List<String> loginKeysIDs = cred.getkeyPairIDs();
         List<KeyPair> loginKeys = new ArrayList<>();
@@ -232,10 +232,10 @@ public class ProvisionService {
         }
         return parameters;
     }
-
+    
     private List<MessageParameter> buildTopologyParams(String planID) throws JSONException, FileNotFoundException {
         PlanResponse plan = simplePlanService.getDao().findOne(planID);
-
+        
         if (plan == null) {
             throw new PlanNotFoundException();
         }
@@ -250,7 +250,7 @@ public class ProvisionService {
         attributes.put("filename", FilenameUtils.removeExtension(plan.getName()));
         topology.setAttributes(attributes);
         parameters.add(topology);
-
+        
         Set<String> ids = plan.getLoweLevelPlanIDs();
         if (ids != null) {
             for (String lowID : ids) {
@@ -269,10 +269,10 @@ public class ProvisionService {
         }
         return parameters;
     }
-
+    
     private List<MessageParameter> buildProvisionedTopologyParams(ProvisionResponse provisionInfo) throws JSONException {
         List<MessageParameter> parameters = new ArrayList();
-
+        
         Map<String, Object> map = provisionInfo.getKeyValue();
         for (String topoName : map.keySet()) {
             Map<String, Object> topo = (Map<String, Object>) map.get(topoName);
@@ -291,13 +291,13 @@ public class ProvisionService {
         }
         return parameters;
     }
-
+    
     private List<MessageParameter> buildClusterKeyParams(ProvisionResponse provisionInfo) {
         List<MessageParameter> parameters = new ArrayList();
         List<String> ids = provisionInfo.getDeployerKeyPairIDs();
         for (String id : ids) {
             KeyPair pair = keyPairService.findOne(id);
-
+            
             MessageParameter param = new MessageParameter();
             param.setName("private_deployer_key");
             param.setValue(pair.getPrivateKey().getKey());
@@ -308,7 +308,7 @@ public class ProvisionService {
             attributes.put("name", pair.getPrivateKey().getName());
             param.setAttributes(attributes);
             parameters.add(param);
-
+            
             param = new MessageParameter();
             param.setName("public_deployer_key");
             param.setValue(pair.getPublicKey().getKey());
@@ -320,16 +320,16 @@ public class ProvisionService {
             attributes.put("name", pair.getPublicKey().getName());
             parameters.add(param);
         }
-
+        
         return parameters;
     }
-
+    
     private List<MessageParameter> buildUserKeyParams(ProvisionResponse provisionInfo) {
         List<MessageParameter> parameters = new ArrayList();
         List<String> ids = provisionInfo.getUserKeyPairIDs();
         for (String id : ids) {
             KeyPair pair = keyPairService.findOne(id);
-
+            
             MessageParameter param = new MessageParameter();
             param.setName("private_user_key");
             param.setValue(pair.getPrivateKey().getKey());
@@ -340,7 +340,7 @@ public class ProvisionService {
             attributes.put("name", pair.getPrivateKey().getName());
             param.setAttributes(attributes);
             parameters.add(param);
-
+            
             param = new MessageParameter();
             param.setName("public_user_key");
             param.setValue(pair.getPublicKey().getKey());
@@ -353,14 +353,14 @@ public class ProvisionService {
         }
         return parameters;
     }
-
+    
     private List<MessageParameter> buildCloudKeyParams(ProvisionResponse provisionInfo) {
         List<MessageParameter> parameters = new ArrayList();
         List<String> ids = provisionInfo.getCloudKeyPairIDs();
         if (ids != null) {
             for (String id : ids) {
                 KeyPair pair = keyPairService.findOne(id);
-
+                
                 MessageParameter param = new MessageParameter();
                 param.setName("private_cloud_key");
                 param.setValue(pair.getPrivateKey().getKey());
@@ -370,7 +370,7 @@ public class ProvisionService {
                 attributes.put("key_pair_id", pair.getKeyPairId());
                 param.setAttributes(attributes);
                 parameters.add(param);
-
+                
                 param = new MessageParameter();
                 param.setName("public_cloud_key");
                 param.setValue(pair.getPublicKey().getKey());
@@ -382,11 +382,11 @@ public class ProvisionService {
                 parameters.add(param);
             }
         }
-
+        
         return parameters;
-
+        
     }
-
+    
     private MessageParameter buildEC2Conf(CloudCredentials cred) throws JsonProcessingException, JSONException, IOException {
         Properties prop = Converter.getEC2Properties(cred);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -397,9 +397,9 @@ public class ProvisionService {
         String charset = "UTF-8";
         conf.setValue(new String(bytes, charset));
         return conf;
-
+        
     }
-
+    
     private List<MessageParameter> buildScriptParams(String userScriptID) {
         Script script = userScriptService.findOne(userScriptID);
         if (script == null) {
@@ -413,7 +413,7 @@ public class ProvisionService {
         parameters.add(scriptParameter);
         return parameters;
     }
-
+    
     private List<MessageParameter> buildUserKeysParams(String userKeyID, int version) {
         KeyPair key = keyPairService.findOne(userKeyID);
         if (key == null) {
@@ -432,33 +432,33 @@ public class ProvisionService {
         parameters.add(keyParameter);
         return parameters;
     }
-
+    
     @PostFilter("(hasRole('ROLE_ADMIN'))")
     public void deleteAll() {
         provisionDao.deleteAll();
     }
-
+    
     private ProvisionResponse callProvisioner0(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
         try (DRIPCaller provisioner = new ProvisionerCaller0(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisioner0Message(provisionRequest);
-
+            
             Message response = (provisioner.call(provisionerInvokationMessage));
-
+            
             return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null, true, true);
-
+            
         }
-
+        
     }
-
+    
     private ProvisionResponse callProvisioner1(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
         try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisioner1Message(provisionRequest);
             Message response = (provisioner.call(provisionerInvokationMessage));
             return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null, true, true);
         }
-
+        
     }
-
+    
     public void deleteProvisionedResources(ProvisionResponse provisionInfo) throws IOException, TimeoutException, InterruptedException, JSONException {
         try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
             Message deleteInvokationMessage = buildTopoplogyModificationMessage(provisionInfo, "kill_topology", null);
@@ -466,7 +466,7 @@ public class ProvisionService {
             parseDeleteResourcesResponse(response.getParameters(), provisionInfo);
         }
     }
-
+    
     public ProvisionResponse scale(ScaleRequest scaleRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
         String provisionID = scaleRequest.getScaleTargetID();
         String scaleName = scaleRequest.getScaleTargetName();
@@ -496,12 +496,12 @@ public class ProvisionService {
                 }
             }
         }
-
+        
         if (!scaleNameExists) {
             throw new BadRequestException("Name of topology dosen't exist");
         }
         int numOfInstances = Math.abs(currentNumOfInstances - scaleRequest.getNumOfInstances());
-
+        
         if (currentNumOfInstances > scaleRequest.getNumOfInstances() && currentNumOfInstances != 0) {
             try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
                 Map<String, String> extra = new HashMap<>();
@@ -509,7 +509,7 @@ public class ProvisionService {
                 extra.put("number_of_instances", String.valueOf(numOfInstances));
                 extra.put("cloud_provider", cloudProvider);
                 extra.put("domain", domain);
-
+                
                 Message scaleMessage = buildTopoplogyModificationMessage(provisionInfo, "scale_topology_down", extra);
                 Message response = provisioner.call(scaleMessage);
                 parseCreateResourcesResponse(response.getParameters(), null, provisionInfo, false, false);
@@ -521,7 +521,7 @@ public class ProvisionService {
                 extra.put("number_of_instances", String.valueOf(numOfInstances));
                 extra.put("cloud_provider", cloudProvider);
                 extra.put("domain", domain);
-
+                
                 Message scaleMessage = buildTopoplogyModificationMessage(provisionInfo, "scale_topology_up", extra);
                 Message response = provisioner.call(scaleMessage);
                 parseCreateResourcesResponse(response.getParameters(), null, provisionInfo, false, false);
@@ -529,19 +529,19 @@ public class ProvisionService {
         }
         return provisionInfo;
     }
-
+    
     private Message buildProvisioner1Message(ProvisionRequest provisionRequest) throws JSONException, FileNotFoundException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
-
+        
         MessageParameter action = new MessageParameter();
         action.setName("action");
         action.setValue("start_topology");
         parameters.add(action);
-
+        
         List<MessageParameter> topologies = buildTopologyParams(provisionRequest.getPlanID());
         parameters.addAll(topologies);
-
+        
         List<String> userKeyIDs = provisionRequest.getUserKeyPairIDs();
         if (userKeyIDs != null) {
             for (String keyID : userKeyIDs) {
@@ -549,7 +549,7 @@ public class ProvisionService {
                 parameters.addAll(userKeys);
             }
         }
-
+        
         List<String> deployerKeys = provisionRequest.getDeployerKeyPairIDs();
         if (userKeyIDs != null) {
             for (String keyID : deployerKeys) {
@@ -565,34 +565,34 @@ public class ProvisionService {
             List<MessageParameter> cloudCredentialParams = buildCloudCredentialParam(cred, 1);
             parameters.addAll(cloudCredentialParams);
         }
-
+        
         invokationMessage.setParameters(parameters);
         invokationMessage.setCreationDate((System.currentTimeMillis()));
         return invokationMessage;
-
+        
     }
-
+    
     private Message buildTopoplogyModificationMessage(ProvisionResponse provisionInfo, String actionName, Map<String, String> extraAttributes) throws JSONException, IOException {
         Message invokationMessage = new Message();
         List<MessageParameter> parameters = new ArrayList();
-
+        
         MessageParameter action = new MessageParameter();
         action.setName("action");
         action.setValue(actionName);
         parameters.add(action);
-
+        
         List<MessageParameter> topologies = buildProvisionedTopologyParams(provisionInfo);
         parameters.addAll(topologies);
-
+        
         List<MessageParameter> clusterKeys = buildClusterKeyParams(provisionInfo);
         parameters.addAll(clusterKeys);
-
+        
         List<MessageParameter> userKeys = buildUserKeyParams(provisionInfo);
         parameters.addAll(userKeys);
-
+        
         List<MessageParameter> cloudKeys = buildCloudKeyParams(provisionInfo);
         parameters.addAll(cloudKeys);
-
+        
         for (String id : provisionInfo.getCloudCredentialsIDs()) {
             CloudCredentials cred = cloudCredentialsService.findOne(id);
             if (cred == null) {
@@ -616,7 +616,7 @@ public class ProvisionService {
         invokationMessage.setCreationDate(System.currentTimeMillis());
         return invokationMessage;
     }
-
+    
     private List<MessageParameter> buildDeployKeysParams(String keyID) {
         KeyPair key = keyPairService.findOne(keyID);
         if (key == null) {
@@ -624,29 +624,29 @@ public class ProvisionService {
         }
         List<MessageParameter> parameters = new ArrayList();
         MessageParameter keyParameter = new MessageParameter();
-
+        
         keyParameter.setName("deployer_ssh_key");
-
+        
         keyParameter.setValue(key.getPublicKey().getKey());
         keyParameter.setEncoding("UTF-8");
         parameters.add(keyParameter);
         return parameters;
     }
-
+    
     private ProvisionResponse parseCreateResourcesResponse(List<MessageParameter> parameters,
             ProvisionRequest provisionRequest, ProvisionResponse provisionResponse, boolean saveUserKeys, boolean saveDeployerKeyI) throws Exception {
         if (provisionResponse == null) {
             provisionResponse = new ProvisionResponse();
         }
-
+        
         List<DeployParameter> deployParameters = new ArrayList<>();
         Map<String, Object> kvMap = null;
         KeyPair userKey = new KeyPair();
         KeyPair deployerKey = new KeyPair();
-
+        
         Map<String, Key> privateCloudKeys = new HashMap<>();
         Map<String, Key> publicCloudKeys = new HashMap<>();
-
+        
         for (MessageParameter p : parameters) {
             String name = p.getName();
             if (name.toLowerCase().contains("exception")) {
@@ -660,6 +660,7 @@ public class ProvisionService {
                     String[] lines = value.split("\n");
                     if (value.length() < 2) {
                         throw new Exception("Provision failed");
+//                        this.deleteProvisionedResources(provisionResponse);
                     }
                     for (String line : lines) {
                         DeployParameter deployParam = new DeployParameter();
@@ -669,7 +670,7 @@ public class ProvisionService {
 //                        String deployCertPath = parts[2];
 //                        String cloudCertificateName = FilenameUtils.removeExtension(FilenameUtils.getBaseName(deployCertPath));
                         String deployRole = parts[2];
-
+                        
                         deployParam.setIP(deployIP);
                         deployParam.setRole(deployRole);
                         deployParam.setUser(deployUser);
@@ -713,7 +714,7 @@ public class ProvisionService {
                     key.setAttributes(p.getAttributes());
                     publicCloudKeys.put(p.getAttributes().get("key_pair_id"), key);
                     break;
-
+                
                 case "private_cloud_key":
                     key = new Key();
                     key.setKey(p.getValue());
@@ -722,7 +723,7 @@ public class ProvisionService {
                     key.setAttributes(p.getAttributes());
                     privateCloudKeys.put(p.getAttributes().get("key_pair_id"), key);
                     break;
-
+                
                 default:
                     value = p.getValue();
                     if (kvMap == null) {
@@ -738,7 +739,7 @@ public class ProvisionService {
         } else {
             userKeyIds = provisionResponse.getUserKeyPairIDs();
         }
-
+        
         if (saveUserKeys) {
             if (userKeyIds != null && !userKeyIds.isEmpty()) {
             } else {
@@ -757,7 +758,7 @@ public class ProvisionService {
                 deployerKeyIds.add(deployerKey.getId());
             }
         }
-
+        
         ArrayList<String> cloudKeyPairIDs = new ArrayList<>();
         List<KeyPair> allPirs = keyPairService.findAll();
         for (String id : publicCloudKeys.keySet()) {
@@ -780,7 +781,7 @@ public class ProvisionService {
                 cloudPair = keyPairService.save(cloudPair);
                 cloudKeyPairIDs.add(cloudPair.getId());
             }
-
+            
         }
         ArrayList<String> existingCloudKeyPairIDs = provisionResponse.getCloudKeyPairIDs();
         if (existingCloudKeyPairIDs != null) {
@@ -789,25 +790,25 @@ public class ProvisionService {
             existingCloudKeyPairIDs = cloudKeyPairIDs;
         }
         provisionResponse.setCloudKeyPairIDs(existingCloudKeyPairIDs);
-
+        
         provisionResponse.setDeployParameters(deployParameters);
         provisionResponse.setKvMap(kvMap);
         if (provisionRequest != null) {
             provisionResponse.setCloudCredentialsIDs(provisionRequest.getCloudCredentialsIDs());
             provisionResponse.setPlanID(provisionRequest.getPlanID());
         }
-
+        
         if (userKeyIds != null) {
             provisionResponse.setUserKeyPairIDs(userKeyIds);
         }
         if (deployerKeyIds != null) {
             provisionResponse.setDeployerKeyPairIDs(deployerKeyIds);
         }
-
+        
         provisionResponse = save(provisionResponse);
         return provisionResponse;
     }
-
+    
     private void parseDeleteResourcesResponse(List<MessageParameter> parameters, ProvisionResponse provisionInfo) {
 //        for (MessageParameter p : parameters) {
 //            System.err.println(p.getName() + " : " + p.getValue());

@@ -151,6 +151,7 @@ public class Consumer extends DefaultConsumer {
     }
 
     private Message startTopology(JSONArray parameters, String tempInputDirPath) throws Exception {
+        Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Starting topology");
         TEngine tEngine = new TEngine();
         TopologyAnalysisMain tam = null;
         UserCredential userCredential = new UserCredential();
@@ -165,7 +166,7 @@ public class Consumer extends DefaultConsumer {
 //                File secondaryTopologyFile = new File(tempInputDirPath + File.separator + lowLevelTopologyFile.getName() + ".yml");
 //                FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
 //            }
-
+            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Saved topology file");
             Map<String, Object> map = Converter.ymlStream2Map(new FileInputStream(topTopologyLoadingPath));
             String userPublicKeyName = ((String) map.get("publicKeyPath"));
             if (userPublicKeyName != null) {
@@ -176,7 +177,7 @@ public class Consumer extends DefaultConsumer {
                 String cont = Converter.map2YmlString(map);
                 MessageParsing.writeValueToFile(cont, new File(topTopologyLoadingPath));
             }
-
+            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Generated id_rsa.pub");
             String userPrivateName = FilenameUtils.removeExtension(userPublicKeyName);
             List<File> sshKeys = MessageParsing.getSSHKeys(parameters, tempInputDirPath, userPublicKeyName, "user_ssh_key");
             if (sshKeys == null || sshKeys.isEmpty()) {
@@ -203,10 +204,11 @@ public class Consumer extends DefaultConsumer {
             } else if (!userCredential.initial(sshKeyPairs, tam.wholeTopology)) {
                 throw new IOException("ssh key pair initilaziation error");
             }
-
+            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Generated ssh keys");
             userDatabase = getUserDB();
 
             tEngine.provisionAll(tam.wholeTopology, userCredential, userDatabase);
+            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Provisioned resources");
             return buildTopologuResponse(tam, tempInputDirPath, userPublicKeyName, userPrivateName);
 
         } catch (Throwable ex) {
