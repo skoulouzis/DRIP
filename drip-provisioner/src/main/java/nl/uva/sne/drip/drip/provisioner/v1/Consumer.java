@@ -216,9 +216,6 @@ public class Consumer extends DefaultConsumer {
             if (tam != null) {
                 tEngine.deleteAll(tam.wholeTopology, userCredential, userDatabase);
             }
-            if (ex.getMessage().equals("A VM failed to start. Deleteing all topology")) {
-            }
-
             throw ex;
         } finally {
 //            if (tam != null) {
