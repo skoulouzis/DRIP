@@ -105,8 +105,9 @@ public class Converter {
             } else if (value instanceof JSONObject) {
                 value = jsonObject2Map((JSONObject) value);
             } else if (value.equals("[]")) {
-                Logger.getLogger(Converter.class.getName()).log(Level.WARNING, "value: {0} is not JSONArray or an JSONObject", value);
-                value = null;
+                value = new ArrayList();
+            } else if (value.getClass().getName().equals("org.json.JSONObject$Null")) {
+                value = new String();
             }
             map.put(key, value);
         }
@@ -121,6 +122,9 @@ public class Converter {
                 value = jsonArray2List((JSONArray) value);
             } else if (value instanceof JSONObject) {
                 value = jsonObject2Map((JSONObject) value);
+            }
+            if (value instanceof String) {
+                System.err.println(value);
             }
             list.add(value);
         }
