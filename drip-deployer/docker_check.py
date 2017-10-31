@@ -23,10 +23,11 @@ import json
 import logging
 import linecache
 import sys
+import re
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
-    logger.setLevel(logging.INFO)
+    #logger.setLevel(logging.INFO)
     h = logging.StreamHandler()
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     h.setFormatter(formatter)
@@ -34,6 +35,10 @@ if not getattr(logger, 'handler_set', None):
     logger.handler_set = True
 
 
+def get_resp_line(line):
+    line = line.encode('utf-8').strip('\n').encode('string_escape')
+    return json.dumps(line)
+    
 
 def docker_check(vm, compose_name):
     try:
@@ -48,10 +53,10 @@ def docker_check(vm, compose_name):
         cluster_node_info = []
         stdin, stdout, stderr = ssh.exec_command(cmd)
         node_ls_resp = stdout.readlines()
-        for i in node_ls_resp: 
-            if i.encode():
-                json_str = json.loads(i.encode().strip('\n'))
-                cluster_node_info.append(json_str)
+        for i in node_ls_resp:
+            line = get_resp_line(i)
+            if line:
+                cluster_node_info.append(json.loads(line))
         
         json_response ['cluster_node_info'] = cluster_node_info
         services_format = '\'{\"ID\":\"{{.ID}}\",\"name\":\"{{.Name}}\",\"image\":\"{{.Image}}\",\"node\":\"{{.Node}}\",\"desired_state\":\"{{.DesiredState}}\",\"current_state\":\"{{.CurrentState}}\",\"error\":\"{{.Error}}\",\"ports\":\"{{.Ports}}\"}\''
@@ -60,22 +65,32 @@ def docker_check(vm, compose_name):
         stack_ps_resp = stdout.readlines()
         services_info = []
         nodes_hostname = set()
-        for i in stack_ps_resp: 
-            if i.encode():
-                json_str = json.loads(i.encode().strip('\n'))
-                if json_str['node'] not in nodes_hostname:
-                    nodes_hostname.add(json_str['node'])
-                services_info.append(json_str)
+        for i in stack_ps_resp:      
+            line = get_resp_line(i)
+            if line:
+                json_dict = json.loads(line)
+                json_dict = json.loads(json.dumps(json_dict))
+                if not isinstance(json_dict, dict):
+                    try:
+                        json_dict = json.loads(json_dict)
+                    except Exception as e:
+                        json_dict = json_dict.replace('\"ports\":\"\"', '\"ports\":null').replace('\"\"', '\"')
+                        json_dict = json_dict.replace("\\", "").replace("Noxe2x80xa6", "No...")
+                        json_dict = json.loads(json_dict)
+                nodes_hostname.add(json_dict['node'])
+                services_info.append(json_dict)
         json_response ['services_info'] = services_info
+        
         stack_format = '\'{"ID":"{{.ID}}","name":"{{.Name}}","mode":"{{.Mode}}","replicas":"{{.Replicas}}","image":"{{.Image}}"}\''
         cmd = 'sudo docker stack services '+ compose_name +' --format ' + (stack_format)
         stdin, stdout, stderr = ssh.exec_command(cmd)
         stack_resp = stdout.readlines()
         stack_info = []
         for i in stack_resp:
-            if i.encode():
-                json_str = json.loads(i.encode().strip('\n'))
-                stack_info.append(json_str)
+            line = get_resp_line(i)
+            if line:
+                json_dict = json.loads(line)
+                stack_info.append(json_dict)
         json_response ['stack_info'] = stack_info
         
         cmd = 'sudo docker node inspect '
@@ -87,11 +102,12 @@ def docker_check(vm, compose_name):
         
         response_str = ""
         for i in inspect_resp:
-            if i.encode():
-                response_str+=i.encode().strip('\n')
+            line = get_resp_line(i)
+            if line:
+                response_str+=line
                 
-        json_str = json.loads(response_str.rstrip("\n\r").strip().encode('string_escape'))
-        json_response['nodes_info'] = json_str
+        json_dict = json.loads(response_str.rstrip("\n\r").strip().encode('string_escape'))
+        json_response['nodes_info'] = json_dict
         
         logger.info("Finished docker info services on: "+vm.ip)                
     except Exception as e:
@@ -104,7 +120,7 @@ def docker_check(vm, compose_name):
 
         print 'EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj)
         
-        logger.error(vm.ip + " " + str(e)+ " line:" +lineno)
+        #logger.error(vm.ip + " " + str(e)+ " line:" +lineno)
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()
     return json_response

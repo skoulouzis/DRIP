@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import org.apache.commons.io.FilenameUtils;
@@ -102,6 +104,9 @@ public class Converter {
                 value = jsonArray2List((JSONArray) value);
             } else if (value instanceof JSONObject) {
                 value = jsonObject2Map((JSONObject) value);
+            } else if (value.equals("[]")) {
+                Logger.getLogger(Converter.class.getName()).log(Level.WARNING, "value: {0} is not JSONArray or an JSONObject", value);
+                value = null;
             }
             map.put(key, value);
         }
