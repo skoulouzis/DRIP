@@ -29,8 +29,14 @@ public class P2PConverter {
 
         String provisionerScalingMode = "fixed";
         for (Object element : vmList) {
-            Map<String, Object> map = (Map<String, Object>) element;
-            if (map.containsKey("scaling_mode")) {
+            Map<String, Object> map = null;
+            if (element instanceof Map) {
+                map = (Map<String, Object>) element;
+            } else if (element instanceof String) {
+                map = Converter.jsonString2Map((String) element);
+            }
+
+            if (map != null && map.containsKey("scaling_mode")) {
                 String scalingMode = (String) map.get("scaling_mode");
                 if (!scalingMode.equals("single")) {
                     provisionerScalingMode = "scaling";
@@ -85,7 +91,13 @@ public class P2PConverter {
 
         boolean firstVM = true;
         for (Object element : vmList) {
-            Map<String, Object> map = (Map<String, Object>) element;
+            Map<String, Object> map = null;
+            if (element instanceof Map) {
+                map = (Map<String, Object>) element;
+            } else if (element instanceof String) {
+                map = Converter.jsonString2Map((String) element);
+            }
+            
             VM curVM;
             switch (cloudProvider.trim().toLowerCase()) {
                 case "ec2":

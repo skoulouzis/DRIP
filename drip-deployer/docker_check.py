@@ -117,7 +117,6 @@ def docker_check(vm, compose_name):
                 response_str+=line
         json_dict = {}    
         response_str =  response_str.rstrip("\n\r").strip(' \t\n\r').strip().encode('string_escape')
-        print response_str
         json_dict = json.loads(response_str)
         json_response['nodes_info'] = json_dict
         

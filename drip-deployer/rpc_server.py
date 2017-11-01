@@ -170,7 +170,7 @@ def on_request(ch, method, props, body):
     response["parameters"].append(par)
     
     response = json.dumps(response)
-    #logger.info("Response: " + response)
+    logger.info("Response: " + response)
     
     
     ch.basic_publish(exchange='',

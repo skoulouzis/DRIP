@@ -82,8 +82,8 @@ def handle_delivery(message):
 
 if __name__ == "__main__":
 #    home = expanduser("~")
-#    planner = DumpPlanner(home+"/workspace/DRIP/docs/input_tosca_files/MOG_cardif.yml")
-#    planner.plan()
+#    planner = DumpPlanner(home+"/workspace/DRIP/docs/input_tosca_files/BEIA_cardif2.yml")
+#    print planner.plan()
     print sys.argv
     channel = init_chanel(sys.argv)
     global queue_name
