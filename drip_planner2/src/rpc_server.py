@@ -12,6 +12,15 @@ import json
 from planner.dump_planner import *
 from os.path import expanduser
 
+logger = logging.getLogger(__name__)
+if not getattr(logger, 'handler_set', None):
+    #logger.setLevel(logging.INFO)
+    h = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    h.setFormatter(formatter)
+    logger.addHandler(h)
+    logger.handler_set = True
+    
 
 
 def init_chanel(args):
@@ -30,7 +39,7 @@ def start(channel):
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(on_request, queue=queue_name)
 
-    print(" [x] Awaiting RPC requests")
+    logger.info(" [x] Awaiting RPC requests")
     channel.start_consuming()
     
 def on_request(ch, method, props, body):
@@ -77,14 +86,14 @@ def handle_delivery(message):
             parameter['encoding'] = 'UTF-8'
             response["parameters"].append(parameter)         
     
-    print ("Output message: %s" % json.dumps(response))            
+    logger.info ("Output message:" + json.dumps(response))            
     return json.dumps(response)
 
 if __name__ == "__main__":
 #    home = expanduser("~")
 #    planner = DumpPlanner(home+"/workspace/DRIP/docs/input_tosca_files/BEIA_cardif2.yml")
 #    print planner.plan()
-    print sys.argv
+    logger.info("Input args: "+sys.argv) 
     channel = init_chanel(sys.argv)
     global queue_name
     queue_name = sys.argv[2]
