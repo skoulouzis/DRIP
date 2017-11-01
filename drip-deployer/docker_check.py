@@ -23,6 +23,7 @@ import json
 import logging
 import linecache
 import sys
+import ast
 import re
 
 logger = logging.getLogger(__name__)
@@ -56,7 +57,10 @@ def docker_check(vm, compose_name):
         for i in node_ls_resp:
             line = get_resp_line(i)
             if line:
-                cluster_node_info.append(json.loads(line))
+                node_info = json.loads(line)
+                if not isinstance(node_info, dict):
+                    node_info = ast.literal_eval(node_info)
+                cluster_node_info.append(node_info)
         
         json_response ['cluster_node_info'] = cluster_node_info
         services_format = '\'{\"ID\":\"{{.ID}}\",\"name\":\"{{.Name}}\",\"image\":\"{{.Image}}\",\"node\":\"{{.Node}}\",\"desired_state\":\"{{.DesiredState}}\",\"current_state\":\"{{.CurrentState}}\",\"error\":\"{{.Error}}\",\"ports\":\"{{.Ports}}\"}\''
@@ -68,6 +72,7 @@ def docker_check(vm, compose_name):
         for i in stack_ps_resp:      
             line = get_resp_line(i)
             if line:
+                json_dict = {}
                 json_dict = json.loads(line)
                 json_dict = json.loads(json.dumps(json_dict))
                 if not isinstance(json_dict, dict):
@@ -89,25 +94,33 @@ def docker_check(vm, compose_name):
         for i in stack_resp:
             line = get_resp_line(i)
             if line:
+                json_dict = {}
                 json_dict = json.loads(line)
+                if not isinstance(json_dict, dict):
+                     json_dict = json.loads(json_dict)
+                
                 stack_info.append(json_dict)
         json_response ['stack_info'] = stack_info
         
         cmd = 'sudo docker node inspect '
         for hostname in nodes_hostname:
-             cmd += hostname
+             cmd += ' '+hostname
+        
         
         stdin, stdout, stderr = ssh.exec_command(cmd)
         inspect_resp = stdout.readlines()
         
         response_str = ""
         for i in inspect_resp:
-            line = get_resp_line(i)
+            line = i.rstrip("\n\r").encode()
             if line:
                 response_str+=line
-                
-        json_dict = json.loads(response_str.rstrip("\n\r").strip().encode('string_escape'))
+        json_dict = {}    
+        response_str =  response_str.rstrip("\n\r").strip(' \t\n\r').strip().encode('string_escape')
+        print response_str
+        json_dict = json.loads(response_str)
         json_response['nodes_info'] = json_dict
+        
         
         logger.info("Finished docker info services on: "+vm.ip)                
     except Exception as e:

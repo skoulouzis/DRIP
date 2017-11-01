@@ -597,7 +597,7 @@ public class DeployService {
         return newJa.toString();
     }
 
-    private Map<String, Object> buildSwarmInfo(List<MessageParameter> params) throws JSONException {
+    private Map<String, Object> buildSwarmInfo(List<MessageParameter> params) throws JSONException, IOException {
         Map<String, Object> info = new HashMap();
         for (MessageParameter param : params) {
             String jsonResp = param.getValue().replaceAll("^\"|\"$", "");

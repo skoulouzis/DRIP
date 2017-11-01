@@ -82,52 +82,61 @@ public class Converter {
         return jsonObject.toString();
     }
 
-    public static Map<String, Object> jsonString2Map(String jsonString) throws JSONException {
-        JSONObject jsonObject = new JSONObject(jsonString);
-        return jsonObject2Map(jsonObject);
+    public static Map<String, Object> jsonString2Map(String jsonString) throws JSONException, IOException {
+//        JSONObject jsonObject = new JSONObject(jsonString);
+//        return jsonObject2Map(jsonObject);
+        Map<String, Object> result
+                = new ObjectMapper().readValue(jsonString, HashMap.class);
+        return result;
     }
 
-    public static List<Object> jsonString2List(String jsonString) throws JSONException {
+    public static List<Object> jsonString2List(String jsonString) throws JSONException, IOException {
         JSONArray jSONArray = new JSONArray(jsonString);
         return jsonArray2List(jSONArray);
     }
 
-    public static Map<String, Object> jsonObject2Map(JSONObject object) throws JSONException {
-        Map<String, Object> map = new HashMap();
-
-        Iterator<String> keysItr = object.keys();
-        while (keysItr.hasNext()) {
-            String key = keysItr.next();
-            Object value = object.get(key);
-
-            if (value instanceof JSONArray) {
-                value = jsonArray2List((JSONArray) value);
-            } else if (value instanceof JSONObject) {
-                value = jsonObject2Map((JSONObject) value);
-            } else if (value.equals("[]")) {
-                value = new ArrayList();
-            } else if (value.getClass().getName().equals("org.json.JSONObject$Null")) {
-                value = new String();
-            }
-            map.put(key, value);
-        }
-        return map;
+    public static Map<String, Object> jsonObject2Map(JSONObject object) throws JSONException, IOException {
+        return new ObjectMapper().readValue(object.toString(), HashMap.class);
+//        Map<String, Object> map = new HashMap();
+//
+//        Iterator<String> keysItr = object.keys();
+//        while (keysItr.hasNext()) {
+//            String key = keysItr.next();
+//            Object value = object.get(key);
+//
+//            if (value instanceof JSONArray) {
+//                value = jsonArray2List((JSONArray) value);
+//            } else if (value instanceof JSONObject) {
+//                value = new ObjectMapper().readValue(((JSONObject) value).toString(), HashMap.class);
+//            } else if (value.equals("[]")) {
+//                value = new ArrayList();
+//            } else if (value.getClass().getName().equals("org.json.JSONObject$Null")) {
+//                value = new String();
+//            }
+//            map.put(key, value);
+//        }
+//        return map;
     }
 
-    public static List<Object> jsonArray2List(JSONArray array) throws JSONException {
+    public static List<Object> jsonArray2List(JSONArray array) throws JSONException, IOException {
         List<Object> list = new ArrayList();
-        for (int i = 0; i < array.length(); i++) {
-            Object value = array.get(i);
-            if (value instanceof JSONArray) {
-                value = jsonArray2List((JSONArray) value);
-            } else if (value instanceof JSONObject) {
-                value = jsonObject2Map((JSONObject) value);
+        if (array != null) {
+            for (int i = 0; i < array.length(); i++) {
+                list.add(array.getString(i));
             }
-            if (value instanceof String) {
-                System.err.println(value);
-            }
-            list.add(value);
         }
+//        for (int i = 0; i < array.length(); i++) {
+//            Object value = array.get(i);
+//            if (value instanceof JSONArray) {
+//                value = jsonArray2List((JSONArray) value);
+//            } else if (value instanceof JSONObject) {
+//                value = jsonObject2Map((JSONObject) value);
+//            }
+//            if (value instanceof String) {
+//                System.err.println(value);
+//            }
+//            list.add(value);
+//        }
         return list;
     }
 
