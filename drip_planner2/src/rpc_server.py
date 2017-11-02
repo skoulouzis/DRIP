@@ -11,6 +11,7 @@ import time
 import json
 from planner.dump_planner import *
 from os.path import expanduser
+import logging
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
