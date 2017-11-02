@@ -15,7 +15,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
-    #logger.setLevel(logging.INFO)
+    logger.setLevel(logging.INFO)
     h = logging.StreamHandler()
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     h.setFormatter(formatter)
@@ -94,7 +94,7 @@ if __name__ == "__main__":
 #    home = expanduser("~")
 #    planner = DumpPlanner(home+"/workspace/DRIP/docs/input_tosca_files/BEIA_cardif2.yml")
 #    print planner.plan()
-    logger.info("Input args: "+sys.argv) 
+    logger.info("Input args: "+sys.argv[0]+' '+sys.argv[1]+' '+sys.argv[2]) 
     channel = init_chanel(sys.argv)
     global queue_name
     queue_name = sys.argv[2]
