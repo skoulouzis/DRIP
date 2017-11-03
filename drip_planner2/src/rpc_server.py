@@ -9,7 +9,7 @@ import sys
 import tempfile
 import time
 import json
-from planner.dump_planner import *
+from planner.dum_planner import *
 from os.path import expanduser
 import logging
 
