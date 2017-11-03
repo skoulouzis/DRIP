@@ -25,10 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.api.dao.PlanDao;
-import nl.uva.sne.drip.api.event.DRIPLogger;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
@@ -69,18 +67,18 @@ public class PlannerService {
 
     @Value("${message.broker.host}")
     private String messageBrokerHost;
-    private final Logger rootLogger;
+    private final Logger logger;
 
     @Autowired
     public PlannerService() throws IOException, TimeoutException {
-        rootLogger = LogManager.getLogManager().getLogger("");
-        rootLogger.addHandler(new DRIPLogger(messageBrokerHost));
+        logger = Logger.getLogger(PlannerService.class.getName());
+        logger.addHandler(new DRIPLogHandler(messageBrokerHost));
     }
 
     public PlanResponse getPlan(String toscaId) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);
-            rootLogger.info("some message");
+            logger.info("some message");
             Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
 
             ObjectMapper mapper = new ObjectMapper();
