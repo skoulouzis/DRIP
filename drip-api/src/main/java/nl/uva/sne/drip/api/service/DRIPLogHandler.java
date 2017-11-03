@@ -45,23 +45,18 @@ import org.springframework.stereotype.Service;
  *
  * @author S. Koulouzis
  */
-public class DRIPLogHandler extends StreamHandler implements AutoCloseable {
-
-    private final Connection connection;
-    private final Channel channel;
+public class DRIPLogHandler extends StreamHandler {
 
     private final String qeueName;
     private final ObjectMapper mapper;
+    private final ConnectionFactory factory;
 
     public DRIPLogHandler(String messageBrokerHost) throws IOException, TimeoutException {
-        ConnectionFactory factory = new ConnectionFactory();
+        factory = new ConnectionFactory();
         factory.setHost(messageBrokerHost);
         factory.setPort(AMQP.PROTOCOL.PORT);
         //factory.setUsername("guest");
         //factory.setPassword("pass");
-
-        connection = factory.newConnection();
-        channel = connection.createChannel();
 
         this.qeueName = "log_qeue";
 
@@ -71,7 +66,9 @@ public class DRIPLogHandler extends StreamHandler implements AutoCloseable {
 
     @Override
     public void publish(LogRecord record) {
-        try {
+
+        try (Connection connection = factory.newConnection()) {
+            Channel channel = connection.createChannel();
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String owner = user.getUsername();
 
@@ -83,31 +80,28 @@ public class DRIPLogHandler extends StreamHandler implements AutoCloseable {
 //            channel.basicPublish(qeueName, owner, MessageProperties.PERSISTENT_TEXT_PLAIN, jsonInString.getBytes("UTF-8"));
             String qeueNameUser = qeueName + "_" + owner;
             channel.queueDeclare(qeueNameUser, true, false, false, null);
-            
+
             channel.basicPublish("", qeueNameUser, MessageProperties.PERSISTENT_TEXT_PLAIN, jsonInString.getBytes("UTF-8"));
 
-            close();
         } catch (JsonProcessingException ex) {
             Logger.getLogger(DRIPLogHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (IOException | TimeoutException ex) {
             Logger.getLogger(DRIPLogHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    @Override
-    public void close() {
-        super.close();
-        if (channel != null && channel.isOpen()) {
-            try {
-                channel.close();
-                if (connection != null && connection.isOpen()) {
-                    connection.close();
-                }
-            } catch (IOException | TimeoutException ex) {
-                Logger.getLogger(DRIPLogHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-    }
-
+//    @Override
+//    public void close() {
+//        if (channel != null && channel.isOpen()) {
+//            try {
+//                channel.close();
+//                if (connection != null && connection.isOpen()) {
+//                    connection.close();
+//                }
+//            } catch (IOException | TimeoutException ex) {
+//                Logger.getLogger(DRIPLogHandler.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//        super.close();
+//    }
 }

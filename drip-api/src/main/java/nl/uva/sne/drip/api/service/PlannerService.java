@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.api.dao.PlanDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
@@ -78,9 +79,9 @@ public class PlannerService {
     public PlanResponse getPlan(String toscaId) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
         try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);
-            logger.info("some message");
+            logger.log(Level.INFO, "Calling planner");
             Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
-
+            logger.log(Level.INFO, "Got response from planner");
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
             List<MessageParameter> messageParams = plannerReturnedMessage.getParameters();
@@ -121,6 +122,7 @@ public class PlannerService {
 
             topLevel.setLoweLevelPlansIDs(loweLevelPlansIDs);
             save(topLevel);
+            logger.log(Level.INFO, "Plan saved");
             return topLevel;
         }
     }
@@ -130,6 +132,8 @@ public class PlannerService {
         if (t2 == null) {
             throw new BadRequestException();
         }
+        logger.log(Level.INFO, "Building invokation message for planner");
+
         Map<String, Object> map = t2.getKeyValue();
         String json = Converter.map2JsonString(map);
         json = json.replaceAll("\\uff0E", ".");
