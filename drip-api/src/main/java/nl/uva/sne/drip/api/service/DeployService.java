@@ -127,7 +127,7 @@ public class DeployService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
         ownedObject.setOwner(owner);
-         
+
         return deployDao.save(ownedObject);
     }
 
@@ -139,7 +139,8 @@ public class DeployService {
                     deployInfo.getConfigurationID(),
                     null,
                     null);
-
+            ;
+            deployerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 //            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
 //                    + File.separator + "workspace" + File.separator + "DRIP"
 //                    + File.separator + "docs" + File.separator + "json_samples"
@@ -169,6 +170,7 @@ public class DeployService {
                 null,
                 null);
         Map<String, Object> info;
+        deployerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             Message response = (deployer.call(deployerInvokationMessage));
             List<MessageParameter> params = response.getParameters();
@@ -322,7 +324,7 @@ public class DeployService {
         }
 
         Message message = buildDeployerMessage(deployment.getProvisionID(), "scale", confID, scaleReq.getScaleTargetName(), scaleReq.getNumOfInstances());
-
+        message.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             Message response = (deployer.call(message));
             List<MessageParameter> params = response.getParameters();
@@ -603,7 +605,7 @@ public class DeployService {
             String jsonResp = param.getValue().replaceAll("^\"|\"$", "");
             System.err.println(jsonResp);
             Map<String, Object> kv = Converter.jsonString2Map(jsonResp);
-            
+
             info.putAll(kv);
         }
         return info;

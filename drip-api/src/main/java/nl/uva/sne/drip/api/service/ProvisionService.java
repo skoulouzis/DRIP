@@ -441,7 +441,7 @@ public class ProvisionService {
     private ProvisionResponse callProvisioner0(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
         try (DRIPCaller provisioner = new ProvisionerCaller0(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisioner0Message(provisionRequest);
-            
+            provisionerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
             Message response = (provisioner.call(provisionerInvokationMessage));
             
             return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null, true, true);
@@ -453,6 +453,7 @@ public class ProvisionService {
     private ProvisionResponse callProvisioner1(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
         try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisioner1Message(provisionRequest);
+            provisionerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
             Message response = (provisioner.call(provisionerInvokationMessage));
             return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null, true, true);
         }
@@ -462,6 +463,7 @@ public class ProvisionService {
     public void deleteProvisionedResources(ProvisionResponse provisionInfo) throws IOException, TimeoutException, InterruptedException, JSONException {
         try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
             Message deleteInvokationMessage = buildTopoplogyModificationMessage(provisionInfo, "kill_topology", null);
+            deleteInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
             Message response = (provisioner.call(deleteInvokationMessage));
             parseDeleteResourcesResponse(response.getParameters(), provisionInfo);
         }
@@ -511,6 +513,7 @@ public class ProvisionService {
                 extra.put("domain", domain);
                 
                 Message scaleMessage = buildTopoplogyModificationMessage(provisionInfo, "scale_topology_down", extra);
+                scaleMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
                 Message response = provisioner.call(scaleMessage);
                 parseCreateResourcesResponse(response.getParameters(), null, provisionInfo, false, false);
             }
@@ -523,6 +526,7 @@ public class ProvisionService {
                 extra.put("domain", domain);
                 
                 Message scaleMessage = buildTopoplogyModificationMessage(provisionInfo, "scale_topology_up", extra);
+                scaleMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
                 Message response = provisioner.call(scaleMessage);
                 parseCreateResourcesResponse(response.getParameters(), null, provisionInfo, false, false);
             }

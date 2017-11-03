@@ -2,16 +2,16 @@
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
 
+import json
+import logging
 import os
 import os.path
+from os.path import expanduser
 import pika
+from planner.dum_planner import *
 import sys
 import tempfile
 import time
-import json
-from planner.dum_planner import *
-from os.path import expanduser
-import logging
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
@@ -57,8 +57,9 @@ def on_request(ch, method, props, body):
 def handle_delivery(message):
     parsed_json_message = json.loads(message)
     params = parsed_json_message["parameters"]
+    owner = parsed_json_message['owner']
     param = params[0]
-    value = json.loads( param['value'])
+    value = json.loads(param['value'])
     tosca_file_name = param["name"]
     current_milli_time = lambda: int(round(time.time() * 1000))
     
@@ -94,7 +95,7 @@ if __name__ == "__main__":
 #    home = expanduser("~")
 #    planner = DumpPlanner(home+"/workspace/DRIP/docs/input_tosca_files/BEIA_cardif2.yml")
 #    print planner.plan()
-    logger.info("Input args: "+sys.argv[0]+' '+sys.argv[1]+' '+sys.argv[2]) 
+    logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2]) 
     channel = init_chanel(sys.argv)
     global queue_name
     queue_name = sys.argv[2]

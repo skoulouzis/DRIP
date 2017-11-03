@@ -31,7 +31,9 @@ import java.util.List;
  *
  * @author S. Koulouzis.
  */
-    public class Message implements Serializable {
+public class Message implements Serializable {
+
+    private String owner;
 
     private Long creationDate;
 
@@ -51,6 +53,20 @@ import java.util.List;
 
     public void setCreationDate(Long creationDate) {
         this.creationDate = creationDate;
+    }
+
+    /**
+     * @return the owner
+     */
+    public String getOwner() {
+        return owner;
+    }
+
+    /**
+     * @param owner the owner to set
+     */
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
 }

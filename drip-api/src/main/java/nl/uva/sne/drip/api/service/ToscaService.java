@@ -166,6 +166,7 @@ public class ToscaService {
         String dockerCompose;
         try (DRIPCaller transformer = new TransformerCaller(messageBrokerHost);) {
             Message transformerInvokationMessage = buildDockerComposeMessage(toscaRep);
+            transformerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
             Message response = (transformer.call(transformerInvokationMessage));
             dockerCompose = response.getParameters().get(0).getValue();
         }

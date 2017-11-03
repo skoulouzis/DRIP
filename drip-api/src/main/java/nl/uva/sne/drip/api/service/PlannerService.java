@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.api.service;
 
+import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import java.util.logging.Logger;
 import nl.uva.sne.drip.api.dao.PlanDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
 import nl.uva.sne.drip.drip.commons.data.internal.Message;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
@@ -77,9 +79,10 @@ public class PlannerService {
     }
 
     public PlanResponse getPlan(String toscaId) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
-        try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
+        try (DRIPCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);
             logger.log(Level.INFO, "Calling planner");
+            plannerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
             Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
             logger.log(Level.INFO, "Got response from planner");
             ObjectMapper mapper = new ObjectMapper();
