@@ -12,6 +12,7 @@ from planner.dum_planner import *
 import sys
 import tempfile
 import time
+from drip_logging.drip_logging_handler import *
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
@@ -30,6 +31,9 @@ def init_chanel(args):
         queue_name = args[2] #planner_queue
     else:
         rabbitmq_host = '127.0.0.1'
+        
+    rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,exchange="")
+    logger.addHandler(rabbit)        
         
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
     channel = connection.channel()
