@@ -70,10 +70,11 @@ public class PlannerService {
 
     @Value("${message.broker.host}")
     private String messageBrokerHost;
+
     private final Logger logger;
 
     @Autowired
-    public PlannerService() throws IOException, TimeoutException {
+    public PlannerService(@Value("${message.broker.host}") String messageBrokerHost) throws IOException, TimeoutException {
         logger = Logger.getLogger(PlannerService.class.getName());
         logger.addHandler(new DRIPLogHandler(messageBrokerHost));
     }

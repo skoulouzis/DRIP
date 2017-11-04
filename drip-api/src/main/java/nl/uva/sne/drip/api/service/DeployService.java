@@ -98,7 +98,7 @@ public class DeployService {
     private final Logger logger;
 
     @Autowired
-    public DeployService() throws IOException, TimeoutException {
+    public DeployService(@Value("${message.broker.host}") String messageBrokerHost) throws IOException, TimeoutException {
         logger = Logger.getLogger(DeployService.class.getName());
         logger.addHandler(new DRIPLogHandler(messageBrokerHost));
     }

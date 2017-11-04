@@ -92,7 +92,7 @@ public class ProvisionService {
     private final Logger logger;
 
     @Autowired
-    public ProvisionService() throws IOException, TimeoutException {
+    public ProvisionService(@Value("${message.broker.host}") String messageBrokerHost) throws IOException, TimeoutException {
         logger = Logger.getLogger(DeployService.class.getName());
         logger.addHandler(new DRIPLogHandler(messageBrokerHost));
     }
