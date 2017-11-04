@@ -24,7 +24,6 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.GetResponse;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.LogRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -43,21 +42,10 @@ public class DRIPLogService {
 
     @Value("${message.broker.host}")
     private String messageBrokerHost;
-    private final String qeueName;
-    private final ObjectMapper mapper;
+
+    private final String qeueName = "log_qeue";
+    private ObjectMapper mapper;
     private ConnectionFactory factory;
-
-    @Autowired
-    public DRIPLogService() {
-        this.factory = new ConnectionFactory();
-        factory.setHost(messageBrokerHost);
-        factory.setPort(AMQP.PROTOCOL.PORT);
-
-        this.qeueName = "log_qeue";
-
-        this.mapper = new ObjectMapper();
-        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-    }
 
     public DRIPLogRecord get() throws IOException, TimeoutException {
         Channel channel = null;
@@ -66,6 +54,11 @@ public class DRIPLogService {
             factory.setHost(messageBrokerHost);
             factory.setPort(AMQP.PROTOCOL.PORT);
         }
+        if (this.mapper == null) {
+            this.mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        }
+
         try (Connection connection = factory.newConnection()) {
             channel = connection.createChannel();
 
