@@ -45,7 +45,7 @@ public class DRIPLogService {
     private String messageBrokerHost;
     private final String qeueName;
     private final ObjectMapper mapper;
-    private final ConnectionFactory factory;
+    private ConnectionFactory factory;
 
     @Autowired
     public DRIPLogService() {
@@ -61,6 +61,11 @@ public class DRIPLogService {
 
     public DRIPLogRecord get() throws IOException, TimeoutException {
         Channel channel = null;
+        if (factory == null) {
+            this.factory = new ConnectionFactory();
+            factory.setHost(messageBrokerHost);
+            factory.setPort(AMQP.PROTOCOL.PORT);
+        }
         try (Connection connection = factory.newConnection()) {
             channel = connection.createChannel();
 
