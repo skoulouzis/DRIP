@@ -51,6 +51,7 @@ import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
@@ -94,6 +95,13 @@ public class DeployService {
 
     private static final String[] CLOUD_SITE_NAMES = new String[]{"domain", "VMResourceID"};
     private static final String[] PUBLIC_ADRESS_NAMES = new String[]{"public_address", "publicAddress"};
+    private final Logger logger;
+
+    @Autowired
+    public DeployService() throws IOException, TimeoutException {
+        logger = Logger.getLogger(DeployService.class.getName());
+        logger.addHandler(new DRIPLogHandler(messageBrokerHost));
+    }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public DeployResponse findOne(String id) throws JSONException, IOException, TimeoutException, InterruptedException {
@@ -145,12 +153,15 @@ public class DeployService {
 //                    + File.separator + "workspace" + File.separator + "DRIP"
 //                    + File.separator + "docs" + File.separator + "json_samples"
 //                    + File.separator + "deployer_ansible_response_benchmark.json");
+            logger.info("Calling deployer");
             Message response = (deployer.call(deployerInvokationMessage));
+            logger.info("Got response from deployer");
             List<MessageParameter> params = response.getParameters();
             DeployResponse deploy = handleResponse(params, deployInfo);
             deploy.setProvisionID(deployInfo.getProvisionID());
             deploy.setConfigurationID(deployInfo.getConfigurationID());
             deploy.setManagerType(deployInfo.getManagerType().toLowerCase());
+            logger.info("Deployment saved");
             save(deploy);
             return deploy;
 
@@ -172,7 +183,9 @@ public class DeployService {
         Map<String, Object> info;
         deployerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
+            logger.info("Calling deployer");
             Message response = (deployer.call(deployerInvokationMessage));
+            logger.info("Got response from deployer");
             List<MessageParameter> params = response.getParameters();
             info = buildSwarmInfo(params);
         }
@@ -326,7 +339,9 @@ public class DeployService {
         Message message = buildDeployerMessage(deployment.getProvisionID(), "scale", confID, scaleReq.getScaleTargetName(), scaleReq.getNumOfInstances());
         message.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
+            logger.info("Calling deployer");
             Message response = (deployer.call(message));
+            logger.info("Got response from deployer");
             List<MessageParameter> params = response.getParameters();
             handleResponse(params, null);
         }
