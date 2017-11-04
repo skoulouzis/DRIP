@@ -26,15 +26,13 @@ if not getattr(logger, 'handler_set', None):
 
 
 def init_chanel(args):
+    global rabbitmq_host
     if len(args) > 1:
         rabbitmq_host = args[1]
         queue_name = args[2] #planner_queue
     else:
         rabbitmq_host = '127.0.0.1'
-        
-    rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,exchange="")
-    logger.addHandler(rabbit)        
-        
+    
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
     channel = connection.channel()
     channel.queue_declare(queue=queue_name)
@@ -67,6 +65,10 @@ def handle_delivery(message):
     tosca_file_name = param["name"]
     current_milli_time = lambda: int(round(time.time() * 1000))
     
+    
+    rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
+    logger.addHandler(rabbit)
+    
     try:
         tosca_file_path = tempfile.gettempdir() + "/planner_files/" + str(current_milli_time()) + "/"
     except NameError:        
@@ -92,7 +94,8 @@ def handle_delivery(message):
             parameter['encoding'] = 'UTF-8'
             response["parameters"].append(parameter)         
     
-    logger.info ("Output message:" + json.dumps(response))            
+    logger.info("Returning plan") 
+    logger.debug("Output message:" + json.dumps(response))            
     return json.dumps(response)
 
 if __name__ == "__main__":

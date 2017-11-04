@@ -1,11 +1,13 @@
+import json
 import logging
 import pika
 from python_logging_rabbitmq import RabbitMQHandler
-import json
 
 class DRIPLoggingHandler(RabbitMQHandler):
     
-    
+    def __init__(self, host='localhost', port=5672, username=None, password=None, user=None):
+        super(DRIPLoggingHandler, self).__init__(host=host, port=port, username=username, password=password)
+        self.user = user
     
     def open_connection(self):
         self.sequenceNumber = 0
@@ -22,12 +24,12 @@ class DRIPLoggingHandler(RabbitMQHandler):
         rabbitmq_logger.setLevel(logging.WARNING)
 
         if not self.connection or self.connection.is_closed:
-            self.connection = pika.BlockingConnection(pika.ConnectionParameters( ** self.connection_params))
+            self.connection = pika.BlockingConnection(pika.ConnectionParameters(** self.connection_params))
 
         if not self.channel or self.channel.is_closed:
             self.channel = self.connection.channel()
             
-        self.channel.queue_declare(queue='log_qeue_user', durable=True)
+        self.channel.queue_declare(queue='log_qeue_' + self.user, durable=True)
 
         # Manually remove logger to avoid shutdown message.
         rabbitmq_logger.removeHandler(handler)
