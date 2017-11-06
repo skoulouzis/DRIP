@@ -3,6 +3,17 @@ from toscaparser import *
 from toscaparser.tosca_template import ToscaTemplate
 import toscaparser.utils.yamlparser
 import yaml
+import logging
+
+
+logger = logging.getLogger(__name__)
+if not getattr(logger, 'handler_set', None):
+    logger.setLevel(logging.INFO)
+    h = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    h.setFormatter(formatter)
+    logger.addHandler(h)
+    logger.handler_set = True
 
 class DockerComposeTransformer:
     
@@ -50,7 +61,7 @@ class DockerComposeTransformer:
     def get_enviroment_vars(self,properties):
         environments = []
         for prop in properties:
-            if prop == 'Environment_variables' or prop == 'Live_variables':
+            if prop == 'Environment_variables' or prop == 'Live_variables' or prop =='Environment':
                 for var in properties[prop]:
                     environment ={}
                     environment[var] = properties[prop][var]
@@ -68,12 +79,12 @@ class DockerComposeTransformer:
             for port_map_key in ports_mappings:
                 port_map = {}
                 host_port =  ports_mappings[port_map_key]['host_port']
-                if not isinstance(host_port, (int, long, float, complex)):
+                if not isinstance(host_port, (int, long, float, complex)) and '$' in host_port:
                     host_port_var =  host_port.replace('${','').replace('}','')
                     host_port = properties[host_port_var]
 
                 container_port =  ports_mappings[port_map_key]['container_port']
-                if not isinstance(container_port, (int, long, float, complex)):
+                if not isinstance(container_port, (int, long, float, complex)) and '$' in container_port:
                     container_port_var =  container_port.replace('${','').replace('}','')
                     container_port = properties[container_port_var]
                 port_map[host_port] = container_port
@@ -82,14 +93,18 @@ class DockerComposeTransformer:
             ports_mappings = properties['in_ports']
             for port_map_key in ports_mappings:
                 port_map = {}
-                host_port =  ports_mappings[port_map_key]['host_port']
-                container_port =  ports_mappings[port_map_key]['container_port']
+                if 'host_port' in ports_mappings[port_map_key]:
+                    host_port =  ports_mappings[port_map_key]['host_port']
+                container_port = None
+                if 'container_port' in ports_mappings[port_map_key]:
+                    container_port =  ports_mappings[port_map_key]['container_port']
                 if 'protocol' in ports_mappings[port_map_key]:
                     protocol =  ports_mappings[port_map_key]['protocol']
                     if protocol:
                         container_port=container_port+'/'+protocol
-                port_map[host_port] = container_port    
-                port_maps.append(port_map)
+                if container_port:
+                    port_map[host_port] = container_port    
+                    port_maps.append(port_map)
         if 'out_ports' in properties:
             ports_mappings = properties['out_ports']
             for port_map_key in ports_mappings:       
@@ -110,15 +125,16 @@ class DockerComposeTransformer:
             return node['requirements']
         
     def get_volumes(self,requirements):
-        volumes = []
-        for req in requirements:
-            if 'volume' in req:
-                vol = {}
-                name = req['volume']['name']
-                path = req['volume']['link']
-                vol[name]=path
-                volumes.append(vol)
-        return volumes
+        if requirements:
+            volumes = []
+            for req in requirements:
+                if 'volume' in req:
+                    vol = {}
+                    name = req['volume']['name']
+                    path = req['volume']['link']
+                    vol[name]=path
+                    volumes.append(vol)
+            return volumes
     
     def analyze_yaml(self):
         docker_types  = self.get_docker_types()
@@ -137,15 +153,16 @@ class DockerComposeTransformer:
                         docker_file =  artifacts[key]['file']
                         if docker_file:
                             service['image'] = docker_file
-                    if docker_file and docker_file is not None and '/' in docker_file:
-                        container_name = docker_file.split("/")[1]
-                        if container_name and ':' in container_name:
-                            container_name = container_name.split(':')[0]
-                        service ['container_name'] = container_name+"_"+node_template_key
+                        if docker_file and docker_file is not None and '/' in docker_file:
+                            container_name = docker_file.split("/")[1]
+                            if container_name and ':' in container_name:
+                                container_name = container_name.split(':')[0]
+                            service ['container_name'] = container_name+"_"+node_template_key
                     
                     properties = self.get_properties(node_templates[node_template_key])
                     environment = self.get_enviroment_vars(properties)
-                    service['environment'] = environment
+                    if environment:
+                        service['environment'] = environment
                     
                     port_maps = self.get_port_map(properties)
                     if port_maps:
