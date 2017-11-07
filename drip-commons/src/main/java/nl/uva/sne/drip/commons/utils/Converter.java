@@ -37,6 +37,7 @@ import nl.uva.sne.drip.drip.commons.data.internal.Message;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v0.external.Attribute;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
+import org.yaml.snakeyaml.DumperOptions;
 
 /**
  *
@@ -138,7 +139,11 @@ public class Converter {
     }
 
     public static String json2Yml2(String jsonString) throws JSONException {
-        Yaml yaml = new Yaml();
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        options.setPrettyFlow(true);
+        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.SINGLE_QUOTED);
+        Yaml yaml = new Yaml(options);
         String yamlStr = yaml.dump(ymlString2Map(jsonString));
         return yamlStr;
     }

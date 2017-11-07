@@ -25,6 +25,7 @@ import linecache
 import sys
 import ast
 import re
+from drip_logging.drip_logging_handler import *
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
@@ -140,7 +141,9 @@ def docker_check(vm, compose_name):
 
 
 
-def run(vm_list, compose_name):
+def run(vm_list, compose_name,rabbitmq_host,owner):
+    rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
+    logger.addHandler(rabbit)
     for i in vm_list:
         if i.role == "master":
             ret = docker_check(i, compose_name)

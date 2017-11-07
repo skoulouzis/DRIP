@@ -21,8 +21,6 @@ import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;

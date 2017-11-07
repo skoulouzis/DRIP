@@ -20,6 +20,8 @@ __author__ = 'Yang Hu'
 import paramiko, os
 from vm_info import VmInfo
 import logging
+from drip_logging.drip_logging_handler import *
+
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
@@ -53,7 +55,9 @@ def deploy_compose(vm, compose_file, compose_name):
 
 
 
-def run(vm_list, compose_file, compose_name):
+def run(vm_list, compose_file, compose_name,rabbitmq_host,owner):
+    rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
+    logger.addHandler(rabbit)
     for i in vm_list:
         if i.role == "master":
             ret = deploy_compose(i, compose_file, compose_name)

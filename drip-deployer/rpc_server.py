@@ -18,7 +18,7 @@ from time import sleep
 import os.path
 import logging
 
-
+global rabbitmq_host
 if len(sys.argv) > 1:
     rabbitmq_host = sys.argv[1]
 else:
@@ -49,6 +49,7 @@ def threaded_function(args):
 
 def handleDelivery(message):
     parsed_json = json.loads(message)
+    owner = parsed_json['owner']
     params = parsed_json["parameters"]  
     node_num = 0
     vm_list = set()
@@ -112,20 +113,20 @@ def handleDelivery(message):
         ret = docker_kubernetes.run(vm_list)
         return ret
     elif manager_type == "swarm":
-        ret = docker_engine.run(vm_list)
+        ret = docker_engine.run(vm_list,rabbitmq_host,owner)
         if "ERROR" in ret: return ret
-        ret = docker_swarm.run(vm_list)
+        ret = docker_swarm.run(vm_list,rabbitmq_host,owner)
         if "ERROR" in ret: return ret
-        ret = docker_compose.run(vm_list, compose_file, compose_name)
+        ret = docker_compose.run(vm_list, compose_file, compose_name,rabbitmq_host,owner)
         return ret
     elif manager_type == "ansible":
-        ret = ansible_playbook.run(vm_list,playbook)
+        ret = ansible_playbook.run(vm_list,playbook,rabbitmq_host,owner)
         return ret
     elif manager_type == "scale":
-        ret = docker_service.run(vm_list, name_of_deployment, name_of_service, number_of_containers)
+        ret = docker_service.run(vm_list, name_of_deployment, name_of_service, number_of_containers,rabbitmq_host,owner)
         return ret
     elif manager_type == "swarm_info":
-        ret = docker_check.run(vm_list, compose_name)
+        ret = docker_check.run(vm_list, compose_name,rabbitmq_host,owner)
         ret = '"'+json.dumps(ret)+'"'
         return ret
     else:

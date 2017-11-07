@@ -32,6 +32,8 @@ import java.util.logging.StreamHandler;
 import nl.uva.sne.drip.commons.utils.DRIPLogRecordFactory;
 import nl.uva.sne.drip.drip.commons.data.v1.external.DRIPLogRecord;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -43,6 +45,7 @@ public class DRIPLogHandler extends StreamHandler {
     private final String qeueName;
     private final ObjectMapper mapper;
     private final ConnectionFactory factory;
+    private String owner;
 
     public DRIPLogHandler(String messageBrokerHost) throws IOException, TimeoutException {
         factory = new ConnectionFactory();
@@ -62,16 +65,21 @@ public class DRIPLogHandler extends StreamHandler {
 
         try (Connection connection = factory.newConnection()) {
             Channel channel = connection.createChannel();
-            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String owner = user.getUsername();
+            SecurityContext ctx = SecurityContextHolder.getContext();
+            Authentication auth = ctx.getAuthentication();
+            if (auth != null) {
+
+                User user = (User) auth.getPrincipal();
+                setOwner(user.getUsername());
+            }
 
             DRIPLogRecord dripLog = DRIPLogRecordFactory.create(record);
-            dripLog.setOwner(owner);
+            dripLog.setOwner(getOwner());
             String jsonInString = mapper.writeValueAsString(dripLog);
 
 //            channel.basicPublish(qeueName, owner, null, jsonInString.getBytes());
 //            channel.basicPublish(qeueName, owner, MessageProperties.PERSISTENT_TEXT_PLAIN, jsonInString.getBytes("UTF-8"));
-            String qeueNameUser = qeueName + "_" + owner;
+            String qeueNameUser = qeueName + "_" + getOwner();
             channel.queueDeclare(qeueNameUser, true, false, false, null);
 
             channel.basicPublish("", qeueNameUser, MessageProperties.PERSISTENT_TEXT_PLAIN, jsonInString.getBytes("UTF-8"));
@@ -97,4 +105,17 @@ public class DRIPLogHandler extends StreamHandler {
 //        }
 //        super.close();
 //    }
+    /**
+     * @return the owner
+     */
+    public String getOwner() {
+        return owner;
+    }
+
+    /**
+     * @param owner the owner to set
+     */
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 }
