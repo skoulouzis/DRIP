@@ -139,11 +139,11 @@ public class Converter {
     }
 
     public static String json2Yml2(String jsonString) throws JSONException {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        options.setPrettyFlow(true);
-        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.SINGLE_QUOTED);
-        Yaml yaml = new Yaml(options);
+//        DumperOptions options = new DumperOptions();
+//        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+//        options.setPrettyFlow(true);
+//        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.SINGLE_QUOTED);
+        Yaml yaml = new Yaml();
         String yamlStr = yaml.dump(ymlString2Map(jsonString));
         return yamlStr;
     }
