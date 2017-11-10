@@ -33,6 +33,8 @@ if not getattr(logger, 'handler_set', None):
     logger.handler_set = True
 
 
+retry=0
+
 def deploy_compose(vm, compose_file, compose_name):
     try:
         logger.info("Starting docker compose deployment on: "+vm.ip)        
@@ -47,9 +49,14 @@ def deploy_compose(vm, compose_file, compose_name):
         stdout.read()
         logger.info("Finished docker compose deployment on: "+vm.ip)        
     except Exception as e:
+        global retry
+        if 'Connection timed out' in str(e) and retry < 3:
+            retry+=1
+            deploy_compose(vm)               
         logger.error(vm.ip + " " + str(e))
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()
+    retry=0
     return "SUCCESS"
 
 

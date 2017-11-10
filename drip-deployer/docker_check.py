@@ -35,6 +35,9 @@ if not getattr(logger, 'handler_set', None):
     h.setFormatter(formatter)
     logger.addHandler(h)
     logger.handler_set = True
+    
+
+retry=0    
 
 
 def get_resp_line(line):
@@ -124,6 +127,7 @@ def docker_check(vm, compose_name):
         
         logger.info("Finished docker info services on: "+vm.ip)                
     except Exception as e:
+        global retry
         exc_type, exc_obj, tb = sys.exc_info()
         f = tb.tb_frame
         lineno = tb.tb_lineno

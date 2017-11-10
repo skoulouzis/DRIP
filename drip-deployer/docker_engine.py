@@ -32,6 +32,7 @@ if not getattr(logger, 'handler_set', None):
     logger.handler_set = True
         
 
+retry=0
 
 def install_engine(vm):
 	try:
@@ -54,9 +55,16 @@ def install_engine(vm):
 		stdout.read()
 		logger.info("Finised docker engine installation on: "+(vm.ip))
 	except Exception as e:
+                global retry
+                if 'Connection timed out' in str(e) and retry < 3:
+                    logger.warning(vm.ip + " " + str(e)+". Retiring")
+                    retry+=1
+                    install_engine(vm)
+                
 		logger.error(vm.ip + " " + str(e))
 		return "ERROR:"+vm.ip+" "+str(e)
 	ssh.close()
+	retry=0
 	return "SUCCESS"
 
 def run(vm_list,rabbitmq_host,owner):

@@ -31,6 +31,8 @@ if not getattr(logger, 'handler_set', None):
     logger.handler_set = True
 
 
+retry=0
+
 def scale_service(vm, application_name, service_name, service_num):
     try:
         logger.info("Starting docker service scaling on: "+vm.ip)
@@ -42,6 +44,7 @@ def scale_service(vm, application_name, service_name, service_num):
         stdout.read()
         logger.info("Finished docker service scaling on: "+vm.ip)        
     except Exception as e:
+        global retry
         logger.error(vm.ip + " " + str(e))
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()

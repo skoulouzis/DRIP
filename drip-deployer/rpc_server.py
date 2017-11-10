@@ -110,7 +110,7 @@ def handleDelivery(message):
             
 
     if manager_type == "kubernetes":
-        ret = docker_kubernetes.run(vm_list)
+        ret = docker_kubernetes.run(vm_list,rabbitmq_host,owner)
         return ret
     elif manager_type == "swarm":
         ret = docker_engine.run(vm_list,rabbitmq_host,owner)
