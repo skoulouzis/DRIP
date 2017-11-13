@@ -61,9 +61,10 @@ def install_manager(vm):
 		logger.info("Finished swarm manager installation on: "+(vm.ip))
 	except Exception as e:
                 global retry
-                if 'Connection timed out' in str(e) and retry < 3:
+                if retry < 10:
+                    logger.warning(vm.ip + " " + str(e)+". Retrying")
                     retry+=1
-                    install_manager(vm)
+                    return install_manager(vm)
 		logger.error(vm.ip + " " + str(e))
 		return "ERROR:" + vm.ip + " " + str(e)
 	ssh.close()
@@ -79,16 +80,20 @@ def install_worker(join_cmd, vm):
 		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
 		stdin, stdout, stderr = ssh.exec_command("sudo docker info | grep 'Swarm'")
 		temp_list1 = stdout.readlines()
-		if temp_list1[0].find("Swarm: active") != -1: return "SUCCESS"
+		if temp_list1[0].find("Swarm: active") != -1: 
+                    logger.info("Swarm worker arleady installated on: "+(vm.ip)+" Skiping")
+                    return "SUCCESS"
 		stdin, stdout, stderr = ssh.exec_command("sudo docker swarm leave --force")
 		stdout.read()
 		stdin, stdout, stderr = ssh.exec_command("sudo %s" % (join_cmd))
 		stdout.read()
 		logger.info("Finished swarm worker installation on: "+(vm.ip))
 	except Exception as e:
-                if 'Connection timed out' in str(e) and retry < 3:
+                global retry
+                if retry < 10:
+                    logger.warning(vm.ip + " " + str(e)+". Retrying")
                     retry+=1
-                    install_worker(vm)            
+                    return install_worker(join_cmd, vm)            
 		logger.error(vm.ip + " " + str(e))
 		return "ERROR:" + vm.ip + " " + str(e)
 	ssh.close()

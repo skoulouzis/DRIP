@@ -128,6 +128,11 @@ def docker_check(vm, compose_name):
         logger.info("Finished docker info services on: "+vm.ip)                
     except Exception as e:
         global retry
+        global retry
+        if retry < 10:
+            logger.warning(vm.ip + " " + str(e)+". Retrying")
+            retry+=1
+            return docker_check(vm, compose_name)
         exc_type, exc_obj, tb = sys.exc_info()
         f = tb.tb_frame
         lineno = tb.tb_lineno

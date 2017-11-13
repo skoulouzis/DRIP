@@ -20,6 +20,7 @@ __author__ = 'Yang Hu'
 import paramiko, os
 from vm_info import VmInfo
 import logging
+from drip_logging.drip_logging_handler import *
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
@@ -44,7 +45,11 @@ def scale_service(vm, application_name, service_name, service_num):
         stdout.read()
         logger.info("Finished docker service scaling on: "+vm.ip)        
     except Exception as e:
-        global retry
+        global retry        
+        if retry < 10:
+            logger.warning(vm.ip + " " + str(e)+". Retrying")
+            retry+=1
+            return scale_service(vm, application_name, service_name, service_num)     
         logger.error(vm.ip + " " + str(e))
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()
@@ -53,7 +58,9 @@ def scale_service(vm, application_name, service_name, service_num):
 
 
 
-def run(vm_list, application_name, service_name, service_num):
+def run(vm_list, application_name, service_name, service_num,rabbitmq_host,owner):
+    rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
+    logger.addHandler(rabbit)    
     for i in vm_list:
         if i.role == "master":
             ret = scale_service(i, application_name, service_name, service_num)

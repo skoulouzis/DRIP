@@ -45,14 +45,16 @@ def deploy_compose(vm, compose_file, compose_name):
         sftp = ssh.open_sftp()
         sftp.chdir('/tmp/')
         sftp.put(compose_file, "docker-compose.yml")
+        
         stdin, stdout, stderr = ssh.exec_command("sudo docker stack deploy --compose-file /tmp/docker-compose.yml %s" % (compose_name))
         stdout.read()
         logger.info("Finished docker compose deployment on: "+vm.ip)        
     except Exception as e:
         global retry
-        if 'Connection timed out' in str(e) and retry < 3:
+        if retry < 10:
+            logger.warning(vm.ip + " " + str(e)+". Retrying")
             retry+=1
-            deploy_compose(vm)               
+            return deploy_compose(vm, compose_file, compose_name)               
         logger.error(vm.ip + " " + str(e))
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()

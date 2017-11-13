@@ -45,7 +45,9 @@ def install_engine(vm):
 		temp_list = stdout.readlines()
 		temp_str = ""
 		for i in temp_list: temp_str += i
-		if temp_str.find("docker") != -1: return "SUCCESS"
+		if temp_str.find("docker") != -1:
+                    logger.info("Docker engine arleady installated on: "+(vm.ip)+" Skiping")
+                    return "SUCCESS"
 		sftp = ssh.open_sftp()
 		sftp.chdir('/tmp/')
 		file_path = os.path.dirname(os.path.abspath(__file__))
@@ -56,10 +58,10 @@ def install_engine(vm):
 		logger.info("Finised docker engine installation on: "+(vm.ip))
 	except Exception as e:
                 global retry
-                if 'Connection timed out' in str(e) and retry < 3:
-                    logger.warning(vm.ip + " " + str(e)+". Retiring")
+                if retry < 10:
+                    logger.warning(vm.ip + " " + str(e)+". Retrying")
                     retry+=1
-                    install_engine(vm)
+                    return install_engine(vm)
                 
 		logger.error(vm.ip + " " + str(e))
 		return "ERROR:"+vm.ip+" "+str(e)

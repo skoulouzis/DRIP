@@ -18,11 +18,25 @@
 __author__ = 'Yang Hu'
 
 import paramiko, os
+import logging
+from drip_logging.drip_logging_handler import *
 
+
+logger = logging.getLogger(__name__)
+if not getattr(logger, 'handler_set', None):
+    logger.setLevel(logging.INFO)
+    h = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    h.setFormatter(formatter)
+    logger.addHandler(h)
+    logger.handler_set = True
+
+
+retry=0
 
 def install_agent(vm, vm_list):
     try:
-        print "%s: ====== Start Control Agent Installation ======" % (vm.ip)
+        logger.info("Starting control agent installation on: "+(vm.ip))
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
@@ -42,8 +56,14 @@ def install_agent(vm, vm_list):
         stdout.read()
         stdin, stdout, stderr = ssh.exec_command("nohup sudo python /root/Swarm-Agent/run.py>/dev/null 2>&1 &")
         stdout.read()
-        print "%s: ========= Control Agent Installed =========" % (vm.ip)
+        logger.info("Finished control agent installation on: "+(vm.ip))
     except Exception as e:
+        global retry
+        if retry < 10:
+            logger.warning(vm.ip + " " + str(e)+". Retrying")
+            retry+=1
+            return install_agent(vm, vm_list)            
+        logger.error(vm.ip + " " + str(e))        
         print '%s: %s' % (vm.ip, e)
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()
