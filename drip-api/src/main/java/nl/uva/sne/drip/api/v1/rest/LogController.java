@@ -49,6 +49,7 @@ public class LogController {
     @Autowired
     private DRIPLogService logService;
 
+    @RequestMapping(method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     DRIPLogRecord get() {
