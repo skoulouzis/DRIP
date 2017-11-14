@@ -141,12 +141,12 @@ public class DeployService {
 
     public DeployResponse deploySoftware(DeployRequest deployInfo) throws Exception {
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
-            Message deployerInvokationMessage = buildDeployerMessage(
+            Message deployerInvokationMessage = buildDeployerMessages(
                     deployInfo.getProvisionID(),
                     deployInfo.getManagerType().toLowerCase(),
                     deployInfo.getConfigurationID(),
                     null,
-                    null);
+                    null).get(0);
             ;
             deployerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 //            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
@@ -174,12 +174,12 @@ public class DeployService {
     }
 
     private Map<String, Object> getSwarmInfo(DeployResponse deployResp) throws JSONException, IOException, TimeoutException, InterruptedException {
-        Message deployerInvokationMessage = buildDeployerMessage(
+        Message deployerInvokationMessage = buildDeployerMessages(
                 deployResp.getProvisionID(),
                 "swarm_info",
                 deployResp.getConfigurationID(),
                 null,
-                null);
+                null).get(0);
         Map<String, Object> info;
         deployerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
@@ -192,13 +192,13 @@ public class DeployService {
         return info;
     }
 
-    private Message buildDeployerMessage(String provisionID, String managerType, String configurationID, String serviceName, Integer numOfCont) throws JSONException {
+    private List<Message> buildDeployerMessages(String provisionID, String managerType, String configurationID, String serviceName, Integer numOfCont) throws JSONException {
         ProvisionResponse pro = provisionService.findOne(provisionID);
         if (pro == null) {
             throw new NotFoundException();
         }
         List<String> loginKeysIDs = pro.getDeployerKeyPairIDs();
-
+        List<Message> messages = new ArrayList<>();
 //        if (loginKeysIDs == null || loginKeysIDs.isEmpty()) {
 //            List<String> cloudConfIDs = pro.getCloudCredentialsIDs();
 //            CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfIDs.get(0));
@@ -242,7 +242,8 @@ public class DeployService {
         Message deployInvokationMessage = new Message();
         deployInvokationMessage.setParameters(parameters);
         deployInvokationMessage.setCreationDate(System.currentTimeMillis());
-        return deployInvokationMessage;
+        messages.add(deployInvokationMessage);
+        return messages;
     }
 
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")
@@ -336,7 +337,8 @@ public class DeployService {
             throw new BadRequestException("Service name does not exist in this deployment");
         }
 
-        Message message = buildDeployerMessage(deployment.getProvisionID(), "scale", confID, scaleReq.getScaleTargetName(), scaleReq.getNumOfInstances());
+        Message message = buildDeployerMessages(deployment.getProvisionID(), "scale",
+                confID, scaleReq.getScaleTargetName(), scaleReq.getNumOfInstances()).get(0);
         message.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             logger.info("Calling deployer");

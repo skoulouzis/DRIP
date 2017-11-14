@@ -153,7 +153,7 @@ public class KeyPairController {
         return null;
     }
 
-//    localhost:8080/drip-api/user_key/ids
+
     /**
      * Gets the IDs of all the stored Key
      *
