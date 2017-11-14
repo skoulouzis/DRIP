@@ -149,7 +149,7 @@ public class DeployService {
                     null).get(0);
             ;
             deployerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-//            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
+//            Message response = MessageGenerator.generate ArtificialMessage(System.getProperty("user.home")
 //                    + File.separator + "workspace" + File.separator + "DRIP"
 //                    + File.separator + "docs" + File.separator + "json_samples"
 //                    + File.separator + "deployer_ansible_response_benchmark.json");

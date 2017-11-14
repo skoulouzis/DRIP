@@ -31,6 +31,8 @@ import java.security.cert.CertificateEncodingException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static nl.uva.sne.drip.commons.utils.FileUtils.untar;
 //import org.globus.common.CoGProperties;
 //import org.globus.myproxy.GetParams;
@@ -47,6 +49,8 @@ import static nl.uva.sne.drip.commons.utils.FileUtils.untar;
  * @author S. Koulouzis
  */
 public class AAUtils {
+
+    private static int retry = 0;
 
     public enum SOURCE {
         MY_PROXY,
@@ -104,7 +108,7 @@ public class AAUtils {
         return proxy_file.getAbsolutePath();
     }
 
-    public static void downloadCACertificates(URL url, String folder) throws MalformedURLException, IOException {
+    public static void downloadCACertificates(URL url, String folder) throws IOException {
         String[] parts = url.getFile().split("/");
         String fileName = parts[parts.length - 1];
         File bundle = new File(folder + File.separator + fileName);
@@ -115,12 +119,24 @@ public class AAUtils {
         }
 
         if (!bundle.exists()) {
-            URL website = new URL(url.toString());
-            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+            try {
+                URL website = new URL(url.toString());
+                ReadableByteChannel rbc = Channels.newChannel(website.openStream());
 
-            FileOutputStream fos = new FileOutputStream(bundle);
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            untar(new File(folder), bundle);
+                FileOutputStream fos = new FileOutputStream(bundle);
+                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                untar(new File(folder), bundle);
+                retry = 0;
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(AAUtils.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                if (retry < 3) {
+                    retry++;
+                    downloadCACertificates(url, folder);
+                }else{
+                    throw ex;
+                }
+            }
         }
     }
 }
