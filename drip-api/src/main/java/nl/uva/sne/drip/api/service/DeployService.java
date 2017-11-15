@@ -109,10 +109,6 @@ public class DeployService {
         if (deployDescription == null) {
             throw new NotFoundException();
         }
-        if (deployDescription.getManagerType().equals("swarm")) {
-            Map<String, Object> swarmInfo = getSwarmInfo(deployDescription);
-            deployDescription.setManagerInfo(swarmInfo);
-        }
         return deployDescription;
     }
 
@@ -173,7 +169,7 @@ public class DeployService {
         return null;
     }
 
-    private Map<String, Object> getSwarmInfo(DeployResponse deployResp) throws JSONException, IOException, TimeoutException, InterruptedException {
+    public Map<String, Object> getSwarmInfo(DeployResponse deployResp) throws JSONException, IOException, TimeoutException, InterruptedException {
         Message deployerInvokationMessage = buildDeployerMessages(
                 deployResp.getProvisionID(),
                 "swarm_info",

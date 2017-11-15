@@ -20,6 +20,7 @@ import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -136,6 +137,12 @@ public class DeployController {
         DeployResponse resp = null;
         try {
             resp = deployService.findOne(id);
+
+            if (resp.getManagerType().equals("swarm")) {
+                Map<String, Object> swarmInfo = deployService.getSwarmInfo(resp);
+                resp.setManagerInfo(swarmInfo);
+            }
+
         } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
             Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
         }
