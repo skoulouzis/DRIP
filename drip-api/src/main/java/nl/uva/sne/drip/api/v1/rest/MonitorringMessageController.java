@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.api.v1.rest;
 
+import nl.uva.sne.drip.drip.commons.data.v1.external.GrafanaMonitorringMessage;
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import java.util.ArrayList;
@@ -53,8 +54,8 @@ public class MonitorringMessageController {
     public @ResponseBody
     String post(@RequestBody MonitorringMessage message) {
         return monitorringMessageService.save(message).getId();
-    }
-
+    }    
+    
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody

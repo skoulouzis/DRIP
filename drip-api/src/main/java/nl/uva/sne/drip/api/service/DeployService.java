@@ -145,10 +145,7 @@ public class DeployService {
                     null).get(0);
             ;
             deployerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-//            Message response = MessageGenerator.generate ArtificialMessage(System.getProperty("user.home")
-//                    + File.separator + "workspace" + File.separator + "DRIP"
-//                    + File.separator + "docs" + File.separator + "json_samples"
-//                    + File.separator + "deployer_ansible_response_benchmark.json");
+
             logger.info("Calling deployer");
             Message response = (deployer.call(deployerInvokationMessage));
             logger.info("Got response from deployer");
@@ -292,7 +289,12 @@ public class DeployService {
     private MessageParameter createConfigurationParameter(String configurationID, String confType) throws JSONException {
         String configuration = configurationService.get(configurationID, "yml");
         MessageParameter configurationParameter = new MessageParameter();
-        configurationParameter.setName(confType);
+        if (confType.equals("ansible")) {
+            configurationParameter.setName("playbook");
+        } else {
+            configurationParameter.setName(confType);
+        }
+
         configurationParameter.setEncoding("UTF-8");
         configurationParameter.setValue(configuration);
         return configurationParameter;

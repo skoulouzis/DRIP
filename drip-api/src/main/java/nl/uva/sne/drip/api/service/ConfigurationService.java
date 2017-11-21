@@ -135,23 +135,24 @@ public class ConfigurationService {
         Matcher match = p.matcher(ymlStr);
         while (match.find()) {
             String line = match.group();
-            if (!line.contains("\"")) {
+            if (!line.contains("\"") || line.contains("'")) {
                 String cpusNum = line.split(":")[1];
                 cpusNum = cpusNum.replaceAll(",", "").trim();
-                ymlStr = ymlStr.replaceAll(cpusNum, "\"" + cpusNum + "\"");
+                ymlStr = ymlStr.replaceAll(cpusNum, '\'' + cpusNum + '\'');
             }
         }
         p = Pattern.compile("memory:.*");
         match = p.matcher(ymlStr);
         while (match.find()) {
             String line = match.group();
-            if (!line.contains("\"")) {
+            if (!line.contains("\"") || line.contains("'")) {
                 String memory = line.split(":")[1];
                 memory = memory.replaceAll("}", "").trim();
-                ymlStr = ymlStr.replaceAll(memory, "\"" + memory + "\"");
+                ymlStr = ymlStr.replaceAll(memory, '\'' + memory + '\'');
             }
         }
-        return ymlStr;
+
+        return ymlStr.replaceAll("'''", "'");
     }
 
 }
