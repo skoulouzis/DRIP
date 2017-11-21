@@ -38,38 +38,55 @@ import logging
 import yaml
 import sys
 from results_collector import ResultsCollector
+from drip_logging.drip_logging_handler import *
 
-   
+logger = logging.getLogger(__name__)
+if not getattr(logger, 'handler_set', None):
+    logger.setLevel(logging.INFO)
+    h = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    h.setFormatter(formatter)
+    logger.addHandler(h)
+    logger.handler_set = True
+
+
+retry=0
+
 
 def install_prerequisites(vm):
 	try:
-		print "Installing ansible prerequisites in: %s" % (vm.ip)
-		ssh = paramiko.SSHClient()
-		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
-		sftp = ssh.open_sftp()
-		file_path = os.path.dirname(os.path.abspath(__file__))
-		sftp.chdir('/tmp/')
-		install_script = file_path + "/" + "ansible_setup.sh"
-		sftp.put(install_script, "ansible_setup.sh")
-		
-                stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.','-')))
-		sshout = stdout.read()
-		
-                stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/ansible_setup.sh")
-		stdout.read()
-		
-		print "Ansible prerequisites installed in: %s " % (vm.ip)
+            logger.info("Installing ansible prerequisites on: "+vm.ip)
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+            sftp = ssh.open_sftp()
+            file_path = os.path.dirname(os.path.abspath(__file__))
+            sftp.chdir('/tmp/')
+            install_script = file_path + "/" + "ansible_setup.sh"
+            sftp.put(install_script, "ansible_setup.sh")
+            
+            stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.','-')))
+            sshout = stdout.read()
+            
+            stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/ansible_setup.sh")
+            stdout.read()
+            
+            logger.info("Ansible prerequisites installed on: " + (vm.ip))
 	except Exception as e:
-		print '%s: %s' % (vm.ip, e)
-		return "ERROR:"+vm.ip+" "+str(e)
-	ssh.close()
+            global retry
+            if retry < 10:
+                logger.warning(vm.ip + " " + str(e)+". Retrying")
+                retry+=1
+                return install_prerequisites(vm)      
+            logger.error(vm.ip + " " + str(e))
+            return "ERROR:"+vm.ip+" "+str(e)
+        ssh.close()
 	return "SUCCESS"
     
     
 def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords):
     if not os.path.exists(playbook_path):
-        print '[ERROR] The playbook does not exist'
+        logger.error('[ERROR] The playbook does not exist')
         return '[ERROR] The playbook does not exist'
     
     os.environ['ANSIBLE_HOST_KEY_CHECKING'] = 'false'
@@ -117,9 +134,11 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
 
     return json.dumps(answer)
 
-def run(vm_list,playbook_path):
+def run(vm_list,playbook_path,rabbitmq_host,owner):
     hosts=""
     ssh_key_file=""
+    rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
+    logger.addHandler(rabbit)    
     for vm in vm_list:
             ret = install_prerequisites(vm)
             hosts+=vm.ip+","
@@ -129,5 +148,5 @@ def run(vm_list,playbook_path):
     
     extra_vars = {}
     passwords = {}
-    print "Executing playbook: %s " % (playbook_path)
+    logger.info("Executing playbook: " + (playbook_path))
     return execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
