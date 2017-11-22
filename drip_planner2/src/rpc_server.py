@@ -95,7 +95,7 @@ def handle_delivery(message):
             response["parameters"].append(parameter)         
     
     logger.info("Returning plan") 
-    logger.debug("Output message:" + json.dumps(response))            
+    logger.info("Output message:" + json.dumps(response))            
     return json.dumps(response)
 
 if __name__ == "__main__":
