@@ -27,126 +27,61 @@ public class P2PConverter {
 
         List<Object> vmList = Converter.jsonString2List(plannerOutputJson);
 
-        String provisionerScalingMode = "fixed";
-        for (Object element : vmList) {
-            Map<String, Object> map = null;
-            if (element instanceof Map) {
-                map = (Map<String, Object>) element;
-            } else if (element instanceof String) {
-                map = Converter.jsonString2Map((String) element);
-            }
-
-            if (map != null && map.containsKey("scaling_mode")) {
-                String scalingMode = (String) map.get("scaling_mode");
-                if (!scalingMode.equals("single")) {
-                    provisionerScalingMode = "scaling";
-                    break;
-                }
-            }
-        }
-
         TopTopology topTopology = new TopTopology();
-        SubTopology subTopology = null;
-        switch (cloudProvider.trim().toLowerCase()) {
-            case "ec2":
-                subTopology = new EC2SubTopology();
-                break;
-            case "egi":
-                subTopology = new EGISubTopology();
-                break;
-            default:
-                Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
-                return null;
-        }
+        topTopology.publicKeyPath = null;
+        topTopology.userName = userName;
+        topTopology.topologies = new ArrayList<>();
+
+        boolean firstVM = true;
         SubTopologyInfo sti = new SubTopologyInfo();
+        String provisionerScalingMode = "fixed";
+        SubTopology subTopology = createSubTopology(cloudProvider);
         sti.cloudProvider = cloudProvider;
         sti.topology = UUID.randomUUID().toString();
         sti.domain = domainName;
         sti.status = "fresh";
         sti.tag = provisionerScalingMode;
 
-        topTopology.publicKeyPath = null;
-        topTopology.userName = userName;
-
-        if (cloudProvider.trim().toLowerCase().equals("ec2")) {
-            Subnet s = new Subnet();
-            s.name = "s1";
-            s.subnet = "192.168.10.0";
-            s.netmask = "255.255.255.0";
-            subTopology.subnets = new ArrayList<>();
-            subTopology.subnets.add(s);
-        }
-
-        switch (cloudProvider.trim().toLowerCase()) {
-            case "ec2":
-                ((EC2SubTopology) subTopology).components = new ArrayList<>();
-                break;
-            case "egi":
-                ((EGISubTopology) subTopology).components = new ArrayList<>();
-                break;
-            default:
-                Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
-                return null;
-        }
-
-        boolean firstVM = true;
+        Map<String, SubTopologyInfo> subTopologyInfos = new HashMap<>();
         for (Object element : vmList) {
-            Map<String, Object> map = null;
-            if (element instanceof Map) {
-                map = (Map<String, Object>) element;
-            } else if (element instanceof String) {
-                map = Converter.jsonString2Map((String) element);
-            }
-            
-            VM curVM;
-            switch (cloudProvider.trim().toLowerCase()) {
-                case "ec2":
-                    curVM = new EC2VM();
-                    break;
-                case "egi":
-                    curVM = new EGIVM();
-                    break;
-                default:
-                    Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
-                    return null;
-            }
-            curVM.name = (String) map.get("name");
-            curVM.type = (String) map.get("type");
-            curVM.OStype = ((Map<String, String>) map.get("os")).get("distribution") + " " + ((Map<String, Double>) map.get("os")).get("os_version");
-//            curVM.clusterType = clusterType;
-//            curVM.dockers = curValue.getDocker();
-            curVM.nodeType = getSize((Map<String, String>) map.get("host"), cloudProvider);
+            VM vm = createVM(element, cloudProvider, firstVM);
+            firstVM = false;
 
-//                Eth eth = new Eth();
-//                eth.name = "p1";
-//                eth.subnetName = "s1";
-//                int hostNum = 10 + vi;
-//                String priAddress = "192.168.10." + hostNum;
-//                eth.address = priAddress;
-//                curVM.ethernetPort = new ArrayList<Eth>();
-//                curVM.ethernetPort.add(eth);           
-            if (firstVM) {
-                curVM.role = "master";
-                firstVM = false;
+            if (isScalable(element)) {
+                sti = new SubTopologyInfo();
+                subTopology = createSubTopology(cloudProvider);
+                provisionerScalingMode = "scaling";
+                sti.cloudProvider = cloudProvider;
+                sti.topology = UUID.randomUUID().toString();
+                sti.domain = domainName;
+                sti.status = "fresh";
+                sti.tag = provisionerScalingMode;
             } else {
-                curVM.role = "slave";
+                for (SubTopologyInfo info : subTopologyInfos.values()) {
+                    if (!info.tag.equals("scaling")) {
+                        sti = info;
+                        subTopology = sti.subTopology;
+                        break;
+                    }
+                }
             }
-            switch (cloudProvider.trim().toLowerCase()) {
-                case "ec2":
-                    ((EC2SubTopology) subTopology).components.add((EC2VM) curVM);
-                    break;
-                case "egi":
-                    ((EGISubTopology) subTopology).components.add((EGIVM) curVM);
-                    break;
-                default:
-                    Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
-                    return null;
+            subTopology = addVMToSubTopology(cloudProvider, vm, subTopology);
+            
+            if (cloudProvider.trim().toLowerCase().equals("ec2")) {
+                Subnet s = new Subnet();
+                s.name = "s1";
+                s.subnet = "192.168.10.0";
+                s.netmask = "255.255.255.0";
+                subTopology.subnets = new ArrayList<>();
+                subTopology.subnets.add(s);
             }
-        }
-        sti.subTopology = subTopology;
+            sti.subTopology = subTopology;
+            subTopologyInfos.put(sti.topology, sti);
 
-        topTopology.topologies = new ArrayList<>();
-        topTopology.topologies.add(sti);
+        }
+        for (SubTopologyInfo info : subTopologyInfos.values()) {
+            topTopology.topologies.add(info);
+        }
 
         SimplePlanContainer spc = generateInfo(topTopology);
 
@@ -183,5 +118,97 @@ public class P2PConverter {
                 return null;
         }
 
+    }
+
+    private static VM createVM(Object element, String cloudProvider, boolean firstVM) throws JSONException, IOException {
+        VM curVM;
+        switch (cloudProvider.trim().toLowerCase()) {
+            case "ec2":
+                curVM = new EC2VM();
+                break;
+            case "egi":
+                curVM = new EGIVM();
+                break;
+            default:
+                Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
+                return null;
+        }
+        Map<String, Object> map = null;
+        if (element instanceof Map) {
+            map = (Map<String, Object>) element;
+        } else if (element instanceof String) {
+            map = Converter.jsonString2Map((String) element);
+        }
+        curVM.name = (String) map.get("name");
+        curVM.type = (String) map.get("type");
+        curVM.OStype = ((Map<String, String>) map.get("os")).get("distribution") + " " + ((Map<String, Double>) map.get("os")).get("os_version");
+//            curVM.clusterType = clusterType;
+//            curVM.dockers = curValue.getDocker();
+        curVM.nodeType = getSize((Map<String, String>) map.get("host"), cloudProvider);
+
+//                Eth eth = new Eth();
+//                eth.name = "p1";
+//                eth.subnetName = "s1";
+//                int hostNum = 10 + vi;
+//                String priAddress = "192.168.10." + hostNum;
+//                eth.address = priAddress;
+//                curVM.ethernetPort = new ArrayList<Eth>();
+//                curVM.ethernetPort.add(eth);           
+        if (firstVM) {
+            curVM.role = "master";
+        } else {
+            curVM.role = "slave";
+        }
+
+        return curVM;
+    }
+
+    private static SubTopology createSubTopology(String cloudProvider) {
+        SubTopology subTopology;
+        switch (cloudProvider.trim().toLowerCase()) {
+            case "ec2":
+                subTopology = new EC2SubTopology();
+                ((EC2SubTopology) subTopology).components = new ArrayList<>();
+                break;
+            case "egi":
+                subTopology = new EGISubTopology();
+                ((EGISubTopology) subTopology).components = new ArrayList<>();
+                break;
+            default:
+                Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
+                return null;
+        }
+        return subTopology;
+    }
+
+    private static SubTopology addVMToSubTopology(String cloudProvider, VM vm, SubTopology subTopology) {
+        switch (cloudProvider.trim().toLowerCase()) {
+            case "ec2":
+                ((EC2SubTopology) subTopology).components.add((EC2VM) vm);
+                break;
+            case "egi":
+                ((EGISubTopology) subTopology).components.add((EGIVM) vm);
+                break;
+            default:
+                Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
+//                    return null;
+            }
+        return subTopology;
+    }
+
+    private static boolean isScalable(Object element) throws JSONException, IOException {
+        Map<String, Object> map = null;
+        if (element instanceof Map) {
+            map = (Map<String, Object>) element;
+        } else if (element instanceof String) {
+            map = Converter.jsonString2Map((String) element);
+        }
+        if (map != null && map.containsKey("scaling_mode")) {
+            String scalingMode = (String) map.get("scaling_mode");
+            if (!scalingMode.equals("single")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
