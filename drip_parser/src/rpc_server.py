@@ -82,7 +82,7 @@ def handle_delivery(message):
 
 def test_local():
     home = expanduser("~")
-    transformer = DockerComposeTransformer(home+"/workspace/DRIP/docs/input_tosca_files/Matej.BEIA.yml")
+    transformer = DockerComposeTransformer(home+"/workspace/DRIP/docs/input_tosca_files/BEIAv3.yml")
     compose =  transformer.getnerate_compose()
     print yaml.dump(compose)
     response = {}

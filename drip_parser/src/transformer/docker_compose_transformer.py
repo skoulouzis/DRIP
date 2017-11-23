@@ -63,9 +63,16 @@ class DockerComposeTransformer:
         for prop in properties:
             if prop == 'Environment_variables' or prop == 'Live_variables' or prop =='Environment':
                 for var in properties[prop]:
-                    environment ={}
-                    environment[var] = properties[prop][var]
-                    environments.append(environment)
+                    if 'Environment' in properties[prop]:
+                        for key in properties[prop]['Environment']:
+                            environment ={}
+                            environment[str(key)] = str(properties[prop]['Environment'][key])
+                            environments.append(environment)
+                    else:
+                        environment ={}
+                        environment[str(var)] = str(properties[prop][var])
+                        environments.append(environment)
+#                        environments.append(str(var)+"="+str(properties[prop][var]))
 #            if properties[prop] and not isinstance(properties[prop],dict):
 #                environment.append(prop+"="+str(properties[prop]))
         return environments
@@ -140,7 +147,7 @@ class DockerComposeTransformer:
         docker_types  = self.get_docker_types()
         node_templates =  self.get_node_templates() 
         services = {}
-        services['version'] = '2'
+#        services['version'] = '2'
         services['services'] = {}
         all_volumes = []
         for node_template_key in node_templates:
@@ -162,7 +169,9 @@ class DockerComposeTransformer:
                     properties = self.get_properties(node_templates[node_template_key])
                     environment = self.get_enviroment_vars(properties)
                     if environment:
-                        service['environment'] = environment
+                        for env in environment:
+                            service['environment'] = env
+#                        service['environment'] = environment
                     
                     port_maps = self.get_port_map(properties)
                     if port_maps:
