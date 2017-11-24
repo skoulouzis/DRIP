@@ -21,6 +21,7 @@ import paramiko, os
 from vm_info import VmInfo
 import logging
 from drip_logging.drip_logging_handler import *
+import multiprocessing
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):

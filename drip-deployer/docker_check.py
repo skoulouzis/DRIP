@@ -72,6 +72,7 @@ def docker_check(vm, compose_name):
         stdin, stdout, stderr = ssh.exec_command(cmd)
         stack_ps_resp = stdout.readlines()
         services_info = []
+        services_ids = []
         nodes_hostname = set()
         for i in stack_ps_resp:      
             line = get_resp_line(i)
@@ -88,6 +89,7 @@ def docker_check(vm, compose_name):
                         json_dict = json.loads(json_dict)
                 nodes_hostname.add(json_dict['node'])
                 services_info.append(json_dict)
+                services_ids.append(json_dict['ID'])
         json_response ['services_info'] = services_info
         
         stack_format = '\'{"ID":"{{.ID}}","name":"{{.Name}}","mode":"{{.Mode}}","replicas":"{{.Replicas}}","image":"{{.Image}}"}\''
@@ -102,15 +104,12 @@ def docker_check(vm, compose_name):
                 json_dict = json.loads(line)
                 if not isinstance(json_dict, dict):
                      json_dict = json.loads(json_dict)
-                
                 stack_info.append(json_dict)
         json_response ['stack_info'] = stack_info
         
         cmd = 'sudo docker node inspect '
         for hostname in nodes_hostname:
-             cmd += ' '+hostname
-        
-        
+             cmd += ' '+hostname        
         stdin, stdout, stderr = ssh.exec_command(cmd)
         inspect_resp = stdout.readlines()
         
@@ -119,10 +118,28 @@ def docker_check(vm, compose_name):
             line = i.rstrip("\n\r").encode()
             if line:
                 response_str+=line
-        json_dict = {}    
+        json_dict = {}  
         response_str =  response_str.rstrip("\n\r").strip(' \t\n\r').strip().encode('string_escape')
         json_dict = json.loads(response_str)
         json_response['nodes_info'] = json_dict
+        
+        #"{{.Status.ContainerStatus.ContainerID}}"
+        cmd = 'sudo docker inspect '
+        for id in services_ids:
+             cmd += ' '+id 
+             
+        stdin, stdout, stderr = ssh.exec_command(cmd)
+        inspect_resp = stdout.readlines()             
+             
+        response_str = ""
+        for i in inspect_resp:
+            line = i.rstrip("\n\r").encode()
+            if line:
+                response_str+=line
+        json_dict = {}  
+        response_str =  response_str.rstrip("\n\r").strip(' \t\n\r').strip().encode('string_escape')
+        json_dict = json.loads(response_str)
+        json_response['inspect_info'] = json_dict             
         
         
         logger.info("Finished docker info services on: "+vm.ip)                

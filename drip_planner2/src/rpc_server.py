@@ -99,14 +99,14 @@ def handle_delivery(message):
     return json.dumps(response)
 
 if __name__ == "__main__":
-    home = expanduser("~")
-    planner = DumpPlanner(home+"/workspace/DRIP/docs/input_tosca_files/BEIAv3.yml")
-    print planner.plan()
-#    logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2]) 
-#    channel = init_chanel(sys.argv)
-#    global queue_name
-#    queue_name = sys.argv[2]
-#    start(channel)
+#    home = expanduser("~")
+#    planner = DumpPlanner(home+"/workspace/DRIP/docs/input_tosca_files/BEIAv3.yml")
+#    print planner.plan()
+    logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2]) 
+    channel = init_chanel(sys.argv)
+    global queue_name
+    queue_name = sys.argv[2]
+    start(channel)
     
     
 #            

@@ -21,6 +21,8 @@ import paramiko, os
 from vm_info import VmInfo
 import logging
 from drip_logging.drip_logging_handler import *
+import multiprocessing
+
 
 
 logger = logging.getLogger(__name__)
@@ -71,7 +73,7 @@ def install_manager(vm):
 	retry=0
 	return ret
 
-def install_worker(join_cmd, vm):
+def install_worker(join_cmd, vm,return_dict):
 	try:
 		logger.info("Starting swarm worker installation on: "+(vm.ip))
 		paramiko.util.log_to_file("deployment.log")
@@ -82,6 +84,7 @@ def install_worker(join_cmd, vm):
 		temp_list1 = stdout.readlines()
 		if temp_list1[0].find("Swarm: active") != -1: 
                     logger.info("Swarm worker arleady installated on: "+(vm.ip)+" Skiping")
+                    return_dict[vm.ip] = "SUCCESS"
                     return "SUCCESS"
 		stdin, stdout, stderr = ssh.exec_command("sudo docker swarm leave --force")
 		stdout.read()
@@ -95,14 +98,18 @@ def install_worker(join_cmd, vm):
                     retry+=1
                     return install_worker(join_cmd, vm)            
 		logger.error(vm.ip + " " + str(e))
+		return_dict[vm.ip] = "ERROR:"+vm.ip+" "+str(e)
 		return "ERROR:" + vm.ip + " " + str(e)
 	ssh.close()
 	retry=0
+	return_dict[vm.ip] = "SUCCESS"
 	return "SUCCESS"
 
 def run(vm_list,rabbitmq_host,owner):
         rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
         logger.addHandler(rabbit)
+        
+
 	for i in vm_list:
 		if i.role == "master":
 			join_cmd = install_manager(i)
@@ -115,11 +122,21 @@ def run(vm_list,rabbitmq_host,owner):
 			swarm_string = swarm_file.read()
 			swarm_file.close()
 			break
-
+        
+        manager = multiprocessing.Manager()
+        return_dict = manager.dict()
+        jobs = []
 	for i in vm_list:
 		if i.role == "slave":
-			worker_cmd = install_worker(join_cmd, i)
-			if "ERROR:" in worker_cmd:
-				return worker_cmd
+                        p = multiprocessing.Process(target=install_worker, args=(join_cmd, i,return_dict,))
+                        jobs.append(p)
+                        p.start()
+			#worker_cmd = install_worker(join_cmd, i)
+			#if "ERROR:" in worker_cmd:
+				#return worker_cmd
 
+        for proc in jobs:
+            proc.join()
+        
+        if "ERROR" in return_dict.values(): return "ERROR"
 	return swarm_string

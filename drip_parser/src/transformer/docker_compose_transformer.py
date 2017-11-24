@@ -59,7 +59,7 @@ class DockerComposeTransformer:
             return node['properties']
     
     def get_enviroment_vars(self,properties):
-        environments = []
+        environments = {}
         for prop in properties:
             if prop == 'Environment_variables' or prop == 'Live_variables' or prop =='Environment':
                 for var in properties[prop]:
@@ -67,11 +67,11 @@ class DockerComposeTransformer:
                         for key in properties[prop]['Environment']:
                             environment ={}
                             environment[str(key)] = str(properties[prop]['Environment'][key])
-                            environments.append(environment)
+                            environments.update(environment)
                     else:
                         environment ={}
                         environment[str(var)] = str(properties[prop][var])
-                        environments.append(environment)
+                        environments.update(environment)
 #                        environments.append(str(var)+"="+str(properties[prop][var]))
 #            if properties[prop] and not isinstance(properties[prop],dict):
 #                environment.append(prop+"="+str(properties[prop]))
@@ -169,10 +169,7 @@ class DockerComposeTransformer:
                     properties = self.get_properties(node_templates[node_template_key])
                     environment = self.get_enviroment_vars(properties)
                     if environment:
-                        for env in environment:
-                            service['environment'] = env
-#                        service['environment'] = environment
-                    
+                        service['environment'] = environment
                     port_maps = self.get_port_map(properties)
                     if port_maps:
                         service['ports'] = port_maps

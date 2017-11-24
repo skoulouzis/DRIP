@@ -42,6 +42,7 @@ import org.json.JSONException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * This controller is responsible for deploying a cluster on provisoned
@@ -150,6 +151,64 @@ public class DeployController {
             throw new NotFoundException();
         }
         return resp;
+    }
+
+    /**
+     * For a given service name returns the container status on all nodes
+     *
+     * @param id
+     * @param serviceName
+     * @return
+     */
+    @RequestMapping(value = "/{id}/container_status", method = RequestMethod.GET, params = {"service_name"})
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 404, condition = "Object not found"),
+        @ResponseCode(code = 200, condition = "Object found")
+    })
+    public @ResponseBody
+    DeployResponse getContainerStatus(@PathVariable("id") String id,
+            @RequestParam(value = "service_name", required = true) String serviceName) {
+        DeployResponse resp = null;
+        try {
+
+            resp = deployService.getContainersStatus(id, serviceName);
+
+        } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
+            Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (resp == null) {
+            throw new NotFoundException();
+        }
+        return resp;
+    }
+
+    
+    /**
+     * Returns the service names running on the cluster
+     * @param id
+     * @return 
+     */
+    @RequestMapping(value = "/{id}/service_names", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 404, condition = "Object not found"),
+        @ResponseCode(code = 200, condition = "Object found")
+    })
+    public @ResponseBody
+    List<String> getContainerStatus(@PathVariable("id") String id) {
+        List<String> names = null;
+        try {
+
+            names = deployService.getServiceNames(id);
+
+        } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
+            Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (names == null) {
+            throw new NotFoundException();
+        }
+        return names;
     }
 
     /**

@@ -626,4 +626,51 @@ public class DeployService {
         return info;
     }
 
+    public List<String> getServiceNames(String id) throws JSONException, IOException, TimeoutException, InterruptedException {
+        DeployResponse resp = findOne(id);
+        if (resp.getManagerType().equals("swarm")) {
+            Map<String, Object> swarmInfo = getSwarmInfo(resp);
+
+            List< Map<String, Object>> stackInfo = (List) swarmInfo.get("stack_info");
+            List<String> serviceNames = new ArrayList<>();
+            for (Map<String, Object> map : stackInfo) {
+                if (map.containsKey("name")) {
+                    serviceNames.add(((String) map.get("name")));
+                }
+            }
+            return serviceNames;
+        }
+        return null;
+    }
+
+    public DeployResponse getContainersStatus(String id, String serviceName) throws JSONException, IOException, TimeoutException, InterruptedException {
+        DeployResponse resp = findOne(id);
+        Map<String, Object> result = new HashMap<>();
+        if (resp.getManagerType().equals("swarm")) {
+            Map<String, Object> swarmInfo = getSwarmInfo(resp);
+
+            List< Map<String, Object>> servicesInfo = (List) swarmInfo.get("services_info");
+            List<String> taskIDs = new ArrayList<>();
+            for (Map<String, Object> map : servicesInfo) {
+                if (map.containsKey("name") && ((String) map.get("name")).startsWith(serviceName)) {
+                    taskIDs.add(((String) map.get("ID")));
+                }
+            }
+            List< Map<String, Object>> inspecInfo = (List) swarmInfo.get("inspect_info");
+            List< Map<String, Object>> inspecInfoResult = new ArrayList<>();
+            for (String taskID : taskIDs) {
+                for (Map<String, Object> map : inspecInfo) {
+                    if (map.containsKey("ID") && ((String) map.get("ID")).startsWith(taskID)) {
+                        inspecInfoResult.add((Map<String, Object>) map.get("Status"));
+                    }
+                }
+            }
+            result.put("inspect_info", inspecInfoResult);
+            resp.setManagerInfo(result);
+            resp.setKey(null);
+            resp.setScale(null);
+        }
+        return resp;
+    }
+
 }

@@ -21,6 +21,7 @@ import paramiko, os
 import threading
 import logging
 from drip_logging.drip_logging_handler import *
+import multiprocessing
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
@@ -34,7 +35,7 @@ if not getattr(logger, 'handler_set', None):
 
 retry=0
 
-def install_engine(vm):
+def install_engine(vm,return_dict):
 	try:
 		logger.info("Starting docker engine installation on: "+(vm.ip))
 		paramiko.util.log_to_file("deployment.log")
@@ -47,6 +48,7 @@ def install_engine(vm):
 		for i in temp_list: temp_str += i
 		if temp_str.find("docker") != -1:
                     logger.info("Docker engine arleady installated on: "+(vm.ip)+" Skiping")
+                    return_dict[vm.ip] = "SUCCESS"
                     return "SUCCESS"
 		sftp = ssh.open_sftp()
 		sftp.chdir('/tmp/')
@@ -61,18 +63,32 @@ def install_engine(vm):
                 if retry < 10:
                     logger.warning(vm.ip + " " + str(e)+". Retrying")
                     retry+=1
-                    return install_engine(vm)
+                    return install_engine(vm,procnum)
                 
 		logger.error(vm.ip + " " + str(e))
+                return_dict[vm.ip] = "ERROR:"+vm.ip+" "+str(e)
 		return "ERROR:"+vm.ip+" "+str(e)
 	ssh.close()
 	retry=0
+        return_dict[vm.ip] = "SUCCESS"
 	return "SUCCESS"
 
 def run(vm_list,rabbitmq_host,owner):
     rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
     logger.addHandler(rabbit)
+    
+    manager = multiprocessing.Manager()
+    return_dict = manager.dict()
+    jobs = []    
     for i in vm_list:
-            ret = install_engine(i)
-    if "ERROR" in ret: return ret
+        #ret = install_engine(i)
+        p = multiprocessing.Process(target=install_engine, args=(i,return_dict,))
+        jobs.append(p)
+        p.start()
+        
+    for proc in jobs:
+        proc.join()
+    if "ERROR" in return_dict.values(): return "ERROR"
+        
+    #if "ERROR" in ret: return ret
     return "SUCCESS"
