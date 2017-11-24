@@ -199,9 +199,7 @@ public class DeployController {
     List<String> getContainerStatus(@PathVariable("id") String id) {
         List<String> names = null;
         try {
-
             names = deployService.getServiceNames(id);
-
         } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
             Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
         }
