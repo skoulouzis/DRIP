@@ -83,19 +83,29 @@ class DockerComposeTransformer:
         port_maps = []
         if 'ports_mapping' in properties:
             ports_mappings = properties['ports_mapping']
-            for port_map_key in ports_mappings:
-                port_map = {}
-                host_port =  ports_mappings[port_map_key]['host_port']
-                if not isinstance(host_port, (int, long, float, complex)) and '$' in host_port:
-                    host_port_var =  host_port.replace('${','').replace('}','')
-                    host_port = properties[host_port_var]
+            if ports_mappings:
+                for port_map_key in ports_mappings:
+                    port_map = {}
+                    if isinstance(ports_mappings,dict):                       
+                        if 'host_port' in ports_mappings[port_map_key]:
+                            host_port =  ports_mappings[port_map_key]['host_port']
+                            if not isinstance(host_port, (int, long, float, complex)) and '$' in host_port:
+                                host_port_var =  host_port.replace('${','').replace('}','')
+                                host_port = properties[host_port_var]
 
-                container_port =  ports_mappings[port_map_key]['container_port']
-                if not isinstance(container_port, (int, long, float, complex)) and '$' in container_port:
-                    container_port_var =  container_port.replace('${','').replace('}','')
-                    container_port = properties[container_port_var]
-                port_map[host_port] = container_port
-                port_maps.append(port_map)
+                        if  'container_port' in ports_mappings[port_map_key]:
+                            container_port =  ports_mappings[port_map_key]['container_port']
+                            if not isinstance(container_port, (int, long, float, complex)) and '$' in container_port:
+                                container_port_var =  container_port.replace('${','').replace('}','')
+                                container_port = properties[container_port_var]
+                            port_map[host_port] = container_port
+                        port_maps.append(port_map)
+                    elif isinstance(ports_mappings,list):      
+                        for mapping in ports_mappings:
+                            host_port = mapping.split(":")[0]
+                            container_port = mapping.split(":")[1]
+                            port_map[host_port] = container_port      
+                            port_maps.append(port_map)
         if 'in_ports' in properties:
             ports_mappings = properties['in_ports']
             for port_map_key in ports_mappings:
