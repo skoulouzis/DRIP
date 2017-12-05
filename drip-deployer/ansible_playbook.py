@@ -99,7 +99,7 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
 
     Options = namedtuple('Options', ['listtags', 'listtasks', 'listhosts', 'syntax', 'connection','module_path', 'forks', 'remote_user', 'private_key_file', 'ssh_common_args', 'ssh_extra_args', 'sftp_extra_args', 'scp_extra_args', 'become', 'become_method', 'become_user', 'verbosity', 'check','host_key_checking'])
 
-    options = Options(listtags=False, listtasks=False, listhosts=False, syntax=False, connection='smart', module_path=None, forks=None, remote_user=user, private_key_file=ssh_key_file, ssh_common_args=None, ssh_extra_args=None, sftp_extra_args=None, scp_extra_args=None, become=True, become_method='sudo', become_user='root', verbosity=None, check=False , host_key_checking=False)
+    options = Options(listtags=False, listtasks=False, listhosts=False, syntax=False, connection='smart', module_path=None, forks=None, remote_user=user, private_key_file=ssh_key_file, ssh_common_args='', ssh_extra_args='', sftp_extra_args=None, scp_extra_args=None, become=True, become_method='sudo', become_user='root', verbosity=None, check=False , host_key_checking=False)
     
     variable_manager.extra_vars = extra_vars
     
@@ -117,19 +117,22 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
     ok = results_callback.host_ok
     answer = []
     for res in ok:
-        resp = json.dumps({"host":res['ip'], "result":res['result']._result})
+        resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']._task})
+        logger.info(resp)
         answer.append({"host":res['ip'], "result":res['result']._result})
         
 
     unreachable = results_callback.host_unreachable
     for res in unreachable:
-        resp = json.dumps({"host":res['ip'], "result":res['result']._result})
+        resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']._task})
+        logger.info(resp)
         answer.append({"host":res['ip'], "result":res['result']._result})
         
 
     host_failed = results_callback.host_failed
     for res in host_failed:
-        resp = json.dumps({"host":res['ip'], "result":res['result']._result})
+        resp = json.dumps({"host":res['ip'], "result":res['result']._result, "task":res['task']._task})
+        logger.info(resp)
         answer.append({"host":res['ip'], "result":res['result']._result})
 
     return json.dumps(answer)
