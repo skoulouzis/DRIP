@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PathVariable;
 import nl.uva.sne.drip.api.exception.BadRequestException;
+import nl.uva.sne.drip.api.service.ConfigurationService;
 import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,6 +57,9 @@ public class ToscaController {
 
     @Autowired
     private ToscaService toscaService;
+
+    @Autowired
+    private ConfigurationService configurationService;
 
     @RequestMapping(value = "/post", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -152,7 +156,8 @@ public class ToscaController {
     public @ResponseBody
     String transform(@PathVariable("id") String id, @RequestParam(value = "type") String type) {
         try {
-            return toscaService.transform(id, type);
+            String ymlContents = toscaService.transform(id, type);
+            return configurationService.saveStringContents(ymlContents);
         } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
             Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -1,85 +1,145 @@
 version: '3'
 
 services:
-    telegreen:
-        build:
-            context: ../software/telegreen
-        image: beia/telegreen
-        ports:
-         - "8080:80"
+    graphite:
+        restart: always
+        image: vladwing/graphite
+        volumes:
+         - graphite_data:/opt/graphite/storage
         environment:
-         - MYSQL_ROOT_PASSWORD=doesntmatter
-         - MYSQL_DATABASE=telegreen
-         - MYSQL_USER=telegreen
-         - MYSQL_PASSWORD=password
-         - MYSQL_HOST=telegreen_db
+         - VIRTUAL_HOST=graphite.beia.switch
+        networks:
+         - web
+         - graphite
+    grafana:
+        restart: always
+        image: grafana/grafana
+        environment:
+         - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-secret}
+         - VIRTUAL_HOST=grafana.beia.switch
+        volumes:
+         - grafana_data:/var/lib/grafana
         depends_on:
-         - telegreen_db
+         - graphite
         networks:
-         - db
-         - monitoring
-         - external
-    telegreen_db:
-        build:
-            context: ../software/database
-        image: beia/telegreen_db
+         - web
+    monitoring_server:
+        image: salmant/ul_monitoring_server_container_image
+        ports:
+         - "8080:8080"
+         - "4242:4242"
+         - "4245:4245"
+         - "7199:7199"
+         - "7000:7000"
+         - "7001:7001"
+         - "9160:9160"
+         - "9042:9042"
+         - "8012:8012"
+         - "61621:61621"
         environment:
-         - MYSQL_ROOT_PASSWORD=doesntmatter
-         - MYSQL_DATABASE=telegreen
-         - MYSQL_USER=telegreen
-         - MYSQL_PASSWORD=password
-         - MYSQL_HOST=telegreen_db
+         - MONITORING_SERVER=monitoring_server
+         - VIRTUAL_HOST=jcatascopia.beia.switch
+         - VIRTUAL_PORT=8080
         networks:
-         - db
-         - monitoring
+         - asap
+         - web
+    monitoring_adapter:
+        restart: always
+        image: beia/monitoring_adapter
+        environment:
+         - GRAPHITE_SERVER=graphite
+         - MONITORING_PREFIX=eu.beia.switch
+         - MONITORING_SERVER=${MONITORING_SERVER:-monitoring_server}
+        depends_on:
+         - graphite
+         - monitoring_server
+        networks:
+         - graphite
+         - data
+         - asap
+    data_collector:
+        image: beia/data_collector
+        environment:
+         # - CONFIG=config
+         - STATSD_HOST=monitoring_adapter
+        depends_on:
+         # - config
+         - monitoring_adapter
+        networks:
+         # - config
+         - data
     alerter:
-        build:
-            context: ../software/samplegen
-        image: beia/alerter
-        command:
-         - "/srv/beia/scripts/run-node.sh /srv/beia/samplegen app/AlerterApp.class.js"
         image: beia/alerter
         environment:
-         - MYSQL_ROOT_PASSWORD=doesntmatter
-         - MYSQL_DATABASE=telegreen
-         - MYSQL_USER=telegreen
-         - MYSQL_PASSWORD=password
-         - MYSQL_HOST=telegreen_db
+          # - CONFIG=config
+          - STATSD_HOST=monitoring_adapter
+          - VIRTUAL_HOST=alerter.beia.switch
+          - NOTIFICATION_SERVICE=notify
         depends_on:
-         - telegreen_db
+         - notify
+         # - config
         networks:
-         - db
-         - external
-    samplegen:
-        build:
-            context: ../software/samplegen
-        image: beia/samplegen
-        command:
-         - "/srv/beia/scripts/run-node.sh /srv/beia/samplegen app/SampleGeneratorApp.class.js"
+         # - config
+         - web
+         - data
+    # config:
+    #     image: beia/config_manager
+    #     environment:
+    #      - TOSCA_URL=${TOSCA_URL:-http://www.google.com}
+    #     networks:
+    #      - config
+    web:
+        image: jwilder/nginx-proxy
         ports:
-         - "8128:8000"
+         - "80:80/tcp"
+        volumes:
+         - /var/run/docker.sock:/tmp/docker.sock:ro
+        networks:
+         - web
+    notify:
+        image: beia/notify
         environment:
-         - MYSQL_ROOT_PASSWORD=doesntmatter
-         - MYSQL_DATABASE=telegreen
-         - MYSQL_USER=telegreen
-         - MYSQL_PASSWORD=password
-         - MYSQL_HOST=telegreen_db
         depends_on:
-         - telegreen_db
+         - monitoring_adapter
+         - notify_asterisk
+         - notify_redis
+        environment:
+        # - CONFIG=config
+         - ARI_URL=http://notify_asterisk:8088
+         - ARI_USERNAME=ari_user
+         - ARI_PASSWORD=ari_secret
+         - REDIS_HOST=notify_redis
+         - REDIS_PORT=6379
+         - DEFAULT_SIP=sipserver
+         - MONITORING_ADAPTER=monitoring_adapter
         networks:
-         - db
-         - external
-    beia_mon:
-        build:
-            context: ../software/monitoring
-        image: beia/monitoring
-        depends_on:
-         - telegreen
-         - telegreen_db
+         # - config
+         - data
+         - sip
+    notify_asterisk:
+        image: beia/asterisk
+        environment:
+         - SIP_USERNAME=${SIP_USERNAME}
+         - SIP_HOST=${SIP_HOST}
+         - SIP_PORT=${SIP_PORT:-26999}
+         - SIP_SECRET=${SIP_SECRET}
+         - SIP_EXTENSION=${SIP_EXTENSION}
+         - SIP_PEERNAME=sipserver
+         - ARI_USERNAME=ari_user
+         - ARI_SECRET=ari_secret
         networks:
-         - monitoring
-         - external
+         - sip
+    notify_redis:
+        image: redis:alpine
+        networks:
+         - sip
+volumes:
+ graphite_data:
+ grafana_data:
 networks:
-    db:
-    external:
-    monitoring:
+ # config:
+ data:
+ web:
+ graphite:
+ sip:
+ asap:

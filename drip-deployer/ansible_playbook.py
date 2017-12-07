@@ -117,23 +117,23 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
     ok = results_callback.host_ok
     answer = []
     for res in ok:
-        resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']._task})
+        resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         logger.info(resp)
-        answer.append({"host":res['ip'], "result":res['result']._result})
+        answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         
 
     unreachable = results_callback.host_unreachable
     for res in unreachable:
-        resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']._task})
+        resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         logger.info(resp)
-        answer.append({"host":res['ip'], "result":res['result']._result})
+        answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         
 
     host_failed = results_callback.host_failed
     for res in host_failed:
-        resp = json.dumps({"host":res['ip'], "result":res['result']._result, "task":res['task']._task})
+        resp = json.dumps({"host":res['ip'], "result":res['result']._result, "task":res['task']})
         logger.info(resp)
-        answer.append({"host":res['ip'], "result":res['result']._result})
+        answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
 
     return json.dumps(answer)
 
