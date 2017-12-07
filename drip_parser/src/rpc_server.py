@@ -98,12 +98,12 @@ def test_local():
     print response
 
 if __name__ == "__main__":
-    test_local()
-#    print sys.argv
-#    channel = init_chanel(sys.argv)
-#    global queue_name
-#    queue_name = sys.argv[2]
-#    start(channel)
+#    test_local()
+    print sys.argv
+    channel = init_chanel(sys.argv)
+    global queue_name
+    queue_name = sys.argv[2]
+    start(channel)
 
 
 #    try:
