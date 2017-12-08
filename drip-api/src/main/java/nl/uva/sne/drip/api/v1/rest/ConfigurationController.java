@@ -39,8 +39,8 @@ import nl.uva.sne.drip.api.service.UserService;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
- * This controller is responsible for storing PlayBook descriptions that can be
- * used by the planner.
+ * This controller is responsible for managing deployment configurations used 
+ * by the deployer. Currently docker-compose.yml and ansible playbooks are supported.
  *
  * @author S. Koulouzis
  */
@@ -78,7 +78,7 @@ public class ConfigurationController {
     }
 
     /**
-     * Uploads and stores a PlayBook description file
+     * Uploads and stores a configuration file
      *
      * @param file. The PlayBook description file
      * @return the ID of the PlayBook description
@@ -87,7 +87,8 @@ public class ConfigurationController {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
         @ResponseCode(code = 200, condition = "Successful upload"),
-        @ResponseCode(code = 400, condition = "Didn't upload (multipart) file or contents are not valid (e.g. not a yaml format)")
+        @ResponseCode(code = 400, condition = "Didn't upload (multipart) file or "
+                + "contents are not valid (e.g. not a yaml format)")
     })
     public @ResponseBody
     String toscaUpload(@RequestParam("file") MultipartFile file) {
@@ -102,11 +103,11 @@ public class ConfigurationController {
     }
 
     /**
-     * Gets the PlayBook description.
+     * Gets the configuration contents.
      *
-     * @param id the ID PlayBook description.
+     * @param id the ID configuration contents.
      * @param format. the format to display the PlayBook description.
-     * @return the PlayBook description.
+     * @return the configuration contents. 
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"format"})
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -125,10 +126,10 @@ public class ConfigurationController {
     }
 
     /**
-     * Deletes the PlayBook description.
+     * Deletes the configuration 
      *
-     * @param id. The ID of PlayBook description to delete.
-     * @return The ID of the deleted PlayBook description.
+     * @param id. The ID of configuration
+     * @return The ID of the deleted configuration
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -147,7 +148,7 @@ public class ConfigurationController {
     }
 
     /**
-     * Gets the IDs of all the stored PlayBook descriptions.
+     * Gets the IDs of all the stored configuration
      *
      * @return a list of all the IDs
      */

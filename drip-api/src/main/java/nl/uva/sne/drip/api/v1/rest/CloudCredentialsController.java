@@ -162,7 +162,6 @@ public class CloudCredentialsController {
     })
     public @ResponseBody
     CloudCredentials get(@PathVariable("id") String id) {
-//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CloudCredentials cc = cloudCredentialsService.findOne(id);
         if (cc == null) {
             throw new NotFoundException();
@@ -234,7 +233,6 @@ public class CloudCredentialsController {
         List<String> keyIDs = new ArrayList<>();
         keyIDs.add("58da4c91f7b43a3282cacdbb");
         keyIDs.add("58da4d2af7b43a3282cacdbd");
-//        cloudCredentials.setKeyIDs(keyIDs);
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("myProxyEndpoint", "myproxy.egee.host.com");
         attributes.put("trustedCertificatesURL", "https://dist.eugridpma.info/distribution/igtf/current/accredited/igtf-preinstalled-bundle-classic.tar.gz");

@@ -149,7 +149,7 @@ public class ToscaController {
      *
      * @param id the ID TOSCA description.
      * @param type. Transform it to a specific type e.g. "docker_compose"
-     * @return the docker-compose.
+     * @return the docker-compose ID.
      */
     @RequestMapping(value = "/transform/{id}", method = RequestMethod.GET, params = {"type"})
     @RolesAllowed({UserService.USER, UserService.ADMIN})

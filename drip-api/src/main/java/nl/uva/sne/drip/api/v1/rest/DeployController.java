@@ -91,6 +91,11 @@ public class DeployController {
         }
     }
 
+    /**
+     * Scales deployment  
+     * @param scaleRequest
+     * @return 
+     */
     @RequestMapping(value = "/scale", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
