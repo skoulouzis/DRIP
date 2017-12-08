@@ -134,7 +134,8 @@ services:
         - REDIS_PORT=${REDIS_PORT:-6379}
         - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
         - DEFAULT_SIP=${DEFAULT_SIP:-${SIP_PEERNAME}}
-        - MONITORING_ADAPTER = monitoring_server
+        - MONITORING_SERVER = monitoring_server
+        - MONITORING_ADAPTER = monitoring_adapter
        ports:
         - "8001:80/tcp"
 
