@@ -96,50 +96,72 @@ services:
          - /var/run/docker.sock:/tmp/docker.sock:ro
         networks:
          - web
-    notify:
-        image: beia/notify
-        environment:
-        depends_on:
-         - monitoring_adapter
-         - notify_asterisk
-         - notify_redis
-        environment:
-        # - CONFIG=config
-         - ARI_URL=http://notify_asterisk:8088
-         - ARI_USERNAME=ari_user
-         - ARI_PASSWORD=ari_secret
-         - REDIS_HOST=notify_redis
-         - REDIS_PORT=6379
-         - DEFAULT_SIP=sipserver
-         - MONITORING_ADAPTER=monitoring_adapter
-        networks:
-         # - config
-         - data
-         - sip
+
     notify_asterisk:
-        image: beia/asterisk
-        environment:
-         - SIP_USERNAME=${SIP_USERNAME}
-         - SIP_HOST=${SIP_HOST}
-         - SIP_PORT=${SIP_PORT:-26999}
-         - SIP_SECRET=${SIP_SECRET}
-         - SIP_EXTENSION=${SIP_EXTENSION}
-         - SIP_PEERNAME=sipserver
-         - ARI_USERNAME=ari_user
-         - ARI_SECRET=ari_secret
-        networks:
-         - sip
+       # TODO: Add shared storage/volume for sounds
+       restart: always
+       image: dorinelfilip/ast13
+       environment:
+        - SIP_USERNAME=55025
+        - SIP_HOST=sip.clickphone.ro
+        - SIP_PORT=${SIP_PORT:-26999}
+        - SIP_SECRET=beiaSWITCH
+        - SIP_EXTENSION=0310050728
+        - SIP_PEERNAME=clickphone
+        - ARI_USERNAME=${ARI_USERNAME:-admin}
+        - ARI_SECRET=${ARI_SECRET:-changeme}
+       networks:
+        - notify_asterisk
+
+    notify:
+       restart: always
+       image: dorinelfilip/notify
+       depends_on:
+        - notify_asterisk
+        - notify_redis
+       networks:
+        - notify_asterisk
+        - notify_redis
+        - notify
+        - asap
+       environment:
+        - ARI_URL=${ARI_URL:-http://notify_asterisk:8088}
+        - ARI_USERNAME=${ARI_USERNAME:-admin}
+        # Warning! Different ENV variable for notify & Asterisk
+        # TODO: Change
+        - ARI_PASSWORD=${ARI_SECRET:-changeme}
+        - REDIS_HOST=${REDIS_HOST:-notify_redis}
+        - REDIS_PORT=${REDIS_PORT:-6379}
+        - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
+        - DEFAULT_SIP=${DEFAULT_SIP:-${SIP_PEERNAME}}
+        - MONITORING_ADAPTER = monitoring_server
+       ports:
+        - "8001:80/tcp"
+
     notify_redis:
+        restart: always
         image: redis:alpine
+        entrypoint:
+         - redis-server
+         - "--requirepass"
+         # Not the best way to do it, but it is nice since no modification
+         # of the container image is needed
+         - ${REDIS_PASSWORD:-changeme}
         networks:
-         - sip
-volumes:
- graphite_data:
- grafana_data:
+         - notify_redis
+        volumes:
+         - redis_data:/data
+
 networks:
- # config:
- data:
- web:
- graphite:
- sip:
- asap:
+    notify_redis:
+    notify_asterisk:
+    notify:
+    data:
+    web:
+    graphite:
+    asap:
+
+volumes:
+    graphite_data:
+    grafana_data:
+    redis_data:
