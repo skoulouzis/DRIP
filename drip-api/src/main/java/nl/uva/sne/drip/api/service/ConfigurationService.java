@@ -62,10 +62,10 @@ public class ConfigurationService {
         }
         if (fromat != null && fromat.toLowerCase().equals("json")) {
             String jsonStr = Converter.map2JsonString(map);
-            jsonStr = jsonStr.replaceAll("\\uff0E", ".");
             return jsonStr;
         }
         String ymlStr = Converter.map2YmlString(map);
+        ymlStr = ymlStr.replaceAll("\\uff0E", ".");
         ymlStr = cleanup(ymlStr);
         return ymlStr;
     }
@@ -130,9 +130,19 @@ public class ConfigurationService {
     private String cleanup(String ymlStr) {
         ymlStr = ymlStr.replaceAll("\\uff0E", ".");
         ymlStr = ymlStr.replaceAll("\'---':", "---");
-
-        Pattern p = Pattern.compile("cpus:.*,");
+        Pattern p = Pattern.compile("version:.*");
         Matcher match = p.matcher(ymlStr);
+        while (match.find()) {
+            String line = match.group();
+            if (!line.contains("\"") || line.contains("'")) {
+                String number = line.split(": ")[1];
+                ymlStr = ymlStr.replaceAll(number, "\'" + number + "\'");
+            }
+
+        }
+
+        p = Pattern.compile("cpus:.*,");
+        match = p.matcher(ymlStr);
         while (match.find()) {
             String line = match.group();
             if (!line.contains("\"") || line.contains("'")) {

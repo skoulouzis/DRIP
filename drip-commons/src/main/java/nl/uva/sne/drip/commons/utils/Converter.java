@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
@@ -37,7 +38,6 @@ import nl.uva.sne.drip.drip.commons.data.internal.Message;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v0.external.Attribute;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
-import org.yaml.snakeyaml.DumperOptions;
 
 /**
  *
@@ -258,10 +258,9 @@ public class Converter {
             int hex = Constants.BAD_CHARS[i];
             ymlContents = ymlContents.replaceAll(String.valueOf((char) hex), "");
         }
-
         ymlContents = ymlContents.replaceAll("\\.", "\uff0E");
         Map<String, Object> map = null;
-        map = Converter.ymlString2Map(ymlContents);
+        map = ymlString2Map(ymlContents);
         return map;
     }
 

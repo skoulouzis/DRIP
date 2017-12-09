@@ -80,8 +80,8 @@ public class ConfigurationController {
     /**
      * Uploads and stores a configuration file
      *
-     * @param file. The PlayBook description file
-     * @return the ID of the PlayBook description
+     * @param file. The configuration description file
+     * @return the ID of the configuration description
      */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -91,7 +91,7 @@ public class ConfigurationController {
                 + "contents are not valid (e.g. not a yaml format)")
     })
     public @ResponseBody
-    String toscaUpload(@RequestParam("file") MultipartFile file) {
+    String configurationUpload(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             throw new BadRequestException("Must uplaod a file");
         }
@@ -106,7 +106,7 @@ public class ConfigurationController {
      * Gets the configuration contents.
      *
      * @param id the ID configuration contents.
-     * @param format. the format to display the PlayBook description.
+     * @param format. the format to display the configuration description.
      * @return the configuration contents. 
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"format"})
