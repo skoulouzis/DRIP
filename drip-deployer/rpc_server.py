@@ -95,6 +95,12 @@ def handleDelivery(message):
             compose_file = path + "docker-compose.yml"
             if not param["attributes"] == None and not param["attributes"]["name"] == None : 
                 compose_name = param["attributes"]["name"]
+                if 'docker_login' in param["attributes"]:
+                    docker_login = {}
+                    docker_login['username'] = param["attributes"]["docker_login_username"]
+                    docker_login['password'] = param["attributes"]["docker_login_password"]
+                    docker_login['registry'] = param["attributes"]["docker_login_registry"]
+                    docker_login =  param["attributes"]["docker_login"]
             else:
                 current_milli_time = lambda: int(round(time.time() * 1000))
                 compose_name = "service_"+str(current_milli_time())
@@ -117,7 +123,7 @@ def handleDelivery(message):
         if "ERROR" in ret: return ret
         ret = docker_swarm.run(vm_list,rabbitmq_host,owner)
         if "ERROR" in ret: return ret
-        ret = docker_compose.run(vm_list, compose_file, compose_name,rabbitmq_host,owner)
+        ret = docker_compose.run(vm_list, compose_file, compose_name,rabbitmq_host,owner,docker_login)
         return ret
     elif manager_type == "ansible":
         ret = ansible_playbook.run(vm_list,playbook,rabbitmq_host,owner)

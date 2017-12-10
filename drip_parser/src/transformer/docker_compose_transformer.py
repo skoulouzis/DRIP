@@ -29,11 +29,11 @@ class DockerComposeTransformer:
         self.DOCKER_TYPE = 'Switch.nodes.Application.Container.Docker'
         
         
-    def getnerate_compose(self):
+    def getnerate_compose(self,version):
 #        if self.tt:
 #            return self.analize_tosca()
 #        else:
-            return self.analyze_yaml()
+            return self.analyze_yaml(version)
 
     def get_node_types(self):
         return self.yaml_dict_tpl['node_types']
@@ -157,11 +157,11 @@ class DockerComposeTransformer:
                     volumes.append(vol)
             return volumes
     
-    def analyze_yaml(self):
+    def analyze_yaml(self,version):
         docker_types  = self.get_docker_types()
         node_templates =  self.get_node_templates() 
         services = {}
-        services['version'] = '2'
+        services['version'] = version
         services['services'] = {}
         all_volumes = []
         for node_template_key in node_templates:

@@ -54,7 +54,9 @@ import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleOutput;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleResult;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.BenchmarkResult;
@@ -92,6 +94,12 @@ public class DeployService {
 
     @Autowired
     private BenchmarkResultService benchmarkResultService;
+
+    @Autowired
+    private ToscaService toscaService;
+
+    @Autowired
+    private PlannerService plannerService;
 
     private static final String[] CLOUD_SITE_NAMES = new String[]{"domain", "VMResourceID"};
     private static final String[] PUBLIC_ADRESS_NAMES = new String[]{"public_address", "publicAddress"};
@@ -138,9 +146,7 @@ public class DeployService {
     public DeployResponse deploySoftware(DeployRequest deployInfo) throws Exception {
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             Message deployerInvokationMessage = buildDeployerMessages(
-                    deployInfo.getProvisionID(),
-                    deployInfo.getManagerType().toLowerCase(),
-                    deployInfo.getConfigurationID(),
+                    deployInfo,
                     null,
                     null).get(0);
             ;
@@ -167,10 +173,9 @@ public class DeployService {
     }
 
     public Map<String, Object> getSwarmInfo(DeployResponse deployResp) throws JSONException, IOException, TimeoutException, InterruptedException {
+        deployResp.setManagerType("swarm_info");
         Message deployerInvokationMessage = buildDeployerMessages(
-                deployResp.getProvisionID(),
-                "swarm_info",
-                deployResp.getConfigurationID(),
+                deployResp,
                 null,
                 null).get(0);
         Map<String, Object> info;
@@ -185,12 +190,20 @@ public class DeployService {
         return info;
     }
 
-    private List<Message> buildDeployerMessages(String provisionID, String managerType, String configurationID, String serviceName, Integer numOfCont) throws JSONException {
+    private List<Message> buildDeployerMessages(
+            DeployRequest deployInfo,
+            String serviceName,
+            Integer numOfContainers) throws JSONException {
+        String provisionID = deployInfo.getProvisionID();
+        String managerType = deployInfo.getManagerType();
+        String configurationID = deployInfo.getConfigurationID();
+
         ProvisionResponse pro = provisionService.findOne(provisionID);
         if (pro == null) {
             throw new NotFoundException();
         }
         List<String> loginKeysIDs = pro.getDeployerKeyPairIDs();
+
         List<Message> messages = new ArrayList<>();
 //        if (loginKeysIDs == null || loginKeysIDs.isEmpty()) {
 //            List<String> cloudConfIDs = pro.getCloudCredentialsIDs();
@@ -220,12 +233,14 @@ public class DeployService {
         }
 
         if (managerType.toLowerCase().equals("swarm") && configurationID != null) {
-            MessageParameter composerParameter = createComposerParameter(configurationID);
+            Map<String, String> dockerLogin = getDockerLogin(pro);
+
+            MessageParameter composerParameter = createComposerParameter(configurationID, dockerLogin);
             parameters.add(composerParameter);
         }
 
         if (managerType.toLowerCase().equals("scale") && configurationID != null) {
-            MessageParameter scaleParameter = createScaleParameter(configurationID, serviceName, numOfCont);
+            MessageParameter scaleParameter = createScaleParameter(configurationID, serviceName, numOfContainers);
             parameters.add(scaleParameter);
         }
         if (managerType.toLowerCase().equals("swarm_info") && configurationID != null) {
@@ -278,10 +293,13 @@ public class DeployService {
         return createConfigurationParameter(configurationID, "ansible");
     }
 
-    private MessageParameter createComposerParameter(String configurationID) throws JSONException {
+    private MessageParameter createComposerParameter(String configurationID, Map<String, String> dockerLogin) throws JSONException {
         MessageParameter configurationParameter = createConfigurationParameter(configurationID, "composer");
         Map<String, String> attributes = new HashMap<>();
         attributes.put("name", configurationID);
+        attributes.put("docker_login_username", dockerLogin.get("username"));
+        attributes.put("docker_login_password", dockerLogin.get("password"));
+        attributes.put("docker_login_registry", dockerLogin.get("registry"));
         configurationParameter.setAttributes(attributes);
         return configurationParameter;
     }
@@ -335,8 +353,11 @@ public class DeployService {
             throw new BadRequestException("Service name does not exist in this deployment");
         }
 
-        Message message = buildDeployerMessages(deployment.getProvisionID(), "scale",
-                confID, scaleReq.getScaleTargetName(), scaleReq.getNumOfInstances()).get(0);
+        deployment.setManagerType("scale");
+        Message message = buildDeployerMessages(deployment,
+                scaleReq.getScaleTargetName(),
+                scaleReq.getNumOfInstances()).get(0);
+
         message.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
             logger.info("Calling deployer");
@@ -671,6 +692,17 @@ public class DeployService {
             resp.setScale(null);
         }
         return resp;
+    }
+
+    private Map<String, String> getDockerLogin(ProvisionResponse pro) {
+        String planID = pro.getPlanID();
+        PlanResponse plan = plannerService.findOne(planID);
+        ToscaRepresentation tosca = toscaService.findOne(plan.getToscaID());
+
+        Map<String, Object> map = tosca.getKeyValue();
+        map.get("repositories");
+        HashMap dockerLogin = new HashMap();
+        return dockerLogin;
     }
 
 }

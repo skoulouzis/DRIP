@@ -1,4 +1,4 @@
-version: "2"
+version: "3.2"
 services:
   kamailio:
     #build: ./kamailio
@@ -104,8 +104,8 @@ services:
       - "10048:10048/udp"
       - "10049:10049/udp"
 
-    expose:
-      - "7711"
+    #expose:
+      #- "7711"
 #    volumes:
 #      - ./rtpproxy/docker-entrypoint-init:/docker-entrypoint-init
     dns:
@@ -136,5 +136,5 @@ networks:
       driver: default
       config:
         - subnet: 192.168.2.0/24
-          ip_range: 192.168.2.0/24
-          gateway: 192.168.2.1
+          #ip_range: 192.168.2.0/24
+          #gateway: 192.168.2.1

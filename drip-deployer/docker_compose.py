@@ -35,7 +35,7 @@ if not getattr(logger, 'handler_set', None):
 
 retry=0
 
-def deploy_compose(vm, compose_file, compose_name):
+def deploy_compose(vm, compose_file, compose_name,docker_login):
     try:
         logger.info("Starting docker compose deployment on: "+vm.ip)        
         paramiko.util.log_to_file("deployment.log")
@@ -46,7 +46,10 @@ def deploy_compose(vm, compose_file, compose_name):
         sftp.chdir('/tmp/')
         sftp.put(compose_file, "docker-compose.yml")
         
-        stdin, stdout, stderr = ssh.exec_command("sudo docker stack deploy --compose-file /tmp/docker-compose.yml %s" % (compose_name))
+        if(docker_login):
+            stdin, stdout, stderr = ssh.exec_command("docker login -u "+docker_login['username']+" -p "+docker_login['password']+" "+docker_login['registry']+" && sudo sudo docker stack deploy --compose-file /tmp/docker-compose.yml %s" % (compose_name))
+        else:
+            stdin, stdout, stderr = ssh.exec_command("sudo docker stack deploy --compose-file /tmp/docker-compose.yml %s" % (compose_name))
         stdout.read()
         logger.info("Finished docker compose deployment on: "+vm.ip)        
     except Exception as e:
@@ -64,12 +67,12 @@ def deploy_compose(vm, compose_file, compose_name):
 
 
 
-def run(vm_list, compose_file, compose_name,rabbitmq_host,owner):
+def run(vm_list, compose_file, compose_name,rabbitmq_host,owner,docker_login):
     rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
     logger.addHandler(rabbit)
     for i in vm_list:
         if i.role == "master":
-            ret = deploy_compose(i, compose_file, compose_name)
+            ret = deploy_compose(i, compose_file, compose_name,docker_login)
             if "ERROR" in ret:
                 return ret
             else:
