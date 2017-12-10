@@ -82,28 +82,34 @@ def handle_delivery(message):
 
 def test_local():
     home = expanduser("~")
-    transformer = DockerComposeTransformer(home+"/workspace/DRIP/docs/input_tosca_files/mog_tosca_v1.yml")
+    transformer = DockerComposeTransformer(home+"/workspace/DRIP/docs/input_tosca_files/MOG/mog_tosca_v1.yml")
     compose =  transformer.getnerate_compose()
     print yaml.dump(compose)
-    response = {}
-    current_milli_time = lambda: int(round(time.time() * 1000))
-    response["creationDate"] = current_milli_time()   
-    response["parameters"] = []
     
-    parameter = {}
-    parameter['value'] = str(yaml.dump(compose))
-    parameter['name'] = 'docker-compose.yml'
-    parameter['encoding'] = 'UTF-8'
-    response["parameters"].append(parameter)
-    print response
+    with open(home+'/Downloads/docker-compose.yml', 'w') as outfile:
+        yaml.dump(compose, outfile, default_flow_style=False)
+    
+#    response = {}
+#    current_milli_time = lambda: int(round(time.time() * 1000))
+#    response["creationDate"] = current_milli_time()   
+#    response["parameters"] = []
+#    
+#    parameter = {}
+#    parameter['value'] = str(yaml.dump(compose))
+#    parameter['name'] = 'docker-compose.yml'
+#    parameter['encoding'] = 'UTF-8'
+#    response["parameters"].append(parameter)
+#    print response
 
 if __name__ == "__main__":
-#    test_local()
-    print sys.argv
-    channel = init_chanel(sys.argv)
-    global queue_name
-    queue_name = sys.argv[2]
-    start(channel)
+    if(sys.argv[1] == "test_local"):
+        test_local()
+    else:
+        print sys.argv
+        channel = init_chanel(sys.argv)
+        global queue_name
+        queue_name = sys.argv[2]
+        start(channel)
 
 
 #    try:

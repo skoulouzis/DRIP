@@ -85,7 +85,7 @@ class DockerComposeTransformer:
             ports_mappings = properties['ports_mapping']
             if ports_mappings:
                 for port_map_key in ports_mappings:
-                    port_map = {}
+                    port_map = ''
                     if isinstance(ports_mappings,dict):                       
                         if 'host_port' in ports_mappings[port_map_key]:
                             host_port =  ports_mappings[port_map_key]['host_port']
@@ -98,13 +98,15 @@ class DockerComposeTransformer:
                             if not isinstance(container_port, (int, long, float, complex)) and '$' in container_port:
                                 container_port_var =  container_port.replace('${','').replace('}','')
                                 container_port = properties[container_port_var]
-                            port_map[host_port] = container_port
+#                            port_map[host_port] = container_port
+                            port_map = str(host_port)+':'+str(container_port)
                         port_maps.append(port_map)
                     elif isinstance(ports_mappings,list):      
                         for mapping in ports_mappings:
                             host_port = mapping.split(":")[0]
                             container_port = mapping.split(":")[1]
-                            port_map[host_port] = container_port      
+#                            port_map[host_port] = container_port      
+                            port_map = str(host_port)+':'+str(container_port)   
                             port_maps.append(port_map)
         if 'in_ports' in properties:
             ports_mappings = properties['in_ports']
@@ -120,7 +122,8 @@ class DockerComposeTransformer:
                     if protocol:
                         container_port=container_port+'/'+protocol
                 if container_port:
-                    port_map[host_port] = container_port    
+#                    port_map[host_port] = container_port    
+                    port_map = str(host_port)+':'+str(container_port)   
                     port_maps.append(port_map)
         if 'out_ports' in properties:
             ports_mappings = properties['out_ports']
@@ -133,7 +136,8 @@ class DockerComposeTransformer:
                         protocol =  ports_mappings[port_map_key]['protocol']
                         if protocol:
                             container_port=container_port+'/'+protocol
-                    port_map[host_port] = container_port
+#                    port_map[host_port] = container_port
+                    port_map = str(host_port)+':'+str(container_port)
                     port_maps.append(port_map)
         return port_maps
     
@@ -157,7 +161,7 @@ class DockerComposeTransformer:
         docker_types  = self.get_docker_types()
         node_templates =  self.get_node_templates() 
         services = {}
-#        services['version'] = '2'
+        services['version'] = '2'
         services['services'] = {}
         all_volumes = []
         for node_template_key in node_templates:

@@ -13,7 +13,7 @@ topology_template:
       properties:
         Environment_variables:
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          monitoring_server: SET_ITS_VALUE
+          monitoring_server: monitoring_server
           MONITORING_PROXY: "Monitoring Proxy"
         ports_mapping:
         scaling_mode: single
@@ -36,15 +36,15 @@ topology_template:
           multicastAddrPort3: 3004
           metrics: true
           multicastAddrIP: "225.2.2.0"
-          switcherOutAddrPort: SET_ITS_VALUE
+          switcherOutAddrPort: 6000
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          machineip: switcher
+          machineip: VideoSwitcher
           videoHeight: 406
           waitingTime: 5
           multicastAddrPort: 3000
           statsdPort: 8125
           camnumber: 4
-          switcherOutAddrIP: SET_ITS_VALUE
+          switcherOutAddrIP: "226.2.2.2"
           switcherREST: 8008
           multicastAddrPort4: 3006
           videoWidth: 720
@@ -60,19 +60,20 @@ topology_template:
       requirements:
         - dependency:
             - VideoSwitcher
+            - Monitoring_Adapter_v2
       type: "Switch.nodes.Application.Container.Docker.MOG_InputDistributor"
       properties:
         Environment_variables:
           MONITORING_PROXY: "Monitoring Proxy"
           statsdPort: 8125
-          multicastAddrPort: 3000
+          multicastAddrPort: 3006
           inPort: 2000
           videoWidth: 720
           metrics: true
           waitingTime: 5
           multicastAddrIP: "225.2.2.0"
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          machineip: InputDistributor
+          machineip: InputDistributor4
           videoHeight: 406
         ports_mapping:
           - "2006:2006/udp"
@@ -89,15 +90,15 @@ topology_template:
       type: "Switch.nodes.Application.Container.Docker.LOKSORR_ProxyTranscoder2"
       properties:
         Environment_variables:
-          metrics: SET_ITS_VALUE
-          machineip: SET_ITS_VALUE
-          multicastAddrIP: SET_ITS_VALUE
+          metrics: true
+          machineip: ProxyTranscoderOut
+          multicastAddrIP: "225.2.2.0"
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          statsdPort: SET_ITS_VALUE
-          multicastAddrPort: SET_ITS_VALUE
-          videoWidth: SET_ITS_VALUE
+          statsdPort: 8125
+          multicastAddrPort: 6000
+          videoWidth: 720
           MONITORING_PROXY: "Monitoring Proxy"
-          videoHeight: SET_ITS_VALUE
+          videoHeight: 406
         ports_mapping:
         scaling_mode: single
     ProxyTranscoder2:
@@ -112,15 +113,15 @@ topology_template:
       type: "Switch.nodes.Application.Container.Docker.LOKSORR_ProxyTranscoder2"
       properties:
         Environment_variables:
-          metrics: SET_ITS_VALUE
-          machineip: SET_ITS_VALUE
-          multicastAddrIP: SET_ITS_VALUE
+          metrics: true
+          machineip: ProxyTranscoder2
+          multicastAddrIP: "225.2.2.0"
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          statsdPort: SET_ITS_VALUE
-          multicastAddrPort: SET_ITS_VALUE
-          videoWidth: SET_ITS_VALUE
+          statsdPort: 8125
+          multicastAddrPort: 3002
+          videoWidth: 720
           MONITORING_PROXY: "Monitoring Proxy"
-          videoHeight: SET_ITS_VALUE
+          videoHeight: 406
         ports_mapping:
         scaling_mode: single
     InputDistributor1:
@@ -145,7 +146,7 @@ topology_template:
           waitingTime: 5
           multicastAddrIP: "225.2.2.0"
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          machineip: InputDistributor
+          machineip: InputDistributor1
           videoHeight: 406
         ports_mapping:
           - "2000:2000/udp"
@@ -159,19 +160,20 @@ topology_template:
       requirements:
         - dependency:
             - VideoSwitcher
+            - Monitoring_Adapter_v2
       type: "Switch.nodes.Application.Container.Docker.MOG_InputDistributor"
       properties:
         Environment_variables:
           MONITORING_PROXY: "Monitoring Proxy"
           statsdPort: 8125
-          multicastAddrPort: 3000
+          multicastAddrPort: 3002
           inPort: 2000
           videoWidth: 720
           metrics: true
           waitingTime: 5
           multicastAddrIP: "225.2.2.0"
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          machineip: InputDistributor
+          machineip: InputDistributor2
           videoHeight: 406
         ports_mapping:
           - "2002:2002/udp"
@@ -185,19 +187,20 @@ topology_template:
       requirements:
         - dependency:
             - VideoSwitcher
+            - Monitoring_Adapter_v2
       type: "Switch.nodes.Application.Container.Docker.MOG_InputDistributor"
       properties:
         Environment_variables:
           MONITORING_PROXY: "Monitoring Proxy"
           statsdPort: 8125
-          multicastAddrPort: 3000
+          multicastAddrPort: 3004
           inPort: 2000
           videoWidth: 720
           metrics: true
           waitingTime: 5
           multicastAddrIP: "225.2.2.0"
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          machineip: InputDistributor
+          machineip: InputDistributor3
           videoHeight: 406
         ports_mapping:
           - "2004:2004/udp"
@@ -209,16 +212,18 @@ topology_template:
           repository: SWITCH_docker_hub
           file: "mogpsantos/switchgui"
       requirements:
-        - dependency: null
+        - dependency:
+            - VideoSwitcher
       type: "Switch.nodes.Application.Container.Docker.LOKSORR_MOGFrontend"
       properties:
         Environment_variables:
-          ipPT1: SET_ITS_VALUE
-          ipPT2: SET_ITS_VALUE
-          ipPT3: SET_ITS_VALUE
-          ipPT4: SET_ITS_VALUE
+          ipPT1: ProxyTranscoder1
+          ipPT2: ProxyTranscoder2
+          ipPT3: ProxyTranscoder3
+          ipPT4: ProxyTranscoder4
+          ipPTout: ProxyTranscoderOut
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          ipVS: SET_ITS_VALUE
+          ipVS: VideoSwitcher
           MONITORING_PROXY: "Monitoring Proxy"
         ports_mapping:
           - "5050:80"
@@ -234,16 +239,17 @@ topology_template:
       type: "Switch.nodes.Application.Container.Docker.LOKSORR_OutputTranscoder"
       properties:
         Environment_variables:
-          OutIP: SET_ITS_VALUE
+          OutIP: "10.20.155.5"
           MONITORING_PROXY: "Monitoring Proxy"
-          statsdPort: SET_ITS_VALUE
-          OutPort: SET_ITS_VALUE
+          statsdPort: 8125
+          OutPort: 4000
+          machineip: OutputTranscoder
           metrics: true
-          multicastAddrIP: SET_ITS_VALUE
-          multicastAddrPortmulticastAddrIP: SET_ITS_VALUE
+          multicastAddrIP: "226.2.2.2"
+          multicastAddrPortmulticastAddrIP: 6000
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          videoWidth: SET_ITS_VALUE
-          videoHeight: SET_ITS_VALUE
+          videoWidth: 720
+          videoHeight: 406
         ports_mapping:
           - "4000:4000"
         scaling_mode: single
@@ -259,15 +265,15 @@ topology_template:
       type: "Switch.nodes.Application.Container.Docker.LOKSORR_ProxyTranscoder2"
       properties:
         Environment_variables:
-          metrics: SET_ITS_VALUE
-          machineip: SET_ITS_VALUE
-          multicastAddrIP: SET_ITS_VALUE
+          metrics: true
+          machineip: ProxyTranscoder4
+          multicastAddrIP: "225.2.2.0"
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          statsdPort: SET_ITS_VALUE
-          multicastAddrPort: SET_ITS_VALUE
-          videoWidth: SET_ITS_VALUE
+          statsdPort: 8125
+          multicastAddrPort: 3006
+          videoWidth: 720
           MONITORING_PROXY: "Monitoring Proxy"
-          videoHeight: SET_ITS_VALUE
+          videoHeight: 406
         ports_mapping:
         scaling_mode: single
     ProxyTranscoder3:
@@ -282,15 +288,15 @@ topology_template:
       type: "Switch.nodes.Application.Container.Docker.LOKSORR_ProxyTranscoder2"
       properties:
         Environment_variables:
-          metrics: SET_ITS_VALUE
-          machineip: SET_ITS_VALUE
-          multicastAddrIP: SET_ITS_VALUE
+          metrics: true
+          machineip: ProxyTranscoder3
+          multicastAddrIP: "225.2.2.0"
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          statsdPort: SET_ITS_VALUE
-          multicastAddrPort: SET_ITS_VALUE
-          videoWidth: SET_ITS_VALUE
+          statsdPort: 8125
+          multicastAddrPort: 3004
+          videoWidth: 720
           MONITORING_PROXY: "Monitoring Proxy"
-          videoHeight: SET_ITS_VALUE
+          videoHeight: 406
         ports_mapping:
         scaling_mode: single
     monitoring_server:
@@ -350,15 +356,15 @@ topology_template:
       type: "Switch.nodes.Application.Container.Docker.LOKSORR_ProxyTranscoder2"
       properties:
         Environment_variables:
-          metrics: SET_ITS_VALUE
-          machineip: SET_ITS_VALUE
-          multicastAddrIP: SET_ITS_VALUE
+          metrics: true
+          machineip: ProxyTranscoder1
+          multicastAddrIP: "225.2.2.0"
           TOSCA: "http://i213.cscloud.cf.ac.uk:7001/api/switchapps/237/tosca"
-          statsdPort: SET_ITS_VALUE
-          multicastAddrPort: SET_ITS_VALUE
-          videoWidth: SET_ITS_VALUE
+          statsdPort: 8125
+          multicastAddrPort: 3000
+          videoWidth: 720
           MONITORING_PROXY: "Monitoring Proxy"
-          videoHeight: SET_ITS_VALUE
+          videoHeight: 406
         ports_mapping:
         scaling_mode: single
 artifact_types:
