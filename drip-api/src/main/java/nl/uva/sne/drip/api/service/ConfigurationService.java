@@ -134,7 +134,7 @@ public class ConfigurationService {
         Matcher match = p.matcher(ymlStr);
         while (match.find()) {
             String line = match.group();
-            if (!line.contains("\"") || !line.contains("'")) {
+            if (!line.contains("\"") && !line.contains("'")) {
                 String number = line.split(": ")[1];
                 ymlStr = ymlStr.replaceAll(number, "\'" + number + "\'");
             }
@@ -155,7 +155,7 @@ public class ConfigurationService {
         match = p.matcher(ymlStr);
         while (match.find()) {
             String line = match.group();
-            if (!line.contains("\"") || !line.contains("'")) {
+            if (!line.contains("\"") && !line.contains("'")) {
                 String memory = line.split(":")[1];
                 memory = memory.replaceAll("}", "").trim();
                 ymlStr = ymlStr.replaceAll(memory, '\'' + memory + '\'');

@@ -297,9 +297,9 @@ public class DeployService {
         MessageParameter configurationParameter = createConfigurationParameter(configurationID, "composer");
         Map<String, String> attributes = new HashMap<>();
         attributes.put("name", configurationID);
-        attributes.put("docker_login_username", dockerLogin.get("username"));
-        attributes.put("docker_login_password", dockerLogin.get("password"));
-        attributes.put("docker_login_registry", dockerLogin.get("registry"));
+//        attributes.put("docker_login_username", dockerLogin.get("username"));
+//        attributes.put("docker_login_password", dockerLogin.get("password"));
+//        attributes.put("docker_login_registry", dockerLogin.get("registry"));
         configurationParameter.setAttributes(attributes);
         return configurationParameter;
     }
@@ -697,12 +697,15 @@ public class DeployService {
     private Map<String, String> getDockerLogin(ProvisionResponse pro) {
         String planID = pro.getPlanID();
         PlanResponse plan = plannerService.findOne(planID);
-        ToscaRepresentation tosca = toscaService.findOne(plan.getToscaID());
-
-        Map<String, Object> map = tosca.getKeyValue();
-        map.get("repositories");
-        HashMap dockerLogin = new HashMap();
-        return dockerLogin;
+        String toscaID = plan.getToscaID();
+        if (toscaID != null) {
+            ToscaRepresentation tosca = toscaService.findOne(plan.getToscaID());
+            Map<String, Object> map = tosca.getKeyValue();
+            map.get("repositories");
+            HashMap dockerLogin = new HashMap();
+            return dockerLogin;
+        }
+        return null;
     }
 
 }

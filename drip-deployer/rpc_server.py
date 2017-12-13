@@ -95,8 +95,8 @@ def handleDelivery(message):
             compose_file = path + "docker-compose.yml"
             if not param["attributes"] == None and not param["attributes"]["name"] == None : 
                 compose_name = param["attributes"]["name"]
+                docker_login = {}
                 if 'docker_login' in param["attributes"]:
-                    docker_login = {}
                     docker_login['username'] = param["attributes"]["docker_login_username"]
                     docker_login['password'] = param["attributes"]["docker_login_password"]
                     docker_login['registry'] = param["attributes"]["docker_login_registry"]

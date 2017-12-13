@@ -56,7 +56,10 @@ def install_engine(vm,return_dict):
 		install_script = file_path + "/" + "docker_engine.sh"
 		sftp.put(install_script, "engine_setup.sh")
 		stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/engine_setup.sh")
-		stdout.read()
+		output = stdout.read()
+		logger.info("stdout: "+(output))
+		output = stderr.read()
+		logger.info("stderr: "+(output))
 		logger.info("Finised docker engine installation on: "+(vm.ip))
 	except Exception as e:
                 global retry
