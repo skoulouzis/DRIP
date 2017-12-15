@@ -23,3 +23,4 @@
 /drip_parser (copy)/nbproject/private/
 /drip-provisioner (copy)/target/
 /drip_parser.tar.gz
+/docs/playbooks/set_dockerhub_credentials.yml

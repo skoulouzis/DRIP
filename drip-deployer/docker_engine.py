@@ -66,7 +66,7 @@ def install_engine(vm,return_dict):
                 if retry < 10:
                     logger.warning(vm.ip + " " + str(e)+". Retrying")
                     retry+=1
-                    return install_engine(vm,procnum)
+                    return install_engine(vm,return_dict)
                 
 		logger.error(vm.ip + " " + str(e))
                 return_dict[vm.ip] = "ERROR:"+vm.ip+" "+str(e)

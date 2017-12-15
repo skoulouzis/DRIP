@@ -47,9 +47,9 @@ def deploy_compose(vm, compose_file, compose_name,docker_login):
         sftp.put(compose_file, "docker-compose.yml")
         
         if(docker_login):
-            stdin, stdout, stderr = ssh.exec_command("docker login -u "+docker_login['username']+" -p "+docker_login['password']+" "+docker_login['registry']+" && sudo sudo docker stack deploy --compose-file /tmp/docker-compose.yml %s" % (compose_name))
+            stdin, stdout, stderr = ssh.exec_command("sudo docker login -u "+docker_login['username']+" -p "+docker_login['password']+" "+docker_login['registry']+" && sudo docker stack deploy --with-registry-auth --compose-file /tmp/docker-compose.yml %s" % (compose_name))
         else:
-            stdin, stdout, stderr = ssh.exec_command("sudo docker stack deploy --compose-file /tmp/docker-compose.yml %s" % (compose_name))
+            stdin, stdout, stderr = ssh.exec_command("sudo docker stack deploy --with-registry-auth --compose-file /tmp/docker-compose.yml %s" % (compose_name))
         stdout.read()
         logger.info("Finished docker compose deployment on: "+vm.ip)        
     except Exception as e:
@@ -57,7 +57,7 @@ def deploy_compose(vm, compose_file, compose_name,docker_login):
         if retry < 10:
             logger.warning(vm.ip + " " + str(e)+". Retrying")
             retry+=1
-            return deploy_compose(vm, compose_file, compose_name)               
+            return deploy_compose(vm, compose_file, compose_name,docker_login)               
         logger.error(vm.ip + " " + str(e))
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()

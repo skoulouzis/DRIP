@@ -297,9 +297,12 @@ public class DeployService {
         MessageParameter configurationParameter = createConfigurationParameter(configurationID, "composer");
         Map<String, String> attributes = new HashMap<>();
         attributes.put("name", configurationID);
-//        attributes.put("docker_login_username", dockerLogin.get("username"));
-//        attributes.put("docker_login_password", dockerLogin.get("password"));
-//        attributes.put("docker_login_registry", dockerLogin.get("registry"));
+        if (dockerLogin != null) {
+            attributes.put("docker_login_username", dockerLogin.get("username"));
+            attributes.put("docker_login_password", dockerLogin.get("password"));
+            attributes.put("docker_login_registry", dockerLogin.get("registry"));
+        }
+
         configurationParameter.setAttributes(attributes);
         return configurationParameter;
     }

@@ -96,7 +96,7 @@ def install_worker(join_cmd, vm,return_dict):
                 if retry < 10:
                     logger.warning(vm.ip + " " + str(e)+". Retrying")
                     retry+=1
-                    return install_worker(join_cmd, vm)            
+                    return install_worker(join_cmd, vm,return_dict)   
 		logger.error(vm.ip + " " + str(e))
 		return_dict[vm.ip] = "ERROR:"+vm.ip+" "+str(e)
 		return "ERROR:" + vm.ip + " " + str(e)
