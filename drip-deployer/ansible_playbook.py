@@ -108,7 +108,7 @@ def create_faied_playbooks(failed_tasks,inventory,variable_manager,loader,option
         failed_play = {}
         retry_task = []
         hosts = ""
-        if isinstance(failed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode):
+        if isinstance(failed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode) or isinstance(failed_task,str):
             task_name = str(failed_task)
             host = str(failed_task)
         else:
@@ -235,7 +235,7 @@ def run(vm_list,playbook_path,rabbitmq_host,owner):
     
     retry = 0
     res = execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
-    while os.path.exists(falied_playbook) and retry < 1:
+    while os.path.exists(falied_playbook) and retry < 20:
         retry+=1
         logger.warning("Some tasks faield retrying: "+str(retry))
         res = execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
