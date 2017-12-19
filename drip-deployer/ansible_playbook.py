@@ -94,7 +94,7 @@ def install_prerequisites(vm,return_dict):
     
     
     
-def create_faied_playbooks(failed_tasks,inventory,variable_manager,loader,options,passwords,results_callback,playbook_path):
+def create_faied_playbooks(failed_tasks,passed_tasks,inventory,variable_manager,loader,options,passwords,results_callback,playbook_path):
     tasks = []
     hosts = []
     
@@ -102,9 +102,37 @@ def create_faied_playbooks(failed_tasks,inventory,variable_manager,loader,option
     with open(playbook_path) as stream:
         plays = yaml.load(stream)
     
+    confirm_failed_tasks = []
+    for failed_task in failed_tasks:
+        if isinstance(failed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode) or isinstance(failed_task,str):
+            falied_task_name = str(failed_task)
+            falied_host = str(failed_task)
+        else:
+            falied_task_name =  str(failed_task._task.get_name())
+            falied_host = str(failed_task._host.get_name())
+        
+        task_passed = False
+        for passed_task in passed_tasks:    
+            if isinstance(passed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode) or isinstance(failed_task,str):
+                passed_task_name = str(passed_task)
+                passed_host = str(passed_task)
+            else:
+                passed_task_name =  str(passed_task._task.get_name())
+                passed_host = str(passed_task._host.get_name())            
+            
+            if passed_task_name == falied_task_name and (falied_host == 'all'  or falied_host == passed_host):
+                task_passed = True
+                logger.warning("Task: \'"+passed_task_name+ "\' already passed, skipping")
+                break
+        if not task_passed:
+            confirm_failed_tasks.append(failed_task)
+            
+        
+            
+            
     
     failed_plays = []
-    for failed_task in failed_tasks:
+    for failed_task in confirm_failed_tasks:
         failed_play = {}
         retry_task = []
         hosts = ""
@@ -133,8 +161,13 @@ def create_faied_playbooks(failed_tasks,inventory,variable_manager,loader,option
         failed_play['tasks'] = retry_task
         failed_plays.append(failed_play)
     
-    with open(falied_playbook, 'w') as outfile:
-        yaml.dump(failed_plays, outfile)
+    if confirm_failed_tasks:
+        with open(falied_playbook, 'w') as outfile:
+            yaml.dump(failed_plays, outfile)
+    else:
+        if os.path.exists(falied_playbook):
+            os.remove(falied_playbook)
+        
 
 def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords):
     if not os.path.exists(playbook_path):
@@ -176,7 +209,10 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
     answer = []
     
     failed_tasks = []
+    passed_tasks = []
     for res in ok:         
+        passed_tasks.append(res['task'])
+        #failed_tasks.append(res['task'])    
         resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         logger.info(resp)
         answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
@@ -197,7 +233,7 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
         answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         
     if failed_tasks:
-        create_faied_playbooks(failed_tasks,inventory,variable_manager,loader,options,passwords,results_callback,playbook_path)
+        create_faied_playbooks(failed_tasks,passed_tasks,inventory,variable_manager,loader,options,passwords,results_callback,playbook_path)
 
 
     return json.dumps(answer)
@@ -235,7 +271,7 @@ def run(vm_list,playbook_path,rabbitmq_host,owner):
     
     retry = 0
     res = execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
-    while os.path.exists(falied_playbook) and retry < 20:
+    while os.path.exists(falied_playbook) and retry < 40:
         retry+=1
         logger.warning("Some tasks faield retrying: "+str(retry))
         res = execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
