@@ -59,8 +59,8 @@ public class PlannerController {
     @Autowired
     private PlannerService plannerService;
 
-    @Autowired
-    private ToscaService toscaService;
+//    @Autowired
+//    private ToscaService toscaService;
 
     /**
      * verifies plan. Checks if this is a concrete plan

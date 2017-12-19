@@ -52,11 +52,14 @@ def docker_check(vm, compose_name):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+        
         node_format = '\'{\"ID\":\"{{.ID}}\",\"hostname\":\"{{.Hostname}}\",\"status\":\"{{.Status}}\",\"availability\":\"{{.Availability}}\",\"status\":\"{{.Status}}\"}\''
         cmd = 'sudo docker node ls --format ' + (node_format)
+                
         json_response = {}
         cluster_node_info = []
         stdin, stdout, stderr = ssh.exec_command(cmd)
+        logger.info("Got response running \"docker node ls\"")        
         node_ls_resp = stdout.readlines()
         for i in node_ls_resp:
             line = get_resp_line(i)
@@ -68,7 +71,9 @@ def docker_check(vm, compose_name):
         
         json_response ['cluster_node_info'] = cluster_node_info
         services_format = '\'{\"ID\":\"{{.ID}}\",\"name\":\"{{.Name}}\",\"image\":\"{{.Image}}\",\"node\":\"{{.Node}}\",\"desired_state\":\"{{.DesiredState}}\",\"current_state\":\"{{.CurrentState}}\",\"error\":\"{{.Error}}\",\"ports\":\"{{.Ports}}\"}\''
+        
         cmd = 'sudo docker stack ps '+ compose_name +' --format ' + services_format
+        logger.info("Got response running \"docker stack ps\"")  
         stdin, stdout, stderr = ssh.exec_command(cmd)
         stack_ps_resp = stdout.readlines()
         services_info = []
@@ -95,6 +100,7 @@ def docker_check(vm, compose_name):
         stack_format = '\'{"ID":"{{.ID}}","name":"{{.Name}}","mode":"{{.Mode}}","replicas":"{{.Replicas}}","image":"{{.Image}}"}\''
         cmd = 'sudo docker stack services '+ compose_name +' --format ' + (stack_format)
         stdin, stdout, stderr = ssh.exec_command(cmd)
+        logger.info("Got response running \"docker stack services\"")  
         stack_resp = stdout.readlines()
         stack_info = []
         for i in stack_resp:
@@ -111,6 +117,7 @@ def docker_check(vm, compose_name):
         for hostname in nodes_hostname:
              cmd += ' '+hostname        
         stdin, stdout, stderr = ssh.exec_command(cmd)
+        logger.info("Got response running \"docker node inspect\"")  
         inspect_resp = stdout.readlines()
         
         response_str = ""
@@ -127,8 +134,9 @@ def docker_check(vm, compose_name):
         cmd = 'sudo docker inspect '
         for id in services_ids:
              cmd += ' '+id 
-             
+                    
         stdin, stdout, stderr = ssh.exec_command(cmd)
+        logger.info("Got response running \"docker inspect\"")  
         inspect_resp = stdout.readlines()             
              
         response_str = ""
@@ -138,13 +146,15 @@ def docker_check(vm, compose_name):
                 response_str+=line
         json_dict = {}  
         response_str =  response_str.rstrip("\n\r").strip(' \t\n\r').strip().encode('string_escape')
+        
+        
+        
         json_dict = json.loads(response_str)
         json_response['inspect_info'] = json_dict             
         
         
         logger.info("Finished docker info services on: "+vm.ip)                
     except Exception as e:
-        global retry
         global retry
         if retry < 10:
             logger.warning(vm.ip + " " + str(e)+". Retrying")
@@ -162,6 +172,7 @@ def docker_check(vm, compose_name):
         #logger.error(vm.ip + " " + str(e)+ " line:" +lineno)
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()
+    retry = 0
     return json_response
 
 

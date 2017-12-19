@@ -47,10 +47,19 @@ def deploy_compose(vm, compose_file, compose_name,docker_login):
         sftp.put(compose_file, "docker-compose.yml")
         
         if(docker_login):
+            #stdin, stdout, stderr = ssh.exec_command("sudo docker stack rm %s" % (compose_name))
+            #stdout.read()
+            #err = stderr.read()
+            #sleep 5
             stdin, stdout, stderr = ssh.exec_command("sudo docker login -u "+docker_login['username']+" -p "+docker_login['password']+" "+docker_login['registry']+" && sudo docker stack deploy --with-registry-auth --compose-file /tmp/docker-compose.yml %s" % (compose_name))
         else:
+            #stdin, stdout, stderr = ssh.exec_command("sudo docker stack rm %s" % (compose_name))
+            #stdout.read()
+            #err = stderr.read()                      
             stdin, stdout, stderr = ssh.exec_command("sudo docker stack deploy --with-registry-auth --compose-file /tmp/docker-compose.yml %s" % (compose_name))
         stdout.read()
+        err = stderr.read()
+        logger.info("stderr from: "+vm.ip + " "+ err)
         logger.info("Finished docker compose deployment on: "+vm.ip)        
     except Exception as e:
         global retry

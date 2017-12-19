@@ -94,28 +94,28 @@ def install_prerequisites(vm,return_dict):
 def run_faied(failed_tasks,inventory,variable_manager,loader,options,passwords,results_callback,playbook_path):
     tasks = []
     hosts = []
-    tqm = TaskQueueManager(inventory=inventory, variable_manager=variable_manager, loader=loader, options=options, passwords=passwords)
+    #tqm = TaskQueueManager(inventory=inventory, variable_manager=variable_manager, loader=loader, options=options, passwords=passwords)
     
 
-    yml_plays = {}
-    with open(playbook_path) as stream:
-        yml_plays = yaml.load(stream)
+    #yml_plays = {}
+    #with open(playbook_path) as stream:
+        #yml_plays = yaml.load(stream)
         
    
-    failed_yml = {}
-    retry_task = []
-    hosts = []
-    for failed_task in failed_tasks:
-        name =  failed_task._task.get_name()
-        host = failed_task._host.get_name()
+    #failed_yml = {}
+    #retry_task = []
+    #hosts = []
+    #for failed_task in failed_tasks:
+        #name =  failed_task._task.get_name()
+        #host = failed_task._host.get_name()
         
-        for play in yml_plays:
-            for task in play['tasks']:
-                if name in task['name']:
-                    retry_task.append(task)
-        hosts.append(host)
-    failed_yml['hosts'] = hosts
-    failed_yml['tasks'] = retry_task
+        #for play in yml_plays:
+            #for task in play['tasks']:
+                #if name in task['name']:
+                    #retry_task.append(task)
+        #hosts.append(host)
+    #failed_yml['hosts'] = hosts
+    #failed_yml['tasks'] = retry_task
                                         
     #with open('/tmp/failed.yml', 'w') as outfile:
         #yaml.dump(failed_yml, outfile, default_flow_style=False)    
@@ -168,7 +168,7 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
     
     failed_tasks = []
     for res in ok:        
-        failed_tasks.append(res['result'])    
+        #failed_tasks.append(res['result'])    
         resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         #logger.info(resp)
         
@@ -177,7 +177,7 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
 
     unreachable = results_callback.host_unreachable   
     for res in unreachable:
-        failed_tasks.append(res['task'])    
+        #failed_tasks.append(res['task'])    
         resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         logger.info(resp)
         answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
@@ -197,10 +197,7 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
 
 def run(vm_list,playbook_path,rabbitmq_host,owner):
     
-    #Create /playbook.retry
-    
-    
-    
+    #Create /playbook.retry    
     hosts=""
     ssh_key_file=""
     rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
@@ -212,17 +209,17 @@ def run(vm_list,playbook_path,rabbitmq_host,owner):
     
     
     for vm in vm_list:
-        #ret = install_prerequisites(vm)
-        #p = multiprocessing.Process(target=install_prerequisites, args=(vm,return_dict,))
-        #jobs.append(p)
-        #p.start()
+        #ret = install_prerequisites(vm,return_dict)
+        p = multiprocessing.Process(target=install_prerequisites, args=(vm,return_dict,))
+        jobs.append(p)
+        p.start()
         hosts+=vm.ip+","
         ssh_key_file = vm.key
         user = vm.user
         
-    #for proc in jobs:
-        #proc.join()
-    #if "ERROR" in return_dict.values(): return "ERROR"
+    for proc in jobs:
+        proc.join()
+    if "ERROR" in return_dict.values(): return "ERROR"
     
     extra_vars = {}
     passwords = {}

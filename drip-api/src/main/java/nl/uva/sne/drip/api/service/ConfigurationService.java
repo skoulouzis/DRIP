@@ -136,7 +136,7 @@ public class ConfigurationService {
             String line = match.group();
             if (!line.contains("\"") && !line.contains("'")) {
                 String number = line.split(": ")[1];
-                ymlStr = ymlStr.replaceAll(number, "\'" + number + "\'");
+                ymlStr = ymlStr.replaceAll("version: " + number, "version: " + "\'" + number + "\'");
             }
 
         }
@@ -148,7 +148,7 @@ public class ConfigurationService {
             if (!line.contains("\"") || line.contains("'")) {
                 String cpusNum = line.split(":")[1];
                 cpusNum = cpusNum.replaceAll(",", "").trim();
-                ymlStr = ymlStr.replaceAll(cpusNum, '\'' + cpusNum + '\'');
+                ymlStr = ymlStr.replaceAll("cpus: " + cpusNum, "cpus: " + '\'' + cpusNum + '\'');
             }
         }
         p = Pattern.compile("memory:.*");
@@ -158,7 +158,7 @@ public class ConfigurationService {
             if (!line.contains("\"") && !line.contains("'")) {
                 String memory = line.split(":")[1];
                 memory = memory.replaceAll("}", "").trim();
-                ymlStr = ymlStr.replaceAll(memory, '\'' + memory + '\'');
+                ymlStr = ymlStr.replaceAll("memory: " + memory, '\'' + "memory: " + memory + '\'');
             }
         }
 
