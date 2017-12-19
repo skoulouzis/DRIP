@@ -138,7 +138,7 @@ def create_faied_playbooks(failed_tasks,passed_tasks,inventory,variable_manager,
         hosts = ""
         if isinstance(failed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode) or isinstance(failed_task,str):
             task_name = str(failed_task)
-            host = str(failed_task)
+            host = str('all')
         else:
             task_name =  str(failed_task._task.get_name())
             host = str(failed_task._host.get_name())
