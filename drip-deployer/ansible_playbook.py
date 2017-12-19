@@ -55,7 +55,9 @@ if not getattr(logger, 'handler_set', None):
 
 
 retry=0
+#cwd = os.getcwd()
 
+falied_playbook='/tmp/falied_playbook.yml'
 
 def install_prerequisites(vm,return_dict):
 	try:
@@ -87,42 +89,52 @@ def install_prerequisites(vm,return_dict):
             return "ERROR:"+vm.ip+" "+str(e)
         ssh.close()
         return_dict[vm.ip] = "SUCCESS"
+        retry = 0
 	return "SUCCESS"
     
     
     
-def run_faied(failed_tasks,inventory,variable_manager,loader,options,passwords,results_callback,playbook_path):
+def create_faied_playbooks(failed_tasks,inventory,variable_manager,loader,options,passwords,results_callback,playbook_path):
     tasks = []
     hosts = []
-    #tqm = TaskQueueManager(inventory=inventory, variable_manager=variable_manager, loader=loader, options=options, passwords=passwords)
     
-
-    #yml_plays = {}
-    #with open(playbook_path) as stream:
-        #yml_plays = yaml.load(stream)
-        
-   
-    #failed_yml = {}
-    #retry_task = []
-    #hosts = []
-    #for failed_task in failed_tasks:
-        #name =  failed_task._task.get_name()
-        #host = failed_task._host.get_name()
-        
-        #for play in yml_plays:
-            #for task in play['tasks']:
-                #if name in task['name']:
-                    #retry_task.append(task)
-        #hosts.append(host)
-    #failed_yml['hosts'] = hosts
-    #failed_yml['tasks'] = retry_task
-                                        
-    #with open('/tmp/failed.yml', 'w') as outfile:
-        #yaml.dump(failed_yml, outfile, default_flow_style=False)    
-        
-    #play = Play().load('/tmp/failed.yml', variable_manager=variable_manager, loader=loader)
-    #res = tqm.run(play=play)
+    plays = {}
+    with open(playbook_path) as stream:
+        plays = yaml.load(stream)
     
+    
+    failed_plays = []
+    for failed_task in failed_tasks:
+        failed_play = {}
+        retry_task = []
+        hosts = ""
+        if isinstance(failed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode):
+            task_name = str(failed_task)
+            host = str(failed_task)
+        else:
+            task_name =  str(failed_task._task.get_name())
+            host = str(failed_task._host.get_name())
+        
+        for play in plays:
+            for task in play['tasks']:
+                if 'name' in task and task['name'] == task_name:
+                    retry_task.append(task)
+                    logger.warning("Faield task: \'"+task_name+ "\' In host: "+ host)
+                    if host not in hosts:
+                        hosts +=host+","
+                    break
+                elif task_name in task:
+                    retry_task.append(task)
+                    logger.warning("Faield task: \'"+task_name+ "\' In host: "+ host)
+                    if host not in hosts:
+                        hosts +=host+","
+                    break
+        failed_play['hosts'] = hosts
+        failed_play['tasks'] = retry_task
+        failed_plays.append(failed_play)
+    
+    with open(falied_playbook, 'w') as outfile:
+        yaml.dump(failed_plays, outfile)
 
 def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords):
     if not os.path.exists(playbook_path):
@@ -160,44 +172,38 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
     results = pbex.run()
     
     
-    
-    
-    
     ok = results_callback.host_ok
     answer = []
     
     failed_tasks = []
-    for res in ok:        
-        #failed_tasks.append(res['result'])    
+    for res in ok:         
         resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']})
-        #logger.info(resp)
-        
+        logger.info(resp)
         answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         
 
     unreachable = results_callback.host_unreachable   
     for res in unreachable:
-        #failed_tasks.append(res['task'])    
+        failed_tasks.append(res['task'])    
         resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         logger.info(resp)
         answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
 
     host_failed = results_callback.host_failed
     for res in host_failed:
+        #failed_tasks.append(res['result']) 
         resp = json.dumps({"host":res['ip'], "result":res['result']._result, "task":res['task']})
-        #logger.info(resp)
+        logger.info(resp)
         answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         
     if failed_tasks:
-        run_faied(failed_tasks,inventory,variable_manager,loader,options,passwords,results_callback,playbook_path)
+        create_faied_playbooks(failed_tasks,inventory,variable_manager,loader,options,passwords,results_callback,playbook_path)
 
 
     return json.dumps(answer)
 
 
 def run(vm_list,playbook_path,rabbitmq_host,owner):
-    
-    #Create /playbook.retry    
     hosts=""
     ssh_key_file=""
     rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
@@ -207,6 +213,8 @@ def run(vm_list,playbook_path,rabbitmq_host,owner):
     return_dict = manager.dict()
     jobs = []        
     
+    if os.path.exists(falied_playbook):
+        os.remove(falied_playbook)
     
     for vm in vm_list:
         #ret = install_prerequisites(vm,return_dict)
@@ -224,4 +232,13 @@ def run(vm_list,playbook_path,rabbitmq_host,owner):
     extra_vars = {}
     passwords = {}
     logger.info("Executing playbook: " + (playbook_path))
-    return execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
+    
+    retry = 0
+    res = execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
+    while os.path.exists(falied_playbook) and retry < 1:
+        retry+=1
+        logger.warning("Some tasks faield retrying: "+str(retry))
+        res = execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
+        
+    
+    return res
