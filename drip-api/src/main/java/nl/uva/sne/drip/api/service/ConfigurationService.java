@@ -158,7 +158,7 @@ public class ConfigurationService {
             if (!line.contains("\"") && !line.contains("'")) {
                 String memory = line.split(":")[1];
                 memory = memory.replaceAll("}", "").trim();
-                ymlStr = ymlStr.replaceAll("memory: " + memory, '\'' + "memory: " + memory + '\'');
+                ymlStr = ymlStr.replaceAll("memory: " + memory, "memory: " + '\'' + memory + '\'');
             }
         }
 
