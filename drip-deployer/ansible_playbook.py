@@ -55,9 +55,10 @@ if not getattr(logger, 'handler_set', None):
 
 
 retry=0
+retry_count = 20
 #cwd = os.getcwd()
 
-falied_playbook='/tmp/falied_playbook.yml'
+falied_playbook_path='/tmp/falied_playbook.yml'
 
 def install_prerequisites(vm,return_dict):
 	try:
@@ -94,91 +95,79 @@ def install_prerequisites(vm,return_dict):
     
     
     
-def create_faied_playbooks(failed_tasks,passed_tasks,inventory,variable_manager,loader,options,passwords,results_callback,playbook_path):
+def create_faied_playbooks(failed_tasks,playbook_path):
     tasks = []
     hosts = []
     
-    plays = {}
-    with open(playbook_path) as stream:
-        plays = yaml.load(stream)
+    plays = []
+    while not plays:
+        logger.info("Loading: \'"+playbook_path+ "\'")        
+        with open(playbook_path) as stream:
+            plays = yaml.load(stream)
     
-    confirm_failed_tasks = []
-    for failed_task in failed_tasks:
-        if isinstance(failed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode) or isinstance(failed_task,str):
-            falied_task_name = str(failed_task)
-            falied_host = str(failed_task)
-        else:
-            falied_task_name =  str(failed_task._task.get_name())
-            falied_host = str(failed_task._host.get_name())
-        
-        task_passed = False
-        for passed_task in passed_tasks:    
-            if isinstance(passed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode) or isinstance(failed_task,str):
-                passed_task_name = str(passed_task)
-                passed_host = str(passed_task)
-            else:
-                passed_task_name =  str(passed_task._task.get_name())
-                passed_host = str(passed_task._host.get_name())            
-            
-            if passed_task_name == falied_task_name and (falied_host == 'all'  or falied_host == passed_host):
-                task_passed = True
-                logger.warning("Task: \'"+passed_task_name+ "\' already passed, skipping")
-                break
-        if not task_passed:
-            confirm_failed_tasks.append(failed_task)
-            
-        
-            
-            
     
+    
+    logger.info("Number of plays loaded : \'"+str(len(plays))+ "\'")        
+    logger.info("Number of failed tasks : \'"+str(len(failed_tasks))+ "\'")        
+    failed_playsbooks = []
+    failed = failed_tasks[0]
+    
+    host = failed['ip']
+    failed_task = failed['task']
     failed_plays = []
-    for failed_task in confirm_failed_tasks:
-        failed_play = {}
-        retry_task = []
-        hosts = ""
-        if isinstance(failed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode) or isinstance(failed_task,str):
-            task_name = str(failed_task)
-            host = str('all')
-        else:
-            task_name =  str(failed_task._task.get_name())
-            host = str(failed_task._host.get_name())
-        
-        for play in plays:
-            for task in play['tasks']:
+    failed_play = {}
+    retry_task = []
+    hosts = ""
+    
+    if isinstance(failed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode) or isinstance(failed_task,str):
+        task_name = str(failed_task)
+    else:
+        task_name =  str(failed_task._task.get_name())     
+    
+    hosts +=host+","
+    
+    
+    if task_name == 'setup':
+        found_first_failed_task = True
+    else:
+        found_first_failed_task = False
+    
+    logger.info("First faield task: \'"+task_name+ "\'. Host: "+ host)
+    
+    
+    for play in plays:
+        for task in play['tasks']:
+            
+            if found_first_failed_task:
+                retry_task.append(task)
+            else:
                 if 'name' in task and task['name'] == task_name:
                     retry_task.append(task)
-                    logger.warning("Faield task: \'"+task_name+ "\' In host: "+ host)
-                    if host not in hosts:
-                        hosts +=host+","
-                    break
+                    found_first_failed_task = True
                 elif task_name in task:
                     retry_task.append(task)
-                    logger.warning("Faield task: \'"+task_name+ "\' In host: "+ host)
-                    if host not in hosts:
-                        hosts +=host+","
-                    break
-        failed_play['hosts'] = hosts
-        failed_play['tasks'] = retry_task
-        failed_plays.append(failed_play)
+                    found_first_failed_task = True
+                    
     
-    if confirm_failed_tasks:
-        with open(falied_playbook, 'w') as outfile:
-            yaml.dump(failed_plays, outfile)
-    else:
-        if os.path.exists(falied_playbook):
-            os.remove(falied_playbook)
+    failed_play['hosts'] = hosts
+    failed_play['tasks'] = retry_task
+    failed_plays.append(failed_play)
+    failed_playsbooks.append(failed_plays)            
+    
+    logger.info("Number retruned playbooks : \'"+str(len(failed_playsbooks))+ "\'")        
+    return failed_playsbooks
         
 
 def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords):
     if not os.path.exists(playbook_path):
-        logger.error('[ERROR] The playbook does not exist')
+        logger.error('The playbook does not exist')
         return '[ERROR] The playbook does not exist'
     
     os.environ['ANSIBLE_HOST_KEY_CHECKING'] = 'false'
     ansible.constants.HOST_KEY_CHECKING = False
 
-    os.environ['ANSIBLE_SSH_RETRIES'] = '20'
-    ansible.constants.ANSIBLE_SSH_RETRIES = 20
+    os.environ['ANSIBLE_SSH_RETRIES'] = 'retry_count'
+    ansible.constants.ANSIBLE_SSH_RETRIES = retry_count
     
     
     variable_manager = VariableManager()
@@ -189,7 +178,7 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
 
     Options = namedtuple('Options', ['listtags', 'listtasks', 'listhosts', 'syntax', 'connection','module_path', 'forks', 'remote_user', 'private_key_file', 'ssh_common_args', 'ssh_extra_args', 'sftp_extra_args', 'scp_extra_args', 'become', 'become_method', 'become_user', 'verbosity', 'check','host_key_checking','retries'])
 
-    options = Options(listtags=False, listtasks=False, listhosts=False, syntax=False, connection='smart', module_path=None, forks=None, remote_user=user, private_key_file=ssh_key_file, ssh_common_args='', ssh_extra_args='', sftp_extra_args=None, scp_extra_args=None, become=True, become_method='sudo', become_user='root', verbosity=None, check=False , host_key_checking=False, retries=20)
+    options = Options(listtags=False, listtasks=False, listhosts=False, syntax=False, connection='smart', module_path=None, forks=None, remote_user=user, private_key_file=ssh_key_file, ssh_common_args='', ssh_extra_args='', sftp_extra_args=None, scp_extra_args=None, become=True, become_method='sudo', become_user='root', verbosity=None, check=False , host_key_checking=False, retries=retry_count)
     
     variable_manager.extra_vars = extra_vars
     
@@ -204,39 +193,32 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
     pbex._tqm._stdout_callback = results_callback
     results = pbex.run()
     
-    
-    ok = results_callback.host_ok
     answer = []
-    
     failed_tasks = []
-    passed_tasks = []
+    ok = results_callback.host_ok
     for res in ok:         
-        passed_tasks.append(res['task'])
-        #failed_tasks.append(res['task'])    
+        #failed_tasks.append(res)    
         resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']})
-        logger.info(resp)
+        logger.info("Task: "+res['task'] + ". Host: "+ res['ip'] +". State: ok")
         answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         
 
     unreachable = results_callback.host_unreachable   
     for res in unreachable:
-        failed_tasks.append(res['task'])    
+        failed_tasks.append(res)
         resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']})
-        logger.info(resp)
+        logger.warning("Task: "+res['task'] + ". Host: "+ res['ip'] +". State: unreachable")
         answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
 
     host_failed = results_callback.host_failed
     for res in host_failed:
         #failed_tasks.append(res['result']) 
         resp = json.dumps({"host":res['ip'], "result":res['result']._result, "task":res['task']})
-        logger.info(resp)
+        logger.error("Task: "+res['task'] + ". Host: "+ res['ip'] +". State: host_failed")
         answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         
-    if failed_tasks:
-        create_faied_playbooks(failed_tasks,passed_tasks,inventory,variable_manager,loader,options,passwords,results_callback,playbook_path)
+    return answer,failed_tasks
 
-
-    return json.dumps(answer)
 
 
 def run(vm_list,playbook_path,rabbitmq_host,owner):
@@ -249,8 +231,8 @@ def run(vm_list,playbook_path,rabbitmq_host,owner):
     return_dict = manager.dict()
     jobs = []        
     
-    if os.path.exists(falied_playbook):
-        os.remove(falied_playbook)
+    if os.path.exists(falied_playbook_path):
+        os.remove(falied_playbook_path)
     
     for vm in vm_list:
         #ret = install_prerequisites(vm,return_dict)
@@ -268,13 +250,48 @@ def run(vm_list,playbook_path,rabbitmq_host,owner):
     extra_vars = {}
     passwords = {}
     logger.info("Executing playbook: " + (playbook_path))
+
+
+    answer,failed_tasks = execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
+    failed_playsbooks = []
     
-    retry = 0
-    res = execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
-    while os.path.exists(falied_playbook) and retry < 40:
-        retry+=1
-        logger.warning("Some tasks faield retrying: "+str(retry))
-        res = execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
+    if failed_tasks:
+        failed = failed_tasks[0]
+        failed_task = failed['task']
+        if isinstance(failed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode) or isinstance(failed_task,str):
+            task_name = str(failed_task)
+        else:
+            task_name =  str(failed_task._task.get_name())
+
+        retry_setup = 0        
+        while task_name == 'setup' and retry_setup < retry_count :
+            retry_setup+=1
+            answer,failed_tasks = execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
+            failed = failed_tasks[0]
+            failed_task = failed['task']
+            if isinstance(failed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode) or isinstance(failed_task,str):
+                task_name = str(failed_task)
+            else:
+                task_name =  str(failed_task._task.get_name())
+        while not failed_playsbooks:
+            failed_playsbooks = create_faied_playbooks(failed_tasks,playbook_path)
+        
         
     
-    return res
+    for failed_playbook in failed_playsbooks:
+        hosts = failed_playbook[0]['hosts']
+        with open(falied_playbook_path, 'w') as outfile:
+            yaml.dump(failed_playbook, outfile)
+            
+        retry_failed_tasks = 0
+        while retry_failed_tasks < retry_count and failed_tasks:
+            logger.info("Executing playbook : " + (falied_playbook_path) +" in host: "+hosts+" Retries: "+str(retry_failed_tasks))
+            answer,failed_tasks = execute_playbook(hosts,falied_playbook_path,user,ssh_key_file,extra_vars,passwords)
+            retry_failed_tasks+=1
+        retry_failed_tasks = 0
+        if os.path.exists(falied_playbook_path):
+            os.remove(falied_playbook_path)
+        
+    if os.path.exists(falied_playbook_path):
+        os.remove(falied_playbook_path)
+    return json.dumps(answer)

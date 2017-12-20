@@ -22,12 +22,16 @@ from os.path import expanduser
 
 
 
-hosts="localhost,"
 home = expanduser("~")
-playbook_path=home+"/workspace/DRIP/drip-deployer/deployer_files/1513695133139/playbook.yml"
-user="vm_user"
-ssh_key_file=home+"/workspace/DRIP/drip-deployer/deployer_files/1513695133139/1.txt"
-extra_vars = {}
-passwords = {}
+playbook_path=home+"/Downloads/playbook.yml"
 
-ansible_playbook.execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
+ip = "147.228.242.81"
+user="vm_user"
+role = "master"
+ssh_key_file=home+"/Downloads/id_rsa"
+
+vm_list = set()
+vm = VmInfo(ip, user, ssh_key_file, role)
+vm_list.add(vm)
+
+ret = ansible_playbook.run(vm_list,playbook_path,"localhost","owner")
