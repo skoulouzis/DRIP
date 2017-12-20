@@ -367,7 +367,7 @@ services:
       placement:
         constraints: [node.role == manager]
     environment:
-      - MONITORING_SERVER=147.228.242.85
+      - MONITORING_SERVER=monitor-server
       - MONITORING_PREFIX=eu.switch.wt
     hostname: monitor-adapter
     networks:
