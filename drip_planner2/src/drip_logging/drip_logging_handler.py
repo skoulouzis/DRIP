@@ -41,10 +41,10 @@ class DRIPLoggingHandler(RabbitMQHandler):
             if not self.connection or self.connection.is_closed or not self.channel or self.channel.is_closed:
                 self.open_connection()
 
-            
+            queue='log_qeue_' + self.user
             self.channel.basic_publish(
                                        exchange='',
-                                       routing_key='log_qeue_user',
+                                       routing_key=queue,
                                        body=self.format(record),
                                        properties=pika.BasicProperties(
                                        delivery_mode=2)

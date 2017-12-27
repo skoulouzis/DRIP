@@ -56,6 +56,7 @@ if not getattr(logger, 'handler_set', None):
 
 retry=0
 retry_count = 20
+tasks_done = {}
 #cwd = os.getcwd()
 
 falied_playbook_path='/tmp/falied_playbook.yml'
@@ -65,7 +66,7 @@ def install_prerequisites(vm,return_dict):
             logger.info("Installing ansible prerequisites on: "+vm.ip)
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+            ssh.connect(vm.ip, username=vm.user, key_filename=vm.key,timeout=5)
             sftp = ssh.open_sftp()
             file_path = os.path.dirname(os.path.abspath(__file__))
             sftp.chdir('/tmp/')
@@ -126,26 +127,29 @@ def create_faied_playbooks(failed_tasks,playbook_path):
     
     hosts +=host+","
     
-    
     if task_name == 'setup':
         found_first_failed_task = True
     else:
         found_first_failed_task = False
     
-    logger.info("First faield task: \'"+task_name+ "\'. Host: "+ host)
-    
-    
+        
     for play in plays:
         for task in play['tasks']:
-            
             if found_first_failed_task:
                 retry_task.append(task)
             else:
+                if task_name in tasks:
+                    host_done = tasks_done[task_name]
+                    if host_done == host or host_done == 'all':
+                        logger.info("Task: \'"+task_name+ "\'. on host: "+ host+ " already done. Skipping" )
+                        continue
                 if 'name' in task and task['name'] == task_name:
                     retry_task.append(task)
+                    logger.info("First faield task: \'"+task_name+ "\'. Host: "+ host)
                     found_first_failed_task = True
                 elif task_name in task:
                     retry_task.append(task)
+                    logger.info("First faield task: \'"+task_name+ "\'. Host: "+ host)
                     found_first_failed_task = True
                     
     
@@ -200,6 +204,8 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
         #failed_tasks.append(res)    
         resp = json.dumps({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         logger.info("Task: "+res['task'] + ". Host: "+ res['ip'] +". State: ok")
+        global tasks_done
+        tasks_done[res['task']]= res['ip']
         answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         
 
@@ -215,6 +221,7 @@ def execute_playbook(hosts, playbook_path,user,ssh_key_file,extra_vars,passwords
         #failed_tasks.append(res['result']) 
         resp = json.dumps({"host":res['ip'], "result":res['result']._result, "task":res['task']})
         logger.error("Task: "+res['task'] + ". Host: "+ res['ip'] +". State: host_failed")
+        logger.error(resp)
         answer.append({"host":res['ip'], "result":res['result']._result,"task":res['task']})
         
     return answer,failed_tasks
@@ -225,11 +232,14 @@ def run(vm_list,playbook_path,rabbitmq_host,owner):
     hosts=""
     ssh_key_file=""
     rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
-    logger.addHandler(rabbit)    
+    logger.addHandler(rabbit)
+    logger.info("DRIPLogging host: \'"+str(rabbitmq_host)+ "\'"+" logging message owner: \'"+owner+"\'")        
+
     
     manager = multiprocessing.Manager()
     return_dict = manager.dict()
-    jobs = []        
+    jobs = []   
+    
     
     if os.path.exists(falied_playbook_path):
         os.remove(falied_playbook_path)
@@ -251,7 +261,6 @@ def run(vm_list,playbook_path,rabbitmq_host,owner):
     passwords = {}
     logger.info("Executing playbook: " + (playbook_path))
 
-
     answer,failed_tasks = execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
     failed_playsbooks = []
     
@@ -264,15 +273,20 @@ def run(vm_list,playbook_path,rabbitmq_host,owner):
             task_name =  str(failed_task._task.get_name())
 
         retry_setup = 0        
-        while task_name == 'setup' and retry_setup < retry_count :
+        while task_name and task_name == 'setup' and retry_setup < retry_count :
             retry_setup+=1
             answer,failed_tasks = execute_playbook(hosts,playbook_path,user,ssh_key_file,extra_vars,passwords)
-            failed = failed_tasks[0]
-            failed_task = failed['task']
-            if isinstance(failed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode) or isinstance(failed_task,str):
-                task_name = str(failed_task)
+            if failed_tasks:
+                failed = failed_tasks[0]
+                failed_task = failed['task']
+            
+                if isinstance(failed_task, ansible.parsing.yaml.objects.AnsibleUnicode) or isinstance(failed_task, unicode) or isinstance(failed_task,str):
+                    task_name = str(failed_task)
+                else:
+                    task_name =  str(failed_task._task.get_name())
             else:
-                task_name =  str(failed_task._task.get_name())
+                task_name = None
+        
         while not failed_playsbooks:
             failed_playsbooks = create_faied_playbooks(failed_tasks,playbook_path)
         
@@ -280,15 +294,22 @@ def run(vm_list,playbook_path,rabbitmq_host,owner):
     
     for failed_playbook in failed_playsbooks:
         hosts = failed_playbook[0]['hosts']
+        logger.info("Writing new playbook at : \'"+falied_playbook_path+ "\'")  
         with open(falied_playbook_path, 'w') as outfile:
             yaml.dump(failed_playbook, outfile)
             
         retry_failed_tasks = 0
-        while retry_failed_tasks < retry_count and failed_tasks:
+        failed_tasks = None
+        done = False
+        while not done:
             logger.info("Executing playbook : " + (falied_playbook_path) +" in host: "+hosts+" Retries: "+str(retry_failed_tasks))
             answer,failed_tasks = execute_playbook(hosts,falied_playbook_path,user,ssh_key_file,extra_vars,passwords)
             retry_failed_tasks+=1
-        retry_failed_tasks = 0
+            if retry_failed_tasks > retry_count or not failed_tasks:
+                retry_failed_tasks = 0
+                done = True
+                break
+            
         if os.path.exists(falied_playbook_path):
             os.remove(falied_playbook_path)
         

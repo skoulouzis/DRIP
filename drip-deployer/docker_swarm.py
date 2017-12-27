@@ -43,7 +43,7 @@ def install_manager(vm):
 		paramiko.util.log_to_file("deployment.log")
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key,timeout=5)
 		stdin, stdout, stderr = ssh.exec_command("sudo docker info | grep 'Swarm'")
 		temp_list1 = stdout.readlines()
 		stdin, stdout, stderr = ssh.exec_command("sudo docker info | grep 'Is Manager'")
@@ -79,7 +79,7 @@ def install_worker(join_cmd, vm,return_dict):
 		paramiko.util.log_to_file("deployment.log")
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key,timeout=5)
 		stdin, stdout, stderr = ssh.exec_command("sudo docker info | grep 'Swarm'")
 		temp_list1 = stdout.readlines()
 		if temp_list1[0].find("Swarm: active") != -1: 

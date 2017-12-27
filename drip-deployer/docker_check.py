@@ -47,15 +47,15 @@ def get_resp_line(line):
 
 def docker_check(vm, compose_name):
     try:
-        logger.info("Starting docker info services on: "+vm.ip)        
+        logger.info("Starting docker info services on: "+vm.ip)
         paramiko.util.log_to_file("deployment.log")
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key, timeout=5)
         
         node_format = '\'{\"ID\":\"{{.ID}}\",\"hostname\":\"{{.Hostname}}\",\"status\":\"{{.Status}}\",\"availability\":\"{{.Availability}}\",\"status\":\"{{.Status}}\"}\''
         cmd = 'sudo docker node ls --format ' + (node_format)
-                
+        logger.info("Sending :"+cmd)
         json_response = {}
         cluster_node_info = []
         stdin, stdout, stderr = ssh.exec_command(cmd)
@@ -73,7 +73,7 @@ def docker_check(vm, compose_name):
         services_format = '\'{\"ID\":\"{{.ID}}\",\"name\":\"{{.Name}}\",\"image\":\"{{.Image}}\",\"node\":\"{{.Node}}\",\"desired_state\":\"{{.DesiredState}}\",\"current_state\":\"{{.CurrentState}}\",\"error\":\"{{.Error}}\",\"ports\":\"{{.Ports}}\"}\''
         
         cmd = 'sudo docker stack ps '+ compose_name +' --format ' + services_format
-        logger.info("Got response running \"docker stack ps\"")  
+        logger.info("Sending :"+cmd)
         stdin, stdout, stderr = ssh.exec_command(cmd)
         stack_ps_resp = stdout.readlines()
         services_info = []
@@ -99,6 +99,7 @@ def docker_check(vm, compose_name):
         
         stack_format = '\'{"ID":"{{.ID}}","name":"{{.Name}}","mode":"{{.Mode}}","replicas":"{{.Replicas}}","image":"{{.Image}}"}\''
         cmd = 'sudo docker stack services '+ compose_name +' --format ' + (stack_format)
+        logger.info("Sending :"+cmd)
         stdin, stdout, stderr = ssh.exec_command(cmd)
         logger.info("Got response running \"docker stack services\"")  
         stack_resp = stdout.readlines()
@@ -115,9 +116,9 @@ def docker_check(vm, compose_name):
         
         cmd = 'sudo docker node inspect '
         for hostname in nodes_hostname:
-             cmd += ' '+hostname        
+             cmd += ' '+hostname       
+        logger.info("Sending :"+cmd)             
         stdin, stdout, stderr = ssh.exec_command(cmd)
-        logger.info("Got response running \"docker node inspect\"")  
         inspect_resp = stdout.readlines()
         
         response_str = ""
@@ -134,7 +135,8 @@ def docker_check(vm, compose_name):
         cmd = 'sudo docker inspect '
         for id in services_ids:
              cmd += ' '+id 
-                    
+             
+        logger.info("Sending :"+cmd)                    
         stdin, stdout, stderr = ssh.exec_command(cmd)
         logger.info("Got response running \"docker inspect\"")  
         inspect_resp = stdout.readlines()             

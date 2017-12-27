@@ -41,7 +41,7 @@ def deploy_compose(vm, compose_file, compose_name,docker_login):
         paramiko.util.log_to_file("deployment.log")
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key, timeout=5)
         sftp = ssh.open_sftp()
         sftp.chdir('/tmp/')
         sftp.put(compose_file, "docker-compose.yml")
@@ -55,11 +55,14 @@ def deploy_compose(vm, compose_file, compose_name,docker_login):
         else:
             #stdin, stdout, stderr = ssh.exec_command("sudo docker stack rm %s" % (compose_name))
             #stdout.read()
-            #err = stderr.read()                      
-            stdin, stdout, stderr = ssh.exec_command("sudo docker stack deploy --with-registry-auth --compose-file /tmp/docker-compose.yml %s" % (compose_name))
-        stdout.read()
+            #err = stderr.read()                     
+            cmd = "sudo docker stack deploy --with-registry-auth --compose-file /tmp/docker-compose.yml "+compose_name
+            logger.info("Sendding : "+cmd)
+            stdin, stdout, stderr = ssh.exec_command(cmd)
+        out = stdout.read()
         err = stderr.read()
         logger.info("stderr from: "+vm.ip + " "+ err)
+        logger.info("stdout from: "+vm.ip + " "+ out)
         logger.info("Finished docker compose deployment on: "+vm.ip)        
     except Exception as e:
         global retry

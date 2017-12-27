@@ -42,7 +42,7 @@ class DockerComposeTransformer:
         docker_types = set([])
         node_types = self.get_node_types()
         for node_type_key in node_types:
-            if node_types[node_type_key] and isinstance(node_types[node_type_key],dict) and'derived_from' in node_types[node_type_key].keys():
+            if node_types[node_type_key] and isinstance(node_types[node_type_key],dict) and 'derived_from' in node_types[node_type_key].keys():
                 if node_types[node_type_key]['derived_from'] == self.DOCKER_TYPE:
                     docker_types.add(node_type_key)
         return docker_types
@@ -83,7 +83,7 @@ class DockerComposeTransformer:
         port_maps = []
         if 'ports_mapping' in properties:
             ports_mappings = properties['ports_mapping']
-            if ports_mappings:
+            if ports_mappings and not isinstance(ports_mappings,str):
                 for port_map_key in ports_mappings:
                     port_map = ''
                     if isinstance(ports_mappings,dict):                       
@@ -108,6 +108,11 @@ class DockerComposeTransformer:
 #                            port_map[host_port] = container_port      
                             port_map = str(host_port)+':'+str(container_port)   
                             port_maps.append(port_map)
+            elif isinstance(ports_mappings,str):
+                host_port = ports_mappings.split(":")[0] 
+                container_port = ports_mappings.split(":")[1]
+                port_map = str(host_port)+':'+str(container_port)  
+                port_maps.append(port_map)
         if 'in_ports' in properties:
             ports_mappings = properties['in_ports']
             for port_map_key in ports_mappings:

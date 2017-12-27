@@ -70,7 +70,7 @@ class DumpPlanner:
             vm['name'] = node['id']
             vm['type'] = self.COMPUTE_TYPE
             
-            if 'requirements' in node:
+            if 'requirements' in node and node['requirements']:
                 for req in node['requirements']:
                     if 'host' in req and 'node_filter' in req['host']:
                         vm['host'] = req['host']['node_filter']['capabilities']['host']
