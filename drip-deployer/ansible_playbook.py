@@ -66,7 +66,7 @@ def install_prerequisites(vm,return_dict):
             logger.info("Installing ansible prerequisites on: "+vm.ip)
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(vm.ip, username=vm.user, key_filename=vm.key,timeout=5)
+            ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
             sftp = ssh.open_sftp()
             file_path = os.path.dirname(os.path.abspath(__file__))
             sftp.chdir('/tmp/')
