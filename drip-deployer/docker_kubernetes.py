@@ -95,7 +95,7 @@ def install_worker(join_cmd, vm):
 		logger.info("Starting kubernetes slave installation on: "+(vm.ip))
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+		ssh.connect(vm.ip, username=vm.user, key_filename=vm.key,timeout=30)
                 
                 parentDir = os.path.dirname(os.path.abspath(vm.key))
                 os.chmod(parentDir, 0o700)

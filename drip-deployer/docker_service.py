@@ -41,7 +41,7 @@ def scale_service(vm, application_name, service_name, service_num):
         paramiko.util.log_to_file("deployment.log")
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key,timeout=30)
         stdin, stdout, stderr = ssh.exec_command("sudo docker service scale %s_%s=%s" % (application_name, service_name, service_num))
         stdout.read()
         logger.info("Finished docker service scaling on: "+vm.ip)        

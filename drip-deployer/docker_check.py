@@ -51,7 +51,7 @@ def docker_check(vm, compose_name):
         paramiko.util.log_to_file("deployment.log")
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key,timeout=30)
         
         node_format = '\'{\"ID\":\"{{.ID}}\",\"hostname\":\"{{.Hostname}}\",\"status\":\"{{.Status}}\",\"availability\":\"{{.Availability}}\",\"status\":\"{{.Status}}\"}\''
         cmd = 'sudo docker node ls --format ' + (node_format)

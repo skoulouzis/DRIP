@@ -41,7 +41,7 @@ def deploy_compose(vm, compose_file, compose_name,docker_login):
         paramiko.util.log_to_file("deployment.log")
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key, timeout=10)
+        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key, timeout=30)
         sftp = ssh.open_sftp()
         sftp.chdir('/tmp/')
         sftp.put(compose_file, "docker-compose.yml")

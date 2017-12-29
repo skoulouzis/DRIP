@@ -39,7 +39,7 @@ def install_agent(vm, vm_list):
         logger.info("Starting control agent installation on: "+(vm.ip))
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key)
+        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key,timeout=30)
         sftp = ssh.open_sftp()
         sftp.chdir('/tmp/')
         vm_cnt = 0
