@@ -101,7 +101,7 @@ def handle_delivery(message):
 if __name__ == "__main__":
     if(sys.argv[1] == "test_local"):
         home = expanduser("~")
-        planner = DumpPlanner(home+"/workspace/DRIP/docs/input_tosca_files/MOG/test_tosca2.yml")
+        planner = DumpPlanner(home+"/workspace/DRIP/docs/input_tosca_files/MOG/tosca_MOG_input2.2.yml")
         print planner.plan()
     else:    
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2]) 
@@ -109,37 +109,7 @@ if __name__ == "__main__":
         global queue_name
         queue_name = sys.argv[2]
         start(channel)
-    
-    
-#            
-#        for vm in vm_nodes:
-#            result = {}
-#            parameter = {}
-#            result['name'] = vm.name
-#            result['size'] = 'Medium'
-#            if 'dockers' in vm.get_properties():
-#                result['docker'] = vm.get_properties()['dockers'].value
-#            elif 'artifacts' in vm.templates[next(iter(vm.templates))]:
-#                artifacts = vm.templates[next(iter(vm.templates))]['artifacts']
-#                result['docker'] = artifacts['docker_image']['file']
-##            print "1st Key: %s" %next(iter(vm.templates))
-##            print vm.templates[next(iter(vm.templates))]
-#            
-##            print dir(compute_node.get_properties()['dockers'] )
-##            print "dockers. Name: %s Type: %s Value: %s" % (compute_node.get_properties()['dockers'].name, compute_node.get_properties()['dockers'].type, compute_node.get_properties()['dockers'].value )
-#            parameter['value'] = str(json.dumps(result))
-#            parameter['attributes'] = 'null'
-#            parameter["url"] = "null"
-#            parameter["encoding"] = "UTF-8"
-#            response["parameters"].append(parameter)           
-##            print "Name: %s Type: %s properties: %s" %(vm.name,vm.type,vm.get_properties().keys())
-##
-#        print ("Output message: %s" % json.dumps(response))
-#
-#    except AttributeError as e:
-#        z = e
-#        print z
-    
+        
     
     
     

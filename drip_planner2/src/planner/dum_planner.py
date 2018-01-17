@@ -38,6 +38,9 @@ class DumpPlanner:
     def get_node_templates(self):
         return self.yaml_dict_tpl['topology_template']['node_templates']
     
+    def get_network_templates(self):
+        return self.yaml_dict_tpl['topology_template']['network_templates']    
+    
     def get_artifacts(self, node):
         if 'artifacts' in node:
             return node['artifacts']
@@ -62,9 +65,30 @@ class DumpPlanner:
             return node['properties']
         
     def plan(self):
+        network_templates = self.get_network_templates() 
+        vms = []
+        if network_templates and network_templates['network'] and network_templates['network']['multicast'] == True:
+            vm = {}
+            vm['type'] = self.COMPUTE_TYPE
+            host = {}
+            host['cpu_frequency'] = '2.6GHz'
+            host['mem_size'] = '32GB'
+            host['num_cpus'] = '16'
+            host['disk_size'] = '10GB'
+            vm['host'] = host
+            os = {}
+            os['os_version'] = 16.04
+            os['distribution'] = 'ubuntu'
+            os['type'] = 'linux'
+            os['architecture'] = 'x86_64'
+            vm['os'] = os
+            vm['scaling_mode'] = 'multiple'
+            vms.append(vm)
+        return vms
+        
         node_templates = self.get_node_templates() 
         hosted_nodes = self.get_hosted_nodes(node_templates)
-        vms = []
+        
         for node in hosted_nodes:
             vm = {}
             vm['name'] = node['id']

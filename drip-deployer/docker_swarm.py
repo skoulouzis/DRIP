@@ -104,14 +104,47 @@ def install_worker(join_cmd, vm,return_dict):
 	retry=0
 	return_dict[vm.ip] = "SUCCESS"
 	return "SUCCESS"
+    
+def connect_wave(vm_list,master):
+	try:
+		logger.info("Starting wave connection on: "+(master.ip))
+		paramiko.util.log_to_file("deployment.log")
+		ssh = paramiko.SSHClient()
+		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+		ssh.connect(master.ip, username=master.user, key_filename=master.key)
+		
+                for i in vm_list:
+                    if i.role == "slave":
+                        logger.info("weave connect "+(i.ip))
+                        stdin, stdout, stderr = ssh.exec_command("sudo weave connect "+i.ip)
+                        out = stdout.read()
+                        err = stderr.read()
+                        logger.info("stdout: "+(out))
+                        logger.info("stderr: "+(err))
+
+		logger.info("Finished wave connection on: "+(master.ip))
+	except Exception as e:
+                global retry
+                if retry < 10:
+                    logger.warning(master.ip + " " + str(e)+". Retrying")
+                    retry+=1
+                    return connect_wave(vm_list,master)
+		logger.error(master.ip + " " + str(e))
+		return "ERROR:" + master.ip + " " + str(e)
+	ssh.close()
+	retry=0
+	return_dict[vm.ip] = "SUCCESS"
+	return "SUCCESS"    
+    
 
 def run(vm_list,rabbitmq_host,owner):
         rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
         logger.addHandler(rabbit)
         
-
+        master = None
 	for i in vm_list:
 		if i.role == "master":
+                        master = i
 			join_cmd = install_manager(i)
 			if "ERROR:" in join_cmd:
 				return join_cmd
@@ -131,12 +164,11 @@ def run(vm_list,rabbitmq_host,owner):
                         p = multiprocessing.Process(target=install_worker, args=(join_cmd, i,return_dict,))
                         jobs.append(p)
                         p.start()
-			#worker_cmd = install_worker(join_cmd, i)
-			#if "ERROR:" in worker_cmd:
-				#return worker_cmd
 
         for proc in jobs:
             proc.join()
+            
+        #connect_wave(vm_list,master)
         
         if "ERROR" in return_dict.values(): return "ERROR"
 	return swarm_string

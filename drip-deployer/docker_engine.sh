@@ -14,3 +14,6 @@ sudo docker plugin install --grant-all-permissions weaveworks/net-plugin:latest_
 sudo docker plugin disable weaveworks/net-plugin:latest_release
 sudo docker plugin set weaveworks/net-plugin:latest_release WEAVE_MULTICAST=1
 sudo docker plugin enable weaveworks/net-plugin:latest_release
+
+sudo wget -O /usr/local/bin/weave https://github.com/weaveworks/weave/releases/download/latest_release/weave
+sudo chmod a+x /usr/local/bin/weave

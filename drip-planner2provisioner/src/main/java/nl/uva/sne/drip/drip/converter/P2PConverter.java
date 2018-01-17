@@ -14,6 +14,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.converter.provisionerIn.*;
 import nl.uva.sne.drip.drip.converter.provisionerIn.EC2.*;
@@ -66,7 +68,7 @@ public class P2PConverter {
                 }
             }
             subTopology = addVMToSubTopology(cloudProvider, vm, subTopology);
-            
+
             if (cloudProvider.trim().toLowerCase().equals("ec2")) {
                 Subnet s = new Subnet();
                 s.name = "s1";
@@ -107,12 +109,35 @@ public class P2PConverter {
         return spc;
     }
 
+    private static int analyzeRequirements(Map<String, String> map) {
+        int size = 5;
+        String memSizeGB = map.get("mem_size");
+        Pattern p = Pattern.compile("-?\\d+");
+        Matcher m = p.matcher(memSizeGB);
+        int memSize = 0;
+        while (m.find()) {
+            memSize = Integer.valueOf(m.group());
+        }
+
+        if (Integer.valueOf(map.get("num_cpus")) >= 16 && memSize >= 32) {
+            size = 10;
+        }
+        return size;
+
+    }
+
     private static String getSize(Map<String, String> map, String cloudProvider) {
+        int size = analyzeRequirements(map);
         switch (cloudProvider.trim().toLowerCase()) {
             case "ec2":
                 return "t2.medium";
             case "egi":
-                return "medium";
+                if (size == 5) {
+                    return "medium";
+                }
+                if (size >= 10) {
+                    return "mammoth";
+                }
             default:
                 Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
                 return null;
