@@ -79,7 +79,7 @@ public class PlannerService {
         logger.addHandler(new DRIPLogHandler(messageBrokerHost));
     }
 
-    public PlanResponse getPlan(String toscaId) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
+    public PlanResponse getPlan(String toscaId, String cloudProvider) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
         try (DRIPCaller planner = new PlannerCaller(messageBrokerHost)) {
             Message plannerInvokationMessage = buildPlannerMessage(toscaId);
             logger.log(Level.INFO, "Calling planner");
@@ -100,8 +100,9 @@ public class PlannerService {
                 jsonArrayString.append(jsonValue);
             }
             jsonArrayString.append("]");
-
-            String cloudProvider = getBestCloudProvider();
+            if (cloudProvider == null) {
+                cloudProvider = getBestCloudProvider();
+            }
             String domainName = getBestDomain(cloudProvider);
 
 //            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", clusterType);

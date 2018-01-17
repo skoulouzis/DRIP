@@ -61,7 +61,6 @@ public class PlannerController {
 
 //    @Autowired
 //    private ToscaService toscaService;
-
     /**
      * verifies plan. Checks if this is a concrete plan
      *
@@ -87,7 +86,7 @@ public class PlannerController {
     String plan(@PathVariable("tosca_id") String toscaId) {
 
         try {
-            PlanResponse plan = plannerService.getPlan(toscaId);
+            PlanResponse plan = plannerService.getPlan(toscaId, null);
             if (plan == null) {
                 throw new NotFoundException("Could not make plan");
             }
