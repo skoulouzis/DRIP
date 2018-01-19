@@ -66,7 +66,7 @@ def handle_delivery(message):
     
     if queue_name == "tosca_2_docker_compose_queue":
         transformer = DockerComposeTransformer(tosca_file_path + "/" + tosca_file_name + ".yml");
-        compose = transformer.getnerate_compose()
+        compose = transformer.getnerate_compose('3.3')
     response = {}
     current_milli_time = lambda: int(round(time.time() * 1000))
     response["creationDate"] = current_milli_time()   

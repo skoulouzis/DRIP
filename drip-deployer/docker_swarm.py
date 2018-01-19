@@ -133,7 +133,6 @@ def connect_wave(vm_list,master):
 		return "ERROR:" + master.ip + " " + str(e)
 	ssh.close()
 	retry=0
-	return_dict[vm.ip] = "SUCCESS"
 	return "SUCCESS"    
     
 
@@ -168,7 +167,7 @@ def run(vm_list,rabbitmq_host,owner):
         for proc in jobs:
             proc.join()
             
-        #connect_wave(vm_list,master)
+        connect_wave(vm_list,master)
         
         if "ERROR" in return_dict.values(): return "ERROR"
 	return swarm_string
