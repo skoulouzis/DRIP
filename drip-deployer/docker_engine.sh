@@ -17,3 +17,13 @@ sudo docker plugin enable weaveworks/net-plugin:latest_release
 
 sudo wget -O /usr/local/bin/weave https://github.com/weaveworks/weave/releases/download/latest_release/weave
 sudo chmod a+x /usr/local/bin/weave
+
+
+sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+sudo add-apt-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+
+curl -L https://github.com/kubernetes/kompose/releases/download/v1.7.0/kompose-linux-amd64 -o kompose
+chmod +x kompose
+sudo mv ./kompose /usr/local/bin/kompose

@@ -63,7 +63,7 @@ def install_manager(vm):
 		install_script = file_path + "/" + "docker_kubernetes.sh"
 		sftp.put(install_script, "kubernetes_setup.sh")
 		
-		stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.','-')))
+		#stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.','-')))
 		stdout.read()
 		stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/kubernetes_setup.sh")
 		stdout.read()
