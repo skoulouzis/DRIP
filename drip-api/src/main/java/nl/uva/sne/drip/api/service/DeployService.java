@@ -370,6 +370,7 @@ public class DeployService {
             handleResponse(params, null);
         }
         deployment.setScale(scaleReq);
+        deployment.setManagerType("swarm");
         save(deployment);
         return deployment;
     }
