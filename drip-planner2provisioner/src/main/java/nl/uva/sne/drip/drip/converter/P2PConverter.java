@@ -30,7 +30,7 @@ public class P2PConverter {
         List<Object> vmList = Converter.jsonString2List(plannerOutputJson);
 
         TopTopology topTopology = new TopTopology();
-        topTopology.publicKeyPath = null;
+        topTopology.publicKeyPath = "name@id_rsa.pub";
         topTopology.userName = userName;
         topTopology.topologies = new ArrayList<>();
 
@@ -42,6 +42,7 @@ public class P2PConverter {
         sti.topology = UUID.randomUUID().toString();
         sti.domain = domainName;
         sti.status = "fresh";
+        sti.statusInfo = null;
         sti.tag = provisionerScalingMode;
 
         Map<String, SubTopologyInfo> subTopologyInfos = new HashMap<>();
@@ -58,6 +59,7 @@ public class P2PConverter {
                 sti.domain = domainName;
                 sti.status = "fresh";
                 sti.tag = provisionerScalingMode;
+                sti.statusInfo = null;
             } else {
                 for (SubTopologyInfo info : subTopologyInfos.values()) {
                     if (!info.tag.equals("scaling")) {
@@ -68,7 +70,6 @@ public class P2PConverter {
                 }
             }
             subTopology = addVMToSubTopology(cloudProvider, vm, subTopology);
-
             if (cloudProvider.trim().toLowerCase().equals("ec2")) {
                 Subnet s = new Subnet();
                 s.name = "s1";
@@ -165,6 +166,9 @@ public class P2PConverter {
             map = Converter.jsonString2Map((String) element);
         }
         curVM.name = (String) map.get("name");
+        if (curVM.name==null){
+            curVM.name = "node_vm";
+        }
         curVM.type = (String) map.get("type");
         curVM.OStype = ((Map<String, String>) map.get("os")).get("distribution") + " " + ((Map<String, Double>) map.get("os")).get("os_version");
 //            curVM.clusterType = clusterType;

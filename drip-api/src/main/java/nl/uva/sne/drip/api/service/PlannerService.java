@@ -279,7 +279,7 @@ public class PlannerService {
 
     private String getBestCloudProvider() {
         List<CloudCredentials> creds = credentialService.findAll();
-        return creds.get(0).getCloudProviderName();
+        return creds.get(0).getCloudProviderName().toUpperCase();
     }
 
     private String getBestDomain(String cloudProvider) {
