@@ -80,13 +80,13 @@ class DockerComposeTransformer:
     
     
     def get_port_map(self,properties):
-        port_maps = []
+        port_maps = set()
         if 'ports_mapping' in properties:
             ports_mappings = properties['ports_mapping']
             if ports_mappings and not isinstance(ports_mappings,str):
                 for port_map_key in ports_mappings:
                     port_map = ''
-                    if isinstance(ports_mappings,dict):                       
+                    if isinstance(ports_mappings,dict):   
                         if 'host_port' in ports_mappings[port_map_key]:
                             host_port =  ports_mappings[port_map_key]['host_port']
                             if not isinstance(host_port, (int, long, float, complex)) and '$' in host_port:
@@ -100,7 +100,20 @@ class DockerComposeTransformer:
                                 container_port = properties[container_port_var]
 #                            port_map[host_port] = container_port
                             port_map = str(host_port)+':'+str(container_port)
-                        port_maps.append(port_map)
+                        if  'protocol' in ports_mappings[port_map_key]:   
+                            port_map+='/'+ ports_mappings[port_map_key]['protocol']
+                            
+                        
+                        for k in ports_mappings[port_map_key]:
+                            if not port_map and k.startswith('port_mapping_'):
+                                host_port = ports_mappings[port_map_key][k]['host_port']
+                                container_port = ports_mappings[port_map_key][k]['container_port']
+                                port_map = str(host_port)+':'+str(container_port)
+                                if 'protocol' in ports_mappings[port_map_key][k]:
+                                    port_map += '/'+ ports_mappings[port_map_key][k]['protocol']
+                                port_maps.add(port_map)
+                            
+                        port_maps.add(port_map)
                     elif isinstance(ports_mappings,list):      
                         for mapping in ports_mappings:
                             host_port = mapping.split(":")[0]
@@ -112,7 +125,7 @@ class DockerComposeTransformer:
                 host_port = ports_mappings.split(":")[0] 
                 container_port = ports_mappings.split(":")[1]
                 port_map = str(host_port)+':'+str(container_port)  
-                port_maps.append(port_map)
+                port_maps.add(port_map)
         if 'in_ports' in properties:
             ports_mappings = properties['in_ports']
             for port_map_key in ports_mappings:
@@ -143,7 +156,7 @@ class DockerComposeTransformer:
                             container_port=container_port+'/'+protocol
 #                    port_map[host_port] = container_port
                     port_map = str(host_port)+':'+str(container_port)
-                    port_maps.append(port_map)
+                    port_maps.add(port_map)
         return port_maps
     
     def get_requirements(self,node):
@@ -161,6 +174,15 @@ class DockerComposeTransformer:
                     vol[name]=path
                     volumes.append(vol)
             return volumes
+        
+    def get_networks(self,requirements):
+        if requirements:
+            networks = []
+            for req in requirements:
+                if 'networks' in req:
+                    network = {}
+                    networks.append(requirements[req])
+            return networks
     
     def analyze_yaml(self,version):
         docker_types  = self.get_docker_types()
@@ -169,6 +191,7 @@ class DockerComposeTransformer:
         services['version'] = version
         services['services'] = {}
         all_volumes = []
+        all_networks = []
         for node_template_key in node_templates:
             for docker_type in docker_types:
                 if isinstance(node_templates[node_template_key],dict) and 'type' in node_templates[node_template_key] and docker_type in node_templates[node_template_key]['type']:
@@ -176,7 +199,8 @@ class DockerComposeTransformer:
                     artifacts = self.get_artifacts(node_templates[node_template_key])
                     if artifacts:
                         key =  next(iter(artifacts))
-                        docker_file =  artifacts[key]['file']
+                        if isinstance(artifacts,dict):
+                            docker_file =  artifacts[key]['file']                            
                         if docker_file:
                             service['image'] = docker_file
                         if docker_file and docker_file is not None and '/' in docker_file:
@@ -201,8 +225,20 @@ class DockerComposeTransformer:
                             volume_id = {}
                             volume_id[next(iter(vol))] = None
                             all_volumes.append(volume_id)
+                            
+                    networks = self.get_networks(requirements)
+                    if networks:
+                        service['networks'] = networks
+                    for network in networks:
+                        network_id = {}
+                        network_id[next(iter(network))] = None
+                        all_networks_ids.add(network)
+                        all_networks.append(network_id)
+                            
                     services['services'][node_template_key] = service
                     break
         if all_volumes:
             services['volumes'] = all_volumes
+        if all_networks:
+            services['networks'] = all_networks            
         return services

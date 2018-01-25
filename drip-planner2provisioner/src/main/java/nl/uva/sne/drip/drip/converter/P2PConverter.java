@@ -131,12 +131,39 @@ public class P2PConverter {
         int size = analyzeRequirements(map);
         switch (cloudProvider.trim().toLowerCase()) {
             case "ec2":
+                if (size <= 1) {
+                    return "t2.nano";
+                }
+                if (size > 1 && size <= 2) {
+                    return "t2.micro";
+                }
+                if (size > 2 && size <= 3) {
+                    return "t2.small";
+                }
+                if (size > 3 && size <= 4) {
+                    return "t2.medium";
+                }
+                if (size > 3 && size <= 4) {
+                    return "t2.medium";
+                }
+                if (size > 4 && size <= 5) {
+                    return "t2.large";
+                }
+                if (size > 5 && size <= 6) {
+                    return "t2.xlarge";
+                }
+                if (size > 6) {
+                    return "t2.2xlarge";
+                }
                 return "t2.medium";
             case "egi":
-                if (size == 5) {
+                if (size <= 1) {
+                    return "small";
+                }
+                if (size > 1 && size <= 5) {
                     return "medium";
                 }
-                if (size >= 10) {
+                if (size > 5 && size <= 10) {
                     return "mammoth";
                 }
             default:

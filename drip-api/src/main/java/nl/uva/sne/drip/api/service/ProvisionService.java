@@ -489,7 +489,7 @@ public class ProvisionService {
         }
         ProvisionResponse provisionInfo = findOne(provisionID);
         boolean scaleNameExists = false;
-        int currentNumOfInstances = 0;
+        int currentNumOfInstances = 1;
         Map<String, Object> plan = provisionInfo.getKeyValue();
         String cloudProvider = null;
         String domain = null;
