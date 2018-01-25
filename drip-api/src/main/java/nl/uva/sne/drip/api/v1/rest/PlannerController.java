@@ -78,15 +78,16 @@ public class PlannerController {
      * Plans resources (number, size of VMs etc).
      *
      * @param toscaId. The id of the TOSCA description
+     * @param preferred_Provider
      * @return the id of the created plan
      */
-    @RequestMapping(value = "/plan/{tosca_id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/plan/{tosca_id}", method = RequestMethod.GET, params = {"preferred_provider"})
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String plan(@PathVariable("tosca_id") String toscaId) {
+    String plan(@PathVariable("tosca_id") String toscaId, @RequestParam(value = "preferred_provider", required = false) String preferred_Provider) {
 
         try {
-            PlanResponse plan = plannerService.getPlan(toscaId, null);
+            PlanResponse plan = plannerService.getPlan(toscaId, preferred_Provider);
             if (plan == null) {
                 throw new NotFoundException("Could not make plan");
             }
