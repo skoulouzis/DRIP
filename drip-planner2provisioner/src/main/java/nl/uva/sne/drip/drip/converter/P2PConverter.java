@@ -26,7 +26,7 @@ public class P2PConverter {
 
     public static SimplePlanContainer transfer(String plannerOutputJson,
             String userName, String domainName, String cloudProvider) throws JsonParseException, JsonMappingException, IOException, JSONException {
-
+        cloudProvider = cloudProvider.toUpperCase();
         List<Object> vmList = Converter.jsonString2List(plannerOutputJson);
 
         TopTopology topTopology = new TopTopology();
@@ -166,7 +166,7 @@ public class P2PConverter {
             map = Converter.jsonString2Map((String) element);
         }
         curVM.name = (String) map.get("name");
-        if (curVM.name==null){
+        if (curVM.name == null) {
             curVM.name = "node_vm";
         }
         curVM.type = (String) map.get("type");
