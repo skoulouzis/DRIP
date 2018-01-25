@@ -232,7 +232,6 @@ class DockerComposeTransformer:
                     for network in networks:
                         network_id = {}
                         network_id[next(iter(network))] = None
-                        all_networks_ids.add(network)
                         all_networks.append(network_id)
                             
                     services['services'][node_template_key] = service
