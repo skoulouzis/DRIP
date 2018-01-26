@@ -14,8 +14,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.converter.provisionerIn.*;
 import nl.uva.sne.drip.drip.converter.provisionerIn.EC2.*;
@@ -142,12 +140,16 @@ public class P2PConverter {
                     return "t2.medium";
                 }
                 if (size > 4 && size <= 5) {
-                    return "t2.large";
+                    return "t2.medium";
                 }
                 if (size > 5 && size <= 6) {
+                    return "t2.large";
+                }
+                if (size > 6 && size <= 7) {
                     return "t2.xlarge";
                 }
-                if (size > 6) {
+
+                if (size > 7) {
                     return "t2.2xlarge";
                 }
                 return "t2.medium";

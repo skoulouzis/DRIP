@@ -79,9 +79,9 @@ public class PlannerService {
         logger.addHandler(new DRIPLogHandler(messageBrokerHost));
     }
 
-    public PlanResponse getPlan(String toscaId, String cloudProvider, int maxVM) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
+    public PlanResponse getPlan(String toscaId, String cloudProvider, Integer maxVM) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
         try (DRIPCaller planner = new PlannerCaller(messageBrokerHost)) {
-            Message plannerInvokationMessage = buildPlannerMessage(toscaId,maxVM);
+            Message plannerInvokationMessage = buildPlannerMessage(toscaId, maxVM);
             logger.log(Level.INFO, "Calling planner");
             plannerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
             Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
@@ -104,7 +104,7 @@ public class PlannerService {
                 cloudProvider = getBestCloudProvider();
             }
             String domainName = getBestDomain(cloudProvider);
-            
+
             SimplePlanContainer simplePlan = P2PConverter.transfer(jsonArrayString.toString(), "vm_user", domainName, cloudProvider);
 
             PlanResponse topLevel = new PlanResponse();
@@ -131,7 +131,7 @@ public class PlannerService {
         }
     }
 
-    private Message buildPlannerMessage(String toscaId, int maxVM) throws JSONException, UnsupportedEncodingException {
+    private Message buildPlannerMessage(String toscaId, Integer maxVM) throws JSONException, UnsupportedEncodingException {
         ToscaRepresentation toscaRepresentation = toscaService.findOne(toscaId);
         if (toscaRepresentation == null) {
             throw new BadRequestException();
@@ -151,13 +151,14 @@ public class PlannerService {
         jsonArgument.setEncoding(charset);
         jsonArgument.setName("tosca_input");
         parameters.add(jsonArgument);
-        
-        MessageParameter maxVMsArgument = new MessageParameter();
-        maxVMsArgument.setValue(String.valueOf(maxVM));
-        maxVMsArgument.setEncoding(charset);
-        maxVMsArgument.setName("max_vm");
-        parameters.add(maxVMsArgument);
-        
+
+        if (maxVM != null) {
+            MessageParameter maxVMsArgument = new MessageParameter();
+            maxVMsArgument.setValue(String.valueOf(maxVM));
+            maxVMsArgument.setEncoding(charset);
+            maxVMsArgument.setName("max_vm");
+            parameters.add(maxVMsArgument);
+        }
 
         invokationMessage.setParameters(parameters);
         invokationMessage.setCreationDate((System.currentTimeMillis()));

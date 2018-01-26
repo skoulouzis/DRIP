@@ -79,40 +79,15 @@ public class PlannerController {
      *
      * @param toscaId. The id of the TOSCA description
      * @param preferredProvider
-     *
+     * @param maxVm
      * @return the id of the created plan
      */
     @RequestMapping(value = "/plan/{tosca_id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String planWithProvider(@PathVariable("tosca_id") String toscaId,
-            @RequestParam(value = "preferred_provider", required = false) String preferredProvider) {
-        try {
-            PlanResponse plan = plannerService.getPlan(toscaId, preferredProvider, -1);
-            if (plan == null) {
-                throw new NotFoundException("Could not make plan");
-            }
-            return plan.getId();
-        } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
-            Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    /**
-     * Plans resources (number, size of VMs etc).
-     *
-     * @param toscaId. The id of the TOSCA description
-     * @param preferredProvider
-     * @param maxVm
-     * @return the id of the created plan
-     */
-    @RequestMapping(value = "/plan/{tosca_id}", method = RequestMethod.GET, params = {"preferred_provider", "max_vm"})
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
     String plan(@PathVariable("tosca_id") String toscaId,
             @RequestParam(value = "preferred_provider", required = false) String preferredProvider,
-            @RequestParam(value = "max_vm", required = false) int maxVm) {
+            @RequestParam(value = "max_vm", required = false) Integer maxVm) {
         try {
             PlanResponse plan = plannerService.getPlan(toscaId, preferredProvider, maxVm);
             if (plan == null) {
