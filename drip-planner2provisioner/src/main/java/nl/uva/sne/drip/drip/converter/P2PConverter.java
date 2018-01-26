@@ -112,15 +112,10 @@ public class P2PConverter {
 
     private static int analyzeRequirements(Map<String, String> map) {
         int size = 5;
-        String memSizeGB = map.get("mem_size");
-        Pattern p = Pattern.compile("-?\\d+");
-        Matcher m = p.matcher(memSizeGB);
-        int memSize = 0;
-        while (m.find()) {
-            memSize = Integer.valueOf(m.group());
-        }
 
-        if (Integer.valueOf(map.get("num_cpus")) >= 16 && memSize >= 32) {
+        Number memSize = Converter.castToNumber(map.get("mem_size"));
+        Number num_cpus = Converter.castToNumber(map.get("num_cpus"));
+        if (num_cpus.intValue() >= 16 && memSize.intValue() >= 32) {
             size = 10;
         }
         return size;

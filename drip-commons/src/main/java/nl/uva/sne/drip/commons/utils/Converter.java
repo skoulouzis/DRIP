@@ -270,4 +270,20 @@ public class Converter {
         return msg;
     }
 
+    public static Number castToNumber(Object value) {
+        if (value instanceof Number) {
+            return (Number) value;
+        }
+        if (value instanceof String) {
+            Pattern p = Pattern.compile("-?\\d+");
+            Matcher m = p.matcher((CharSequence) value);
+
+            while (m.find()) {
+                return Integer.valueOf(m.group());
+            }
+        }
+
+        return null;
+    }
+
 }

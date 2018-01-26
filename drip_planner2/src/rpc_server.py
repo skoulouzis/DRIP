@@ -60,9 +60,20 @@ def handle_delivery(message):
     parsed_json_message = json.loads(message)
     params = parsed_json_message["parameters"]
     owner = parsed_json_message['owner']
-    param = params[0]
-    value = json.loads(param['value'])
-    tosca_file_name = param["name"]
+    tosca_value = {}
+    tosca_file_name = ''
+    max_vms = -1
+    for param in params:
+        value = param['value'] 
+        name = param["name"]
+        if name == 'tosca_input':
+            tosca_value = json.loads(value)
+            tosca_file_name = name
+        if name == 'max_vm':
+            max_vms = int(value)
+    
+
+    
     current_milli_time = lambda: int(round(time.time() * 1000))
     
     
@@ -78,7 +89,7 @@ def handle_delivery(message):
     if not os.path.exists(tosca_file_path):
         os.makedirs(tosca_file_path)    
     with open(tosca_file_path + "/" + tosca_file_name + ".yml", 'w') as outfile:
-        outfile.write(json.dumps(value))
+        outfile.write(json.dumps(tosca_value))
     
     response = {}
     current_milli_time = lambda: int(round(time.time() * 1000))
@@ -86,7 +97,7 @@ def handle_delivery(message):
     response["parameters"] = []
     if queue_name == "planner_queue":
         planner = DumpPlanner(tosca_file_path + "/" + tosca_file_name + ".yml");
-        vm_nodes = planner.plan()
+        vm_nodes = planner.plan(max_vms)
         for vm in vm_nodes:
             parameter = {}
             parameter['value'] = str(json.dumps(vm))

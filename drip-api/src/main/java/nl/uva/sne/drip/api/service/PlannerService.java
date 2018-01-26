@@ -79,9 +79,9 @@ public class PlannerService {
         logger.addHandler(new DRIPLogHandler(messageBrokerHost));
     }
 
-    public PlanResponse getPlan(String toscaId, String cloudProvider) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
+    public PlanResponse getPlan(String toscaId, String cloudProvider, int maxVM) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
         try (DRIPCaller planner = new PlannerCaller(messageBrokerHost)) {
-            Message plannerInvokationMessage = buildPlannerMessage(toscaId);
+            Message plannerInvokationMessage = buildPlannerMessage(toscaId,maxVM);
             logger.log(Level.INFO, "Calling planner");
             plannerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
             Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
@@ -104,8 +104,7 @@ public class PlannerService {
                 cloudProvider = getBestCloudProvider();
             }
             String domainName = getBestDomain(cloudProvider);
-
-//            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", clusterType);
+            
             SimplePlanContainer simplePlan = P2PConverter.transfer(jsonArrayString.toString(), "vm_user", domainName, cloudProvider);
 
             PlanResponse topLevel = new PlanResponse();
@@ -132,14 +131,14 @@ public class PlannerService {
         }
     }
 
-    private Message buildPlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException {
-        ToscaRepresentation t2 = toscaService.findOne(toscaId);
-        if (t2 == null) {
+    private Message buildPlannerMessage(String toscaId, int maxVM) throws JSONException, UnsupportedEncodingException {
+        ToscaRepresentation toscaRepresentation = toscaService.findOne(toscaId);
+        if (toscaRepresentation == null) {
             throw new BadRequestException();
         }
         logger.log(Level.INFO, "Building invokation message for planner");
 
-        Map<String, Object> map = t2.getKeyValue();
+        Map<String, Object> map = toscaRepresentation.getKeyValue();
         String json = Converter.map2JsonString(map);
         json = json.replaceAll("\\uff0E", ".");
         byte[] bytes = json.getBytes();
@@ -150,8 +149,15 @@ public class PlannerService {
         String charset = "UTF-8";
         jsonArgument.setValue(new String(bytes, charset));
         jsonArgument.setEncoding(charset);
-        jsonArgument.setName("input");
+        jsonArgument.setName("tosca_input");
         parameters.add(jsonArgument);
+        
+        MessageParameter maxVMsArgument = new MessageParameter();
+        maxVMsArgument.setValue(String.valueOf(maxVM));
+        maxVMsArgument.setEncoding(charset);
+        maxVMsArgument.setName("max_vm");
+        parameters.add(maxVMsArgument);
+        
 
         invokationMessage.setParameters(parameters);
         invokationMessage.setCreationDate((System.currentTimeMillis()));

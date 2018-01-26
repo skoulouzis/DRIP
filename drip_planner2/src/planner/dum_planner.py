@@ -2,6 +2,8 @@
 from toscaparser import *
 from toscaparser.tosca_template import ToscaTemplate
 import toscaparser.utils.yamlparser
+import re
+import operator
 
 class DumpPlanner:
     
@@ -39,7 +41,10 @@ class DumpPlanner:
         return self.yaml_dict_tpl['topology_template']['node_templates']
     
     def get_network_templates(self):
-        return self.yaml_dict_tpl['topology_template']['network_templates']    
+        if 'network_templates' in self.yaml_dict_tpl:
+            return self.yaml_dict_tpl['topology_template']['network_templates']
+        else:
+            return None
     
     def get_artifacts(self, node):
         if 'artifacts' in node:
@@ -64,11 +69,42 @@ class DumpPlanner:
         if 'properties' in node:
             return node['properties']
         
-    def plan(self):
+    def cast_to_int(self,value):
+        if isinstance(value, int):
+            return value
+        if isinstance(value, str):
+            return int(re.findall("\d+", value)[0])
+        
+        
+    def sort_vms(self,vms,max_vms):
+        sorted_vms = []
+        vms_dict = {}
+        for vm in vms:
+            score = 0
+            score += self.cast_to_int(vm['host']['cpu_frequency'])
+            score += self.cast_to_int(vm['host']['mem_size'])
+            score += self.cast_to_int(vm['host']['num_cpus'])
+            score += self.cast_to_int(vm['host']['disk_size'])
+            vms_dict[vm['name']] = score
+        sorted_vms_dict = sorted(vms_dict.items(), key=operator.itemgetter(1),reverse=True)
+        counter = 0
+        for sorted_vm in sorted_vms_dict:
+            if counter >= max_vms:
+                break
+            for vm in vms:
+                if sorted_vm[0] == vm['name']:
+                    counter+=1
+                    sorted_vms.append(vm)
+                    break
+        return sorted_vms
+        
+        
+    def plan(self,max_vms):
         network_templates = self.get_network_templates() 
         vms = []
         if network_templates and network_templates['network'] and network_templates['network']['multicast'] == True:
             vm = {}
+            vm['name'] = 'id'
             vm['type'] = self.COMPUTE_TYPE
             host = {}
             host['cpu_frequency'] = '2.6GHz'
@@ -84,7 +120,8 @@ class DumpPlanner:
             vm['os'] = os
             vm['scaling_mode'] = 'multiple'
             vms.append(vm)
-        return vms
+            return vms
+        
         
         node_templates = self.get_node_templates() 
         hosted_nodes = self.get_hosted_nodes(node_templates)
@@ -120,4 +157,8 @@ class DumpPlanner:
             else:
                 vm['scaling_mode'] = 'single'
             vms.append(vm)
+            
+            
+        if max_vms > -1 and len(vms) > max_vms:
+            vms = self.sort_vms(vms,max_vms)
         return vms
