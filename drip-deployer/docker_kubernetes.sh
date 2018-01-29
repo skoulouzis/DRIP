@@ -5,3 +5,4 @@ echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/
 sudo apt-get update
 sudo apt-get install -y docker-engine
 sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+

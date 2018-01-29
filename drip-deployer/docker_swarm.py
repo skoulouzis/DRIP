@@ -111,16 +111,24 @@ def connect_wave(vm_list,master):
 		paramiko.util.log_to_file("deployment.log")
 		ssh = paramiko.SSHClient()
 		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		ssh.connect(master.ip, username=master.user, key_filename=master.key)
+		
 		
                 for i in vm_list:
                     if i.role == "slave":
+                        ssh.connect(master.ip, username=master.user, key_filename=master.key)
                         logger.info("weave connect "+(i.ip))
                         stdin, stdout, stderr = ssh.exec_command("sudo weave connect "+i.ip)
                         out = stdout.read()
                         err = stderr.read()
                         logger.info("stdout: "+(out))
                         logger.info("stderr: "+(err))
+
+                        ssh.connect(i.ip, username=master.user, key_filename=i.key)
+                        stdin, stdout, stderr = ssh.exec_command("sudo weave connect "+master.ip)
+                        out = stdout.read()
+                        err = stderr.read()
+                        logger.info("stdout: "+(out))
+                        logger.info("stderr: "+(err))                        
 
 		logger.info("Finished wave connection on: "+(master.ip))
 	except Exception as e:
