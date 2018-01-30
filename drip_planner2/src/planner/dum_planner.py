@@ -41,7 +41,7 @@ class DumpPlanner:
         return self.yaml_dict_tpl['topology_template']['node_templates']
     
     def get_network_templates(self):
-        if 'network_templates' in self.yaml_dict_tpl:
+        if 'network_templates' in self.yaml_dict_tpl['topology_template']:
             return self.yaml_dict_tpl['topology_template']['network_templates']
         else:
             return None
@@ -102,7 +102,6 @@ class DumpPlanner:
     def plan(self,max_vms):
         network_templates = self.get_network_templates() 
         vms = []
-        print network_templates
         if network_templates and network_templates['network'] and network_templates['network']['multicast'] == True:
             vm = {}
             vm['name'] = 'id'
