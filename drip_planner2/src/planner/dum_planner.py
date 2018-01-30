@@ -102,6 +102,7 @@ class DumpPlanner:
     def plan(self,max_vms):
         network_templates = self.get_network_templates() 
         vms = []
+        print network_templates
         if network_templates and network_templates['network'] and network_templates['network']['multicast'] == True:
             vm = {}
             vm['name'] = 'id'
@@ -158,7 +159,9 @@ class DumpPlanner:
                 vm['scaling_mode'] = 'single'
             vms.append(vm)
             
-            
+        if max_vms <= -1:
+            max_vms = len(vms)//3
         if max_vms > -1 and len(vms) > max_vms:
             vms = self.sort_vms(vms,max_vms)
+        
         return vms
