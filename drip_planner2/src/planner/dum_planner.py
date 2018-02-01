@@ -102,7 +102,7 @@ class DumpPlanner:
     def plan(self,max_vms):
         network_templates = self.get_network_templates() 
         vms = []
-        if network_templates and network_templates['network'] and network_templates['network']['multicast'] == True:
+        if network_templates and 'network' in network_templates and network_templates['network']['multicast'] == True:
             vm = {}
             vm['name'] = 'id'
             vm['type'] = self.COMPUTE_TYPE

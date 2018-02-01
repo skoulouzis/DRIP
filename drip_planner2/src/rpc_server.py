@@ -112,8 +112,9 @@ def handle_delivery(message):
 if __name__ == "__main__":
     if(sys.argv[1] == "test_local"):
         home = expanduser("~")
-        planner = DumpPlanner(home+"/workspace/DRIP/docs/input_tosca_files/MOG/tosca_MOG_input2.2.yml")
-        print planner.plan()
+        planner = DumpPlanner(home+"/Downloads/tosca.yml")
+        max_vms = -1
+        print planner.plan(max_vms)
     else:    
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2]) 
         channel = init_chanel(sys.argv)
