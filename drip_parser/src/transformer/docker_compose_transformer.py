@@ -169,9 +169,13 @@ class DockerComposeTransformer:
             for req in requirements:
                 if 'volume' in req:
                     vol = {}
-                    name = req['volume']['name']
-                    path = req['volume']['link']
-                    vol[name]=path
+                    if isinstance(req,dict):
+                        name = req['volume']['name']
+                        path = req['volume']['link']
+                        vol[name]=path
+                    else:
+                        vol = None
+                        return None
                     volumes.append(vol)
             return volumes
         
@@ -180,8 +184,8 @@ class DockerComposeTransformer:
             networks = []
             for req in requirements:
                 if 'networks' in req:
-                    network = {}
-                    networks.append(requirements[req])
+                    for net_name in requirements[req]:
+                        networks.append(net_name)
             return networks
     
     def analyze_yaml(self,version):
@@ -229,10 +233,13 @@ class DockerComposeTransformer:
                     networks = self.get_networks(requirements)
                     if networks:
                         service['networks'] = networks
-                    for network in networks:
-                        network_id = {}
-                        network_id[next(iter(network))] = None
-                        all_networks.append(network_id)
+                        for network in networks:
+                            network_id = {}
+                            if isinstance(network,dict):
+                                network_id[next(iter(network))] = None
+                            elif isinstance(network,str):
+                                network_id[network] = None
+                            all_networks.append(network_id)
                             
                     services['services'][node_template_key] = service
                     break

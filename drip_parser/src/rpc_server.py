@@ -82,7 +82,7 @@ def handle_delivery(message):
 
 def test_local():
     home = expanduser("~")
-    transformer = DockerComposeTransformer(home+"/workspace/DRIP/docs/input_tosca_files/MOG/test_tosca2.yml")
+    transformer = DockerComposeTransformer(home+"/Downloads/tosca.yml")
     vresion = '2';
     compose =  transformer.getnerate_compose(vresion)
     print yaml.dump(compose)
