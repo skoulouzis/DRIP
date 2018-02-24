@@ -144,7 +144,16 @@
             <version>4.3.7.RELEASE</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.jvnet.ws.wadl</groupId>
+            <artifactId>wadl-core</artifactId>
+            <version>1.1.6</version>
+        </dependency>	
+        <dependency>
+            <groupId>org.jvnet.ws.wadl</groupId>
+            <artifactId>wadl-client-plugin</artifactId>
+            <version>1.1.6</version>
+        </dependency>
 
     </dependencies>
 
@@ -199,7 +208,7 @@
             </plugin>
             
             
-            <plugin>
+<!--            <plugin>
                 <groupId>com.webcohesion.enunciate</groupId>
                 <artifactId>enunciate-maven-plugin</artifactId>
                 <version>2.9.1</version>
@@ -215,7 +224,7 @@
                             <configFile>enunciate.xml</configFile>
                             <sourcepath-includes>
                                 <include>
-                                    <!-- configure Enunciate to look for the source jars for all dependencies groupId.-->
+                                     configure Enunciate to look for the source jars for all dependencies groupId.
                                     <groupId>nl.uva.sne.drip</groupId>
                                     <artifactId>drip-commons</artifactId>
                                 </include>
@@ -223,7 +232,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             
             <!--            <plugin>
                 <groupId>com.webcohesion.enunciate</groupId>

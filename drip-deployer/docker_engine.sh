@@ -17,6 +17,7 @@ sudo docker plugin enable weaveworks/net-plugin:latest_release
 
 sudo wget -O /usr/local/bin/weave https://github.com/weaveworks/weave/releases/download/latest_release/weave
 sudo chmod a+x /usr/local/bin/weave
+sudo weave status
 
 
 sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
