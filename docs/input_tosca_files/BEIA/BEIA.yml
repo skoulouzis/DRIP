@@ -1,0 +1,791 @@
+topology_template:
+  node_templates:
+    "AlertChecker":
+      artifacts:
+        alertchecker_image:
+          type: "tosca.artifacts.Deployment.Image.Container.Docker"
+          file: "beia/alerter"
+          repository: SWITCH_docker_hub
+      type: "Switch.nodes.Application.Container.Docker.VLAD_AlertChecker"
+      properties:
+        in_ports:
+          # So this might be a bit awkward.
+          # I am uncertain if OK if the names are not unique.
+          # type just used for validation. If so ignore it but inform me that I have wiggle room as far as form.
+          # If you want a different format I am flexible, as ports need to be redone
+          # Also previously the ports were defined differently. If it's preferable let me know.
+          "Port_1":
+            type: "JSON"
+            # One would imagine SWARM to assign host ports? Or not? Special Value if we do not care?
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+          "Port_2":
+            type: "JSON"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+          "Config_Port":
+            type: "Control"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+        out_ports:
+          "Monitoring_proxy_port":
+            type: "JCatascopiaMagic"
+            # Are these 2 needed in output ports? I really do not know how it works.
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+            # Might be interesting to add somethin like this but do not know how to add this to containers:
+            # As I was looking tought tosca I found this bit of "code" should return the same as above but with a bit more flexibility.
+            # Just in case we need it later on.
+            MONITORING_PROXY2: { get_property: [SELF, "Monitoring Proxy", "monitoring/proxy/api/endpoint" ] }
+          "Notifier_output":
+            Side_type: "JSON"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+            protocol: "tcp"
+        Environment_variables:
+          ENV1: ...
+          #So this is given for all containers?
+          TOSCA: side.url:8000/api/234/tosca
+          MONITORING_PROXY: "Monitoring Proxy"
+        Live_variables:
+          #These are the variables that would be dynamic
+          LiveVar1: ...
+        scaling_mode: single
+      requirements:
+         - host:
+            # Future work...
+            node: "VM_1"
+            node_filter:
+              capabilities:
+                host:
+                  cpu_frequency: 1GHz
+                  mem_size: 1GB
+                  num_cpus: 1
+                  disk_size: 1GB
+                os:
+                  os_version: 16.04
+                  distribution: ubuntu
+                  type: linux
+                  architecture: x86_64
+         - volume:
+              name: volume_ID
+              link: "/var/pool/bla"
+              mount_type: r/rw
+         - monitoring_proxy: "Monitoring Proxy"
+         - sip_notifier: "SIPNotifyer"
+    # So this(below) should just map to
+    # volumes:
+    #   graphite_data:
+    # inside docker compose.
+    "Volume_ID":
+      type: "Switch.Volume"
+    "SIPNotifier":
+      artifacts:
+        sipnotifier_image:
+          type: "tosca.artifacts.Deployment.Image.Container.Docker"
+          file: "beia/sipnotifier"
+          repository: SWITCH_docker_hub
+      # Is this right, as the information above is in the type(below).
+      type: "Switch.nodes.Application.Container.Docker.VLAD_AlertChecker"
+      properties:
+        in_ports:
+          "Port_1":
+            type: "JSON"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+          "SIPN_Control_Port":
+            type: "Control"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+        out_ports:
+          "Monitoring_proxy_port":
+            type: "JCatascopiaMagic"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+          "sip_notifier_output":
+            type: "JSON"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+          "5cc1a274-ae17-479f-807f-625c6aa6e0f0":
+            type: out
+            port: "redis"
+        Environment_variables:
+          ENV1: ...
+          #So this is given for all containers?
+          TOSCA: side.url:8000/api/234/tosca
+          MONITORING_PROXY: "Monitoring Proxy"
+        Live_variables:
+          #These are the variables that would be dynamic
+          LiveVar1: ...
+        # Scaling mode needs to be changable for scalable right?
+        scaling_mode: single
+      requirements:
+         - host:
+            node: "VM_2"
+    "Graphite":
+      artifacts:
+        graphite_image:
+          type: "tosca.artifacts.Deployment.Image.Container.Docker"
+          file: "vladwing/graphite"
+          repository: SWITCH_docker_hub
+      type: "Switch.nodes.Application.Container.Docker.VLAD_Graphite"
+      properties:
+        in_ports:
+          "Port_1":
+            type: "JSON"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+          "Config_Port":
+            type: "Control"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+        out_ports:
+          "Monitoring_proxy_port":
+            type: "JCatascopiaMagic"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+        Environment_variables:
+          ENV1: ...
+          #So this is given for all containers?
+          TOSCA: side.url:8000/api/234/tosca
+          MONITORING_PROXY: "Monitoring Proxy"
+        Live_variables:
+          #These are the variables that would be dynamic
+          LiveVar1: ...
+        scaling_mode: single
+      requirements:
+         - host:
+            node: "VM_3"
+    "monitoring_server":
+      artifacts:
+        monitoring_server_image:
+          type: "tosca.artifacts.Deployment.Image.Container.Docker"
+          file: "salmant/salman_monitoring_server_container_image"
+          repository: SWITCH_docker_hub
+        type: "Switch.nodes.Application.Container.Docker.MonitoringServer"
+      requirements:
+        - host:
+            node_filter:
+              capabilities:
+                host:
+                  cpu_frequency: 1.2
+                  mem_size: 4
+                  num_cpus: 1
+                  disk_size: 20
+                os:
+                  os_version: 16.04
+                  distribution: ubuntu
+                  type: linux
+                  architecture: x86_64
+      properties:
+        # Should this be inside properties? I moved it here as it makes more sense
+        QoS:
+          response_time: 50
+        in_ports:
+          "Monitoring_data_collection":
+            type: "JCatascopiaMagic"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+        out_ports:
+          "Monitoring_presentation":
+            type: "JCatascopiaAPI"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+        # OK so ports maping is a seperate thing? I do not know.
+        # Why does it need all that ports? Do all containers need ports that are
+        # not part of the schematic? I wish I knew. Or should these be on the schematic?
+        ports_mapping:
+          port_mapping_1:
+            host_port: 4242
+            container_port: 4242
+          port_mapping_0:
+            host_port: 8080
+            container_port: 8080
+          port_mapping_3:
+            host_port: 7199
+            container_port: 7199
+          port_mapping_2:
+            host_port: 4245
+            container_port: 4245
+          port_mapping_5:
+            host_port: 7001
+            container_port: 7001
+          port_mapping_4:
+            host_port: 7000
+            container_port: 7000
+          port_mapping_7:
+            host_port: 9042
+            container_port: 9042
+          port_mapping_6:
+            host_port: 9160
+            container_port: 9160
+          port_mapping_9:
+            host_port: 61621
+            container_port: 61621
+          port_mapping_8:
+            host_port: 8012
+            container_port: 8012
+        scaling_mode: single
+      requirements:
+         - host:
+            node: "VM_4"
+    "Monitoring Proxy":
+      monitoring_proxy_image:
+        type: "tosca.artifacts.Deployment.Image.Container.Docker"
+        file: "ASAP/monitoring_proxy"
+        repository: SWITCH_docker_hub
+      type: "Switch.nodes.Application.Container.Docker.Monitoring_Proxy"
+      properties:
+        in_ports:
+          "Monitoring_proxy_port":
+            type: "JCatascopiaMagic"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+        out_ports:
+          "Monitoring_data_collection":
+            type: "JCatascopiaMagic"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+        Environment_variables:
+          ENV1: ...
+          #So this is given for all containers?
+          TOSCA: side.url:8000/api/234/tosca
+          MONITORING_SERVER: moitoring_server
+        scaling_mode: single
+      requirements:
+         - host:
+            node: "VM_5"
+    "Data Collector":
+      artifacts:
+        data_collector_image:
+          type: "tosca.artifacts.Deployment.Image.Container.Docker"
+          file: "beia/data_collector"
+          repository: SWITCH_docker_hub
+      type: "Switch.nodes.Application.Container.Docker.VLAD_DataCollector"
+      properties:
+        in_ports:
+          "Sensors_in":
+            type: "Sensor_data"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+          "Config_Port":
+            type: "Control"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+        out_ports:
+          "Monitoring_proxy_port":
+            type: "JCatascopiaMagic"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+          "Data_output":
+            type: "JSON"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+        Environment_variables:
+          ENV1: ...
+          #So this is given for all containers?
+          TOSCA: side.url:8000/api/234/tosca
+          MONITORING_PROXY: "Monitoring Proxy"
+        Live_variables:
+          #These are the variables that would be dynamic
+          LiveVar1: ...
+        scaling_mode: single
+      requirements:
+         - host:
+            node: "VM_6"
+    "Config Manager":
+      type: "Switch.nodes.Application.Container.Docker.VLAD_ConfigManager"
+      artifacts:
+        sipnotifier_image:
+          type: "tosca.artifacts.Deployment.Image.Container.Docker"
+          file: "beia/config_manager"
+          repository: SWITCH_docker_hub
+      properties:
+        out_ports:
+          "BEIA_Container_control":
+            type: "Control"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+          "Side_endpoint":
+            type: "TOSCA"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+        in_ports:
+          "UI":
+            type: "Config_file"
+            host_port: SET_ITS_VALUE
+            container_port: SET_ITS_VALUE
+        Environment_variables:
+          ENV1: ...
+          #So this is given for all containers?
+          TOSCA: side.url:8000/api/234/tosca
+          MONITORING_PROXY: "Monitoring Proxy"
+        scaling_mode: single
+      requirements:
+         - host:
+            node: "VM_7"
+    "VM_1":
+      # Stub I think this should be generated by DRIP-planer. But we could have a diamond so SIDE can make it.
+      type: Switch.node.Compute
+      capabilities:
+        # Host container properties
+        host:
+         properties:
+           num_cpus: 1
+           disk_size: 10 GB
+           mem_size: 4096 MB
+        # Guest Operating System properties
+        os:
+          properties:
+            # host Operating System image properties
+            architecture: x86_64
+            type: linux
+            distribution: rhel
+            version: 6.5
+    "VM_2":
+      # Stub I think this should be generated by DRIP-planer. But we could have a diamond so SIDE can make it.
+      type: Switch.node.Compute
+      capabilities:
+        # Host container properties
+        host:
+         properties:
+           num_cpus: 1
+           disk_size: 10 GB
+           mem_size: 4096 MB
+        # Guest Operating System properties
+        os:
+          properties:
+            # host Operating System image properties
+            architecture: x86_64
+            type: linux
+            distribution: rhel
+            version: 6.5
+    "VM_3":
+      # Stub I think this should be generated by DRIP-planer. But we could have a diamond so SIDE can make it.
+      type: Switch.node.Compute
+      capabilities:
+        # Host container properties
+        host:
+         properties:
+           num_cpus: 1
+           disk_size: 10 GB
+           mem_size: 4096 MB
+        # Guest Operating System properties
+        os:
+          properties:
+            # host Operating System image properties
+            architecture: x86_64
+            type: linux
+            distribution: rhel
+            version: 6.5
+    "VM_4":
+      # Stub I think this should be generated by DRIP-planer. But we could have a diamond so SIDE can make it.
+      type: Switch.node.Compute
+      capabilities:
+        # Host container properties
+        host:
+         properties:
+           num_cpus: 1
+           disk_size: 10 GB
+           mem_size: 4096 MB
+        # Guest Operating System properties
+        os:
+          properties:
+            # host Operating System image properties
+            architecture: x86_64
+            type: linux
+            distribution: rhel
+            version: 6.5
+    "VM_5":
+      # Stub I think this should be generated by DRIP-planer. But we could have a diamond so SIDE can make it.
+      type: Switch.node.Compute
+      capabilities:
+        # Host container properties
+        host:
+         properties:
+           num_cpus: 1
+           disk_size: 10 GB
+           mem_size: 4096 MB
+        # Guest Operating System properties
+        os:
+          properties:
+            # host Operating System image properties
+            architecture: x86_64
+            type: linux
+            distribution: rhel
+            version: 6.5
+    "VM_6":
+      # Stub I think this should be generated by DRIP-planer. But we could have a diamond so SIDE can make it.
+      type: Switch.node.Compute
+      capabilities:
+        # Host container properties
+        host:
+         properties:
+           num_cpus: 1
+           disk_size: 10 GB
+           mem_size: 4096 MB
+        # Guest Operating System properties
+        os:
+          properties:
+            # host Operating System image properties
+            architecture: x86_64
+            type: linux
+            distribution: rhel
+            version: 6.5
+    "VM_7":
+      # Stub I think this should be generated by DRIP-planer. But we could have a diamond so SIDE can make it.
+      type: Switch.node.Compute
+      capabilities:
+        # Host container properties
+        host:
+         properties:
+           num_cpus: 1
+           disk_size: 10 GB
+           mem_size: 4096 MB
+        # Guest Operating System properties
+        os:
+          properties:
+            # host Operating System image properties
+            architecture: x86_64
+            type: linux
+            distribution: rhel
+            version: 6.5
+artifact_types:
+  "tosca.artifacts.Deployment.Image.Container.Docker":
+    derived_from: "tosca.artifacts.Deployment.Image"
+description: "Try of an app"
+# So node_types are not 100% ok (They are about 10% ok)
+# But I am not Sure what they are. So I need to investigate a bit further.
+node_types:
+  "Switch.nodes.Application.Container.Docker.VLAD_THE_IMPALER_RTUSensorDataAcquisition":
+    properties:
+      name:
+        required: false
+        type: string
+    derived_from: "Switch.nodes.Application.Container.Docker"
+  "tosca.groups.Root":
+  "Switch.nodes.Application.Container.Docker":
+    properties:
+      in_ports:
+        entry_schema:
+          type: "Switch.datatypes.port"
+        required: false
+        type: map
+      dockers:
+        required: false
+        type: string
+      QoS:
+        required: false
+        type: "Switch.datatypes.QoS.AppComponent"
+      name:
+        required: false
+        type: string
+      out_ports:
+        entry_schema:
+          type: "Switch.datatypes.port"
+        required: false
+        type: map
+      ports_mapping:
+        entry_schema:
+          type: "Switch.datatypes.port_mapping"
+        type: map
+      scaling_mode:
+        required: false
+        type: string
+      ethernet_port:
+        entry_schema:
+          type: "Switch.datatypes.ethernet_port"
+        required: false
+        type: list
+    derived_from: "tosca.nodes.Container.Application"
+  "Switch.nodes.Compute":
+    artifacts:
+      gateway_image:
+        type: "tosca.artifacts.Deployment.Image.Container.Docker"
+        repository: SWITCH_docker_hub
+        file: "/???"
+    derived_from: "tosca.nodes.Compute"
+  
+  "Switch.nodes.Application.Container.Docker.VLAD_AlertChecker":
+    artifacts:
+      sipnotifier_image:
+        type: "tosca.artifacts.Deployment.Image.Container.Docker"
+        repository: SWITCH_docker_hub
+        file: "beia/sip_notifier"
+    derived_from: "Switch.nodes.Application.Container.Docker"
+    
+    
+  "Switch.nodes.Application.Container.Docker.VLAD_ConfigManager":
+    artifacts:
+      sipnotifier_image:
+        type: "tosca.artifacts.Deployment.Image.Container.Docker"
+        repository: SWITCH_docker_hub
+        file: "beia/config_manager"
+    derived_from: "Switch.nodes.Application.Container.Docker"
+
+    
+  "switch.Component.Component.Docker":
+    derived_from: "Switch.nodes.Application.Container.Docker"
+  "Switch.nodes.Network":
+    derived_from: "tosca.nodes.network.Network"
+  "Switch.nodes.EventListener":
+    derived_from: "tosca.nodes.Root"
+  "Switch.nodes.VirtualNetwork":
+    artifacts:
+      "switcher.cardiff_image":
+        type: "tosca.artifacts.Deployment.Image.Container.Docker"
+        repository: SWITCH_docker_hub
+        file: null
+    properties:
+      subnet:
+        default: "192.168.10.0"
+        type: string
+      netmask:
+        default: "255.255.255.0"
+        type: string
+      name:
+        type: string
+    derived_from: "tosca.nodes.Root"
+  "Switch.nodes.Application.Container.Docker.VLAD_BEIAComponent":
+    artifacts:
+      beiacomponent_image:
+        type: "tosca.artifacts.Deployment.Image.Container.Docker"
+        repository: SWITCH_docker_hub
+        file: "beia/hang"
+    properties:
+      Environment:
+        type: string
+    derived_from: "Switch.nodes.Application.Container.Docker"
+  "Switch.nodes.MonitoringAgent":
+    properties:
+      agent_id:
+        default: null
+        type: string
+      probes:
+        entry_schema:
+          type: "Switch.datatypes.monitoring.probe"
+        type: map
+    derived_from: "tosca.nodes.Root"
+  "Switch.nodes.AdaptationPolicy":
+    derived_from: "tosca.nodes.Root"
+  "Switch.nodes.Application.Container.Docker.VLAD_Graphite":
+    artifacts:
+      webui_image:
+        type: "tosca.artifacts.Deployment.Image.Container.Docker"
+        repository: SWITCH_docker_hub
+        file: "beia/nginx"
+    properties:
+      Environment:
+        entry_schema:
+          type: string
+        type: map
+    derived_from: "Switch.nodes.Application.Container.Docker"
+  "Switch.nodes.Application.Container.Docker.VLAD_Alerter":
+    properties:
+      Environment:
+        entry_schema:
+          type: string
+        type: map
+    derived_from: "Switch.nodes.Application.Container.Docker"
+  "Switch.nodes.Component":
+    derived_from: "tosca.nodes.Root"
+  "Switch.nodes.Constraint":
+    requirements:
+      - monitor_server_endpoint:
+          node: "Switch.nodes.Application.Container.Docker.MonitoringServer"
+          capability: "tosca.capabilities.Node"
+          relationship: "tosca.relationships.DependsOn"
+    properties:
+      QoS:
+        type: "Switch.datatypes.QoS.AppComponent"
+    derived_from: "tosca.nodes.Root"
+  "Switch.nodes.Application.Container.Docker.VLAD_SIPNotifier":
+    derived_from: "Switch.nodes.Application.Container.Docker"
+  "Switch.nodes.Application.Connection":
+    properties:
+      source:
+        type: "Switch.datatypes.Application.Connection.EndPoint"
+      bandwidth:
+        type: integer
+      multicast:
+        type: "Switch.datatypes.Network.Multicast"
+      jitter:
+        required: false
+        type: integer
+      target:
+        type: "Switch.datatypes.Application.Connection.EndPoint"
+      latency:
+        required: false
+        type: integer
+      QoS:
+        type: "Switch.datatypes.QoS.AppComponent"
+    derived_from: "tosca.nodes.Root"
+  "Switch.nodes.Requirement":
+    properties:
+      host:
+        type: "Switch.datatypes.hw.host"
+      os:
+        type: "Switch.datatypes.hw.os"
+    derived_from: "tosca.nodes.Root"
+  "Switch.nodes.ExternalComponent":
+    derived_from: "tosca.nodes.Root"
+  "Switch.nodes.DST":
+    properties:
+      dave:
+        type: string
+    derived_from: "tosca.nodes.Root"
+  "Switch.nodes.Application.Container.Docker.MonitoringServer":
+    properties:
+      ports_mapping:
+        entry_schema:
+          type: "Switch.datatypes.port_mapping"
+        type: map
+    derived_from: "Switch.nodes.Application.Container.Docker"
+  "Switch.nodes.Application.Container.Docker.VLAD_DataCollector":
+    artifacts:
+      data_collector_image:
+        type: "tosca.artifacts.Deployment.Image.Container.Docker"
+        repository: SWITCH_docker_hub
+        file: "beia/data_collector"
+    properties:
+      Environment:
+        entry_schema:
+          type: string
+        type: map
+    derived_from: "Switch.nodes.Application.Container.Docker"
+  "Switch.nodes.Application.Container.Docker.VLAD_WebUI":
+    derived_from: "Switch.nodes.Application.Container.Docker"
+  "Switch.nodes.Application.Container.Docker.VLAD_Dashboard":
+    derived_from: "Switch.nodes.Application.Container.Docker"
+  "Switch.nodes.MessagePasser":
+    derived_from: "tosca.nodes.Root"
+repositories:
+  SWITCH_docker_hub:
+    url: "https://hub.docker.com/"
+    credential:
+      token_type: "X-Auth-Token"
+      token: 604bbe45ac7143a79e14f3158df67091
+      protocol: xauth
+    description: "switch repository in GitHub"
+data_types:
+  "Switch.datatypes.monitoring.metric.threshold":
+    properties:
+      operator:
+        type: string
+      value:
+        type: integer
+    derived_from: "tosca.datatypes.Root"
+  "Switch.datatypes.enviorment.variables":
+    properties:
+      variable_name:
+        type: string
+      variable_value:
+        type: string
+    derived_from: "tosca.datatypes.Root"
+  "Switch.datatypes.port":
+    properties:
+      type:
+        type: string
+      port:
+        type: string
+    derived_from: "tosca.datatypes.Root"
+  "Switch.datatypes.Application.Connection.EndPoint":
+    properties:
+      netmask:
+        type: string
+      component_name:
+        type: string
+      port_name:
+        type: string
+      address:
+        type: string
+    derived_from: "tosca.datatypes.Root"
+  "Switch.datatypes.monitoring.probe":
+    properties:
+      active:
+        type: boolean
+      path:
+        required: false
+        type: string
+      static:
+        type: boolean
+      name:
+        type: string
+      metrics:
+        entry_schema:
+          type: "Switch.datatypes.monitoring.metric"
+        type: map
+    derived_from: "tosca.datatypes.Root"
+  "Switch.datatypes.hw.host":
+    properties:
+      cpu_frequency:
+        type: float
+      mem_size:
+        type: integer
+      num_cpus:
+        type: integer
+      disk_size:
+        type: integer
+    derived_from: "tosca.datatypes.Root"
+  "Switch.datatypes.ethernet_port":
+    properties:
+      subnet_name:
+        type: string
+      name:
+        type: string
+      address:
+        type: string
+    derived_from: "tosca.datatypes.Root"
+  "Switch.datatypes.hw.os":
+    properties:
+      os_version:
+        type: string
+      distribution:
+        type: string
+      type:
+        type: string
+      architecture:
+        type: string
+    derived_from: "tosca.datatypes.Root"
+  "Switch.datatypes.QoS.AppComponent":
+    properties:
+      response_time:
+        type: integer
+    derived_from: "tosca.datatypes.Root"
+  "Switch.datatypes.Application.Connection.Multicast":
+    properties:
+      multicastAddrPort:
+        type: string
+      multicastAddrIP:
+        type: string
+    derived_from: "tosca.datatypes.Root"
+  "Switch.datatypes.Network.Multicast":
+    properties:
+      multicastAddrPort:
+        type: string
+      multicastAddrIP:
+        type: string
+    derived_from: "tosca.datatypes.Root"
+  "Switch.datatypes.port_mapping":
+    properties:
+      host_port:
+        type: integer
+      container_port:
+        type: integer
+    derived_from: "tosca.datatypes.Root"
+  "Switch.datatypes.monitoring.metric":
+    properties:
+      thresholds:
+        entry_schema:
+          type: "Switch.datatypes.monitoring.metric.threshold"
+        required: false
+        type: map
+      type:
+        type: string
+      name:
+        type: string
+      unit:
+        required: false
+        type: string
+    derived_from: "tosca.datatypes.Root"
+tosca_definitions_version: tosca_simple_yaml_1_0

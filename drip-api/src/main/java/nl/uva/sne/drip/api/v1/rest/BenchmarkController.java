@@ -71,7 +71,7 @@ public class BenchmarkController {
     }
 
     /**
-     * Returns sysbench results only. Not Not supported yet
+     * Returns sysbench results only. Not supported yet
      *
      * @return
      */

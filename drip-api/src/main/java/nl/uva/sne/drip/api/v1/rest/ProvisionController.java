@@ -60,6 +60,22 @@ public class ProvisionController {
     private ProvisionService provisionService;
 
     /**
+     * Gets the supported providers
+     *
+     * @return the supported providers
+     */
+    @RequestMapping(value = "/providers", method = RequestMethod.GET)
+    @RolesAllowed({UserService.USER, UserService.ADMIN})
+    @StatusCodes({
+        @ResponseCode(code = 404, condition = "object not found"),
+        @ResponseCode(code = 200, condition = "object exists")
+    })
+    public @ResponseBody
+    String[] getSuportedProviders() {
+        return new String[]{"egi", "ec2"};
+    }
+
+    /**
      * Gets the ProvisionRequest
      *
      * @param id. The id of the ProvisionRequest

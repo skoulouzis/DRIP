@@ -1,0 +1,166 @@
+version: '3'
+
+services:
+    graphite:
+        restart: always
+        image: vladwing/graphite
+        volumes:
+         - graphite_data:/opt/graphite/storage
+        environment:
+         - VIRTUAL_HOST=graphite.beia.switch
+        networks:
+         - web
+         - graphite
+    grafana:
+        restart: always
+        image: grafana/grafana
+        environment:
+         - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-secret}
+         - VIRTUAL_HOST=grafana.beia.switch
+        volumes:
+         - grafana_data:/var/lib/grafana
+        depends_on:
+         - graphite
+        networks:
+         - web
+    #monitoring_server:
+        #image: salmant/ul_monitoring_server_container_image
+        #ports:
+         #- "8080:8080"
+         #- "4242:4242"
+         #- "4245:4245"
+         #- "7199:7199"
+         #- "7000:7000"
+         #- "7001:7001"
+         #- "9160:9160"
+         #- "9042:9042"
+         #- "8012:8012"
+         #- "61621:61621"
+        #environment:
+         #- MONITORING_SERVER=monitoring_server
+         #- VIRTUAL_HOST=jcatascopia.beia.switch
+         #- VIRTUAL_PORT=8080
+        #networks:
+         #- asap
+         #- web
+    monitoring_adapter:
+        restart: always
+        image: beia/monitoring_adapter
+        environment:
+         - GRAPHITE_SERVER=graphite
+         - MONITORING_PREFIX=eu.beia.switch
+         - MONITORING_SERVER=${MONITORING_SERVER:-147.228.242.94}
+        depends_on:
+         - graphite
+         #- monitoring_server
+        networks:
+         - graphite
+         - data
+         - asap
+    data_collector:
+        image: beia/data_collector
+        environment:
+         # - CONFIG=config
+         - STATSD_HOST=monitoring_adapter
+        depends_on:
+         # - config
+         - monitoring_adapter
+        networks:
+         # - config
+         - data
+    alerter:
+        image: beia/alerter
+        environment:
+          # - CONFIG=config
+          - STATSD_HOST=monitoring_adapter
+          - VIRTUAL_HOST=alerter.beia.switch
+          - NOTIFICATION_SERVICE=notify
+        depends_on:
+         - notify
+         # - config
+        networks:
+         # - config
+         - web
+         - data
+    # config:
+    #     image: beia/config_manager
+    #     environment:
+    #      - TOSCA_URL=${TOSCA_URL:-http://www.google.com}
+    #     networks:
+    #      - config
+    web:
+        image: jwilder/nginx-proxy
+        ports:
+         - "80:80/tcp"
+        volumes:
+         - /var/run/docker.sock:/tmp/docker.sock:ro
+        networks:
+         - web
+
+    notify_asterisk:
+       # TODO: Add shared storage/volume for sounds
+       restart: always
+       image: dorinelfilip/ast13
+       environment:
+        - SIP_USERNAME=55025
+        - SIP_HOST=sip.clickphone.ro
+        - SIP_PORT=${SIP_PORT:-26999}
+        - SIP_SECRET=beiaSWITCH
+        - SIP_EXTENSION=0310050728
+        - SIP_PEERNAME=clickphone
+        - ARI_USERNAME=${ARI_USERNAME:-admin}
+        - ARI_SECRET=${ARI_SECRET:-changeme}
+       networks:
+        - notify_asterisk
+
+    notify:
+       restart: always
+       image: dorinelfilip/notify
+       depends_on:
+        - notify_asterisk
+        - notify_redis
+       networks:
+        - notify_asterisk
+        - notify_redis
+        - notify
+        - asap
+       environment:
+        - ARI_URL=${ARI_URL:-http://notify_asterisk:8088}
+        - ARI_USERNAME=${ARI_USERNAME:-admin}
+        # Warning! Different ENV variable for notify & Asterisk
+        # TODO: Change
+        - ARI_PASSWORD=${ARI_SECRET:-changeme}
+        - REDIS_HOST=${REDIS_HOST:-notify_redis}
+        - REDIS_PORT=${REDIS_PORT:-6379}
+        - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
+        - DEFAULT_SIP=${DEFAULT_SIP:-${SIP_PEERNAME}}
+       ports:
+        - "8001:80/tcp"
+
+    notify_redis:
+        restart: always
+        image: redis:alpine
+        entrypoint:
+         - redis-server
+         - "--requirepass"
+         # Not the best way to do it, but it is nice since no modification
+         # of the container image is needed
+         - ${REDIS_PASSWORD:-changeme}
+        networks:
+         - notify_redis
+        volumes:
+         - redis_data:/data
+
+networks:
+    notify_redis:
+    notify_asterisk:
+    notify:
+    data:
+    web:
+    graphite:
+    asap:
+
+volumes:
+    graphite_data:
+    grafana_data:
+    redis_data:

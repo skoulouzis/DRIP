@@ -39,12 +39,12 @@ public class CloudCredentialsService {
     @Autowired
     private CloudCredentialsDao dao;
 
-    public CloudCredentials save(CloudCredentials cloudCredentials) {
+    public CloudCredentials save(CloudCredentials ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        cloudCredentials.setOwner(owner);
-        cloudCredentials.setTimestamp(System.currentTimeMillis());
-        return dao.save(cloudCredentials);
+        ownedObject.setOwner(owner);
+         
+        return dao.save(ownedObject);
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")

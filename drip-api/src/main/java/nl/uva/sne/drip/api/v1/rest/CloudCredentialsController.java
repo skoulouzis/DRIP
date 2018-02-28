@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.api.exception.NullCloudProviderException;
 import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
 import nl.uva.sne.drip.api.service.KeyPairService;
@@ -78,22 +79,18 @@ public class CloudCredentialsController {
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 404, condition = "Access key ID can't be empty"),
+        @ResponseCode(code = 404, condition = "Key can't be empty"),
+        @ResponseCode(code = 404, condition = "Cloud provider's name can't be empty"),
         @ResponseCode(code = 200, condition = "At least one key ID is posted")
     })
     public @ResponseBody
     String postCredentials(@RequestBody CloudCredentials cloudCredentials) {
-        if (cloudCredentials.getAccessKeyId() == null) {
+        if (cloudCredentials.getSecretKey() == null || cloudCredentials.getSecretKey().length() < 1) {
             throw new NullKeyException();
         }
-//        List<String> ids = cloudCredentials.getkeyPairIDs();
-//        if (ids != null) {
-//            for (String id : ids) {
-//                if (keyService.findOne(id) == null) {
-//                    throw new NullKeyException();
-//                }
-//            }
-//        }
+        if (cloudCredentials.getCloudProviderName() == null || cloudCredentials.getCloudProviderName().length() < 1) {
+            throw new NullCloudProviderException();
+        }
         cloudCredentials = cloudCredentialsService.save(cloudCredentials);
         return cloudCredentials.getId();
     }
@@ -138,7 +135,6 @@ public class CloudCredentialsController {
                 attributes.put("domain_name", FilenameUtils.removeExtension(originalFileName));
                 key.setAttributes(attributes);
                 KeyPair pair = new KeyPair();
-                pair.setTimestamp(System.currentTimeMillis());
                 pair.setPrivateKey(key);
                 pair = keyService.save(pair);
 //                loginKeyIDs.add(pair.getId());
@@ -166,7 +162,6 @@ public class CloudCredentialsController {
     })
     public @ResponseBody
     CloudCredentials get(@PathVariable("id") String id) {
-//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         CloudCredentials cc = cloudCredentialsService.findOne(id);
         if (cc == null) {
             throw new NotFoundException();
@@ -238,7 +233,6 @@ public class CloudCredentialsController {
         List<String> keyIDs = new ArrayList<>();
         keyIDs.add("58da4c91f7b43a3282cacdbb");
         keyIDs.add("58da4d2af7b43a3282cacdbd");
-//        cloudCredentials.setKeyIDs(keyIDs);
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("myProxyEndpoint", "myproxy.egee.host.com");
         attributes.put("trustedCertificatesURL", "https://dist.eugridpma.info/distribution/igtf/current/accredited/igtf-preinstalled-bundle-classic.tar.gz");

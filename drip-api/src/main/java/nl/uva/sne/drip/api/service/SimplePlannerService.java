@@ -64,7 +64,6 @@ public class SimplePlannerService {
             Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
             List<MessageParameter> planFiles = plannerReturnedMessage.getParameters();
             topLevel = new PlanResponse();
-            topLevel.setTimestamp(System.currentTimeMillis());
             Set<String> ids = topLevel.getLoweLevelPlanIDs();
             if (ids == null) {
                 ids = new HashSet<>();
@@ -84,7 +83,6 @@ public class SimplePlannerService {
                     topLevel.setKvMap(Converter.ymlString2Map(p.getValue()));
                 } else {
                     lowerLevelPlan = new PlanResponse();
-                    lowerLevelPlan.setTimestamp(System.currentTimeMillis());
                     lowerLevelPlan.setName(name);
                     lowerLevelPlan.setKvMap(Converter.ymlString2Map(p.getValue()));
                     lowerLevelPlan.setLevel(1);

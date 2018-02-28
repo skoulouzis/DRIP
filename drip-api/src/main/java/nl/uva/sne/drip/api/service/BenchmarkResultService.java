@@ -62,11 +62,12 @@ public class BenchmarkResultService {
         return benchmarkResult;
     }
 
-    public BenchmarkResult save(BenchmarkResult benchmarkResult) {
+    public BenchmarkResult save(BenchmarkResult ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        benchmarkResult.setOwner(owner);
-        return benchmarkResultDao.save(benchmarkResult);
+        ownedObject.setOwner(owner);
+         
+        return benchmarkResultDao.save(ownedObject);
     }
 
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")

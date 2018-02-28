@@ -15,10 +15,8 @@
  */
 package nl.uva.sne.drip.api.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -59,11 +57,12 @@ public class KeyPairService {
         return k;
     }
 
-    public KeyPair save(KeyPair keyPair) {
+    public KeyPair save(KeyPair ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        keyPair.setOwner(owner);
-        return dao.save(keyPair);
+        ownedObject.setOwner(owner);
+         
+        return dao.save(ownedObject);
     }
 
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")

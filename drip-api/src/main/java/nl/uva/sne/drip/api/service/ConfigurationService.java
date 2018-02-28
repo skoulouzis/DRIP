@@ -18,8 +18,10 @@ package nl.uva.sne.drip.api.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import nl.uva.sne.drip.api.exception.NotFoundException;
-import nl.uva.sne.drip.commons.utils.Constants;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
@@ -54,19 +56,17 @@ public class ConfigurationService {
 
         if (fromat != null && fromat.toLowerCase().equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);
-            ymlStr = ymlStr.replaceAll("\\uff0E", ".");
-            ymlStr = ymlStr.replaceAll("\'---':", "---");
+            ymlStr = cleanup(ymlStr);
+
             return ymlStr;
         }
         if (fromat != null && fromat.toLowerCase().equals("json")) {
             String jsonStr = Converter.map2JsonString(map);
-            jsonStr = jsonStr.replaceAll("\\uff0E", ".");
             return jsonStr;
         }
         String ymlStr = Converter.map2YmlString(map);
         ymlStr = ymlStr.replaceAll("\\uff0E", ".");
-        ymlStr = ymlStr.replaceAll("\'---':", "---");
-
+        ymlStr = cleanup(ymlStr);
         return ymlStr;
     }
 
@@ -89,7 +89,7 @@ public class ConfigurationService {
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public ConfigurationRepresentation delete(String id) {
         ConfigurationRepresentation tr = dao.findOne(id);
-        if(tr == null){
+        if (tr == null) {
             throw new NotFoundException();
         }
         dao.delete(tr);
@@ -106,11 +106,12 @@ public class ConfigurationService {
         return dao.findOne(id);
     }
 
-    private ConfigurationRepresentation save(ConfigurationRepresentation t) {
+    private ConfigurationRepresentation save(ConfigurationRepresentation ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        t.setOwner(owner);
-        return dao.save(t);
+        ownedObject.setOwner(owner);
+
+        return dao.save(ownedObject);
     }
 
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")
@@ -124,6 +125,44 @@ public class ConfigurationService {
         t.setKvMap(map);
         save(t);
         return t.getId();
+    }
+
+    private String cleanup(String ymlStr) {
+        ymlStr = ymlStr.replaceAll("\\uff0E", ".");
+        ymlStr = ymlStr.replaceAll("\'---':", "---");
+        Pattern p = Pattern.compile("version:.*");
+        Matcher match = p.matcher(ymlStr);
+        while (match.find()) {
+            String line = match.group();
+            if (!line.contains("\"") && !line.contains("'")) {
+                String number = line.split(": ")[1];
+                ymlStr = ymlStr.replaceAll("version: " + number, "version: " + "\'" + number + "\'");
+            }
+
+        }
+
+        p = Pattern.compile("cpus:.*,");
+        match = p.matcher(ymlStr);
+        while (match.find()) {
+            String line = match.group();
+            if (!line.contains("\"") || line.contains("'")) {
+                String cpusNum = line.split(":")[1];
+                cpusNum = cpusNum.replaceAll(",", "").trim();
+                ymlStr = ymlStr.replaceAll("cpus: " + cpusNum, "cpus: " + '\'' + cpusNum + '\'');
+            }
+        }
+        p = Pattern.compile("memory:.*");
+        match = p.matcher(ymlStr);
+        while (match.find()) {
+            String line = match.group();
+            if (!line.contains("\"") && !line.contains("'")) {
+                String memory = line.split(":")[1];
+                memory = memory.replaceAll("}", "").trim();
+                ymlStr = ymlStr.replaceAll("memory: " + memory, "memory: " + '\'' + memory + '\'');
+            }
+        }
+
+        return ymlStr.replaceAll("'''", "'");
     }
 
 }

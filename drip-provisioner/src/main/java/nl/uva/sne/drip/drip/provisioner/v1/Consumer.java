@@ -34,9 +34,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
 import nl.uva.sne.drip.drip.commons.data.internal.Message;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.provisioner.utils.MessageParsing;
@@ -57,6 +59,7 @@ import provisioning.database.EC2.EC2Database;
 import provisioning.database.EGI.EGIDatabase;
 import provisioning.database.UserDatabase;
 import provisioning.engine.TEngine.TEngine;
+import provisioning.request.RecoverRequest;
 import provisioning.request.ScalingRequest;
 import topologyAnalysis.TopologyAnalysisMain;
 import topologyAnalysis.dataStructure.SubTopologyInfo;
@@ -73,10 +76,15 @@ public class Consumer extends DefaultConsumer {
 
     private final Channel channel;
 //    Map<String, String> em = new HashMap<>();
+    private final Logger logger;
+    private final String messageBrokerHost;
 
-    public Consumer(Channel channel) throws IOException {
+    public Consumer(Channel channel, String messageBrokerHost) throws IOException, TimeoutException {
         super(channel);
         this.channel = channel;
+        this.messageBrokerHost = messageBrokerHost;
+        logger = Logger.getLogger(Consumer.class.getName());
+
     }
 
     @Override
@@ -101,12 +109,18 @@ public class Consumer extends DefaultConsumer {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+            String owner = mapper.readValue(message, Message.class).getOwner();
+            DRIPLogHandler handler = new DRIPLogHandler(messageBrokerHost);
+            handler.setOwner(owner);
+            logger.addHandler(handler);
+
             response = mapper.writeValueAsString(invokeProvisioner(message, tempInputDirPath));
 
         } catch (Throwable ex) {
             try {
                 response = generateExeptionResponse(ex);
-                Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
+//                Logger.getLogger(Consumer.class.getName())
+                logger.log(Level.SEVERE, null, ex);
             } catch (JSONException ex1) {
                 response = "{\"creationDate\": " + System.currentTimeMillis()
                         + ",\"parameters\": [{\"url\": null,\"encoding\": UTF-8,"
@@ -114,7 +128,8 @@ public class Consumer extends DefaultConsumer {
                         + ex.getClass().getName() + "\",\"attributes\": null}]}";
             }
         } finally {
-            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Sending Response: {0}", response);
+            logger.fine("Sending Response: {0}" + response);
+//            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Sending Response: {0}", response);
             //We send the response back. No need to change anything here 
             channel.basicPublish("", properties.getReplyTo(), replyProps, response.getBytes("UTF-8"));
             channel.basicAck(envelope.getDeliveryTag(), false);
@@ -151,6 +166,8 @@ public class Consumer extends DefaultConsumer {
     }
 
     private Message startTopology(JSONArray parameters, String tempInputDirPath) throws Exception {
+//        Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Starting topology");
+        logger.info("Starting topology");
         TEngine tEngine = new TEngine();
         TopologyAnalysisMain tam = null;
         UserCredential userCredential = new UserCredential();
@@ -165,7 +182,8 @@ public class Consumer extends DefaultConsumer {
 //                File secondaryTopologyFile = new File(tempInputDirPath + File.separator + lowLevelTopologyFile.getName() + ".yml");
 //                FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
 //            }
-
+//            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Saved topology file");
+            logger.info("Saved topology file");
             Map<String, Object> map = Converter.ymlStream2Map(new FileInputStream(topTopologyLoadingPath));
             String userPublicKeyName = ((String) map.get("publicKeyPath"));
             if (userPublicKeyName != null) {
@@ -177,6 +195,7 @@ public class Consumer extends DefaultConsumer {
                 MessageParsing.writeValueToFile(cont, new File(topTopologyLoadingPath));
             }
 
+            logger.info("Generated id_rsa.pub");
             String userPrivateName = FilenameUtils.removeExtension(userPublicKeyName);
             List<File> sshKeys = MessageParsing.getSSHKeys(parameters, tempInputDirPath, userPublicKeyName, "user_ssh_key");
             if (sshKeys == null || sshKeys.isEmpty()) {
@@ -203,10 +222,11 @@ public class Consumer extends DefaultConsumer {
             } else if (!userCredential.initial(sshKeyPairs, tam.wholeTopology)) {
                 throw new IOException("ssh key pair initilaziation error");
             }
-
+            logger.info("Generated ssh keys");
             userDatabase = getUserDB();
 
             tEngine.provisionAll(tam.wholeTopology, userCredential, userDatabase);
+            logger.info("Provisioned resources");
             return buildTopologuResponse(tam, tempInputDirPath, userPublicKeyName, userPrivateName);
 
         } catch (Throwable ex) {
@@ -484,7 +504,7 @@ public class Consumer extends DefaultConsumer {
     }
 
     private Message buildTopologuResponse(TopologyAnalysisMain tam,
-            String tempInputDirPath, String userPublicKeyName, String userPrivateName) throws IOException {
+            String tempInputDirPath, String userPublicKeyName, String userPrivateName) throws IOException, Exception {
         String topologyUserName = tam.wholeTopology.userName;
 
         String charset = "UTF-8";
@@ -618,6 +638,9 @@ public class Consumer extends DefaultConsumer {
 //                        paramValue += tempInputDirPath + File.separator + sub.subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
                     paramValue += vm.role + "\n";
                 }
+//else if (vm == null || !sub.status.equals("running")) {
+//                    throw new Exception("A VM failed to start. Deleteing all topology");
+//                }
             }
 //            String accessKeyPath = tempInputDirPath + File.separator + sub.subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
 //            System.err.println("accessKeyPath: " + accessKeyPath);

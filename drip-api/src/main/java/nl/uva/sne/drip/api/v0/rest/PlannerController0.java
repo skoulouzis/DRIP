@@ -16,6 +16,7 @@
 package nl.uva.sne.drip.api.v0.rest;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -60,21 +61,17 @@ public class PlannerController0 {
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
     Result plan(@RequestBody Plan plan0) {
-
         try {
             String yaml = plan0.file;
             yaml = yaml.replaceAll("\\\\n", "\n");
             String id = toscaService.saveYamlString(yaml, null);
-            nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse plan1 = plannerService.getPlan(id, "swarm", "vm_user", "EC2", "Ubuntu 16.04", "Virginia");
-
+            nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse plan1 = plannerService.getPlan(id, null,-1);
             Result r = new Result();
             r.info = ("INFO");
             r.status = ("Success");
             List<Attribute> files = new ArrayList<>();
             Attribute e = Converter.plan1toFile(plan1);
-
             files.add(e);
-
             for (String lowiID : plan1.getLoweLevelPlanIDs()) {
                 nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse lowPlan1 = plannerService.findOne(lowiID);
                 e = Converter.plan1toFile(lowPlan1);

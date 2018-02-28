@@ -22,11 +22,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
@@ -80,45 +80,69 @@ public class Converter {
         return jsonObject.toString();
     }
 
-    public static Map<String, Object> jsonString2Map(String jsonString) throws JSONException {
-        JSONObject jsonObject = new JSONObject(jsonString);
-        return jsonObject2Map(jsonObject);
+    public static Map<String, Object> jsonString2Map(String jsonString) throws JSONException, IOException {
+//        JSONObject jsonObject = new JSONObject(jsonString);
+//        return jsonObject2Map(jsonObject);
+        Map<String, Object> result
+                = new ObjectMapper().readValue(jsonString, HashMap.class);
+        return result;
     }
 
-    public static Map<String, Object> jsonObject2Map(JSONObject object) throws JSONException {
-        Map<String, Object> map = new HashMap();
-
-        Iterator<String> keysItr = object.keys();
-        while (keysItr.hasNext()) {
-            String key = keysItr.next();
-            Object value = object.get(key);
-
-            if (value instanceof JSONArray) {
-                value = jsonArray2List((JSONArray) value);
-            } else if (value instanceof JSONObject) {
-                value = jsonObject2Map((JSONObject) value);
-            }
-            map.put(key, value);
-        }
-        return map;
+    public static List<Object> jsonString2List(String jsonString) throws JSONException, IOException {
+        JSONArray jSONArray = new JSONArray(jsonString);
+        return jsonArray2List(jSONArray);
     }
 
-    public static List<Object> jsonArray2List(JSONArray array) throws JSONException {
+    public static Map<String, Object> jsonObject2Map(JSONObject object) throws JSONException, IOException {
+        return new ObjectMapper().readValue(object.toString(), HashMap.class);
+//        Map<String, Object> map = new HashMap();
+//
+//        Iterator<String> keysItr = object.keys();
+//        while (keysItr.hasNext()) {
+//            String key = keysItr.next();
+//            Object value = object.get(key);
+//
+//            if (value instanceof JSONArray) {
+//                value = jsonArray2List((JSONArray) value);
+//            } else if (value instanceof JSONObject) {
+//                value = new ObjectMapper().readValue(((JSONObject) value).toString(), HashMap.class);
+//            } else if (value.equals("[]")) {
+//                value = new ArrayList();
+//            } else if (value.getClass().getName().equals("org.json.JSONObject$Null")) {
+//                value = new String();
+//            }
+//            map.put(key, value);
+//        }
+//        return map;
+    }
+
+    public static List<Object> jsonArray2List(JSONArray array) throws JSONException, IOException {
         List<Object> list = new ArrayList();
-        for (int i = 0; i < array.length(); i++) {
-            Object value = array.get(i);
-            if (value instanceof JSONArray) {
-                value = jsonArray2List((JSONArray) value);
-            } else if (value instanceof JSONObject) {
-                value = jsonObject2Map((JSONObject) value);
+        if (array != null) {
+            for (int i = 0; i < array.length(); i++) {
+                list.add(array.getString(i));
             }
-            list.add(value);
         }
+//        for (int i = 0; i < array.length(); i++) {
+//            Object value = array.get(i);
+//            if (value instanceof JSONArray) {
+//                value = jsonArray2List((JSONArray) value);
+//            } else if (value instanceof JSONObject) {
+//                value = jsonObject2Map((JSONObject) value);
+//            }
+//            if (value instanceof String) {
+//                System.err.println(value);
+//            }
+//            list.add(value);
+//        }
         return list;
-
     }
 
     public static String json2Yml2(String jsonString) throws JSONException {
+//        DumperOptions options = new DumperOptions();
+//        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+//        options.setPrettyFlow(true);
+//        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.SINGLE_QUOTED);
         Yaml yaml = new Yaml();
         String yamlStr = yaml.dump(ymlString2Map(jsonString));
         return yamlStr;
@@ -202,7 +226,6 @@ public class Converter {
 
     public static PlanResponse File2Plan1(Attribute p0) {
         PlanResponse p1 = new PlanResponse();
-        p1.setTimestamp(System.currentTimeMillis());
         p1.setLevel(Integer.valueOf(p0.level));
         p1.setName(p0.name);
         String yaml = p0.content.replaceAll("\\\\n", "\n");
@@ -235,10 +258,9 @@ public class Converter {
             int hex = Constants.BAD_CHARS[i];
             ymlContents = ymlContents.replaceAll(String.valueOf((char) hex), "");
         }
-
         ymlContents = ymlContents.replaceAll("\\.", "\uff0E");
         Map<String, Object> map = null;
-        map = Converter.ymlString2Map(ymlContents);
+        map = ymlString2Map(ymlContents);
         return map;
     }
 
@@ -246,6 +268,22 @@ public class Converter {
         msg = msg.replaceAll("\"", Matcher.quoteReplacement("\\\""));
         msg = "\"" + msg + "\"";
         return msg;
+    }
+
+    public static Number castToNumber(Object value) {
+        if (value instanceof Number) {
+            return (Number) value;
+        }
+        if (value instanceof String) {
+            Pattern p = Pattern.compile("-?\\d+");
+            Matcher m = p.matcher((CharSequence) value);
+
+            while (m.find()) {
+                return Integer.valueOf(m.group());
+            }
+        }
+
+        return null;
     }
 
 }

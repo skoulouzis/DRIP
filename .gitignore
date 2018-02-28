@@ -13,3 +13,14 @@
 /drip-tests/target/
 /docs/playbooks/euroArgo_conf_playbook2.yml
 /Dockerfiles/env_file
+/argo_optimizer/nbproject/private/
+/drip_planner2/nbproject/private/
+/drip-deployer/deployer_files/
+/drip_planner2 (copy)/nbproject/private/
+/drip_util/nbproject/private/
+/drip_transformer/nbproject/private/
+/drip_parser/nbproject/private/
+/drip_parser (copy)/nbproject/private/
+/drip-provisioner (copy)/target/
+/drip_parser.tar.gz
+/docs/playbooks/set_dockerhub_credentials.yml

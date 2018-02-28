@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.api.service;
 
+import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -25,21 +26,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.uva.sne.drip.api.dao.PlanDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.PlannerCaller;
-import nl.uva.sne.drip.commons.utils.Constants;
 import nl.uva.sne.drip.drip.commons.data.internal.Message;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import nl.uva.sne.drip.drip.converter.P2PConverter;
 import nl.uva.sne.drip.drip.converter.SimplePlanContainer;
-import nl.uva.sne.drip.drip.converter.plannerOut.Parameter;
-import nl.uva.sne.drip.drip.converter.plannerOut.PlannerOutput;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,17 +63,29 @@ public class PlannerService {
     private ToscaService toscaService;
 
     @Autowired
+    private CloudCredentialsService credentialService;
+
+    @Autowired
     private PlanDao planDao;
 
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-    public PlanResponse getPlan(String toscaId, String clusterType, String vmUser, String cloudProvider, String OSType, String domainName) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
+    private final Logger logger;
 
-        try (PlannerCaller planner = new PlannerCaller(messageBrokerHost)) {
-            Message plannerInvokationMessage = buildPlannerMessage(toscaId);
+    @Autowired
+    public PlannerService(@Value("${message.broker.host}") String messageBrokerHost) throws IOException, TimeoutException {
+        logger = Logger.getLogger(PlannerService.class.getName());
+        logger.addHandler(new DRIPLogHandler(messageBrokerHost));
+    }
+
+    public PlanResponse getPlan(String toscaId, String cloudProvider, Integer maxVM) throws JSONException, UnsupportedEncodingException, IOException, TimeoutException, InterruptedException {
+        try (DRIPCaller planner = new PlannerCaller(messageBrokerHost)) {
+            Message plannerInvokationMessage = buildPlannerMessage(toscaId, maxVM);
+            logger.log(Level.INFO, "Calling planner");
+            plannerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
             Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
-//            Message plannerReturnedMessage = (planner.generateFakeResponse(plannerInvokationMessage));
+            logger.log(Level.INFO, "Got response from planner");
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
             List<MessageParameter> messageParams = plannerReturnedMessage.getParameters();
@@ -86,12 +100,14 @@ public class PlannerService {
                 jsonArrayString.append(jsonValue);
             }
             jsonArrayString.append("]");
+            if (cloudProvider == null) {
+                cloudProvider = getBestCloudProvider();
+            }
+            String domainName = getBestDomain(cloudProvider);
 
-//            SimplePlanContainer simplePlan = P2PConverter.convert(jsonArrayString.toString(), "vm_user", "Ubuntu 16.04", clusterType);
-            SimplePlanContainer simplePlan = P2PConverter.transfer(jsonArrayString.toString(), vmUser, OSType, domainName, clusterType, cloudProvider);
+            SimplePlanContainer simplePlan = P2PConverter.transfer(jsonArrayString.toString(), "vm_user", domainName, cloudProvider);
 
             PlanResponse topLevel = new PlanResponse();
-            topLevel.setTimestamp(System.currentTimeMillis());
             topLevel.setLevel(0);
             topLevel.setToscaID(toscaId);
             topLevel.setName("planner_output_all.yml");
@@ -100,7 +116,6 @@ public class PlannerService {
             Set<String> loweLevelPlansIDs = new HashSet<>();
             for (String lowLevelNames : map.keySet()) {
                 PlanResponse lowLevelPlan = new PlanResponse();
-                lowLevelPlan.setTimestamp(System.currentTimeMillis());
                 lowLevelPlan.setLevel(1);
                 lowLevelPlan.setToscaID(toscaId);
                 lowLevelPlan.setName(lowLevelNames);
@@ -111,16 +126,19 @@ public class PlannerService {
 
             topLevel.setLoweLevelPlansIDs(loweLevelPlansIDs);
             save(topLevel);
+            logger.log(Level.INFO, "Plan saved");
             return topLevel;
         }
     }
 
-    private Message buildPlannerMessage(String toscaId) throws JSONException, UnsupportedEncodingException {
-        ToscaRepresentation t2 = toscaService.findOne(toscaId);
-        if (t2 == null) {
+    private Message buildPlannerMessage(String toscaId, Integer maxVM) throws JSONException, UnsupportedEncodingException {
+        ToscaRepresentation toscaRepresentation = toscaService.findOne(toscaId);
+        if (toscaRepresentation == null) {
             throw new BadRequestException();
         }
-        Map<String, Object> map = t2.getKeyValue();
+        logger.log(Level.INFO, "Building invokation message for planner");
+
+        Map<String, Object> map = toscaRepresentation.getKeyValue();
         String json = Converter.map2JsonString(map);
         json = json.replaceAll("\\uff0E", ".");
         byte[] bytes = json.getBytes();
@@ -131,8 +149,16 @@ public class PlannerService {
         String charset = "UTF-8";
         jsonArgument.setValue(new String(bytes, charset));
         jsonArgument.setEncoding(charset);
-        jsonArgument.setName("input");
+        jsonArgument.setName("tosca_input");
         parameters.add(jsonArgument);
+
+        if (maxVM != null) {
+            MessageParameter maxVMsArgument = new MessageParameter();
+            maxVMsArgument.setValue(String.valueOf(maxVM));
+            maxVMsArgument.setEncoding(charset);
+            maxVMsArgument.setName("max_vm");
+            parameters.add(maxVMsArgument);
+        }
 
         invokationMessage.setParameters(parameters);
         invokationMessage.setCreationDate((System.currentTimeMillis()));
@@ -188,11 +214,12 @@ public class PlannerService {
         return topLevel;
     }
 
-    public PlanResponse save(PlanResponse plan) {
+    public PlanResponse save(PlanResponse ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        plan.setOwner(owner);
-        return planDao.save(plan);
+        ownedObject.setOwner(owner);
+
+        return planDao.save(ownedObject);
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
@@ -255,6 +282,21 @@ public class PlannerService {
             }
         }
         return false;
+    }
+
+    private String getBestCloudProvider() {
+        List<CloudCredentials> creds = credentialService.findAll();
+        return creds.get(0).getCloudProviderName().toUpperCase();
+    }
+
+    private String getBestDomain(String cloudProvider) {
+        switch (cloudProvider.trim().toLowerCase()) {
+            case "ec2":
+                return "Virginia";
+            case "egi":
+                return "CESNET";
+        }
+        return null;
     }
 
 }

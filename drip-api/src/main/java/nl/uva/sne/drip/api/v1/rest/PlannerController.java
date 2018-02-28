@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.PlannerService;
 import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
-import nl.uva.sne.drip.drip.commons.data.v1.external.PlanRequest;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,9 +59,8 @@ public class PlannerController {
     @Autowired
     private PlannerService plannerService;
 
-    @Autowired
-    private ToscaService toscaService;
-
+//    @Autowired
+//    private ToscaService toscaService;
     /**
      * verifies plan. Checks if this is a concrete plan
      *
@@ -80,16 +78,18 @@ public class PlannerController {
      * Plans resources (number, size of VMs etc).
      *
      * @param toscaId. The id of the TOSCA description
+     * @param preferredProvider
+     * @param maxVm
      * @return the id of the created plan
      */
     @RequestMapping(value = "/plan/{tosca_id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
-    String plan(@PathVariable("tosca_id") String toscaId) {
-
+    String plan(@PathVariable("tosca_id") String toscaId,
+            @RequestParam(value = "preferred_provider", required = false) String preferredProvider,
+            @RequestParam(value = "max_vm", required = false) Integer maxVm) {
         try {
-            PlanResponse plan = plannerService.getPlan(toscaId, "swarm",
-                    "vm_user", "EC2", "Ubuntu 16.04", "Virginia");
+            PlanResponse plan = plannerService.getPlan(toscaId, preferredProvider, maxVm);
             if (plan == null) {
                 throw new NotFoundException("Could not make plan");
             }
@@ -100,25 +100,24 @@ public class PlannerController {
         return null;
     }
 
-    @RequestMapping(value = "/plan/", method = RequestMethod.POST)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    String plan(@RequestBody PlanRequest planRequest) {
-
-        try {
-            PlanResponse plan = plannerService.getPlan(planRequest.getToscaID(),
-                    planRequest.getManagerType(), planRequest.getVmUserName(),
-                    planRequest.getCloudProvider(), planRequest.getOsType(), planRequest.getDomain());
-            if (plan == null) {
-                throw new NotFoundException("Could not make plan");
-            }
-            return plan.getId();
-        } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
-            Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
+//    @RequestMapping(value = "/plan/", method = RequestMethod.POST)
+//    @RolesAllowed({UserService.USER, UserService.ADMIN})
+//    public @ResponseBody
+//    String plan(@RequestBody PlanRequest planRequest) {
+//
+//        try {
+//            PlanResponse plan = plannerService.getPlan(planRequest.getToscaID(),
+//                    planRequest.getManagerType(), planRequest.getVmUserName(),
+//                    planRequest.getCloudProvider(), planRequest.getOsType(), planRequest.getDomain());
+//            if (plan == null) {
+//                throw new NotFoundException("Could not make plan");
+//            }
+//            return plan.getId();
+//        } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
+//            Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
     /**
      * Gets a plan
      *

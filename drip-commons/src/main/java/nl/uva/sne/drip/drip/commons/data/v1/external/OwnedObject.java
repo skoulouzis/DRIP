@@ -34,14 +34,15 @@ public class OwnedObject {
     @Id
     private String id;
 
-    private Long timestamp;
+    private Long timestamp = System.currentTimeMillis();
 
     @NotNull
     private String owner;
 
     /**
      * The owner (username) for the particular object. This value is set when
-     * the DAO saves the object based on the principal how made the call
+     * the DAO saves the object based on the principal who made the call.
+     * It is created automatically. No need to set during a POST
      *
      * @return the owner
      */
@@ -69,17 +70,13 @@ public class OwnedObject {
     }
 
     /**
-     * The object's creation date in unix time stamp
+     * The object's creation date in unix time stamp. It is created automatically.
+     * No need to set during a POST
      * @return the timestamp
      */
     @DocumentationExample("1499793079011")
     public Long getTimestamp() {
         return timestamp;
-    }
-
- 
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
     }
 
 }

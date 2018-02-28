@@ -73,7 +73,7 @@ public class RPCServer {
             if (PropertyValues.RPC_QUEUE_NAME.endsWith("v0")) {
                 c = new nl.uva.sne.drip.drip.provisioner.v0.Consumer(channel);
             } else {
-                c = new nl.uva.sne.drip.drip.provisioner.v1.Consumer(channel);
+                c = new nl.uva.sne.drip.drip.provisioner.v1.Consumer(channel, PropertyValues.HOST);
             }
 
             //Start listening for messages 

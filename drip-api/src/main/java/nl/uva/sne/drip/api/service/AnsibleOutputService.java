@@ -66,11 +66,12 @@ public class AnsibleOutputService {
         return ansibleOut;
     }
 
-    public AnsibleOutput save(AnsibleOutput ansibleOut) {
+    public AnsibleOutput save(AnsibleOutput ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        ansibleOut.setOwner(owner);
-        return ansibleOutputDao.save(ansibleOut);
+        ownedObject.setOwner(owner);
+         
+        return ansibleOutputDao.save(ownedObject);
     }
 
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")

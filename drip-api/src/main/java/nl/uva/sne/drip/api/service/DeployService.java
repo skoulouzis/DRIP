@@ -51,9 +51,12 @@ import nl.uva.sne.drip.api.dao.KeyPairDao;
 import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
+import nl.uva.sne.drip.drip.commons.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleOutput;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleResult;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.BenchmarkResult;
@@ -92,16 +95,29 @@ public class DeployService {
     @Autowired
     private BenchmarkResultService benchmarkResultService;
 
+    @Autowired
+    private ToscaService toscaService;
+
+    @Autowired
+    private PlannerService plannerService;
+
     private static final String[] CLOUD_SITE_NAMES = new String[]{"domain", "VMResourceID"};
     private static final String[] PUBLIC_ADRESS_NAMES = new String[]{"public_address", "publicAddress"};
+    private final Logger logger;
+
+    @Autowired
+    public DeployService(@Value("${message.broker.host}") String messageBrokerHost) throws IOException, TimeoutException {
+        logger = Logger.getLogger(DeployService.class.getName());
+        logger.addHandler(new DRIPLogHandler(messageBrokerHost));
+    }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
-    public DeployResponse findOne(String id) {
-        DeployResponse creds = deployDao.findOne(id);
-        if (creds == null) {
+    public DeployResponse findOne(String id) throws JSONException, IOException, TimeoutException, InterruptedException {
+        DeployResponse deployDescription = deployDao.findOne(id);
+        if (deployDescription == null) {
             throw new NotFoundException();
         }
-        return creds;
+        return deployDescription;
     }
 
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
@@ -119,32 +135,32 @@ public class DeployService {
         return creds;
     }
 
-    public DeployResponse save(DeployResponse clusterCred) {
+    public DeployResponse save(DeployResponse ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        clusterCred.setOwner(owner);
-        return deployDao.save(clusterCred);
+        ownedObject.setOwner(owner);
+
+        return deployDao.save(ownedObject);
     }
 
     public DeployResponse deploySoftware(DeployRequest deployInfo) throws Exception {
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
-            Message deployerInvokationMessage = buildDeployerMessage(
-                    deployInfo.getProvisionID(),
-                    deployInfo.getManagerType().toLowerCase(),
-                    deployInfo.getConfigurationID(),
+            Message deployerInvokationMessage = buildDeployerMessages(
+                    deployInfo,
                     null,
-                    null);
+                    null).get(0);
+            ;
+            deployerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
 
-//            Message response = MessageGenerator.generateArtificialMessage(System.getProperty("user.home")
-//                    + File.separator + "workspace" + File.separator + "DRIP"
-//                    + File.separator + "docs" + File.separator + "json_samples"
-//                    + File.separator + "deployer_ansible_response_benchmark.json");
+            logger.info("Calling deployer");
             Message response = (deployer.call(deployerInvokationMessage));
+            logger.info("Got response from deployer");
             List<MessageParameter> params = response.getParameters();
             DeployResponse deploy = handleResponse(params, deployInfo);
             deploy.setProvisionID(deployInfo.getProvisionID());
             deploy.setConfigurationID(deployInfo.getConfigurationID());
             deploy.setManagerType(deployInfo.getManagerType().toLowerCase());
+            logger.info("Deployment saved");
             save(deploy);
             return deploy;
 
@@ -156,13 +172,39 @@ public class DeployService {
         return null;
     }
 
-    private Message buildDeployerMessage(String provisionID, String managerType, String configurationID, String serviceName, Integer numOfCont) throws JSONException {
+    public Map<String, Object> getSwarmInfo(DeployResponse deployResp) throws JSONException, IOException, TimeoutException, InterruptedException {
+        deployResp.setManagerType("swarm_info");
+        Message deployerInvokationMessage = buildDeployerMessages(
+                deployResp,
+                null,
+                null).get(0);
+        Map<String, Object> info;
+        deployerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+        try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
+            logger.info("Calling deployer");
+            Message response = (deployer.call(deployerInvokationMessage));
+            logger.info("Got response from deployer");
+            List<MessageParameter> params = response.getParameters();
+            info = buildSwarmInfo(params);
+        }
+        return info;
+    }
+
+    private List<Message> buildDeployerMessages(
+            DeployRequest deployInfo,
+            String serviceName,
+            Integer numOfContainers) throws JSONException {
+        String provisionID = deployInfo.getProvisionID();
+        String managerType = deployInfo.getManagerType();
+        String configurationID = deployInfo.getConfigurationID();
+
         ProvisionResponse pro = provisionService.findOne(provisionID);
         if (pro == null) {
             throw new NotFoundException();
         }
         List<String> loginKeysIDs = pro.getDeployerKeyPairIDs();
 
+        List<Message> messages = new ArrayList<>();
 //        if (loginKeysIDs == null || loginKeysIDs.isEmpty()) {
 //            List<String> cloudConfIDs = pro.getCloudCredentialsIDs();
 //            CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfIDs.get(0));
@@ -191,19 +233,25 @@ public class DeployService {
         }
 
         if (managerType.toLowerCase().equals("swarm") && configurationID != null) {
-            MessageParameter composerParameter = createComposerParameter(configurationID);
+            Map<String, String> dockerLogin = getDockerLogin(pro);
+
+            MessageParameter composerParameter = createComposerParameter(configurationID, dockerLogin);
             parameters.add(composerParameter);
         }
 
         if (managerType.toLowerCase().equals("scale") && configurationID != null) {
-            MessageParameter scaleParameter = createScaleParameter(configurationID, serviceName, numOfCont);
+            MessageParameter scaleParameter = createScaleParameter(configurationID, serviceName, numOfContainers);
             parameters.add(scaleParameter);
         }
-
+        if (managerType.toLowerCase().equals("swarm_info") && configurationID != null) {
+            MessageParameter swarmInfo = createSwarmInforparameter(configurationID, serviceName);
+            parameters.add(swarmInfo);
+        }
         Message deployInvokationMessage = new Message();
         deployInvokationMessage.setParameters(parameters);
         deployInvokationMessage.setCreationDate(System.currentTimeMillis());
-        return deployInvokationMessage;
+        messages.add(deployInvokationMessage);
+        return messages;
     }
 
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")
@@ -245,10 +293,16 @@ public class DeployService {
         return createConfigurationParameter(configurationID, "ansible");
     }
 
-    private MessageParameter createComposerParameter(String configurationID) throws JSONException {
+    private MessageParameter createComposerParameter(String configurationID, Map<String, String> dockerLogin) throws JSONException {
         MessageParameter configurationParameter = createConfigurationParameter(configurationID, "composer");
         Map<String, String> attributes = new HashMap<>();
         attributes.put("name", configurationID);
+        if (dockerLogin != null) {
+            attributes.put("docker_login_username", dockerLogin.get("username"));
+            attributes.put("docker_login_password", dockerLogin.get("password"));
+            attributes.put("docker_login_registry", dockerLogin.get("registry"));
+        }
+
         configurationParameter.setAttributes(attributes);
         return configurationParameter;
     }
@@ -256,7 +310,12 @@ public class DeployService {
     private MessageParameter createConfigurationParameter(String configurationID, String confType) throws JSONException {
         String configuration = configurationService.get(configurationID, "yml");
         MessageParameter configurationParameter = new MessageParameter();
-        configurationParameter.setName(confType);
+        if (confType.equals("ansible")) {
+            configurationParameter.setName("playbook");
+        } else {
+            configurationParameter.setName(confType);
+        }
+
         configurationParameter.setEncoding("UTF-8");
         configurationParameter.setValue(configuration);
         return configurationParameter;
@@ -274,6 +333,17 @@ public class DeployService {
         return scaleParameter;
     }
 
+    private MessageParameter createSwarmInforparameter(String configurationID, String serviceName) {
+        MessageParameter swarmInfoParameter = new MessageParameter();
+        swarmInfoParameter.setName("swarm_info");
+        swarmInfoParameter.setEncoding("UTF-8");
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("service", serviceName);
+        attributes.put("name", configurationID);
+        swarmInfoParameter.setAttributes(attributes);
+        return swarmInfoParameter;
+    }
+
     public DeployResponse scale(ScaleRequest scaleReq) throws IOException, TimeoutException, InterruptedException, JSONException, Exception {
         //Deployer needs configurationID -> name_of_deployment
         String deployId = scaleReq.getScaleTargetID();
@@ -286,21 +356,27 @@ public class DeployService {
             throw new BadRequestException("Service name does not exist in this deployment");
         }
 
-        Message message = buildDeployerMessage(deployment.getProvisionID(), "scale", confID, scaleReq.getScaleTargetName(), scaleReq.getNumOfInstances());
+        deployment.setManagerType("scale");
+        Message message = buildDeployerMessages(deployment,
+                scaleReq.getScaleTargetName(),
+                scaleReq.getNumOfInstances()).get(0);
 
+        message.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
+            logger.info("Calling deployer");
             Message response = (deployer.call(message));
+            logger.info("Got response from deployer");
             List<MessageParameter> params = response.getParameters();
             handleResponse(params, null);
         }
         deployment.setScale(scaleReq);
+        deployment.setManagerType("swarm");
         save(deployment);
         return deployment;
     }
 
     private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException, Exception {
         DeployResponse deployResponse = new DeployResponse();
-        deployResponse.setTimestamp(System.currentTimeMillis());
 
         for (MessageParameter p : params) {
             String name = p.getName();
@@ -311,7 +387,6 @@ public class DeployService {
                 k.setKey(value);
                 k.setType(Key.KeyType.PRIVATE);
                 KeyPair pair = new KeyPair();
-                pair.setTimestamp(System.currentTimeMillis());
                 pair.setPrivateKey(k);
                 deployResponse.setKey(pair);
                 save(deployResponse);
@@ -562,6 +637,79 @@ public class DeployService {
             newJa.put(jo);
         }
         return newJa.toString();
+    }
+
+    private Map<String, Object> buildSwarmInfo(List<MessageParameter> params) throws JSONException, IOException {
+        Map<String, Object> info = new HashMap();
+        for (MessageParameter param : params) {
+            String jsonResp = param.getValue().replaceAll("^\"|\"$", "");
+            System.err.println(jsonResp);
+            Map<String, Object> kv = Converter.jsonString2Map(jsonResp);
+
+            info.putAll(kv);
+        }
+        return info;
+    }
+
+    public List<String> getServiceNames(String id) throws JSONException, IOException, TimeoutException, InterruptedException {
+        DeployResponse resp = findOne(id);
+        if (resp.getManagerType().equals("swarm")) {
+            Map<String, Object> swarmInfo = getSwarmInfo(resp);
+
+            List< Map<String, Object>> stackInfo = (List) swarmInfo.get("stack_info");
+            List<String> serviceNames = new ArrayList<>();
+            for (Map<String, Object> map : stackInfo) {
+                if (map.containsKey("name")) {
+                    serviceNames.add(((String) map.get("name")));
+                }
+            }
+            return serviceNames;
+        }
+        return null;
+    }
+
+    public DeployResponse getContainersStatus(String id, String serviceName) throws JSONException, IOException, TimeoutException, InterruptedException {
+        DeployResponse resp = findOne(id);
+        Map<String, Object> result = new HashMap<>();
+        if (resp.getManagerType().equals("swarm")) {
+            Map<String, Object> swarmInfo = getSwarmInfo(resp);
+
+            List< Map<String, Object>> servicesInfo = (List) swarmInfo.get("services_info");
+            List<String> taskIDs = new ArrayList<>();
+            for (Map<String, Object> map : servicesInfo) {
+                if (map.containsKey("name") && ((String) map.get("name")).startsWith(serviceName)) {
+                    taskIDs.add(((String) map.get("ID")));
+                }
+            }
+            List< Map<String, Object>> inspecInfo = (List) swarmInfo.get("inspect_info");
+            List< Map<String, Object>> inspecInfoResult = new ArrayList<>();
+            for (String taskID : taskIDs) {
+                for (Map<String, Object> map : inspecInfo) {
+                    if (map.containsKey("ID") && ((String) map.get("ID")).startsWith(taskID)) {
+                        inspecInfoResult.add((Map<String, Object>) map.get("Status"));
+                    }
+                }
+            }
+            result.put("inspect_info", inspecInfoResult);
+            resp.setManagerInfo(result);
+            resp.setKey(null);
+            resp.setScale(null);
+        }
+        return resp;
+    }
+
+    private Map<String, String> getDockerLogin(ProvisionResponse pro) {
+        String planID = pro.getPlanID();
+        PlanResponse plan = plannerService.findOne(planID);
+        String toscaID = plan.getToscaID();
+        if (toscaID != null) {
+            ToscaRepresentation tosca = toscaService.findOne(plan.getToscaID());
+            Map<String, Object> map = tosca.getKeyValue();
+            map.get("repositories");
+            HashMap dockerLogin = new HashMap();
+            return dockerLogin;
+        }
+        return null;
     }
 
 }

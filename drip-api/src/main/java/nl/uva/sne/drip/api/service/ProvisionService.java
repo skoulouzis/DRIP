@@ -59,6 +59,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import nl.uva.sne.drip.api.dao.ProvisionResponseDao;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller1;
+import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
 import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
@@ -88,12 +89,20 @@ public class ProvisionService {
 
     @Value("${message.broker.host}")
     private String messageBrokerHost;
+    private final Logger logger;
 
-    public ProvisionResponse save(ProvisionResponse provision) {
+    @Autowired
+    public ProvisionService(@Value("${message.broker.host}") String messageBrokerHost) throws IOException, TimeoutException {
+        logger = Logger.getLogger(ProvisionService.class.getName());
+        logger.addHandler(new DRIPLogHandler(messageBrokerHost));
+    }
+
+    public ProvisionResponse save(ProvisionResponse ownedObject) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String owner = user.getUsername();
-        provision.setOwner(owner);
-        return provisionDao.save(provision);
+        ownedObject.setOwner(owner);
+
+        return provisionDao.save(ownedObject);
     }
 
     @PostAuthorize("(returnObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
@@ -440,11 +449,11 @@ public class ProvisionService {
     private ProvisionResponse callProvisioner0(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
         try (DRIPCaller provisioner = new ProvisionerCaller0(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisioner0Message(provisionRequest);
-
+            provisionerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+            logger.info("Calling provisioner");
             Message response = (provisioner.call(provisionerInvokationMessage));
-
+            logger.info("Got provisioner response");
             return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null, true, true);
-
         }
 
     }
@@ -452,7 +461,10 @@ public class ProvisionService {
     private ProvisionResponse callProvisioner1(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
         try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisioner1Message(provisionRequest);
+            provisionerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+            logger.info("Calling provisioner");
             Message response = (provisioner.call(provisionerInvokationMessage));
+            logger.info("Got provisioner response");
             return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null, true, true);
         }
 
@@ -461,7 +473,10 @@ public class ProvisionService {
     public void deleteProvisionedResources(ProvisionResponse provisionInfo) throws IOException, TimeoutException, InterruptedException, JSONException {
         try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
             Message deleteInvokationMessage = buildTopoplogyModificationMessage(provisionInfo, "kill_topology", null);
+            deleteInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+            logger.info("Calling provisioner");
             Message response = (provisioner.call(deleteInvokationMessage));
+            logger.info("Got provisioner response");
             parseDeleteResourcesResponse(response.getParameters(), provisionInfo);
         }
     }
@@ -474,7 +489,7 @@ public class ProvisionService {
         }
         ProvisionResponse provisionInfo = findOne(provisionID);
         boolean scaleNameExists = false;
-        int currentNumOfInstances = 0;
+        int currentNumOfInstances = 1;
         Map<String, Object> plan = provisionInfo.getKeyValue();
         String cloudProvider = null;
         String domain = null;
@@ -487,7 +502,7 @@ public class ProvisionService {
                         cloudProvider = (String) topology.get("cloudProvider");
                         domain = (String) topology.get("domain");
                         scaleNameExists = true;
-                    } else if (topology.get("tag").equals("scaled") 
+                    } else if (topology.get("tag").equals("scaled")
                             && topology.get("status").equals("running")
                             && topology.get("copyOf").equals(scaleName)) {
                         currentNumOfInstances++;
@@ -510,7 +525,10 @@ public class ProvisionService {
                 extra.put("domain", domain);
 
                 Message scaleMessage = buildTopoplogyModificationMessage(provisionInfo, "scale_topology_down", extra);
+                scaleMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+                logger.info("Calling provisioner");
                 Message response = provisioner.call(scaleMessage);
+                logger.info("Got response from provisioner");
                 parseCreateResourcesResponse(response.getParameters(), null, provisionInfo, false, false);
             }
         } else if (currentNumOfInstances < scaleRequest.getNumOfInstances() || currentNumOfInstances == 0) {
@@ -522,7 +540,10 @@ public class ProvisionService {
                 extra.put("domain", domain);
 
                 Message scaleMessage = buildTopoplogyModificationMessage(provisionInfo, "scale_topology_up", extra);
+                scaleMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+                logger.info("Calling provisioner");
                 Message response = provisioner.call(scaleMessage);
+                logger.info("Got response from provisioner");
                 parseCreateResourcesResponse(response.getParameters(), null, provisionInfo, false, false);
             }
         }
@@ -636,7 +657,6 @@ public class ProvisionService {
             ProvisionRequest provisionRequest, ProvisionResponse provisionResponse, boolean saveUserKeys, boolean saveDeployerKeyI) throws Exception {
         if (provisionResponse == null) {
             provisionResponse = new ProvisionResponse();
-            provisionResponse.setTimestamp(System.currentTimeMillis());
         }
 
         List<DeployParameter> deployParameters = new ArrayList<>();
@@ -658,13 +678,15 @@ public class ProvisionService {
                 case "deploy_parameters":
                     String value = p.getValue();
                     String[] lines = value.split("\n");
+                    if (value.length() < 2) {
+                        throw new Exception("Provision failed");
+//                        this.deleteProvisionedResources(provisionResponse);
+                    }
                     for (String line : lines) {
                         DeployParameter deployParam = new DeployParameter();
                         String[] parts = line.split(" ");
                         String deployIP = parts[0];
-
                         String deployUser = parts[1];
-
 //                        String deployCertPath = parts[2];
 //                        String cloudCertificateName = FilenameUtils.removeExtension(FilenameUtils.getBaseName(deployCertPath));
                         String deployRole = parts[2];
