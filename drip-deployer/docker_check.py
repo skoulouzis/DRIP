@@ -74,6 +74,7 @@ def docker_check(vm, compose_name):
         
         cmd = 'sudo docker stack ps '+ compose_name +' --format ' + services_format
         logger.info("Sending :"+cmd)
+
         stdin, stdout, stderr = ssh.exec_command(cmd)
         stack_ps_resp = stdout.readlines()
         services_info = []
@@ -90,6 +91,8 @@ def docker_check(vm, compose_name):
                         json_dict = json.loads(json_dict)
                     except Exception as e:
                         json_dict = json_dict.replace('\"ports\":\"\"', '\"ports\":null').replace('\"\"', '\"')
+                        json_dict = json_dict.replace('\"node\":\",\"', '\"node\":null,\"').replace('\"\"', '\"')
+                        
                         json_dict = json_dict.replace("\\", "").replace("Noxe2x80xa6", "No...")
                         json_dict = json.loads(json_dict)
                 nodes_hostname.add(json_dict['node'])
@@ -116,7 +119,8 @@ def docker_check(vm, compose_name):
         
         cmd = 'sudo docker node inspect '
         for hostname in nodes_hostname:
-             cmd += ' '+hostname       
+             if hostname:
+                cmd += ' '+hostname       
         logger.info("Sending :"+cmd)             
         stdin, stdout, stderr = ssh.exec_command(cmd)
         inspect_resp = stdout.readlines()

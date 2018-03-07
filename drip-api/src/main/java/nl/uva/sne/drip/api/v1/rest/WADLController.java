@@ -56,7 +56,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * @author S. Koulouzis
  */
 @Controller
-@RequestMapping("/user/v1.0/?wadl")
+@RequestMapping("/user/v1.0/")
 public class WADLController {
 
     String xs_namespace = "http://www.w3.org/2001/XMLSchema";
@@ -67,6 +67,7 @@ public class WADLController {
 
     @RequestMapping(method = RequestMethod.GET,
             //            consumes = MediaType.APPLICATION_XML_VALUE,
+            
             produces = MediaType.APPLICATION_XML_VALUE)
     public @ResponseBody
     Application generateWadl(HttpServletRequest request) {
