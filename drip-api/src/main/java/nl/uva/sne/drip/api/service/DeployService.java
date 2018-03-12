@@ -54,11 +54,11 @@ import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
+import nl.uva.sne.drip.drip.commons.data.v1.external.KeyValueHolder;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleOutput;
-import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleResult;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.BenchmarkResult;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.SysbenchCPUBenchmark;
 import org.json.JSONArray;
@@ -398,7 +398,7 @@ public class DeployService {
                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
                 value = parseValue(value);
-
+                System.err.println(value);
                 List<AnsibleOutput> outputList = mapper.readValue(value, new TypeReference<List<AnsibleOutput>>() {
                 });
 
@@ -476,66 +476,63 @@ public class DeployService {
     }
 
     private BenchmarkResult parseSaveBenchmarkResult(AnsibleOutput ansOut) {
-        AnsibleResult res = ansOut.getAnsibleResult();
-        if (res != null) {
-            List<String> cmdList = res.getCmd();
-            if (cmdList != null) {
-
-                switch (cmdList.get(0)) {
-                    case "sysbench":
-                        String[] out = res.getStdout().split("\n");
-                        String version = getSysbeanchVersion(out[0]);
-                        int numOfThreads = getNumberOfThreads(out[3]);
-                        Double executionTime = getExecutionTime(out[14]);
-                        int totalNumberOfEvents = getTotalNumberOfEvents(out[15]);
-
-                        double minExecutionTimePerRequest = getMinExecutionTimePerRequest(out[18]);
-                        double avgExecutionTimePerRequest = getAvgExecutionTimePerRequest(out[19]);
-                        double maxExecutionTimePerRequest = getMaxExecutionTimePerRequest(out[20]);
-                        double approx95Percentile = getApprox95Percentile(out[21]);
-
-                        double avgEventsPerThread = getAvgEventsPerThread(out[24]);
-                        double stddevEventsPerThread = getStddevEventsPerThread(out[24]);
-
-                        double avgExecTimePerThread = getAvgExecTimePerThread(out[25]);
-                        double stddevExecTimePerThread = getStddevExecTimePerThread(out[25]);
-
-                        SysbenchCPUBenchmark b = new SysbenchCPUBenchmark();
-                        b.setSysbenchVersion(version);
-
-                        b.setNumberOfThreads(numOfThreads);
-                        b.setExecutionTime(executionTime * 1000);
-
-                        b.setTotalNumberOfEvents(totalNumberOfEvents);
-
-                        b.setAvgEventsPerThread(avgEventsPerThread);
-                        b.setStddevEventsPerThread(stddevEventsPerThread);
-
-                        b.setAvgExecTimePerThread(avgExecTimePerThread * 1000);
-                        b.setStddevExecTimePerThread(stddevExecTimePerThread);
-                        b.setApprox95Percentile(approx95Percentile);
-
-                        b.setMinExecutionTimePerRequest(minExecutionTimePerRequest);
-                        b.setAvgExecutionTimePerRequest(avgExecutionTimePerRequest);
-                        b.setMaxExecutionTimePerRequest(maxExecutionTimePerRequest);
-
-                        b.setAnsibleOutputID(ansOut.getId());
-
-                        b.setCloudDeploymentDomain(ansOut.getCloudDeploymentDomain());
-                        b.setDelta(ansOut.getAnsibleResult().getDelta());
-                        b.setStart(ansOut.getAnsibleResult().getStart());
-                        b.setEnd(ansOut.getAnsibleResult().getEnd());
-                        b.setHost(ansOut.getHost());
-                        b.setVmType(ansOut.getVmType());
-                        b = (SysbenchCPUBenchmark) benchmarkResultService.save(b);
-                        return b;
-
-                    default:
-                        return null;
-
-                }
-            }
-        }
+//        KeyValueHolder res = ansOut.getAnsibleResult();
+//        if (res != null) {
+//            List<String> cmdList = res.getCmd();
+//            if (cmdList != null) {
+//
+//                switch (cmdList.get(0)) {
+//                    case "sysbench":
+//                        String[] out = res.getStdout().split("\n");
+//                        String version = getSysbeanchVersion(out[0]);
+//                        int numOfThreads = getNumberOfThreads(out[3]);
+//                        Double executionTime = getExecutionTime(out[14]);
+//                        int totalNumberOfEvents = getTotalNumberOfEvents(out[15]);
+//
+//                        double minExecutionTimePerRequest = getMinExecutionTimePerRequest(out[18]);
+//                        double avgExecutionTimePerRequest = getAvgExecutionTimePerRequest(out[19]);
+//                        double maxExecutionTimePerRequest = getMaxExecutionTimePerRequest(out[20]);
+//                        double approx95Percentile = getApprox95Percentile(out[21]);
+//
+//                        double avgEventsPerThread = getAvgEventsPerThread(out[24]);
+//                        double stddevEventsPerThread = getStddevEventsPerThread(out[24]);
+//
+//                        double avgExecTimePerThread = getAvgExecTimePerThread(out[25]);
+//                        double stddevExecTimePerThread = getStddevExecTimePerThread(out[25]);
+//
+//                        SysbenchCPUBenchmark b = new SysbenchCPUBenchmark();
+//                        b.setSysbenchVersion(version);
+//
+//                        b.setNumberOfThreads(numOfThreads);
+//                        b.setExecutionTime(executionTime * 1000);
+//
+//                        b.setTotalNumberOfEvents(totalNumberOfEvents);
+//
+//                        b.setAvgEventsPerThread(avgEventsPerThread);
+//                        b.setStddevEventsPerThread(stddevEventsPerThread);
+//
+//                        b.setAvgExecTimePerThread(avgExecTimePerThread * 1000);
+//                        b.setStddevExecTimePerThread(stddevExecTimePerThread);
+//                        b.setApprox95Percentile(approx95Percentile);
+//
+//                        b.setMinExecutionTimePerRequest(minExecutionTimePerRequest);
+//                        b.setAvgExecutionTimePerRequest(avgExecutionTimePerRequest);
+//                        b.setMaxExecutionTimePerRequest(maxExecutionTimePerRequest);
+//
+//                        b.setAnsibleOutputID(ansOut.getId());
+//
+//                        b.setCloudDeploymentDomain(ansOut.getCloudDeploymentDomain());
+//                        b.setHost(ansOut.getHost());
+//                        b.setVmType(ansOut.getVmType());
+//                        b = (SysbenchCPUBenchmark) benchmarkResultService.save(b);
+//                        return b;
+//
+//                    default:
+//                        return null;
+//
+//                }
+//            }
+//        }
         return null;
     }
 

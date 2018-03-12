@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Set;
 import nl.uva.sne.drip.api.dao.AnsibleOutputDao;
 import nl.uva.sne.drip.api.exception.NotFoundException;
+import nl.uva.sne.drip.drip.commons.data.v1.external.KeyValueHolder;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleOutput;
-import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
@@ -77,37 +77,6 @@ public class AnsibleOutputService {
     @PostAuthorize("(hasRole('ROLE_ADMIN'))")
     public void deleteAll() {
         ansibleOutputDao.deleteAll();
-    }
-
-    public List<String> findAllCommands() {
-        List<AnsibleOutput> all = findAll();
-        Set<String> hashset = new HashSet<>();
-        for (AnsibleOutput ans : all) {
-            AnsibleResult res = ans.getAnsibleResult();
-            if (res != null) {
-                List<String> commandList = res.getCmd();
-                if (commandList != null) {
-                    hashset.add(commandList.get(0));
-                }
-            }
-        }
-        return new ArrayList<>(hashset);
-    }
-
-    public List<AnsibleOutput> findByCommand(String command) {
-        List<AnsibleOutput> all = findAll();
-        List<AnsibleOutput> filtered = new ArrayList<>();
-        for (AnsibleOutput ans : all) {
-            AnsibleResult res = ans.getAnsibleResult();
-            if (res != null) {
-                List<String> commandList = res.getCmd();
-                if (commandList != null && commandList.get(0).equals(command)) {
-                    filtered.add(ans);
-                }
-            }
-        }
-
-        return filtered;
     }
 
 }

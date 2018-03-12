@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.webcohesion.enunciate.metadata.DocumentationExample;
+import nl.uva.sne.drip.drip.commons.data.v1.external.KeyValueHolder;
 import nl.uva.sne.drip.drip.commons.data.v1.external.OwnedObject;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -42,7 +43,7 @@ public class AnsibleOutput extends OwnedObject {
     @Indexed
     private String vmType;
 
-    private AnsibleResult result;
+    private KeyValueHolder result;
 
 
     private String provisionID;
@@ -72,12 +73,12 @@ public class AnsibleOutput extends OwnedObject {
      * @return the result
      */
     @JsonProperty("result")
-    public AnsibleResult getAnsibleResult() {
+    public KeyValueHolder getAnsibleResult() {
         return result;
     }
 
     @JsonProperty("result")
-    public void setAnsiibleResult(AnsibleResult result) {
+    public void setAnsiibleResult(KeyValueHolder result) {
         this.result = result;
     }
 

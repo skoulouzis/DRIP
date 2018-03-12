@@ -69,23 +69,7 @@ public class AnsibleOutputController {
         }
         return resp;
     }
-
-    /**
-     * Query AnsibleOutput by executing command.
-     *
-     * @param command
-     * @return
-     */
-    @RequestMapping(method = RequestMethod.GET, params = {"command"})
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    @StatusCodes({
-        @ResponseCode(code = 200, condition = "Successful query")
-    })
-    public @ResponseBody
-    List<AnsibleOutput> getByCommand(@RequestParam(value = "command") String command) {
-        return ansibleOutputService.findByCommand(command);
-    }
-
+    
     /**
      * Returns the ids of stored objects. Empty list if non stored
      *
@@ -106,21 +90,7 @@ public class AnsibleOutputController {
         return ids;
     }
 
-    /**
-     * Query for used (unique) commands
-     *
-     * @return
-     */
-    @RequestMapping(value = "/commands", method = RequestMethod.GET)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    @StatusCodes({
-        @ResponseCode(code = 200, condition = "Successful query")
-    })
-    public @ResponseBody
-    List<String> getCommands() {
-        return ansibleOutputService.findAllCommands();
-    }
-
+   
     /**
      * Deletes object
      *
