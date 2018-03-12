@@ -76,7 +76,6 @@ public class RootController {
         while (headerNames.hasMoreElements()) {
             String key = (String) headerNames.nextElement();
             String value = request.getHeader(key);
-            System.err.println(key + " : " + value);
         }
 
         Application result = new Application();
@@ -92,12 +91,8 @@ public class RootController {
             HandlerMethod handlerMethod = entry.getValue();
 
             Object object = handlerMethod.getBean();
-//            System.err.println(object);
-//            System.err.println(object.getClass().getName());
-//            System.err.println(object.toString());
             Object bean = webApplicationContext.getBean(object.toString());
-
-//            System.err.println(bean.getClass().getName());
+            
             boolean isRestContoller = bean.getClass().isAnnotationPresent(RestController.class);
             if (bean.getClass().getName().contains("nl.uva.sne.drip.api.v1.rest")) {
                 isRestContoller = true;

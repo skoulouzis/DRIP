@@ -398,7 +398,7 @@ public class DeployService {
                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
                 value = parseValue(value);
-                System.err.println(value);
+                
                 List<AnsibleOutput> outputList = mapper.readValue(value, new TypeReference<List<AnsibleOutput>>() {
                 });
 
@@ -640,7 +640,6 @@ public class DeployService {
         Map<String, Object> info = new HashMap();
         for (MessageParameter param : params) {
             String jsonResp = param.getValue().replaceAll("^\"|\"$", "");
-//            System.err.println(jsonResp);
             Map<String, Object> kv = Converter.jsonString2Map(jsonResp);
 
             info.putAll(kv);

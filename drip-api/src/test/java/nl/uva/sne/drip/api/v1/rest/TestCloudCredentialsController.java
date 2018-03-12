@@ -68,21 +68,4 @@ public class TestCloudCredentialsController {
     public void testPostCredentials() throws IOException {
     }
 
-//    @Test
-//    public void testUpload() throws IOException {
-//        HttpClient client = HttpClientBuilder.create().build();
-//        HttpPost post = new HttpPost(url);
-//        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-//        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-//
-//        FileBody fileBody = new FileBody(toscaFile);
-//        builder.addPart("file", fileBody);
-//        HttpEntity entity = builder.build();
-//        post.setEntity(entity);
-//
-//        HttpResponse status = client.execute(post);
-//        System.err.println(status.getStatusLine());
-//        assertEquals(200, status.getStatusLine().getStatusCode());
-////
-//    }
 }

@@ -830,8 +830,5 @@ public class ProvisionService {
     }
 
     private void parseDeleteResourcesResponse(List<MessageParameter> parameters, ProvisionResponse provisionInfo) {
-//        for (MessageParameter p : parameters) {
-//            System.err.println(p.getName() + " : " + p.getValue());
-//        }
     }
 }
