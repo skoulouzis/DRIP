@@ -637,8 +637,8 @@ public class Consumer extends DefaultConsumer {
                     paramValue += sub.userName + " ";
 //                        paramValue += tempInputDirPath + File.separator + sub.subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
                     paramValue += vm.role + "\n";
-                }
-//else if (vm == null || !sub.status.equals("running")) {
+                } 
+//                else if (vm == null || !sub.status.equals("running")) {
 //                    throw new Exception("A VM failed to start. Deleteing all topology");
 //                }
             }
