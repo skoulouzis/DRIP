@@ -41,14 +41,15 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
- * This controller is responsible for planing the type of resources to be
- * provisopned based on a TOSCA description.
+ * This controller is responsible for planning the type of resources to be
+ * provisioned based on a TOSCA description.
  *
  * @author S. Koulouzis
  */
 @RestController
 @RequestMapping("/user/v0.0/switch/plan")
 @Component
+@Deprecated
 public class PlannerController0 {
 
     @Autowired

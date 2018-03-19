@@ -48,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/user/v0.0/switch/provision")
 @Component
+@Deprecated
 public class UserPublicKeysController0 {
 
     @Autowired

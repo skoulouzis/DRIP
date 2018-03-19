@@ -292,7 +292,7 @@ public class PlannerService {
     private String getBestDomain(String cloudProvider) {
         switch (cloudProvider.trim().toLowerCase()) {
             case "ec2":
-                return "Virginia";
+                return "Frankfurt";
             case "egi":
                 return "CESNET";
         }

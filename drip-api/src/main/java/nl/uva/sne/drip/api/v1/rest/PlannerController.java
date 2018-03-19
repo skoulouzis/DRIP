@@ -42,8 +42,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * This controller is responsible for planing the type of resources to be
- * provisopned based on a TOSCA description.
+ * This controller is responsible for planning the type of resources to be
+ * provisioned based on a TOSCA description.
  *
  * @author S. Koulouzis
  */

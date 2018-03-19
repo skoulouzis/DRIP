@@ -61,6 +61,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/user/v0.0/switch/provision")
 @Component
 @PreAuthorize("isAuthenticated()")
+@Deprecated
 public class ProvisionController0 {
 
     @Autowired

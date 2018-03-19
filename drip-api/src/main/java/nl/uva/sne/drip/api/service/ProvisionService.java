@@ -455,7 +455,6 @@ public class ProvisionService {
             logger.info("Got provisioner response");
             return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null, true, true);
         }
-
     }
 
     private ProvisionResponse callProvisioner1(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
