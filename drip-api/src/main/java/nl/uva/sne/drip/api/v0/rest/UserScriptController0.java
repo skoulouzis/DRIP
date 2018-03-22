@@ -33,13 +33,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * This controller is responsible for handling user scripts. These user can be
- * used by the provisoner to run on the created VMs.
+ * used by the provisioner to run on the created VMs.
  *
  * @author S. Koulouzis
  */
 @RestController
 @RequestMapping("/user/v0.0/switch/provision")
 @Component
+@Deprecated
 public class UserScriptController0 {
 
     @Autowired

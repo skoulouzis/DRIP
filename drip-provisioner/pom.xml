@@ -15,7 +15,10 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <ch.qos.logback.version>1.2.3</ch.qos.logback.version>
     </properties>
+    
+    
     
     <dependencies>
         <dependency>
@@ -89,6 +92,23 @@
             <version>2.4.4</version>
             <type>jar</type>
         </dependency>
+        
+        
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${ch.qos.logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${ch.qos.logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-access</artifactId>
+                <version>${ch.qos.logback.version}</version>
+            </dependency>        
     </dependencies>
     
     

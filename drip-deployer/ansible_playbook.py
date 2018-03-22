@@ -72,12 +72,14 @@ def install_prerequisites(vm,return_dict):
             sftp.chdir('/tmp/')
             install_script = file_path + "/" + "ansible_setup.sh"
             sftp.put(install_script, "ansible_setup.sh")
-            
             stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.','-')))
             sshout = stdout.read()
+            logger.info("stdout: " + sshout)
+            logger.info("stderr: " + stderr.read())
             
             stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/ansible_setup.sh")
-            stdout.read()
+            logger.info("stdout: " + stdout.read())
+            logger.info("stderr: " + stderr.read())
             
             logger.info("Ansible prerequisites installed on: " + (vm.ip))
 	except Exception as e:

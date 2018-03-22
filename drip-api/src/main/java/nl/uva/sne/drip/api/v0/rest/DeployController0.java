@@ -39,7 +39,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
- * This controller is responsible for deploying a cluster on provisoned
+ * This controller is responsible for deploying a cluster on provisioned 
  * resources.
  *
  * @author S. Koulouzis
@@ -48,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/user/v0.0/switch/deploy")
 @Component
 @PreAuthorize("isAuthenticated()")
+@Deprecated
 public class DeployController0 {
 
     @Autowired

@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/manager/v0.0/switch/account")
 @Component
+@Deprecated
 public class UserController0 {
 
     @Autowired

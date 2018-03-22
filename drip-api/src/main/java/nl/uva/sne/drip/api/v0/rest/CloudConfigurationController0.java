@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/user/v0.0/switch/account/configure")
 @Component
+@Deprecated
 public class CloudConfigurationController0 {
 
     @Autowired

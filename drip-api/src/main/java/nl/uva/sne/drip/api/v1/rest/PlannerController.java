@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import nl.uva.sne.drip.api.service.PlannerService;
-import nl.uva.sne.drip.api.service.ToscaService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import org.springframework.stereotype.Controller;
@@ -43,8 +42,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * This controller is responsible for planing the type of resources to be
- * provisopned based on a TOSCA description.
+ * This controller is responsible for planning the type of resources to be
+ * provisioned based on a TOSCA description.
  *
  * @author S. Koulouzis
  */
@@ -54,6 +53,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @StatusCodes({
     @ResponseCode(code = 401, condition = "Bad credentials")
 })
+//@MonitoredWithSpring
 public class PlannerController {
 
     @Autowired

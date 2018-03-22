@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * This controller is responsible for deploying a cluster on provisoned
+ * This controller is responsible for deploying a cluster on provisioned 
  * resources.
  *
  * @author S. Koulouzis
