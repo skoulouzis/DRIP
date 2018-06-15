@@ -79,8 +79,10 @@ public class CloudCredentialsController {
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 404, condition = "Key can't be empty"),
-        @ResponseCode(code = 404, condition = "Cloud provider's name can't be empty"),
+        @ResponseCode(code = 404, condition = "Key can't be empty")
+        ,
+        @ResponseCode(code = 404, condition = "Cloud provider's name can't be empty")
+        ,
         @ResponseCode(code = 200, condition = "At least one key ID is posted")
     })
     public @ResponseBody
@@ -107,8 +109,10 @@ public class CloudCredentialsController {
     @RequestMapping(value = "/upload/{id}", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 404, condition = "Credential not found"),
-        @ResponseCode(code = 400, condition = "Did not upload file"),
+        @ResponseCode(code = 404, condition = "Credential not found")
+        ,
+        @ResponseCode(code = 400, condition = "Did not upload file")
+        ,
         @ResponseCode(code = 200, condition = "Key added to credential")
     })
     public @ResponseBody
@@ -139,6 +143,9 @@ public class CloudCredentialsController {
                 pair = keyService.save(pair);
 //                loginKeyIDs.add(pair.getId());
             }
+            if (cloudCredentials.getCloudProviderName().toLowerCase().equals("egi")) {
+                cloudCredentials.setSecretKey(new String(bytes, "UTF-8"));
+            }
 //            cloudCredentials.setKeyIDs(loginKeyIDs);
             cloudCredentials = cloudCredentialsService.save(cloudCredentials);
             return cloudCredentials.getId();
@@ -157,7 +164,8 @@ public class CloudCredentialsController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 404, condition = "Credential not found"),
+        @ResponseCode(code = 404, condition = "Credential not found")
+        ,
         @ResponseCode(code = 200, condition = "Credential exists")
     })
     public @ResponseBody

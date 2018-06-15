@@ -28,12 +28,15 @@ public class WebAppInitializer implements WebApplicationInitializer {
         ctx.register(MultipartConfig.class);
         ctx.register(MongoConfig.class);
         ctx.register(SecurityConfig.class);
+        ctx.register(AsyncConfig.class);
+
 //        ctx.register(MethodSecurityConfig.class);
-
         ctx.setServletContext(servletContext);
-
-        Dynamic dynamic = servletContext.addServlet("dispatcher", new DispatcherServlet(ctx));
+        DispatcherServlet dispatcher = new DispatcherServlet(ctx);
+        Dynamic dynamic = servletContext.addServlet("dispatcher", dispatcher);
         dynamic.addMapping("/");
         dynamic.setLoadOnStartup(1);
+        dynamic.setAsyncSupported(true);
     }
+
 }

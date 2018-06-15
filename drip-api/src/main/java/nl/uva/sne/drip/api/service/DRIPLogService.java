@@ -23,6 +23,8 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.GetResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,8 +49,9 @@ public class DRIPLogService {
     private ObjectMapper mapper;
     private ConnectionFactory factory;
 
-    public DRIPLogRecord get() throws IOException, TimeoutException {
+    public List<DRIPLogRecord> get() throws IOException, TimeoutException {
         Channel channel = null;
+
         if (factory == null) {
             this.factory = new ConnectionFactory();
             factory.setHost(messageBrokerHost);
@@ -68,13 +71,15 @@ public class DRIPLogService {
             channel.queueDeclare(qeueNameUser, true, false, false, null);
 
             GetResponse response = channel.basicGet(qeueNameUser, true);
-            if (response != null) {
+            List<DRIPLogRecord> logs = new ArrayList<>();
+            while (response != null) {
                 String message = new String(response.getBody(), "UTF-8");
-                return mapper.readValue(message, DRIPLogRecord.class);
+                response = channel.basicGet(qeueNameUser, true);
+                logs.add(mapper.readValue(message, DRIPLogRecord.class));
             }
+            return logs;
 
         }
-        return null;
     }
 
 }
