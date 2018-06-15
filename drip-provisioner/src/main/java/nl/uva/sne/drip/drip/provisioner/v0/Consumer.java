@@ -53,6 +53,7 @@ import org.json.JSONObject;
  *
  * @author H. Zhou, S. Koulouzis
  */
+@Deprecated
 public class Consumer extends DefaultConsumer {
 
     private final Channel channel;
@@ -61,12 +62,14 @@ public class Consumer extends DefaultConsumer {
     Map<String, String> em = new HashMap<>();
 
 //    private String jarFilePath;
+    @Deprecated
     public class TopologyElement {
 
         String topologyName = "";
         String outputFilePath = "";
     }
 
+    @Deprecated
     public Consumer(Channel channel) throws IOException {
         super(channel);
         this.channel = channel;
@@ -243,7 +246,7 @@ public class Consumer extends DefaultConsumer {
         }
 
         String cmd = "ec2=" + ec2ConfFilePath + " exogeni=" + geniConfFilePath + " logDir=" + logDir + " topology=" + mainTopologyPath;
-        Provisioning.ProvisioningCore.main(cmd.split(" "));
+//        Provisioning.ProvisioningCore.main(cmd.split(" "));
 //        String cmd = "java -jar " + jarFilePath + " ec2=" + ec2ConfFilePath + " exogeni=" + geniConfFilePath + " logDir=" + logDir + " topology=" + mainTopologyPath;
 //        try {
 //            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Executing: " + cmd);

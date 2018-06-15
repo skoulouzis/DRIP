@@ -12,7 +12,6 @@
     <modules>
         <module>drip-api</module>
         <module>drip-planner2provisioner</module>
-        <module>drip-tests</module>
         <module>drip-commons</module>
         <module>drip-provisioner</module>
     </modules>

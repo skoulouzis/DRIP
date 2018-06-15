@@ -153,8 +153,6 @@ def docker_check(vm, compose_name):
         json_dict = {}  
         response_str =  response_str.rstrip("\n\r").strip(' \t\n\r').strip().encode('string_escape')
         
-        
-        
         json_dict = json.loads(response_str)
         json_response['inspect_info'] = json_dict             
         
