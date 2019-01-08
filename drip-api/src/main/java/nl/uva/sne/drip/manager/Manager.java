@@ -13,3 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package nl.uva.sne.drip.manager;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ *
+ * @author S. Koulouzis
+ */
+@SpringBootApplication
+public class Manager {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Manager.class, args);
+    }
+
+}

@@ -13,3 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package nl.uva.sne.drip.drip.commons.data;
+
+/**
+ *
+ * @author S. Koulouzis
+ */
+public class InfrastructureDescription extends Description{
+    
+}
