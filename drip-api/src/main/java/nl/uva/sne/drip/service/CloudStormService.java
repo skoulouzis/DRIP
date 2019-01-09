@@ -15,10 +15,13 @@
  */
 package nl.uva.sne.drip.service;
 
-import nl.uva.sne.drip.drip.commons.data.InfrastructureDescription;
+import lambdaInfrs.engine.TEngine.TEngine;
+import nl.uva.sne.drip.drip.commons.model.InfrastructureDescription;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import topology.analysis.TopologyAnalysisMain;
 
 /**
  *
@@ -27,10 +30,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CloudStormService {
 
-    @Autowired
-    CachingConnectionFactory connectionFactory;
+    @Value("${provisioner.queue.prefix}")
+    private String provisionerQueuePrefix;
 
-    public InfrastructureDescription provision() {
+    public InfrastructureDescription provision(InfrastructureDescription description) {
         return null;
     }
 

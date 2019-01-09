@@ -13,12 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.drip.commons.data;
+package nl.uva.sne.drip.drip.commons.model;
+
+import java.util.List;
 
 /**
- *
+ * Description of the infrastructure including network VMs etc.
+ * 
  * @author S. Koulouzis
  */
 public class InfrastructureDescription extends Description{
+    
+    private List<VM> VMs;
+    
     
 }
