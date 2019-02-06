@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.drip.commons.model;
+package nl.uva.sne.drip.drip.commons.model.tosca;
 
 /**
  *
  * @author S. Koulouzis
  */
-abstract class Description extends OwnedDocument{
-    
+public enum PropertyStatus {
+
+    SUPPORTED,
+    UNSUPPORTED,
+    EXPERIMENTAL,
+    DEPRECTED;
 }
