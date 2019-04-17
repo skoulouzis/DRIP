@@ -10,13 +10,14 @@ class DumpPlanner:
     topology_template_names = ['topologyTemplate']
     node_template_names = ['nodeTemplates']
     requirement_names = ['requirements']
+    type_names = ['type']
     
     def __init__(self, service_templaete_file_path):
         
         dict_tpl = self.load_file(service_templaete_file_path)
         requirements = self.get_all_requirements(dict_tpl)
         unmet_requirements = self.get_unmet_requirements(requirements)
-        print(requirements)
+        print(unmet_requirements)
 #        yaml_dict_tpl = self.trnsform_to_tosca(yaml_dict_tpl)
 
 
@@ -60,7 +61,11 @@ class DumpPlanner:
                         all_requirements.append(requirement)
         return all_requirements
             
-        
+    
+    def get_unmet_requirements(self,requirements):
+        for requirement in requirements:
+            requirement_type = self.get_requirement_type(requirement)
+            print(requirement_type) 
         
     def get_service_template(self,dict_tpl):  
         return self.find(dict_tpl,self.service_template_names)
@@ -74,14 +79,11 @@ class DumpPlanner:
     def get_requirements(self,dict_tpl):  
         return self.find(dict_tpl,self.requirement_names)     
     
+    def get_requirement_type(self,dict_req):
+        return self.find(dict_req,self.type_names)
     
     def find(self,dict_tpl,names):
         if dict_tpl:
             for name in names:
                 if(name in dict_tpl):
                     return dict_tpl[name]
-                
-                
-    def get_unmet_requirements(self,requirements):
-        for requirement in requirement:
-            print(requirement)
