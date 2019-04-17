@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import nl.uva.sne.drip.service.CloudStormService;
+import nl.uva.sne.drip.service.PlannerService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -29,13 +30,13 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author S. Koulouzis
  */
 @RestController
-@RequestMapping("/user/v3.0/provisioner")
+@RequestMapping("/user/v3.0/planner")
 @StatusCodes({
     @ResponseCode(code = 401, condition = "Bad credentials")
 })
-public class ProvisionController {
+public class PlannerController {
 
     @Autowired
-    private CloudStormService provisionService;
+    private PlannerService plannerService;
 
 }

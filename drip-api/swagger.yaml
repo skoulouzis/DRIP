@@ -1,0 +1,38 @@
+swagger: "2.0"
+info:
+  description: "The Dynamic Real-time infrastructure planner (DRIP) allows application developers to seamlessly plan a customized virtual infrastructure based on application level constraints on QoS and resource budgets, provisioning the virtual infrastructure using standardized interfaces (e.g., TOSCA and OCCI), deploy application components onto the virtual infrastructure, and start execution on demand."
+  version: "3.0.0"
+  title: "DRIP manager"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:8080"
+basePath: "/v3"
+
+schemes:
+- "https"
+- "http"
+paths:
+  /planner:
+    post:
+      description: "Uploads a TOSCA definition"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+         - in: formData
+           name: file
+           required: true
+           type: file
+           description: The TOSCA file
+           x-mimetype: 
+            - application/x-yaml
+            - text/yaml
+      responses:
+        405:
+          description: "Invalid TOSCA file"
+        200: 
+          description: "Upload Successful"
+    
