@@ -13,6 +13,7 @@ import sys
 import tempfile
 import time
 
+
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
     logger.setLevel(logging.INFO)
@@ -111,7 +112,10 @@ def handle_delivery(message):
 if __name__ == "__main__":
     if(sys.argv[1] == "test_local"):
         home = expanduser("~")
-        planner = DumpPlanner(home+"/Downloads/topology.json")
+        tosca_reposetory_api_base_url = "http://localhost:8080/winery"
+        namespace = "http%253A%252F%252Fsne.uva.nl%252Fservicetemplates"
+        servicetemplate_id = "wordpress_w1-wip1"
+        planner = DumpPlanner(tosca_reposetory_api_base_url,namespace,servicetemplate_id)
     else:    
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2]) 
         channel = init_chanel(sys.argv)
