@@ -24,3 +24,4 @@
 /drip-provisioner (copy)/target/
 /drip_parser.tar.gz
 /docs/playbooks/set_dockerhub_credentials.yml
+/drip_planner2/src/planner/__pycache__/

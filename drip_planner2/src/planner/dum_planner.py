@@ -30,10 +30,16 @@ class DumpPlanner:
         dict_tpl = json.loads(res_body.decode("utf-8"))
         
         service_templates = self.get_service_template(dict_tpl)
-        req = self.get_all_requirements(service_templates)
-        print(req)
-#        relationships = self.get_all_relationships(dict_tpl)
-#        print(relationships)
+        requirements = self.get_all_requirements(service_templates)
+        relationships = self.get_all_relationships(dict_tpl)
+        unmet_requirements = {}
+        for node_name in requirements:
+            relationship = self.get_relationship_of_source_node(node_name,relationships)
+            if relationship:
+                for requirement in requirements[node_name]:
+                    if (not self.target_meets_requirement(relationship['targetElement']['ref'],requirement)):
+                        unmet_requirements[node_name] = requirement
+        
 #        unmet_requirements = self.get_unmet_requirements(requirements)
 #        print(unmet_requirements)
 #        yaml_dict_tpl = self.trnsform_to_tosca(yaml_dict_tpl)
@@ -65,8 +71,23 @@ class DumpPlanner:
     def handle_tosca_exeption(self,exception,yaml_dict_tpl):  
         print(exception)
         
+    def target_meets_requirement(self,target_relationship_element,requirement):
+        node = self.get_node(target_relationship_element)
+        if 'capabilities' in node:
+            print(node['capabilities'])
+        else:
+            supertypes = self.get_super_types(node['type'],None)
+        
+    def get_relationship_of_source_node(self,source_id,relationships):
+        for rel in relationships:
+            if(rel['sourceElement']['ref'] == source_id):
+                return rel
 
 
+    def get_node(self,node_type_id):
+        for node in self.node_templates:
+            if node['id'] == node_type_id:
+                return node
         
     def get_all_requirements(self,service_templates):
         if (not self.requirements):
@@ -75,7 +96,7 @@ class DumpPlanner:
                 node_templates = self.get_node_templates(topology_template)
                 for node_template in node_templates:
                     node_type = node_template['type']
-                    all_requirements = self.get_super_types_requirements(node_type,'nodetypes',None)
+                    all_requirements = self.get_super_types_requirements(node_type,None)
                     id = node_template['id']
                     req = self.get_requirements(node_template)
                     if(req):
@@ -96,11 +117,36 @@ class DumpPlanner:
         for service in service_templates:
             topology_template = self.get_topology_template(service)
             relationships = self.get_relationships(topology_template)
-            all_relationships.append(relationships)
+            for rel in relationships:
+                all_relationships.append(rel)
         return all_relationships
                 
+    def get_super_types(self,component_type,supertypes):                
+        if (supertypes == None):
+            supertypes = []
+        regex = r"\{(.*?)\}"
+        matches = re.finditer(regex, component_type, re.MULTILINE | re.DOTALL)
+        namespace = next(matches).group(1)
+        id = component_type.replace("{"+namespace+"}", "")
+        header={'accept': 'application/json'}
+        #winery needs it double percent-encoded 
+        encoded_namespace  = urllib.parse.quote(namespace, safe='')
+        encoded_namespace = urllib.parse.quote(encoded_namespace, safe='')
+        type_name = namespace.rsplit('/', 1)[-1]
+        servicetemplate_url = self.tosca_reposetory_api_base_url+"/"+type_name+"/"+encoded_namespace+"/"+id+"/"
+        req = urllib.request.Request(url=servicetemplate_url, headers=header, method='GET')
+        res = urllib.request.urlopen(req, timeout=5)   
+        res_body = res.read()
+        component = json.loads(res_body.decode("utf-8"))
+        if component:
+            supertypes.append(component)
+            print(component)
+            self.get_super_types(component['type'],supertypes)
+        else:
+            return supertypes
+        
                 
-    def get_super_types_requirements(self,component_type,type_name,requirements):
+    def get_super_types_requirements(self,component_type,requirements):
         if (requirements == None):
             requirements = set()
         regex = r"\{(.*?)\}"
@@ -112,6 +158,8 @@ class DumpPlanner:
         encoded_namespace  = urllib.parse.quote(namespace, safe='')
         encoded_namespace = urllib.parse.quote(encoded_namespace, safe='')
         
+        type_name = namespace.rsplit('/', 1)[-1]
+        
         servicetemplate_url = self.tosca_reposetory_api_base_url+"/"+type_name+"/"+encoded_namespace+"/"+id+"/"
         req = urllib.request.Request(url=servicetemplate_url, headers=header, method='GET')
         res = urllib.request.urlopen(req, timeout=5)   
@@ -122,7 +170,7 @@ class DumpPlanner:
                 for req in c['requirementDefinitions']['requirementDefinition']:
                     requirements.add(req['requirementType'])
             if 'derivedFrom' in c and c['derivedFrom'] and c['derivedFrom']['type']:
-                self.get_super_types_requirements(c['derivedFrom']['type'],type_name,requirements)
+                self.get_super_types_requirements(c['derivedFrom']['type'],requirements)
         return requirements
         
         
