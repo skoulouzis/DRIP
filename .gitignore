@@ -25,3 +25,6 @@
 /drip_parser.tar.gz
 /docs/playbooks/set_dockerhub_credentials.yml
 /drip_planner2/src/planner/__pycache__/
+/winery_service/nbproject/private/
+/winery_service/src/winery/__pycache__/
+/tosca_service/nbproject/private/
