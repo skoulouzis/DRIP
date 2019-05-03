@@ -12,6 +12,7 @@ class Service:
     topology_template_names = ['topologyTemplate']
     node_template_names = ['nodeTemplates']
     requirement_deff_names = ['requirementDefinitions']
+    capability_deff_names = ['capabilityDefinitions']
     type_names = ['type']
     relationships_names = ['relationshipTemplates']
     service_templates = None
@@ -61,7 +62,15 @@ class Service:
         
     def get_requirements(self,node_type):
         requirements = self.find(node_type,self.requirement_deff_names)
-        return requirements['requirementDefinition']
+        if requirements:
+            return requirements['requirementDefinition']
+        
+    def get_capabilities(self,node_type):
+        requirements = self.find(node_type,self.capability_deff_names)
+        if requirements:
+            return requirements['capabilityDefinition']        
+        
+        
         
     def get_object(self,type_str):
         regex = r"\{(.*?)\}"
