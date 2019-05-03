@@ -24,7 +24,16 @@ if __name__ == "__main__":
     node_templates =  repo.get_node_templates(tt)
     
     parents = repo.get_parents(node_templates[1])
-    print(parents)
+    requrements=[]
+    requrements_types = set()
+    for parent in parents:
+        parent_requrements = repo.get_requirements(parent)
+        for p_req in parent_requrements:
+            if not p_req['requirementType'] in requrements_types:
+                requrements.append(p_req)
+                requrements_types.add(p_req['requirementType'])
+    print(requrements)
+    
         
     
     

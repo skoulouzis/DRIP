@@ -11,13 +11,12 @@ class Service:
     service_template_names = ['serviceTemplateOrNodeTypeOrNodeTypeImplementation']
     topology_template_names = ['topologyTemplate']
     node_template_names = ['nodeTemplates']
-    requirement_names = ['requirements']
+    requirement_deff_names = ['requirementDefinitions']
     type_names = ['type']
     relationships_names = ['relationshipTemplates']
     service_templates = None
     topology_templates = []
     node_templates = []
-    requirements = {}
     
     def __init__(self, tosca_reposetory_api_base_url):
         self.tosca_reposetory_api_base_url = tosca_reposetory_api_base_url
@@ -60,6 +59,9 @@ class Service:
         return parents
         
         
+    def get_requirements(self,node_type):
+        requirements = self.find(node_type,self.requirement_deff_names)
+        return requirements['requirementDefinition']
         
     def get_object(self,type_str):
         regex = r"\{(.*?)\}"
