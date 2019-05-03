@@ -84,6 +84,10 @@ class Service:
                     requrements_types.add(p_req['requirementType'])
         return requrements
     
+    
+    def get_relationships(self,topology_template):
+        return self.find(topology_template,self.relationships_names)
+    
     def get_all_capabilities(self,node_template):
         parents = self.get_parents(node_template)
         node_type = self.get_object(node_template['type'])['serviceTemplateOrNodeTypeOrNodeTypeImplementation'][0]
