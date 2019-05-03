@@ -65,10 +65,51 @@ class Service:
         if requirements:
             return requirements['requirementDefinition']
         
+    def get_all_requirements(self,node_template):
+        parents = self.get_parents(node_template)
+        node_type = self.get_object(node_template['type'])['serviceTemplateOrNodeTypeOrNodeTypeImplementation'][0]
+        requrements=[]
+        requrements_types = set()
+        child_requrements = self.get_requirements(node_type)
+        if child_requrements:
+            for c_req in child_requrements:
+                if not c_req['requirementType'] in requrements_types:
+                    requrements.append(c_req)
+                    requrements_types.add(c_req['requirementType'])
+        for parent in parents:
+            parent_requrements = self.get_requirements(parent)
+            for p_req in parent_requrements:
+                if not p_req['requirementType'] in requrements_types:
+                    requrements.append(p_req)
+                    requrements_types.add(p_req['requirementType'])
+        return requrements
+    
+    def get_all_capabilities(self,node_template):
+        parents = self.get_parents(node_template)
+        node_type = self.get_object(node_template['type'])['serviceTemplateOrNodeTypeOrNodeTypeImplementation'][0]
+        child_capabilities = self.get_capabilities(node_type)
+        capabilities=[]
+        capabilities_types = set()
+        
+        if child_capabilities:
+            for c_cap in child_capabilities:
+                if not c_cap['capabilityType'] in capabilities_types:
+                    capabilities.append(c_cap)
+                    capabilities_types.add(c_cap['capabilityType'])        
+                    
+        for parent in parents:
+            parent_capabilities = self.get_capabilities(parent)
+            if(parent_capabilities):
+                for p_cap in parent_capabilities:
+                    if not p_cap['capabilityType'] in capabilities_types:
+                        capabilities.append(p_cap)
+                        capabilities_types.add(p_cap['capabilityType'])                    
+        return capabilities
+        
     def get_capabilities(self,node_type):
         requirements = self.find(node_type,self.capability_deff_names)
         if requirements:
-            return requirements['capabilityDefinition']        
+            return requirements['capabilityDefinition']
         
         
         
