@@ -6,8 +6,9 @@ from toscaparser.tosca_template import ToscaTemplate
 import toscaparser.utils.yamlparser
 import urllib
 import urllib.parse
+import sys
 
-class DumpPlanner:
+class WineryPlanner:
     service_template_names = ['serviceTemplateOrNodeTypeOrNodeTypeImplementation']
     topology_template_names = ['topologyTemplate']
     node_template_names = ['nodeTemplates']
@@ -73,11 +74,13 @@ class DumpPlanner:
         
     def target_meets_requirement(self, target_relationship_element, requirement):
         node = self.get_node(target_relationship_element)
+        print(node)
         if 'capabilities' in node:
-            print(node['capabilities'])
+            print('dddddddddddd')
         else:
             supertypes = self.get_super_types(node['type'], None)
-            print(supertypes)
+            
+#            print(supertypes)
         
     def get_relationship_of_source_node(self, source_id, relationships):
         for rel in relationships:
@@ -98,7 +101,6 @@ class DumpPlanner:
                 for node_template in node_templates:
                     node_type = node_template['type']
                     all_requirements = self.get_super_types_requirements(node_type, None)
-                    print(all_requirements)
                     id = node_template['id']
                     req = self.get_requirements(node_template)
                     if(req):
@@ -123,7 +125,7 @@ class DumpPlanner:
                 all_relationships.append(rel)
         return all_relationships
                 
-    def get_super_types(self, component_type, supertypes):            
+    def get_super_types(self, component_type, supertypes):  
         if (supertypes == None):
             supertypes  = []
         regex = r"\{(.*?)\}"
@@ -140,12 +142,11 @@ class DumpPlanner:
         res = urllib.request.urlopen(req, timeout=5)   
         res_body = res.read()
         component = json.loads(res_body.decode("utf-8"))
-
         if component:
             comp = component['serviceTemplateOrNodeTypeOrNodeTypeImplementation'][0]
             supertypes.append(comp)
             if 'derivedFrom' in comp:
-                supertypes = self.get_super_types(comp['derivedFrom']['typeRef'], supertypes)
+                return self.get_super_types(comp['derivedFrom']['typeRef'], supertypes)
             else:
                 return supertypes
         
