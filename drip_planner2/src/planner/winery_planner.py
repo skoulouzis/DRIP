@@ -19,6 +19,7 @@ class WineryPlanner:
     topology_templates = None
     node_templates = None
     requirements = {}
+    all_node_types = []
     
     def __init__(self, tosca_reposetory_api_base_url, namespace, servicetemplate_id):
         #        dict_tpl = self.load_file(service_templaete_file_path)
@@ -32,18 +33,12 @@ class WineryPlanner:
         
         service_templates = self.get_service_template(dict_tpl)
         requirements = self.get_all_requirements(service_templates)
-        relationships = self.get_all_relationships(dict_tpl)
-        unmet_requirements = {}
-        for node_name in requirements:
-            relationship = self.get_relationship_of_source_node(node_name, relationships)
-            if relationship:
-                for requirement in requirements[node_name]:
-                    if (not self.target_meets_requirement(relationship['targetElement']['ref'], requirement)):
-                        unmet_requirements[node_name] = requirement
+        relationships = self.get_all_relationships(dict_tpl)                       
         
-#        unmet_requirements = self.get_unmet_requirements(requirements)
-#        print(unmet_requirements)
-#        yaml_dict_tpl = self.trnsform_to_tosca(yaml_dict_tpl)
+        unmet_requirements = self.get_unmet_requirements(requirements,relationships)
+        
+        
+        condiate_nodes = self.get_condiate_nodes(unmet_requirements)
 
 
         
@@ -74,13 +69,14 @@ class WineryPlanner:
         
     def target_meets_requirement(self, target_relationship_element, requirement):
         node = self.get_node(target_relationship_element)
-        print(node)
-        if 'capabilities' in node:
-            print('dddddddddddd')
-        else:
-            supertypes = self.get_super_types(node['type'], None)
-            
-#            print(supertypes)
+        supertypes = self.get_super_types(node['type'], None)
+        for node_type in supertypes:
+            if 'capabilityDefinitions' in node_type:
+                for cap in node_type['capabilityDefinitions']['capabilityDefinition']:
+                    if cap['capabilityType'] == requirement:
+                        return True
+                        
+        return False
         
     def get_relationship_of_source_node(self, source_id, relationships):
         for rel in relationships:
@@ -110,10 +106,38 @@ class WineryPlanner:
         return self.requirements
             
     
-    def get_unmet_requirements(self, requirements):
-        for requirement in requirements:
-            requirement_type = self.get_requirement_type(requirement)
-            print(requirement_type) 
+    def get_unmet_requirements(self, requirements,relationships):
+        unmet_requirements = {}
+        for node_name in requirements:
+            relationship = self.get_relationship_of_source_node(node_name, relationships)
+            if relationship:
+                for requirement in requirements[node_name]:
+                    if (not self.target_meets_requirement(relationship['targetElement']['ref'], requirement)):
+                        unmet_requirements[node_name] = requirement
+            else:
+                for requirement in requirements[node_name]:
+                    unmet_requirements[node_name] = requirement
+        return unmet_requirements
+    
+    
+    def get_condiate_nodes(self,unmet_requirements):
+        for node_name in unmet_requirements:
+            node_types = self.get_node_types_with_capability(unmet_requirements[node_name])
+            print(unmet_requirements[node_name])
+            
+            
+    def get_node_types_with_capability(self,capability):
+        if not self.all_node_types:
+            servicetemplate_url = self.tosca_reposetory_api_base_url + "/nodetypes/"
+            header = {'accept': 'application/json'}
+            req = urllib.request.Request(url=servicetemplate_url, headers=header, method='GET')
+            res = urllib.request.urlopen(req, timeout=5)
+            res_body = res.read()
+            self.all_node_types = json.loads(res_body.decode("utf-8"))
+        for node in self.all_node_types:
+            self.all_node_types(node['id'])
+            print(node['id'])
+        
             
     def get_all_relationships(self, dict_tpl):
         all_relationships = []
@@ -175,7 +199,7 @@ class WineryPlanner:
                 for req in c['requirementDefinitions']['requirementDefinition']:
                     requirements.append(req['requirementType'])
             if 'derivedFrom' in c and c['derivedFrom'] and c['derivedFrom']['type']:
-                self.get_super_types_requirements(c['derivedFrom']['type'], requirements)
+                return self.get_super_types_requirements(c['derivedFrom']['type'], requirements)
         return requirements
         
         
