@@ -123,20 +123,34 @@ class WineryPlanner:
     def get_condiate_nodes(self,unmet_requirements):
         for node_name in unmet_requirements:
             node_types = self.get_node_types_with_capability(unmet_requirements[node_name])
-            print(unmet_requirements[node_name])
+#            print(unmet_requirements[node_name])
             
             
-    def get_node_types_with_capability(self,capability):
+    def get_node_types_with_capability(self,requirement_qname):
+        regex = r"\{(.*?)\}"
+        matches = re.finditer(regex, requirement_qname, re.MULTILINE | re.DOTALL)
+        namespace = next(matches).group(1)
+        req_id = requirement_qname.replace("{" + namespace + "}", "")  
+        
         if not self.all_node_types:
             servicetemplate_url = self.tosca_reposetory_api_base_url + "/nodetypes/"
             header = {'accept': 'application/json'}
             req = urllib.request.Request(url=servicetemplate_url, headers=header, method='GET')
             res = urllib.request.urlopen(req, timeout=5)
             res_body = res.read()
-            self.all_node_types = json.loads(res_body.decode("utf-8"))
+            self.all_node_types = json.loads(res_body.decode("utf-8"))          
         for node in self.all_node_types:
-            self.all_node_types(node['id'])
-            print(node['id'])
+#            print(node['qName'])
+            supertypes = self.get_super_types(node['qName'],None)
+            for node in supertypes:
+                if 'capabilityDefinitions' in node:
+                    for cap in node['capabilityDefinitions']['capabilityDefinition']:
+                        cap_qname = cap['capabilityType']
+                        cap_matches = re.finditer(regex, cap_qname, re.MULTILINE | re.DOTALL)
+                        namespace = next(cap_matches).group(1)
+                        cap_id = cap_qname.replace("{" + namespace + "}", "")
+                        if cap_id == req_id:
+                            print(cap_id+ " matches "+ req_id)
         
             
     def get_all_relationships(self, dict_tpl):
@@ -149,13 +163,13 @@ class WineryPlanner:
                 all_relationships.append(rel)
         return all_relationships
                 
-    def get_super_types(self, component_type, supertypes):  
+    def get_super_types(self, type_qName, supertypes):  
         if (supertypes == None):
             supertypes  = []
         regex = r"\{(.*?)\}"
-        matches = re.finditer(regex, component_type, re.MULTILINE | re.DOTALL)
+        matches = re.finditer(regex, type_qName, re.MULTILINE | re.DOTALL)
         namespace = next(matches).group(1)
-        id = component_type.replace("{" + namespace + "}", "")
+        id = type_qName.replace("{" + namespace + "}", "")
         header = {'accept': 'application/json'}
         #winery needs it double percent-encoded 
         encoded_namespace  = urllib.parse.quote(namespace, safe='')
@@ -175,13 +189,13 @@ class WineryPlanner:
                 return supertypes
         
                 
-    def get_super_types_requirements(self, component_type, requirements):
+    def get_super_types_requirements(self, type_qName, requirements):
         if (requirements == None):
             requirements = []
         regex = r"\{(.*?)\}"
-        matches = re.finditer(regex, component_type, re.MULTILINE | re.DOTALL)
+        matches = re.finditer(regex, type_qName, re.MULTILINE | re.DOTALL)
         namespace = next(matches).group(1)
-        id = component_type.replace("{" + namespace + "}", "")
+        id = type_qName.replace("{" + namespace + "}", "")
         header = {'accept': 'application/json'}
         #winery needs it double percent-encoded 
         encoded_namespace  = urllib.parse.quote(namespace, safe='')
