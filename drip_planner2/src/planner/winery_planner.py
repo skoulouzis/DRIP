@@ -121,9 +121,10 @@ class WineryPlanner:
     
     
     def get_condiate_nodes(self,unmet_requirements):
+        condiate_nodes = []
         for node_name in unmet_requirements:
             node_types = self.get_node_types_with_capability(unmet_requirements[node_name])
-#            print(unmet_requirements[node_name])
+            print(node_types)
             
             
     def get_node_types_with_capability(self,requirement_qname):
@@ -138,9 +139,9 @@ class WineryPlanner:
             req = urllib.request.Request(url=servicetemplate_url, headers=header, method='GET')
             res = urllib.request.urlopen(req, timeout=5)
             res_body = res.read()
-            self.all_node_types = json.loads(res_body.decode("utf-8"))          
+            self.all_node_types = json.loads(res_body.decode("utf-8"))  
+        matching_nodes = {}
         for node in self.all_node_types:
-#            print(node['qName'])
             supertypes = self.get_super_types(node['qName'],None)
             for node in supertypes:
                 if 'capabilityDefinitions' in node:
@@ -149,8 +150,10 @@ class WineryPlanner:
                         cap_matches = re.finditer(regex, cap_qname, re.MULTILINE | re.DOTALL)
                         namespace = next(cap_matches).group(1)
                         cap_id = cap_qname.replace("{" + namespace + "}", "")
-                        if cap_id == req_id:
-                            print(cap_id+ " matches "+ req_id)
+                        if cap_id == req_id and node['name'] not in matching_nodes:
+                            matching_nodes[node['name']] = node
+                            break
+        return matching_nodes.values()
         
             
     def get_all_relationships(self, dict_tpl):
