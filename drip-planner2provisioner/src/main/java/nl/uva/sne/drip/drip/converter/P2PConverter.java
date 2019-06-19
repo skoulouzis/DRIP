@@ -18,6 +18,9 @@ import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.converter.provisionerIn.*;
 import nl.uva.sne.drip.drip.converter.provisionerIn.EC2.*;
 import nl.uva.sne.drip.drip.converter.provisionerIn.provisionerIn.EGI.*;
+import nl.uva.sne.drip.drip.converter.provisionerIn.provisionerIn.ExoGeni.ExoGeniSubTopology;
+import nl.uva.sne.drip.drip.converter.provisionerIn.provisionerIn.ExoGeni.ExoGeniVM;
+
 import org.json.JSONException;
 
 public class P2PConverter {
@@ -163,6 +166,16 @@ public class P2PConverter {
                 if (size > 5 && size <= 10) {
                     return "mammoth";
                 }
+            case "exogeni":
+                if (size <= 1) {
+                    return "XOSmall";
+                }
+                if (size > 1 && size <= 5) {
+                    return "XOMedium";
+                }
+                if (size > 5 && size <= 10) {
+                    return "XOLarge";
+                }                
             default:
                 Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
                 return null;
@@ -179,6 +192,9 @@ public class P2PConverter {
             case "egi":
                 curVM = new EGIVM();
                 break;
+            case "exogeni":
+                curVM = new ExoGeniVM();
+                break;                
             default:
                 Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
                 return null;
@@ -227,6 +243,10 @@ public class P2PConverter {
                 subTopology = new EGISubTopology();
                 ((EGISubTopology) subTopology).components = new ArrayList<>();
                 break;
+            case "exogeni":
+                subTopology = new ExoGeniSubTopology();
+                ((ExoGeniSubTopology) subTopology).components = new ArrayList<>();
+                break;                
             default:
                 Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
                 return null;
@@ -242,6 +262,9 @@ public class P2PConverter {
             case "egi":
                 ((EGISubTopology) subTopology).components.add((EGIVM) vm);
                 break;
+            case "exogeni":
+                ((ExoGeniSubTopology) subTopology).components.add((ExoGeniVM) vm);
+                break;                
             default:
                 Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
 //                    return null;

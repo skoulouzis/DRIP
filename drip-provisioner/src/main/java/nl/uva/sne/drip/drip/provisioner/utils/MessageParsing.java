@@ -26,6 +26,7 @@ import java.net.URL;
 import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.commons.utils.AAUtils;
@@ -33,6 +34,7 @@ import nl.uva.sne.drip.commons.utils.AAUtils.SOURCE;
 import static nl.uva.sne.drip.commons.utils.AAUtils.downloadCACertificates;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
+import org.apache.commons.io.FileUtils;
 //import org.globus.myproxy.MyProxyException;
 import org.ietf.jgss.GSSException;
 import org.json.JSONArray;
@@ -42,6 +44,7 @@ import org.yaml.snakeyaml.Yaml;
 import provisioning.credential.Credential;
 import provisioning.credential.EC2Credential;
 import provisioning.credential.EGICredential;
+import provisioning.credential.ExoGENICredential;
 
 /**
  *
@@ -135,11 +138,11 @@ public class MessageParsing {
             MessageParameter messageParam = mapper.readValue(param.toString(), MessageParameter.class);
             String name = messageParam.getName();
             String value = messageParam.getValue();
-            if(name.equals("scale_topology_name")){
+            if (name.equals("scale_topology_name")) {
                 return messageParam;
             }
         }
-        
+
         return null;
     }
 
@@ -199,6 +202,18 @@ public class MessageParsing {
                     }
                     egi.trustedCertPath = PropertyValues.TRUSTED_CERTIFICATE_FOLDER;
                     credential = egi;
+                }
+                if (cred.getCloudProviderName().toLowerCase().equals("exogeni")) {
+                    ExoGENICredential exoGeniCredential = new ExoGENICredential();
+                    exoGeniCredential.keyAlias = cred.getAccessKeyId();
+                    exoGeniCredential.keyPassword = cred.getSecretKey();
+                    Map<String, Object> att = cred.getAttributes();
+                    if (att != null && att.containsKey("keystore")) {
+                        String javaKeyStoreEncoded = (String) att.get("keystore");
+                        byte[] decoded = Base64.getDecoder().decode(javaKeyStoreEncoded);
+                        FileUtils.writeByteArrayToFile(new File(tempInputDirPath + File.separator + "user.jks"), decoded);
+                    }
+                    credential = exoGeniCredential;
                 }
 
 //                for (KeyPair pair : cred.getKeyPairs()) {

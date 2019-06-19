@@ -53,6 +53,7 @@ import org.json.JSONObject;
 import provisioning.credential.Credential;
 import provisioning.credential.EC2Credential;
 import provisioning.credential.EGICredential;
+import provisioning.credential.ExoGENICredential;
 import provisioning.credential.SSHKeyPair;
 import provisioning.credential.UserCredential;
 import provisioning.database.EC2.EC2Database;
@@ -497,6 +498,9 @@ public class Consumer extends DefaultConsumer {
                 userCredential.cloudAccess.put("ec2", cred);
             }
             if (cred instanceof EGICredential) {
+                userCredential.cloudAccess.put("egi", cred);
+            }
+             if (cred instanceof ExoGENICredential) {
                 userCredential.cloudAccess.put("egi", cred);
             }
         }

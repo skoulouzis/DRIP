@@ -295,6 +295,8 @@ public class PlannerService {
                 return "Frankfurt";
             case "egi":
                 return "CESNET";
+            case "exogeni":
+                return "RENCI (Chapel Hill, NC USA) XO Rack";                
         }
         return null;
     }
