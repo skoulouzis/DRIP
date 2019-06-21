@@ -211,8 +211,11 @@ public class MessageParsing {
                     if (att != null && att.containsKey("keystore")) {
                         String javaKeyStoreEncoded = (String) att.get("keystore");
                         byte[] decoded = Base64.getDecoder().decode(javaKeyStoreEncoded);
-                        FileUtils.writeByteArrayToFile(new File(tempInputDirPath + File.separator + "user.jks"), decoded);
+                        File keyStoreFile = new File(tempInputDirPath + File.separator + "user.jks");
+                        FileUtils.writeByteArrayToFile(keyStoreFile, decoded);
+                        exoGeniCredential.userKeyPath = keyStoreFile.getAbsolutePath();
                     }
+
                     credential = exoGeniCredential;
                 }
 

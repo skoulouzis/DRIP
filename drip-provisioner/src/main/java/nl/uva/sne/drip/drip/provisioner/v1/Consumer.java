@@ -58,6 +58,7 @@ import provisioning.credential.SSHKeyPair;
 import provisioning.credential.UserCredential;
 import provisioning.database.EC2.EC2Database;
 import provisioning.database.EGI.EGIDatabase;
+import provisioning.database.ExoGENI.ExoGENIDatabase;
 import provisioning.database.UserDatabase;
 import provisioning.engine.TEngine.TEngine;
 import provisioning.request.RecoverRequest;
@@ -481,6 +482,8 @@ public class Consumer extends DefaultConsumer {
         if (userDatabase.databases == null) {
             userDatabase.databases = new HashMap<>();
         }
+        ExoGENIDatabase exoGENIDB = new ExoGENIDatabase();
+        userDatabase.databases.put("exogeni", exoGENIDB);
         userDatabase.databases.put("ec2", ec2Database);
         userDatabase.databases.put("egi", egiDatabase);
         return userDatabase;
@@ -500,8 +503,8 @@ public class Consumer extends DefaultConsumer {
             if (cred instanceof EGICredential) {
                 userCredential.cloudAccess.put("egi", cred);
             }
-             if (cred instanceof ExoGENICredential) {
-                userCredential.cloudAccess.put("egi", cred);
+            if (cred instanceof ExoGENICredential) {
+                userCredential.cloudAccess.put("exogeni", cred);
             }
         }
         return userCredential;
@@ -641,7 +644,7 @@ public class Consumer extends DefaultConsumer {
                     paramValue += sub.userName + " ";
 //                        paramValue += tempInputDirPath + File.separator + sub.subTopology.accessKeyPair.SSHKeyPairId + File.separator + "id_rsa";
                     paramValue += vm.role + "\n";
-                } 
+                }
 //                else if (vm == null || !sub.status.equals("running")) {
 //                    throw new Exception("A VM failed to start. Deleteing all topology");
 //                }

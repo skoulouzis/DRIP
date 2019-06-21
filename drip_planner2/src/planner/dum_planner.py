@@ -113,8 +113,8 @@ class DumpPlanner:
             host['disk_size'] = '10GB'
             vm['host'] = host
             os = {}
-            os['os_version'] = 16.04
-            os['distribution'] = 'ubuntu'
+            os['os_version'] = 14.04
+            os['distribution'] = 'Ubuntu'
             os['type'] = 'linux'
             os['architecture'] = 'x86_64'
             vm['os'] = os
@@ -145,8 +145,8 @@ class DumpPlanner:
                 vm['host'] = host
             if 'os' not in vm:
                 os = {}
-                os['os_version'] = 16.04
-                os['distribution'] = 'ubuntu'
+                os['os_version'] = 14.04
+                os['distribution'] = 'Ubuntu'
                 os['type'] = 'linux'
                 os['architecture'] = 'x86_64'
                 vm['os'] = os
