@@ -500,8 +500,8 @@ public class Consumer extends DefaultConsumer {
             if (cred instanceof EC2Credential) {
                 userCredential.cloudAccess.put("ec2", cred);
             }
-            if (cred instanceof EGICredential) {
-                userCredential.cloudAccess.put("egi", cred);
+            if (cred instanceof EGICredential) { 
+               userCredential.cloudAccess.put("egi", cred);
             }
             if (cred instanceof ExoGENICredential) {
                 userCredential.cloudAccess.put("exogeni", cred);
