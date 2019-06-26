@@ -8,40 +8,42 @@ repositories:
   docker_hub: https://hub.docker.com/
 
 topology_template:
-    wordpres:
-      type: tosca.nodes.Container.Application.Docker
-      properties:
-         ports:
-           - "8000:80"
-         environment:
-            WORDPRESS_DB_HOST: mysql-db:3306
-            WORDPRESS_DB_USER: wordpress
-            WORDPRESS_DB_PASSWORD: wordpress
-            WORDPRESS_DB_NAME: wordpress
-      artifacts:
-       image:
-         type: tosca.artifacts.Deployment.Image.Container.Docker
-         file: wordpress:latest
-         repository: docker_hub
-      requirements:
-        - db: 
-            node: mysql-db
-            relationship:
-                type: tosca.relationships.ConnectsTo   
-                
-                
-    mysql-db:
-      type: tosca.nodes.Container.Application.Docker
-      properties:
-         volumes:
-            - db_data:/var/lib/mysql
-         environment:
-            MYSQL_ROOT_PASSWORD: somewordpress
-            MYSQL_DATABASE: wordpress
-            MYSQL_USER: wordpress
-            MYSQL_PASSWORD: wordpress
-      artifacts:
-       image:
-         type: tosca.artifacts.Deployment.Image.Container.Docker
-         file: mysql:5.7
-         repository: docker_hub            
+    
+    node_templates:
+        
+        wordpres:
+            type: tosca.nodes.Container.Application.Docker
+            properties:
+                ports:
+                - "8000:80"
+                environment:
+                    WORDPRESS_DB_HOST: mysql-db:3306
+                    WORDPRESS_DB_USER: wordpress
+                    WORDPRESS_DB_PASSWORD: wordpress
+                    WORDPRESS_DB_NAME: wordpress
+            artifacts:
+            image:
+                type: tosca.artifacts.Deployment.Image.Container.Docker
+                file: wordpress:latest
+                repository: docker_hub
+            requirements:
+                - db: 
+                    node: mysql-db
+                    relationship:
+                        type: tosca.relationships.ConnectsTo   
+        
+        mysql-db:
+            type: tosca.nodes.Container.Application.Docker
+            properties:
+                volumes:
+                    - db_data:/var/lib/mysql
+                environment:
+                    MYSQL_ROOT_PASSWORD: somewordpress
+                    MYSQL_DATABASE: wordpress
+                    MYSQL_USER: wordpress
+                    MYSQL_PASSWORD: wordpress
+            artifacts:
+            image:
+                type: tosca.artifacts.Deployment.Image.Container.Docker
+                file: mysql:5.7
+                repository: docker_hub            
