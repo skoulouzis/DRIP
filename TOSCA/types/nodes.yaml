@@ -2,9 +2,12 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 
 node_types:
 
-  tosca.nodes.Container.Application.Docker:
-    derived_from: tosca.nodes.Container
+  tosca.nodes.SWITCH.Container.Application.Docker:
+    derived_from: tosca.nodes.Container.Application.Docker
     description: description of container
+    capabilities:
+      service:
+        type: tosca.capabilities.Container.Docker
     properties:
       ports:
         description: ports to be forwarded
@@ -22,110 +25,16 @@ node_types:
         description: environment variables
         type: map
         required: false
-    volumes:
+      volumes:
         description: volume
         type: list
         required: false
-    capabilities:
-      service:
-        type: tosca.capabilities.Container.Docker
     requirements:
+      - service:
+          capability: tosca.capabilities.Container.Docker
+          node: tosca.nodes.SWITCH.Container.Application.Docker
+          relationship: tosca.relationships.ConnectsTo
       - host:
-          capability: tosca.capabilities.Container.Orchestrator.Docker
-          node: tosca.nodes.Container.Orchestrator.Docker
-          relationship: tosca.relationships.HostedOn
-          
-  tosca.nodes.Container.Orchestrator.Docker.Swarm:
-    derived_from: tosca.nodes.Container.Orchestrator.Docker
-    description: The swarm Docker Orchestrator
-    interfaces:
-      Ansible:
-      type: tosca.interfaces.Ansible
-          
-  tosca.nodes.Container.Orchestrator.Docker:
-    derived_from: tosca.nodes.Container.Orchestrator
-    description: Docker Orchestrator
-    capabilities:
-      host:
-        type: tosca.capabilities.Container.Orchestrator.Docker
-    requirements:
-      - host:
-          capability: tosca.capabilities.Compute.Cluster
-          node: tosca.nodes.Compute.VM.Cluster
-          relationship: tosca.relationships.HostedOn
-          
-  tosca.nodes.Compute.VM.Cluster:
-    derived_from: 
-    description: A cluster of VM able
-    properties:
-      vms:
-        description: a list of VMs in the cluster. At lest one of them must be the master 
-        type: list
-        required: true        
-    capabilities:
-      host:
-        type: tosca.capabilities.Compute.Cluster    
-          
-  tosca.nodes.Compute.VM:
-    derived_from: tosca.nodes.Compute
-    description: VM
-    properties:
-      name:
-        description: host name
-        type: string
-        required: true 
-      user_names:
-        description: list of user name
-        type: list
-        required: true         
-      id:
-        description: vm id
-        type: string
-        required: true         
-      num_of_cpu:
-        description: number of cpu
-        type: int
-        required: true 
-      mem_size:
-        description: ram size in MB 
-        type: int
-        required: true
-      disk_size:
-        description: disk size in MB 
-        type: int
-        required: true   
-      ip_addresses:
-        description: available IP addresses 
-        type: int
-        required: true
-      role:
-        description: available IP addresses 
-        type: string
-        required: true   
-      os_type:
-        description: OS example: Ubuntu 16.04
-        type: string
-        required: true          
-    capabilities:
-      host:
-        type: tosca.capabilities.Compute
-        
-  tosca.nodes.Compute.VM.ExoGENI:
-    derived_from: tosca.nodes.Compute.VM
-    description: VM
-    properties:  
-      domain:
-        description: site where the VM is hosted, example: RENCI (Chapel Hill, NC USA) XO Rack
-        type: string
-        required: true  
-      state:
-        description: the state of the VM, running, paused, stopped 
-        type: string
-        required: true
-    ssh_key_pair_id:
-        description: the id of the ssh key 
-        type: string
-        required: true    
-    capabilities:
-      host:
-        type: tosca.capabilities.Scale        
+          capability: tosca.capabilities.Compute
+          node: tosca.nodes.Compute
+          relationship: tosca.relationships.HostedOn      

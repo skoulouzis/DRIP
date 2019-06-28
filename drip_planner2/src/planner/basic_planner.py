@@ -3,20 +3,26 @@ import operator
 import pdb
 import re
 from toscaparser.tosca_template import ToscaTemplate
+from toscaparser.topology_template import TopologyTemplate
 import toscaparser.utils.yamlparser
 import urllib
 import urllib.parse
 import sys
+import pdb
+
+
 
 class BasicPlanner:
 
     
     def __init__(self, path):
-        dict_tpl = toscaparser.utils.yamlparser.load_yaml(path)
-#        print(dict_tpl)
-        node_templates = dict_tpl['topology_template']['node_templates']
-#        print(node_templates)
-        requirements = self.get_all_requirements(node_templates)
+        self.template = ToscaTemplate(path)
+        print("Description:"+self.template.description)
+        for node in self.template.nodetemplates:
+            print("Node: "+node.name+" Type:"+node.type+" Req: "+str(node.requirements))
+#            print(node.get_properties().keys())
+#            print(node.get_capabilities().keys)
+        
             
             
         
@@ -43,13 +49,13 @@ class BasicPlanner:
                 return node
         
     def get_all_requirements(self, node_templates):
+        requirements = {}
         for node_template_name in node_templates:
             node_template = node_templates[node_template_name]
             node_type = node_template['type']
             if 'requirements' in node_template:
-                requirements = node_template['requirements']
-                print(requirements)
-#            all_requirements = self.get_super_types_requirements(node_type, None)
+                requirements[node_template_name] = node_template['requirements']
+            self.get_super_types_requirements(node_type, None)
 #            id = node_template['id']
 #            req = self.get_requirements(node_template)
 #            if(req):
@@ -118,58 +124,12 @@ class BasicPlanner:
                 all_relationships.append(rel)
         return all_relationships
                 
-    def get_super_types(self, type_qName, supertypes):  
-        if (supertypes == None):
-            supertypes  = []
-        regex = r"\{(.*?)\}"
-        matches = re.finditer(regex, type_qName, re.MULTILINE | re.DOTALL)
-        namespace = next(matches).group(1)
-        id = type_qName.replace("{" + namespace + "}", "")
-        header = {'accept': 'application/json'}
-        #winery needs it double percent-encoded 
-        encoded_namespace  = urllib.parse.quote(namespace, safe='')
-        encoded_namespace = urllib.parse.quote(encoded_namespace, safe='')
-        type_name = namespace.rsplit('/', 1)[-1]
-        servicetemplate_url = self.tosca_reposetory_api_base_url + "/" + type_name + "/" + encoded_namespace + "/" + id + "/"
-        req = urllib.request.Request(url=servicetemplate_url, headers=header, method='GET')
-        res = urllib.request.urlopen(req, timeout=5)   
-        res_body = res.read()
-        component = json.loads(res_body.decode("utf-8"))
-        if component:
-            comp = component['serviceTemplateOrNodeTypeOrNodeTypeImplementation'][0]
-            supertypes.append(comp)
-            if 'derivedFrom' in comp:
-                return self.get_super_types(comp['derivedFrom']['typeRef'], supertypes)
-            else:
-                return supertypes
+    def get_super_types(self, type, supertypes):  
+        print(type)
         
                 
-    def get_super_types_requirements(self, type_qName, requirements):
-        if (requirements == None):
-            requirements = []
-        regex = r"\{(.*?)\}"
-        matches = re.finditer(regex, type_qName, re.MULTILINE | re.DOTALL)
-        namespace = next(matches).group(1)
-        id = type_qName.replace("{" + namespace + "}", "")
-        header = {'accept': 'application/json'}
-        #winery needs it double percent-encoded 
-        encoded_namespace  = urllib.parse.quote(namespace, safe='')
-        encoded_namespace = urllib.parse.quote(encoded_namespace, safe='')
-        
-        type_name = namespace.rsplit('/', 1)[-1]
-        
-        servicetemplate_url = self.tosca_reposetory_api_base_url + "/" + type_name + "/" + encoded_namespace + "/" + id + "/"
-        req = urllib.request.Request(url=servicetemplate_url, headers=header, method='GET')
-        res = urllib.request.urlopen(req, timeout=5)   
-        res_body = res.read()
-        component = json.loads(res_body.decode("utf-8"))
-        for c in component['serviceTemplateOrNodeTypeOrNodeTypeImplementation']:
-            if 'requirementDefinitions' in c and 'requirementDefinition' in c['requirementDefinitions']:
-                for req in c['requirementDefinitions']['requirementDefinition']:
-                    requirements.append(req['requirementType'])
-            if 'derivedFrom' in c and c['derivedFrom'] and c['derivedFrom']['type']:
-                return self.get_super_types_requirements(c['derivedFrom']['type'], requirements)
-        return requirements
+    def get_super_types_requirements(self, node_type, requirements):
+        print(node_type)
         
         
     def get_service_template(self, dict_tpl): 
