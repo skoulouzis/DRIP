@@ -14,8 +14,9 @@ topology_template:
       requirements:
         - service:
             node: mysql
-            relationship: 
+            relationship:
                 type: tosca.relationships.ConnectsTo
+                #type: tosca.relationships.DependsOn
       artifacts:
         my_image:
           file: wordpress:latest

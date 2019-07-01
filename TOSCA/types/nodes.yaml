@@ -3,7 +3,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
 
   tosca.nodes.SWITCH.Container.Application.Docker:
-    derived_from: tosca.nodes.Container.Application.Docker
+    #derived_from: tosca.nodes.Container.Application.Docker
     description: description of container
     capabilities:
       service:
@@ -30,11 +30,7 @@ node_types:
         type: list
         required: false
     requirements:
-      - service:
-          capability: tosca.capabilities.Container.Docker
-          node: tosca.nodes.SWITCH.Container.Application.Docker
-          relationship: tosca.relationships.ConnectsTo
       - host:
           capability: tosca.capabilities.Compute
           node: tosca.nodes.Compute
-          relationship: tosca.relationships.HostedOn      
+          relationship: tosca.relationships.HostedOn
