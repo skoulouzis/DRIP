@@ -33,7 +33,7 @@ node_types:
       - host:
           capability: tosca.capabilities.ARTICONF.Orchestrator
           node: tosca.nodes.ARTICONF.Orchestrator
-          relationship: tosca.relationships.HostedOn
+          relationship: tosca.relationships.HostedOn    
           
   tosca.nodes.ARTICONF.Orchestrator:
     derived_from: tosca.nodes.SoftwareComponent
@@ -56,6 +56,5 @@ node_types:
           capability: tosca.capabilities.Scalable
           node: tosca.nodes.Compute
           relationship: tosca.relationships.HostedOn 
-    
     
     
