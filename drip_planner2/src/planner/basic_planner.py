@@ -22,10 +22,9 @@ class BasicPlanner:
         
         for node in self.template.nodetemplates:
             missing_requirements = self.get_missing_requirements(node)
-            
+            print(missing_requirements)
             for req in missing_requirements:
                 node.requirements.append(req)
-            print('----------------------')
             
 #            print(node.get_properties().keys())
 #            print(node.get_capabilities().keys)

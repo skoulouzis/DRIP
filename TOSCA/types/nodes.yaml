@@ -2,7 +2,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 
 node_types:
 
-  tosca.nodes.SWITCH.Container.Application.Docker:
+  tosca.nodes.ARTICONF.Container.Application.Docker:
     #derived_from: tosca.nodes.Container.Application.Docker
     description: description of container
     capabilities:
@@ -31,6 +31,31 @@ node_types:
         required: false
     requirements:
       - host:
-          capability: tosca.capabilities.Compute
+          capability: tosca.capabilities.ARTICONF.Orchestrator
+          node: tosca.nodes.ARTICONF.Orchestrator
+          relationship: tosca.relationships.HostedOn
+          
+  tosca.nodes.ARTICONF.Orchestrator:
+    derived_from: tosca.nodes.SoftwareComponent
+    description: a container orchestrator
+    requirements:
+      - host:
+          capability: tosca.capabilities.Container
           node: tosca.nodes.Compute
           relationship: tosca.relationships.HostedOn
+    capabilities:
+      host:
+        type: tosca.capabilities.ARTICONF.Orchestrator  
+    
+    
+  tosca.nodes.ARTICONF.Orchestrator.Kubernetes:
+    derived_from: tosca.nodes.ARTICONF.Orchestrator
+    description: Kubernetes orchestrator
+    requirements:
+      - host:
+          capability: tosca.capabilities.Scalable
+          node: tosca.nodes.Compute
+          relationship: tosca.relationships.HostedOn 
+    
+    
+    

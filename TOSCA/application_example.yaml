@@ -1,7 +1,8 @@
 tosca_definitions_version: tosca_simple_yaml_1_0
 
 imports:
-  - indigo_custom_types: types/nodes.yaml
+  - nodes: types/nodes.yaml
+  - capabilities: types/capabilities.yaml
 
 description: >
   TOSCA example
@@ -10,7 +11,7 @@ topology_template:
 
   node_templates:
     wordpress:
-      type: tosca.nodes.SWITCH.Container.Application.Docker
+      type: tosca.nodes.ARTICONF.Container.Application.Docker
       requirements:
         - service:
             node: mysql
@@ -32,7 +33,7 @@ topology_template:
           WORDPRESS_DB_NAME: wordpress
         
     mysql:
-        type: tosca.nodes.SWITCH.Container.Application.Docker
+        type: tosca.nodes.ARTICONF.Container.Application.Docker
         properties:
             volumes:
                 - db_data:/var/lib/mysql
