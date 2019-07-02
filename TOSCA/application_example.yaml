@@ -46,7 +46,7 @@ topology_template:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
                 file: mysql:5.7
-                repository: docker_hub        
+                repository: docker_hub
             
         
           

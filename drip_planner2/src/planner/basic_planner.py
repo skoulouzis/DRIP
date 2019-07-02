@@ -24,15 +24,38 @@ class BasicPlanner:
         self.all_nodes = {}
         self.all_nodes.update(self.tosca_node_types.items())
         self.all_nodes.update(self.all_custom_def.items())
+        
+        capable_node_types = []
         for node in self.template.nodetemplates:
-            capable_nodes = []
             missing_requirements = self.get_missing_requirements(node)
             
             for req in missing_requirements:
                 for key in req:
-                    capable_nodes.append(self.get_node_types_by_capability(req[key]['capability']))
+                    capable_nodes = self.get_node_types_by_capability(req[key]['capability'])
+                    
+                    capable_node_types.append(capable_nodes)
+                    
+                    for node_type in capable_nodes:
+                        capable_node = capable_nodes[node_type]
+                        for cap in capable_node['capabilities']:
+                            capability_type =  capable_node['capabilities'][cap]['type']
+                            if capability_type == req[key]['capability'] and self.has_capability_max_one_occurrence(capable_node['capabilities'][cap]):
+                                for capable_node_type in capable_node_types:
+                                    print(capable_node_type)
+                                    
+#                        print(req[key]['capability'])
+#                        print(capable_nodes[node_type]['capabilities'])
+#                       if self.has_capability_max_one_occurrence(capable_nodes[node_type]['capabilities']):
+#                           capable_nodes_dict[node_type] = capable_nodes[node_type]
+                           
+                        
+#                    for capable_node in capable_nodes:
+#                        print(capable_node)
+#                    capable_nodes.append(capable_nodes)
+                    
                 node.requirements.append(req)
-            print(capable_nodes)
+#            print(node.requirements)
+#            print(capable_node_types)
             print('------------------')
 #            print(node.get_capabilities().keys)
         
@@ -73,25 +96,26 @@ class BasicPlanner:
                 for candidate_node_name in candidate_nodes:
                     if candidate_child_node['derived_from'] == candidate_node_name:
                         candidate_child_nodes[tosca_node_type] = self.all_nodes[tosca_node_type]
-                        candidate_child_nodes[tosca_node_type] = self.inherit_capabilities_with_one_occurrences(candidate_nodes[candidate_node_name]['capabilities'],candidate_child_node)
-                        
+                        candidate_child_nodes[tosca_node_type] = self.copy_capabilities_with_one_occurrences(candidate_nodes[candidate_node_name]['capabilities'],candidate_child_node)
+        
         candidate_nodes.update(candidate_child_nodes)
         capable_nodes = {}
         
+        #Only return the nodes that have interfaces. This means that they are not "abstract" 
         for candidate_node_name in candidate_nodes:
             if 'interfaces' in candidate_nodes[candidate_node_name].keys():
                 capable_nodes[candidate_node_name] = candidate_nodes[candidate_node_name]
         return capable_nodes
     
     
-    def inherit_capabilities_with_one_occurrences(self,parent_capabilities,candidate_child_node):
+    def copy_capabilities_with_one_occurrences(self,parent_capabilities,candidate_child_node):
         inherited_capabilities = []
         if not 'capabilities' in candidate_child_node.keys():
             candidate_child_node['capabilities'] = {}
             
         for capability in parent_capabilities: 
             inherited_capability = parent_capabilities[capability]
-            if 'occurrences' in inherited_capability and inherited_capability['occurrences'][1] == 1:
+            if self.has_capability_max_one_occurrence(inherited_capability):
                 inherited_capabilities.append(parent_capabilities)
                 for key in parent_capabilities:
                     candidate_child_node['capabilities'][key] = parent_capabilities[key]
@@ -105,3 +129,10 @@ class BasicPlanner:
 #                candidate_child_node['capabilities'][key] = inherited_capability[key]
         
         return candidate_child_node
+    
+    
+    def has_capability_max_one_occurrence(self,capability):
+        if 'occurrences' in capability and capability['occurrences'][1] == 1:
+            return True
+        else:
+            return False
