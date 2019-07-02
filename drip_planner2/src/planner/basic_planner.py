@@ -32,7 +32,7 @@ class BasicPlanner:
                 for key in req:
                     capable_nodes.append(self.get_node_types_by_capability(req[key]['capability']))
                 node.requirements.append(req)
-#            print((node.type_definition._get_node_type_by_cap('tosca.capabilities.ARTICONF.Orchestrator')))
+            print(capable_nodes)
             print('------------------')
 #            print(node.get_capabilities().keys)
         
@@ -59,10 +59,49 @@ class BasicPlanner:
   
   
     def get_node_types_by_capability(self,cap):
-        capable_nodes = []
-        for tosca_node in self.all_nodes:
-            if 'capabilities' in self.all_nodes[tosca_node]:
-                for caps in self.all_nodes[tosca_node]['capabilities']:
-                    if self.all_nodes[tosca_node]['capabilities'][caps]['type'] == cap:
-                        capable_nodes.append(tosca_node)
+        candidate_nodes = {}
+        for tosca_node_type in self.all_nodes:
+            if tosca_node_type.startswith('tosca.nodes') and 'capabilities' in self.all_nodes[tosca_node_type]:
+                for caps in self.all_nodes[tosca_node_type]['capabilities']:
+                    if self.all_nodes[tosca_node_type]['capabilities'][caps]['type'] == cap:
+                        candidate_nodes[tosca_node_type] = self.all_nodes[tosca_node_type]
+        
+        candidate_child_nodes = {}
+        for tosca_node_type in self.all_nodes:
+            if tosca_node_type.startswith('tosca.nodes') and 'derived_from' in self.all_nodes[tosca_node_type]:
+                candidate_child_node = (self.all_nodes[tosca_node_type])
+                for candidate_node_name in candidate_nodes:
+                    if candidate_child_node['derived_from'] == candidate_node_name:
+                        candidate_child_nodes[tosca_node_type] = self.all_nodes[tosca_node_type]
+                        candidate_child_nodes[tosca_node_type] = self.inherit_capabilities_with_one_occurrences(candidate_nodes[candidate_node_name]['capabilities'],candidate_child_node)
+                        
+        candidate_nodes.update(candidate_child_nodes)
+        capable_nodes = {}
+        
+        for candidate_node_name in candidate_nodes:
+            if 'interfaces' in candidate_nodes[candidate_node_name].keys():
+                capable_nodes[candidate_node_name] = candidate_nodes[candidate_node_name]
         return capable_nodes
+    
+    
+    def inherit_capabilities_with_one_occurrences(self,parent_capabilities,candidate_child_node):
+        inherited_capabilities = []
+        if not 'capabilities' in candidate_child_node.keys():
+            candidate_child_node['capabilities'] = {}
+            
+        for capability in parent_capabilities: 
+            inherited_capability = parent_capabilities[capability]
+            if 'occurrences' in inherited_capability and inherited_capability['occurrences'][1] == 1:
+                inherited_capabilities.append(parent_capabilities)
+                for key in parent_capabilities:
+                    candidate_child_node['capabilities'][key] = parent_capabilities[key]
+#                    candidate_child_node['capabilities'][key] = inherited_capability[key]                
+#                print(inherited_capability)
+        
+        
+
+#        for inherited_capability in inherited_capabilities:
+#            for key in inherited_capability:
+#                candidate_child_node['capabilities'][key] = inherited_capability[key]
+        
+        return candidate_child_node
