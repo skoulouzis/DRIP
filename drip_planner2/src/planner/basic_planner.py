@@ -6,11 +6,12 @@ from toscaparser.tosca_template import ToscaTemplate
 from toscaparser.topology_template import TopologyTemplate
 from toscaparser.elements.nodetype import NodeType
 from toscaparser.nodetemplate import NodeTemplate
-import toscaparser.utils.yamlparser
+from toscaparser.utils import yamlparser
 import urllib
 import urllib.parse
 import sys
 import pdb
+import names
 
 
 
@@ -26,37 +27,45 @@ class BasicPlanner:
         self.all_nodes.update(self.all_custom_def.items())
         
         capable_node_types = []
+        node_templates = []
         for node in self.template.nodetemplates:
             missing_requirements = self.get_missing_requirements(node)
             
             for req in missing_requirements:
                 for key in req:
                     capable_nodes = self.get_node_types_by_capability(req[key]['capability'])
-                    
-                    capable_node_types.append(capable_nodes)
-                    
                     for node_type in capable_nodes:
-                        capable_node = capable_nodes[node_type]
+                        capable_node = capable_nodes[node_type] 
                         for cap in capable_node['capabilities']:
                             capability_type =  capable_node['capabilities'][cap]['type']
-                            if capability_type == req[key]['capability'] and self.has_capability_max_one_occurrence(capable_node['capabilities'][cap]):
-                                for capable_node_type in capable_node_types:
-                                    print(capable_node_type)
-                                    
-#                        print(req[key]['capability'])
-#                        print(capable_nodes[node_type]['capabilities'])
-#                       if self.has_capability_max_one_occurrence(capable_nodes[node_type]['capabilities']):
-#                           capable_nodes_dict[node_type] = capable_nodes[node_type]
-                           
-                        
-#                    for capable_node in capable_nodes:
-#                        print(capable_node)
-#                    capable_nodes.append(capable_nodes)
-                    
+                            if capability_type == req[key]['capability'] and self.has_capability_max_one_occurrence(capable_node['capabilities'][cap]) and not self.contains_node_type(capable_node_types,node_type):
+                                capable_node_types.append(capable_nodes)
+                                break
+                            elif capability_type == req[key]['capability'] and not self.has_capability_max_one_occurrence(capable_node['capabilities'][cap]):
+                                capable_node_types.append(capable_nodes)
+                                break
                 node.requirements.append(req)
-#            print(node.requirements)
-#            print(capable_node_types)
-            print('------------------')
+                node_templates.append(node)
+        
+        for node_type in capable_nodes:
+            capable_node = capable_nodes[node_type]
+            nodetemplate = {}
+            nodetemplate[names.get_first_name().lower()] = node_type
+            print(nodetemplate)
+                        
+        self.template.nodetemplates = node_templates
+        tpl_snippet = '''
+        server:
+          type: tosca.my.nodes.Compute
+          properties:
+            cpu_frequency: 0.05 GHz
+            disk_size: 500 MB
+            mem_size: 1 MB
+        '''
+        nodetemplates = yamlparser.simple_parse(tpl_snippet)
+#        print(type(nodetemplates))
+#        nodetemplate = NodeTemplate('server', nodetemplates)
+        print('------------------')
 #            print(node.get_capabilities().keys)
         
             
@@ -118,16 +127,7 @@ class BasicPlanner:
             if self.has_capability_max_one_occurrence(inherited_capability):
                 inherited_capabilities.append(parent_capabilities)
                 for key in parent_capabilities:
-                    candidate_child_node['capabilities'][key] = parent_capabilities[key]
-#                    candidate_child_node['capabilities'][key] = inherited_capability[key]                
-#                print(inherited_capability)
-        
-        
-
-#        for inherited_capability in inherited_capabilities:
-#            for key in inherited_capability:
-#                candidate_child_node['capabilities'][key] = inherited_capability[key]
-        
+                    candidate_child_node['capabilities'][key] = parent_capabilities[key]        
         return candidate_child_node
     
     
@@ -136,3 +136,11 @@ class BasicPlanner:
             return True
         else:
             return False
+        
+        
+    def contains_node_type(self,capable_node_types_list,node_type):
+        for capable_node_type in capable_node_types_list:
+            type_name = next(iter(capable_node_type))
+            if type_name == node_type:
+                return True
+        return False  
