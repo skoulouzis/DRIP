@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Dockerfiles/planner/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../Dockerfiles/planner/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../TOSCA/application_example.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/planner/basic_planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/basic_planner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/rpc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rpc_server.py" afterDir="false" />
     </list>
@@ -18,18 +16,14 @@
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/rpc_server.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="113" selection-start-line="113" selection-end-line="118" selection-end-column="92" />
-            </state>
-          </provider>
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/planner/basic_planner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="81">
-              <caret line="19" selection-start-line="19" selection-end-line="19" />
+            <state relative-caret-position="171">
+              <caret line="29" selection-start-line="29" selection-end-line="29" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -87,6 +81,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/rpc_server.py" />
+      </list>
+    </option>
+  </component>
   <component name="ProjectConfigurationFiles">
     <option name="files">
       <list>
@@ -94,7 +95,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="33" />
     <option name="y" value="13" />
     <option name="width" value="922" />
@@ -132,6 +133,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="full.screen.before.presentation.mode" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
@@ -212,7 +214,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="33" y="13" width="922" height="526" extended-state="0" />
+    <frame x="33" y="12" width="926" height="527" extended-state="6" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.14317425" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -265,16 +267,12 @@
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/rpc_server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="113" selection-start-line="113" selection-end-line="118" selection-end-column="92" />
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/planner/basic_planner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="81">
-          <caret line="19" selection-start-line="19" selection-end-line="19" />
+        <state relative-caret-position="171">
+          <caret line="29" selection-start-line="29" selection-end-line="29" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

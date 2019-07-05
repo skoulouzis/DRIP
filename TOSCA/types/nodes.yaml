@@ -46,19 +46,12 @@ node_types:
     capabilities:
       host:
         type: tosca.capabilities.ARTICONF.Orchestrator
-        occurrences: [1, 1]
-      cap:
-        type: tosca.capabilities.ROOT
-        occurrences: [1, 1]        
+        occurrences: [1, 1]  
     
     
   tosca.nodes.ARTICONF.Orchestrator.Kubernetes:
     derived_from: tosca.nodes.ARTICONF.Orchestrator
     description: Kubernetes orchestrator
-    capabilities:
-      cap_1:
-        type: tosca.capabilities.ROOT
-        occurrences: [1, 100]    
     requirements:
       - host:
           capability: tosca.capabilities.Scalable
@@ -66,7 +59,6 @@ node_types:
           relationship: tosca.relationships.HostedOn
     interfaces:
       Standard:
-        configure:
-          implementation: playbooks/kubernetes_install.yaml
+        create: https://raw.githubusercontent.com/indigo-dc/tosca-types/master/artifacts/mysql/mysql_install.yml
     
     
