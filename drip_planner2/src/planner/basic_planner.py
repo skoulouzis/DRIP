@@ -13,7 +13,6 @@ import sys
 import pdb
 import names
 import yaml
-from pdb import set_trace as bp
 
 
 
@@ -30,51 +29,31 @@ class BasicPlanner:
 
         capable_node_types = []
         node_templates = []
+        capable_node_name = ''
         for node in self.template.nodetemplates:
             missing_requirements = self.get_missing_requirements(node)
             for req in missing_requirements:
                 for key in req:
-                    capable_nodes = self.get_node_types_by_capability(req[key]['capability'])
-                    
-                    # remove nodes required once. e.g. kubernetes is hosting all dockers 
-                    for node_type in capable_nodes:
-                        capable_node = capable_nodes[node_type]
-                        for cap in capable_node['capabilities']:
-                            capability_type =  capable_node['capabilities'][cap]['type']
-                            if capability_type == req[key]['capability'] and self.has_capability_max_one_occurrence(capable_node['capabilities'][cap]) and not self.contains_node_type(capable_node_types,node_type):
-                                capable_node_types.append(capable_nodes)
-                                break
-                            elif capability_type == req[key]['capability'] and not self.has_capability_max_one_occurrence(capable_node['capabilities'][cap]):
-                                capable_node_types.append(capable_nodes)
-                                break
+                    capable_node = self.get_node_types_by_capability(req[key]['capability'])                
+                    capable_node_type = next(iter(capable_node))
+                
+                if self.node_requered_once(capable_node) and not self.contains_node_type(node_templates,capable_node_type):
+                    capable_node_template = self.node_type_2_node_template(capable_node)
+                    capable_node_name = capable_node_template.name
+                    node_templates.append(capable_node_template)
+                
+                req[next(iter(req))]['node'] = capable_node_name
                 node.requirements.append(req)
                 node_templates.append(node)
 
 
         for node_type in capable_node_types:
-            nodetemplate_dict = {}
-            type_name = next(iter(node_type))
-            node_type_array = type_name.split(".")
-            name = names.get_first_name().lower() + "_" + node_type_array[len(node_type_array)-1].lower()
-            nodetemplate_dict[name] = node_type[next(iter(node_type))].copy()
-            nodetemplate_dict[name]['type'] = type_name
-            if 'capabilities' in nodetemplate_dict[name]:
-                nodetemplate_dict[name].pop('capabilities')
-            if 'requirements' in nodetemplate_dict[name]:
-                nodetemplate_dict[name].pop('requirements')
-            if 'capabilities' in nodetemplate_dict[name]:
-                nodetemplate_dict[name].pop('capabilities')
-            if 'derived_from' in nodetemplate_dict[name]:
-                nodetemplate_dict[name].pop('derived_from')                
-            
-            if 'type' in node_type[next(iter(node_type))]:
-                node_type[next(iter(node_type))].pop('type')
-            
-            nodetemplate = NodeTemplate(name, nodetemplate_dict,node_type)
+            nodetemplate = self.node_type_2_node_template(node_type)
             node_templates.append(nodetemplate)
 
         self.template.nodetemplates = node_templates
         
+#        print(yaml.dump(self.template.tpl))
         print('------------------')
 #            print(node.get_capabilities().keys)
 
@@ -150,7 +129,41 @@ class BasicPlanner:
 
     def contains_node_type(self,capable_node_types_list,node_type):
         for capable_node_type in capable_node_types_list:
-            type_name = next(iter(capable_node_type))
+            if isinstance(capable_node_type, NodeTemplate):
+                type_name = capable_node_type.type
+            elif isinstance(capable_node_type, dict):
+                type_name = next(iter(capable_node_type))
             if type_name == node_type:
                 return True
+        return False
+    
+    def node_type_2_node_template(self,node_type):
+        nodetemplate_dict = {}
+        type_name = next(iter(node_type))
+        node_type_array = type_name.split(".")
+        name = names.get_first_name().lower() + "_" + node_type_array[len(node_type_array)-1].lower()
+        nodetemplate_dict[name] = node_type[next(iter(node_type))].copy()
+        nodetemplate_dict[name]['type'] = type_name
+        if 'capabilities' in nodetemplate_dict[name]:
+            nodetemplate_dict[name].pop('capabilities')
+        if 'requirements' in nodetemplate_dict[name]:
+            nodetemplate_dict[name].pop('requirements')
+        if 'capabilities' in nodetemplate_dict[name]:
+            nodetemplate_dict[name].pop('capabilities')
+        if 'derived_from' in nodetemplate_dict[name]:
+            nodetemplate_dict[name].pop('derived_from')                
+
+        if 'type' in node_type[next(iter(node_type))]:
+            node_type[next(iter(node_type))].pop('type')
+
+        return NodeTemplate(name, nodetemplate_dict,node_type)
+
+
+    def node_requered_once(self,node):
+        for node_type in node:
+            if 'capabilities' in node[node_type]:
+                capabilities = node[node_type]['capabilities']
+                for cap in capabilities:
+                    if self.has_capability_max_one_occurrence(capabilities[cap]):
+                        return True
         return False
