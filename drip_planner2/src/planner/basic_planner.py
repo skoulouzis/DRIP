@@ -13,6 +13,7 @@ import sys
 import pdb
 import names
 import yaml
+from utils.TOSCA_parser import *
 
 
 
@@ -54,6 +55,11 @@ class BasicPlanner:
         self.template.nodetemplates = node_templates
         
 #        print(yaml.dump(self.template.tpl))
+        
+        tp = TOSCAParser()
+        tp.tosca_template2_yaml(self.template)
+        
+        
         print('------------------')
 #            print(node.get_capabilities().keys)
 
@@ -62,7 +68,7 @@ class BasicPlanner:
 
     def get_missing_requirements(self, node):
         def_type = self.all_nodes[node.type]
-        def_requirements = def_type['requirements']        
+        def_requirements = def_type['requirements']
         missing_requirements = []
         if not node.requirements:
             missing_requirements = def_requirements
