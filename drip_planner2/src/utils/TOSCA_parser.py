@@ -22,7 +22,8 @@ SECTIONS = (DEFINITION_VERSION, DEFAULT_NAMESPACE, TEMPLATE_NAME,
             RELATIONSHIP_TYPES, RELATIONSHIP_TEMPLATES,
             CAPABILITY_TYPES, ARTIFACT_TYPES, DATA_TYPES, INTERFACE_TYPES,
             POLICY_TYPES, GROUP_TYPES, REPOSITORIES,INPUTS,NODE_TEMPLATES,
-            OUTPUTS,GROUPS,SUBSTITUION_MAPPINGS,POLICIES,TYPE,REQUIREMENTS) = \
+            OUTPUTS,GROUPS,SUBSTITUION_MAPPINGS,POLICIES,TYPE,REQUIREMENTS,
+            ARTIFACTS,PROPERTIES) = \
            ('tosca_definitions_version', 'tosca_default_namespace',
             'template_name', 'tosca_template', 'template_author',
             'template_version', 'description', 'imports', 'dsl_definitions',
@@ -30,7 +31,7 @@ SECTIONS = (DEFINITION_VERSION, DEFAULT_NAMESPACE, TEMPLATE_NAME,
             'capability_types', 'artifact_types', 'data_types',
             'interface_types', 'policy_types', 'group_types', 'repositories',
             'inputs','node_templates','outputs','groups','substitution_mappings',
-            'policies','type','requirements')    
+            'policies','type','requirements','artifacts','properties')
                 
 class TOSCAParser:
     
@@ -49,6 +50,7 @@ class TOSCAParser:
         for node_template in node_templates:
             node_template_dict = self.get_node_template_dict(node_template)
             topology_dict[TOPOLOGY_TEMPLATE][NODE_TEMPLATES][node_template.name] = node_template_dict
+            break
             
         # If we don't add this then dump uses references for the same dictionary entries i.e. '&id001'
         yaml.Dumper.ignore_aliases = lambda *args : True
@@ -58,8 +60,12 @@ class TOSCAParser:
     def get_node_template_dict(self,node_template):
         node_template_dict = {}
         node_template_dict[TYPE] = node_template.type
-        node_template_dict[REQUIREMENTS] = {}
-#        requirement_list = []
+#        node_template_dict[REQUIREMENTS] = {}
         node_template_dict[REQUIREMENTS] = node_template.requirements
+        node_template_dict[ARTIFACTS] = node_template.templates[node_template.name][ARTIFACTS]
+        node_template_dict[PROPERTIES] = node_template.templates[node_template.name][PROPERTIES]
+        print(dir(node_template))
+#        print(node_template.templates)
+        
             
         return node_template_dict
