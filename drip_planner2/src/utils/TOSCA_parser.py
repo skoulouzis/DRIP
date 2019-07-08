@@ -50,7 +50,7 @@ class TOSCAParser:
             node_template_dict = self.get_node_template_dict(node_template)
             topology_dict[TOPOLOGY_TEMPLATE][NODE_TEMPLATES][node_template.name] = node_template_dict
             
-        
+        # If we don't add this then dump uses references for the same dictionary entries i.e. '&id001'
         yaml.Dumper.ignore_aliases = lambda *args : True
         print(yaml.dump(topology_dict,default_flow_style=False))
         
