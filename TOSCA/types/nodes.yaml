@@ -59,6 +59,6 @@ node_types:
           relationship: tosca.relationships.HostedOn
     interfaces:
       Standard:
-        create: https://raw.githubusercontent.com/indigo-dc/tosca-types/master/artifacts/mysql/mysql_install.yml
+        create: interfaces/playbooks/kubernetes_install.yaml
     
     

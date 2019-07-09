@@ -28,7 +28,7 @@ class BasicPlanner:
         self.all_nodes.update(self.tosca_node_types.items())
         self.all_nodes.update(self.all_custom_def.items())
 
-        capable_node_types = []
+        
         node_templates = []
         capable_node_name = ''
         for node in self.template.nodetemplates:
@@ -46,18 +46,13 @@ class BasicPlanner:
                 req[next(iter(req))]['node'] = capable_node_name
                 node.requirements.append(req)
                 node_templates.append(node)
-
-
-        for node_type in capable_node_types:
-            nodetemplate = self.node_type_2_node_template(node_type)
-            node_templates.append(nodetemplate)
+        
 
         self.template.nodetemplates = node_templates
-        
-#        print(yaml.dump(self.template.tpl))
-        
+        t = self.template 
+                
         tp = TOSCAParser()
-        tp.tosca_template2_yaml(self.template)
+        tp.tosca_template2_yaml(t)
         
         
         print('------------------')
@@ -161,7 +156,6 @@ class BasicPlanner:
 
         if 'type' in node_type[next(iter(node_type))]:
             node_type[next(iter(node_type))].pop('type')
-
         return NodeTemplate(name, nodetemplate_dict,node_type)
 
 
