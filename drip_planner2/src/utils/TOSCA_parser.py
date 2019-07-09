@@ -49,7 +49,7 @@ class TOSCAParser:
             
         # If we don't add this then dump uses references for the same dictionary entries i.e. '&id001'
         yaml.Dumper.ignore_aliases = lambda *args : True
-        print(yaml.dump(topology_dict,default_flow_style=False))
+        return (yaml.dump(topology_dict,default_flow_style=False))
         
         
     def get_node_template_dict(self,node_template):

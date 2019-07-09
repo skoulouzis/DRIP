@@ -14,6 +14,7 @@ import pdb
 import names
 import yaml
 from utils.TOSCA_parser import *
+import logging
 
 
 
@@ -29,53 +30,63 @@ class BasicPlanner:
         self.all_nodes.update(self.all_custom_def.items())
 
         
-        node_templates = []
-        capable_node_name = ''
+        
+#        capable_node_name = ''
         for node in self.template.nodetemplates:
-            missing_requirements = self.get_missing_requirements(node)
-            for req in missing_requirements:
-                for key in req:
-                    capable_node = self.get_node_types_by_capability(req[key]['capability'])                
-                    capable_node_type = next(iter(capable_node))
-                
-                if self.node_requered_once(capable_node) and not self.contains_node_type(node_templates,capable_node_type):
-                    capable_node_template = self.node_type_2_node_template(capable_node)
-                    capable_node_name = capable_node_template.name
-                    node_templates.append(capable_node_template)
-                
-                req[next(iter(req))]['node'] = capable_node_name
-                node.requirements.append(req)
-                node_templates.append(node)
+            node_templates = self.add_reqired_nods(node,None)
+#            missing_requirements = self.get_missing_requirements(node)
+#            for req in missing_requirements:
+#                for key in req:
+#                    capable_node = self.get_node_types_by_capability(req[key]['capability'])                
+#                    capable_node_type = next(iter(capable_node))
+#                
+#                if self.node_requered_once(capable_node) and not self.contains_node_type(node_templates,capable_node_type):
+#                    capable_node_template = self.node_type_2_node_template(capable_node)
+#                    capable_node_name = capable_node_template.name
+#                    node_templates.append(capable_node_template)
+#                
+#                req[next(iter(req))]['node'] = capable_node_name
+#                node.requirements.append(req)
+#                node_templates.append(node)
         
-
-        self.template.nodetemplates = node_templates
-        t = self.template 
-                
+        if node_templates:
+            self.template.nodetemplates = node_templates
+        else:
+            logging.info('The TOSCA template in: '+path + ' has no requirements' )
         tp = TOSCAParser()
-        tp.tosca_template2_yaml(t)
+        yaml_str = tp.tosca_template2_yaml(self.template)
         
-        
-        print('------------------')
-#            print(node.get_capabilities().keys)
+        logging.info('TOSCA template: \n'+ yaml_str)
+#        print(yaml_str)
 
 
 
 
     def get_missing_requirements(self, node):
+        logging.info('Looking for requirements for node: '+node.name )
         def_type = self.all_nodes[node.type]
-        def_requirements = def_type['requirements']
+        def_requirements = []
+        if 'requirements' in def_type.keys():
+            def_requirements = def_type['requirements']
+            logging.info('Found requirements: '+ str(def_requirements)+ ' for node: '+node.name )
+        
         missing_requirements = []
         if not node.requirements:
             missing_requirements = def_requirements
-        else:
+        elif def_requirements:
             for def_requirement in def_requirements:
                 for key in def_requirement:
                     for node_req in node.requirements:
-                        if key not in(node_req):
+                        if key not in node_req:
                             missing_requirements.append(def_requirement)
-                            break
-
-        if node.parent_type:
+        
+        
+        #Make sure we have the deffinition. Otherwise we get an error in the recursion 
+        if 'derived_from' in def_type.keys() and not def_type['derived_from'] in node.custom_def.keys():
+            node.custom_def[def_type['derived_from']] = self.all_custom_def[def_type['derived_from']]
+            
+        if node.parent_type and node.parent_type.requirements:
+            logging.info('Adding to : '+str(node.name) + '  parent requirements from: '+str(node.parent_type.type))
             missing_requirements = missing_requirements + node.parent_type.requirements
         return missing_requirements
 
@@ -129,6 +140,8 @@ class BasicPlanner:
 
 
     def contains_node_type(self,capable_node_types_list,node_type):
+        if capable_node_types_list == None:
+            return False
         for capable_node_type in capable_node_types_list:
             if isinstance(capable_node_type, NodeTemplate):
                 type_name = capable_node_type.type
@@ -167,3 +180,36 @@ class BasicPlanner:
                     if self.has_capability_max_one_occurrence(capabilities[cap]):
                         return True
         return False
+    
+    def add_reqired_nods(self,node,node_templates):
+        if not node_templates:
+            node_templates = []
+        
+        missing_requirements = self.get_missing_requirements(node)
+        if not missing_requirements:
+            logging.info('Node: '+node.name + ' of type: '+node.type +' has no requirements')
+#            return node_templates
+        capable_node_name = ''
+        for req in missing_requirements:
+            for key in req:
+                logging.info('Looking for capability: '+req[key]['capability']+ ' for node: '+node.name )
+                capable_node = self.get_node_types_by_capability(req[key]['capability'])
+                if capable_node: 
+                    capable_node_type = next(iter(capable_node))
+                    logging.info('Found : '+str(capable_node_type))
+                else: 
+                    logging.error('Did not find node with reuired capability: '+str(req[key]['capability']))
+
+            if self.node_requered_once(capable_node) and not self.contains_node_type(node_templates,capable_node_type):
+                capable_node_template = self.node_type_2_node_template(capable_node)
+                capable_node_name = capable_node_template.name
+                node_templates.append(capable_node_template)
+                #recursively fulfill all requirements
+                self.add_reqired_nods(capable_node_template,node_templates)
+
+            req[next(iter(req))]['node'] = capable_node_name
+            node.requirements.append(req)
+            if not self.contains_node_type(node_templates,node):
+                node_templates.append(node)
+        
+        return node_templates

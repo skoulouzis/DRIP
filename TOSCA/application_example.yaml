@@ -47,13 +47,7 @@ topology_template:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
                 file: mysql:5.7
                 repository: docker_hub    
-                
-    #guillermo_kubernetes:
-        #type: tosca.nodes.ARTICONF.Orchestrator.Kubernetes
-        
-    #cluster:
-        #type: tosca.nodes.Compute
-                   
+            
         
         
           

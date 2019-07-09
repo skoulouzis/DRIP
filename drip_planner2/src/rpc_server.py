@@ -13,6 +13,7 @@ from planner.basic_planner import *
 import sys
 import tempfile
 import time
+import logging
 
 
 logger = logging.getLogger(__name__)
@@ -111,6 +112,7 @@ def handle_delivery(message):
     return json.dumps(response)
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     if(sys.argv[1] == "test_local"):
 #        home = expanduser("~")
 #        tosca_reposetory_api_base_url = "http://localhost:8080/winery"
