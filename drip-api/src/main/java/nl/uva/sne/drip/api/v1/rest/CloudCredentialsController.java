@@ -52,7 +52,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  *
  * This controller is responsible for handling CloudCredentials.
- * CloudCredentials are a represntation of the credentials that are used by the
+ * CloudCredentials are a representation of the credentials that are used by the
  * provisoner to request for resources (VMs)
  *
  * @author S. Koulouzis
