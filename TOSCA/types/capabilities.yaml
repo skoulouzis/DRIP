@@ -8,3 +8,17 @@ capability_types:
       some_properties:
         type: string
         required: no
+        
+  tosca.capabilities.ARTICONF.VM:
+    derived_from: tosca.capabilities.Compute
+    properties:
+      some_properties:
+        type: string
+        required: no
+        
+  tosca.capabilities.ARTICONF.VM.topology:
+    derived_from: tosca.capabilities.Compute
+    properties:
+      some_properties:
+        type: string
+        required: no        

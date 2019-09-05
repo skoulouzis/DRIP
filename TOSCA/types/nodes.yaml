@@ -36,13 +36,13 @@ node_types:
           relationship: tosca.relationships.HostedOn
           
   tosca.nodes.ARTICONF.Orchestrator:
-    derived_from: tosca.nodes.SoftwareComponent
+    #derived_from: tosca.nodes.SoftwareComponent
     description: a container orchestrator
-    requirements:
-      - host:
-          capability: tosca.capabilities.Container
-          node: tosca.nodes.Compute
-          relationship: tosca.relationships.HostedOn
+    #requirements:
+      #- host:
+          #capability: tosca.capabilities.Container
+          #node: tosca.nodes.Compute
+          #relationship: tosca.relationships.HostedOn
     capabilities:
       host:
         type: tosca.capabilities.ARTICONF.Orchestrator
@@ -55,10 +55,84 @@ node_types:
     requirements:
       - host:
           capability: tosca.capabilities.Scalable
-          node: tosca.nodes.Compute
+          node: tosca.nodes.ARTICONF.Compute
           relationship: tosca.relationships.HostedOn
     interfaces:
       Standard:
         create: interfaces/playbooks/kubernetes_install.yaml
+        
+        
+  tosca.nodes.ARTICONF.Compute:
+    description: Base compute node
+    capabilities:
+      host:
+        type: tosca.capabilities.Compute
+      os:
+        type: tosca.capabilities.OperatingSystem
+      container:
+        type: tosca.capabilities.Container
+      node_cap:
+        type: tosca.capabilities.Node
+        
+  tosca.nodes.ARTICONF.VM.Compute:
+    derived_from: tosca.nodes.ARTICONF.Compute
+    description: VM node
+    capabilities:
+      vm:
+        type: tosca.capabilities.ARTICONF.VM
+    properties:
+      num_cpus:
+        type: integer
+        required: true
+      mem_size:
+        type: integer
+        required: true
+      username:
+        type: string
+        required: true
+      password:
+        type: string
+        required: true
+      host_name:
+        type: string
+        required: false
+      role:
+        type: string
+        required: false  
+      state:
+        type: string
+        required: false           
+    interfaces:
+      Standard:
+        create: dumy.yaml            
+        
+  tosca.nodes.ARTICONF.VM.topology:
+    derived_from: tosca.nodes.ARTICONF.Compute
+    description: topology of VMs
+    requirements:
+      - vm:
+          capability: tosca.capabilities.ARTICONF.VM
+          node: tosca.nodes.ARTICONF.Compute
+          relationship: tosca.relationships.DependsOn
+          occurrences: [1,  UNBOUNDED]
+    capabilities:
+      scalable:
+        type: tosca.capabilities.Scalable 
+      topology:
+        type: tosca.capabilities.ARTICONF.VM.topology
+        occurrences: [1, 1]
+    properties:
+      provider:
+        type: string
+        required: true
+      name:
+        type: string
+        required: true
+      domain:        
+        type: string
+        required: true        
+    interfaces:
+      Standard:
+        create: dumy.yaml        
     
     

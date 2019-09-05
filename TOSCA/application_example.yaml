@@ -3,6 +3,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
   - nodes: types/nodes.yaml
   - capabilities: types/capabilities.yaml
+  - policies: types/policies.yaml
 
 description: >
   TOSCA example
@@ -16,8 +17,8 @@ topology_template:
         - service:
             node: mysql
             relationship:
-                type: tosca.relationships.ConnectsTo
-                #type: tosca.relationships.DependsOn
+                #type: tosca.relationships.ConnectsTo
+                type: tosca.relationships.DependsOn
       artifacts:
         my_image:
           file: wordpress:latest
@@ -47,6 +48,11 @@ topology_template:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
                 file: mysql:5.7
                 repository: docker_hub    
+                
+  policies:
+    - scalability:
+        type: tosca.policies.ARTICONF.Performance
+        targets: [ wordpress ]
             
         
         
