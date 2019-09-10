@@ -17,9 +17,79 @@ from utils.TOSCA_parser import *
 import logging
 
 
+def get_cpu_frequency():
+    return '2.9 GHz'
+
+def get_num_cpus():
+    return 1
+
+def get_cloud_domain():
+    return 'UvA (Amsterdam, The Netherlands) XO Rack'
+
+def get_cloud_provider():
+    return 'ExoGeni'
+
+def get_disk_size():
+    return '25000 MB'
+
+def get_mem_size():
+    return '3000 MB'
+
+
+def set_VM_properties(node_template_dict):
+    node_template_dict['properties'].pop('host_name')
+    node_template_dict['properties']['host_name'] = 'vm'
+    node_template_dict['properties'].pop('num_cpus')
+    node_template_dict['properties']['num_cpus'] = get_num_cpus()
+    node_template_dict['properties'].pop('cpu_frequency')
+    node_template_dict['properties']['cpu_frequency'] = get_cpu_frequency()
+    node_template_dict['properties'].pop('disk_size')
+    node_template_dict['properties']['disk_size'] = get_disk_size()
+    node_template_dict['properties']['mem_size'] = get_mem_size()
+    return node_template_dict
+
+def set_topology_properties(node_template_dict):
+    node_template_dict['properties'].pop('provider')
+    node_template_dict['properties']['provider'] = get_cloud_provider()
+    node_template_dict['properties'].pop('domain')
+    node_template_dict['properties']['domain'] = get_cloud_domain()
+    node_template_dict['properties'].pop('name')
+    node_template_dict['properties']['name'] = 'name'
+    return node_template_dict
+
+
+def fill_in_properties(nodetemplate_dict):
+    if 'properties' in nodetemplate_dict:
+        if 'type' in nodetemplate_dict and nodetemplate_dict['type'] == 'tosca.nodes.ARTICONF.VM.topology':
+            nodetemplate_dict = set_topology_properties(nodetemplate_dict)
+        if 'type' in nodetemplate_dict and nodetemplate_dict['type'] == 'tosca.nodes.ARTICONF.VM.Compute':
+            nodetemplate_dict = set_VM_properties(nodetemplate_dict)
+    return nodetemplate_dict
+
+
+def node_type_2_node_template(node_type):
+    nodetemplate_dict = {}
+    type_name = next(iter(node_type))
+    node_type_array = type_name.split(".")
+    name = names.get_first_name().lower() + "_" + node_type_array[len(node_type_array) - 1].lower()
+    nodetemplate_dict[name] = node_type[next(iter(node_type))].copy()
+    nodetemplate_dict[name]['type'] = type_name
+    if 'capabilities' in nodetemplate_dict[name]:
+        nodetemplate_dict[name].pop('capabilities')
+    if 'requirements' in nodetemplate_dict[name]:
+        nodetemplate_dict[name].pop('requirements')
+    if 'capabilities' in nodetemplate_dict[name]:
+        nodetemplate_dict[name].pop('capabilities')
+    if 'derived_from' in nodetemplate_dict[name]:
+        nodetemplate_dict[name].pop('derived_from')
+    if 'properties' in nodetemplate_dict[name]:
+        nodetemplate_dict[name] = fill_in_properties(nodetemplate_dict[name])
+    if 'type' in node_type[next(iter(node_type))]:
+        node_type[next(iter(node_type))].pop('type')
+    return NodeTemplate(name, nodetemplate_dict, node_type)
+
 
 class BasicPlanner:
-
 
     def __init__(self, path):
         self.template = ToscaTemplate(path)
@@ -29,48 +99,35 @@ class BasicPlanner:
         self.all_nodes.update(self.tosca_node_types.items())
         self.all_nodes.update(self.all_custom_def.items())
 
-        
-        
-#        capable_node_name = ''
+        #        capable_node_name = ''
         for node in self.template.nodetemplates:
-            node_templates = self.add_reqired_nods(node,None)
-            
-#            missing_requirements = self.get_missing_requirements(node)
-#            for req in missing_requirements:
-#                for key in req:
-#                    capable_node = self.get_node_types_by_capability(req[key]['capability'])                
-#                    capable_node_type = next(iter(capable_node))
-#                
-#                if self.node_requered_once(capable_node) and not self.contains_node_type(node_templates,capable_node_type):
-#                    capable_node_template = self.node_type_2_node_template(capable_node)
-#                    capable_node_name = capable_node_template.name
-#                    node_templates.append(capable_node_template)
-#                
-#                req[next(iter(req))]['node'] = capable_node_name
-#                node.requirements.append(req)
-#                node_templates.append(node)
-            
+            node_templates = self.add_reqired_nods(node, None)
+
         if node_templates:
+            # Replace  'occurrences': [1, 'UNBOUNDED']  with 'occurrences': 1
+            for node in node_templates:
+                for req in node.requirements:
+                    if 'occurrences' in req[next(iter(req))]:
+                        req[next(iter(req))].pop('occurrences')
+
             self.template.nodetemplates = node_templates
         else:
-            logging.info('The TOSCA template in: '+path + ' has no requirements' )
+            logging.info('The TOSCA template in: ' + path + ' has no requirements')
         tp = TOSCAParser()
         yaml_str = tp.tosca_template2_yaml(self.template)
-        
-        logging.info('TOSCA template: \n'+ yaml_str)
-#        print(yaml_str)
 
+        logging.info('TOSCA template: \n' + yaml_str)
 
-
+    #        print(yaml_str)
 
     def get_missing_requirements(self, node):
-        logging.info('Looking for requirements for node: '+node.name )
+        logging.info('Looking for requirements for node: ' + node.name)
         def_type = self.all_nodes[node.type]
         def_requirements = []
         if 'requirements' in def_type.keys():
             def_requirements = def_type['requirements']
-            logging.info('Found requirements: '+ str(def_requirements)+ ' for node: '+node.name )
-        
+            logging.info('Found requirements: ' + str(def_requirements) + ' for node: ' + node.name)
+
         missing_requirements = []
         if not node.requirements:
             missing_requirements = def_requirements
@@ -80,29 +137,28 @@ class BasicPlanner:
                     for node_req in node.requirements:
                         if key not in node_req:
                             missing_requirements.append(def_requirement)
-        
-        
-        #Make sure we have the deffinition. Otherwise we get an error in the recursion 
+
+        # Make sure we have the deffinition. Otherwise we get an error in the recursion
         if 'derived_from' in def_type.keys() and not def_type['derived_from'] in node.custom_def.keys():
             node.custom_def[def_type['derived_from']] = self.all_custom_def[def_type['derived_from']]
-            
+
         if node.parent_type and node.parent_type.requirements:
-            logging.info('Adding to : '+str(node.name) + '  parent requirements from: '+str(node.parent_type.type))
+            logging.info('Adding to : ' + str(node.name) + '  parent requirements from: ' + str(node.parent_type.type))
             missing_requirements = missing_requirements + node.parent_type.requirements
-            logging.info('  missing_requirements: '+str(missing_requirements))
+            logging.info('  missing_requirements: ' + str(missing_requirements))
         return missing_requirements
 
-
-    def get_node_types_by_capability(self,cap):
+    def get_node_types_by_capability(self, cap):
         candidate_nodes = {}
         for tosca_node_type in self.all_nodes:
             if tosca_node_type.startswith('tosca.nodes') and 'capabilities' in self.all_nodes[tosca_node_type]:
-                logging.debug('      Node: '+str(tosca_node_type))
+                logging.debug('      Node: ' + str(tosca_node_type))
                 for caps in self.all_nodes[tosca_node_type]['capabilities']:
-                    logging.debug('          '+str(self.all_nodes[tosca_node_type]['capabilities'][caps]['type'])+' == '+cap)
+                    logging.debug('          ' + str(
+                        self.all_nodes[tosca_node_type]['capabilities'][caps]['type']) + ' == ' + cap)
                     if self.all_nodes[tosca_node_type]['capabilities'][caps]['type'] == cap:
                         candidate_nodes[tosca_node_type] = self.all_nodes[tosca_node_type]
-                        logging.debug('          candidate_node: '+str(tosca_node_type))
+                        logging.debug('          candidate_node: ' + str(tosca_node_type))
 
         candidate_child_nodes = {}
         for tosca_node_type in self.all_nodes:
@@ -111,19 +167,20 @@ class BasicPlanner:
                 for candidate_node_name in candidate_nodes:
                     if candidate_child_node['derived_from'] == candidate_node_name:
                         candidate_child_nodes[tosca_node_type] = self.all_nodes[tosca_node_type]
-                        candidate_child_nodes[tosca_node_type] = self.copy_capabilities_with_one_occurrences(candidate_nodes[candidate_node_name]['capabilities'],candidate_child_node)
+                        candidate_child_nodes[tosca_node_type] = self.copy_capabilities_with_one_occurrences(
+                            candidate_nodes[candidate_node_name]['capabilities'], candidate_child_node)
 
         candidate_nodes.update(candidate_child_nodes)
         capable_nodes = {}
 
-        #Only return the nodes that have interfaces. This means that they are not "abstract"
+        # Only return the nodes that have interfaces. This means that they are not "abstract"
         for candidate_node_name in candidate_nodes:
-            if 'interfaces' in candidate_nodes[candidate_node_name].keys() and 'tosca.nodes.Root'!=candidate_node_name:
+            if 'interfaces' in candidate_nodes[
+                candidate_node_name].keys() and 'tosca.nodes.Root' != candidate_node_name:
                 capable_nodes[candidate_node_name] = candidate_nodes[candidate_node_name]
         return capable_nodes
 
-
-    def copy_capabilities_with_one_occurrences(self,parent_capabilities,candidate_child_node):
+    def copy_capabilities_with_one_occurrences(self, parent_capabilities, candidate_child_node):
         inherited_capabilities = []
         if not 'capabilities' in candidate_child_node.keys():
             candidate_child_node['capabilities'] = {}
@@ -136,15 +193,13 @@ class BasicPlanner:
                     candidate_child_node['capabilities'][key] = parent_capabilities[key]
         return candidate_child_node
 
-
-    def has_capability_max_one_occurrence(self,capability):
+    def has_capability_max_one_occurrence(self, capability):
         if 'occurrences' in capability and capability['occurrences'][1] == 1:
             return True
         else:
             return False
 
-
-    def contains_node_type(self,capable_node_types_list,node_type):
+    def contains_node_type(self, capable_node_types_list, node_type):
         if capable_node_types_list == None:
             return False
         for capable_node_type in capable_node_types_list:
@@ -155,96 +210,71 @@ class BasicPlanner:
             if type_name == node_type:
                 return True
         return False
-    
-    def node_type_2_node_template(self,node_type):
-        nodetemplate_dict = {}
-        type_name = next(iter(node_type))
-        node_type_array = type_name.split(".")
-        name = names.get_first_name().lower() + "_" + node_type_array[len(node_type_array)-1].lower()
-        nodetemplate_dict[name] = node_type[next(iter(node_type))].copy()
-        nodetemplate_dict[name]['type'] = type_name
-        if 'capabilities' in nodetemplate_dict[name]:
-            nodetemplate_dict[name].pop('capabilities')
-        if 'requirements' in nodetemplate_dict[name]:
-            nodetemplate_dict[name].pop('requirements')
-        if 'capabilities' in nodetemplate_dict[name]:
-            nodetemplate_dict[name].pop('capabilities')
-        if 'derived_from' in nodetemplate_dict[name]:
-            nodetemplate_dict[name].pop('derived_from')                
 
-        if 'type' in node_type[next(iter(node_type))]:
-            node_type[next(iter(node_type))].pop('type')
-        return NodeTemplate(name, nodetemplate_dict,node_type)
-
-
-    def get_requirement_occurrences(self,req):
+    def get_requirement_occurrences(self, req):
         if 'occurrences' in req:
             return req['occurrences']
         return None
-    
-    def get_optimal_num_of_occurrences(self,node_type,min_max_occurrences):
+
+    def get_optimal_num_of_occurrences(self, node_type, min_max_occurrences):
         max_occurrences = -1
         min_occurrences = -1
-        
         if min_max_occurrences:
             if isinstance(min_max_occurrences[1], int):
                 max_occurrences = int(min_max_occurrences[1])
-            if isinstance(min_max_occurrences[0], int):    
+            if isinstance(min_max_occurrences[0], int):
                 min_occurrences = int(min_max_occurrences[0])
-            if max_occurrences and max_occurrences > -1 :
+            if max_occurrences and max_occurrences > -1:
                 return max_occurrences
-            if max_occurrences and max_occurrences <= -1 and min_max_occurrences[1] == 'UNBOUNDED' and node_type =='tosca.nodes.ARTICONF.VM.Compute':
+            if max_occurrences and max_occurrences <= -1 and min_max_occurrences[
+                1] == 'UNBOUNDED' and node_type == 'tosca.nodes.ARTICONF.VM.Compute':
                 return 2
-        else: 
+        else:
             return 1
-            
-            
-    
-    def add_reqired_nods(self,node,node_templates):
+
+    def add_reqired_nods(self, node, node_templates):
         if not node_templates:
             node_templates = []
         missing_requirements = self.get_missing_requirements(node)
         if not missing_requirements:
-            logging.info('Node: '+node.name + ' of type: '+node.type +' has no requirements')
-#            return node_templates
+            logging.info('Node: ' + node.name + ' of type: ' + node.type + ' has no requirements')
+        #            return node_templates
         capable_node_name = ''
         min_max_occurrences = []
         for req in missing_requirements:
             for key in req:
                 min_max_occurrences = self.get_requirement_occurrences(req[key])
-                logging.info('Looking for capability: '+req[key]['capability']+ ' for node: '+node.name)
+                logging.info('Looking for capability: ' + req[key]['capability'] + ' for node: ' + node.name)
                 capable_node = self.get_node_types_by_capability(req[key]['capability'])
-                if capable_node: 
+                if capable_node:
                     capable_node_type = next(iter(capable_node))
-                    logging.info('Found: '+str(capable_node_type))
-                else: 
-                    logging.error('Did not find node with reuired capability: '+str(req[key]['capability']))
+                    logging.info('Found: ' + str(capable_node_type))
+                else:
+                    logging.error('Did not find node with reuired capability: ' + str(req[key]['capability']))
 
-            occurrences = self.get_optimal_num_of_occurrences(capable_node_type,min_max_occurrences)
-            if not self.contains_node_type(node_templates,capable_node_type) and occurrences == 1:
-                capable_node_template = self.node_type_2_node_template(capable_node)
+            occurrences = self.get_optimal_num_of_occurrences(capable_node_type, min_max_occurrences)
+            if not self.contains_node_type(node_templates, capable_node_type) and occurrences == 1:
+                capable_node_template = node_type_2_node_template(capable_node)
                 capable_node_name = capable_node_template.name
                 node_templates.append(capable_node_template)
-                #recursively fulfill all requirements
-                self.add_reqired_nods(capable_node_template,node_templates)
+                # recursively fulfill all requirements
+                self.add_reqired_nods(capable_node_template, node_templates)
             elif occurrences > 1:
-                logging.info('Creating: '+str(occurrences) + ' occurrences of '+capable_node_type)
-                for x in range(0, occurrences):  
-                    capable_node_template = self.node_type_2_node_template(capable_node)
+                logging.info('Creating: ' + str(occurrences) + ' occurrences of ' + capable_node_type)
+                for x in range(0, occurrences):
+                    capable_node_template = node_type_2_node_template(capable_node)
                     capable_node_name = capable_node_template.name
-                    logging.info('Adding : '+str(capable_node_template.name))
+                    logging.info('Adding : ' + str(capable_node_template.name))
                     node_templates.append(capable_node_template)
-                #recursively fulfill all requirements
-                self.add_reqired_nods(capable_node_template,node_templates)
-                
-            logging.info('Adding node: '+capable_node_name+ ' to ------------------: '+str(req))
-            
-            for x in range(0, occurrences):  
+                # recursively fulfill all requirements
+                self.add_reqired_nods(capable_node_template, node_templates)
+
+            for x in range(0, occurrences):
                 req[next(iter(req))]['node'] = capable_node_name
                 node.requirements.append(req)
-            
-            
-            if not self.contains_node_type(node_templates,node):
+
+            if not self.contains_node_type(node_templates, node):
                 node_templates.append(node)
-        
+
         return node_templates
+
