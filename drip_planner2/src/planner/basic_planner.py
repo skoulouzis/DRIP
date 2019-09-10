@@ -115,10 +115,14 @@ class BasicPlanner:
             logging.info('The TOSCA template in: ' + path + ' has no requirements')
         tp = TOSCAParser()
         yaml_str = tp.tosca_template2_yaml(self.template)
+        yaml_str = yaml_str.replace('tosca_definitions_version: tosca_simple_yaml_1_0', '')
+        yaml_str = yaml_str.replace('description: TOSCA example', '')
+        yaml_str = yaml_str.replace('tosca_template', 'topology_template')
+        self.formatted_yaml_str = 'tosca_definitions_version: tosca_simple_yaml_1_0\nrepositories:\n docker_hub: https://hub.docker.com/\n'+yaml_str
+        # logging.info('TOSCA template: \n' + formatted_yaml_str)
 
-        logging.info('TOSCA template: \n' + yaml_str)
-
-    #        print(yaml_str)
+    def get_plan(self):
+        return  self.formatted_yaml_str
 
     def get_missing_requirements(self, node):
         logging.info('Looking for requirements for node: ' + node.name)

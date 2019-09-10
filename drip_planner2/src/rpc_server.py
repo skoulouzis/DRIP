@@ -6,14 +6,14 @@ import json
 import logging
 import os
 import os.path
-from os.path import expanduser
-import pika
-from planner.winery_planner import *
+from builtins import print
 from planner.basic_planner import *
+import pika
 import sys
 import tempfile
 import time
 import logging
+import base64
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
@@ -76,8 +76,8 @@ def handle_delivery(message):
 
     current_milli_time = lambda: int(round(time.time() * 1000))
 
-    rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672, user=owner)
-    logger.addHandler(rabbit)
+    #rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672, user=owner)
+    #logger.addHandler(rabbit)
 
     try:
         tosca_file_path = tempfile.gettempdir() + "/planner_files/" + str(current_milli_time()) + "/"
@@ -96,19 +96,19 @@ def handle_delivery(message):
     response["creationDate"] = current_milli_time()
     response["parameters"] = []
     if queue_name == "planner_queue":
-        planner = DumpPlanner(tosca_file_path + "/" + tosca_file_name + ".yml");
-        vm_nodes = planner.plan(max_vms)
-        for vm in vm_nodes:
-            parameter = {}
-            parameter['value'] = str(json.dumps(vm))
-            parameter['name'] = 'vm'
-            parameter['encoding'] = 'UTF-8'
-            response["parameters"].append(parameter)
-
+        planner = BasicPlanner(tosca_file_path + "/" + tosca_file_name + ".yml")
+        plan = planner.get_plan()
+        parameter = {}
+        encodedBytes = base64.b64encode(plan.encode("utf-8"))
+        encodedStr = str(encodedBytes, "utf-8")
+        parameter['value'] = encodedStr
+        parameter['name'] = 'tosca_plan'
+        parameter['encoding'] = 'UTF-8'
+        response["parameters"].append(parameter)
     logger.info("Returning plan")
     logger.info("Output message:" + json.dumps(response))
     return json.dumps(response)
-
+    
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
@@ -118,8 +118,9 @@ if __name__ == "__main__":
         #        namespace = "http%253A%252F%252Fsne.uva.nl%252Fservicetemplates"
         #        servicetemplate_id = "wordpress_w1-wip1"
         #        planner = WineryPlanner(tosca_reposetory_api_base_url,namespace,servicetemplate_id)
-        tosca_file_path = "../../TOSCA/application_example_output.yaml"
+        tosca_file_path = "../../TOSCA/application_example.yaml"
         planner = BasicPlanner(tosca_file_path)
+        print(planner.get_plan())
     else:
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         channel = init_chanel(sys.argv)
