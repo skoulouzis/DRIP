@@ -1,0 +1,30 @@
+{
+  "creationDate": 1490629905670,
+  "parameters": [
+    {
+      "url": null,
+      "encoding": "UTF-8",
+      "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWBqs75i849MytgwgQcRYMcsXIki0yeYTKABH6JqoiyFBHtYlyh/EV1t6cujb9LyNR1ArgFP4J5EN4fPbtwKYvxecd0LojSPxl4wjQlfrHyg6iKUYB7hVzGqACMvgYZHrtHPfrdEmOGPplPVPpoaX2j+u0BZ0yYhrWMKjzyYZKa68yy5N18+Gq+1p83HfUDwIU9wWaUYdgEvDujqF6b8p3z6LDx9Ob+RanSMZSt+b8eZRcd+F2Oy/gieJEJ8kc152VIOv8UY1xB3hVEwVnSRGgrAsa+9PChfF6efXUGWiKf8KBlWgBOYsSTsOY4ks9zkXMnbcTdC+o7xspOkyIcWjv alogo@hermes",
+      "name": "credential",
+      "attributes": {
+        "role": "master",
+        "IP": "172.17.0.4",
+        "user": "vm_user"
+      }
+    },
+    {
+      "url": null,
+      "encoding": "UTF-8",
+      "value": "fdsvvvvvvvvv",
+      "name": "playbook",
+      "attributes": null
+    },
+    {
+      "url": null,
+      "encoding": "UTF-8",
+      "value": "ansible",
+      "name": "cluster",
+      "attributes": null
+    }
+  ]
+}

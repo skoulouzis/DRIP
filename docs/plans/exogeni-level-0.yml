@@ -1,0 +1,13 @@
+---
+publicKeyPath: "name@id_rsa.pub"
+userName: "vm_user"
+topologies:
+- topology: "exogeni-level-1"
+  cloudProvider: "ExoGENI"
+  domain: "RENCI (Chapel Hill, NC USA) XO Rack"
+  status: "fresh"
+  tag: "fixed"
+  statusInfo: null
+  copyOf: null
+  sshKeyPairId: null
+connections: null

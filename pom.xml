@@ -4,20 +4,15 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>nl.uva.sne.drip</groupId>
     <artifactId>drip</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.1.RELEASE</version>
-    </parent>
     <modules>
+        <module>drip-api</module>
         <module>drip-planner2provisioner</module>
         <module>drip-commons</module>
         <module>drip-provisioner</module>
-        <module>drip-api</module>
     </modules>
 </project>

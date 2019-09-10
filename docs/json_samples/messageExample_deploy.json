@@ -1,0 +1,27 @@
+{
+  "creationDate": 1487002029722,
+  "parameters": [
+  {
+    "url": null,
+      "encoding": "UTF-8",
+      "value": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEA8XXU0BSmjVxDWT23di1++beDDCiZkFHw+uQ/fyF3j4LSg+LRoE7NZkvrh\n056jlYGbK6lt/p5kPAI8SDPH/eHU2pAhK40StSvJHX1lnNDLBy7bDfwaUru3ZkOL2jf2M5Z9/PdE\n7RxWb9Vn3/jrW6ojRt29EQcIKwgxJPd4KrrKSwu5HifmxIFFY4DvSBt+/M0pPCj2fJdZ0x9X7yMM\n+f1uvYjXfwJKd5oT2h0pyXSl9golvtVkiVMHcU3jNjX4meG9RHdteRu9dSmtDxFHVd98cJMInScA\nxw3hP9NQ8lc9v5eiwFc2B52rlE1Hwh5mdJzA0pin/7aKKd9/Mv8/cQIDAQABAoIBAQCCJEtGt8OY\n4X1rQPTxrLqbE0i1Ok6FWvnYHLtFzauE+C4Jf/G++qWZ8LHXyYcMI1XyEAANgW16re5CdcX9+ILT\ncPPjtYlbStcJdQcZ8OtioRq8zWFd4UJi0zBfWwq23DDDz1oqjS/GSN7BuhkZm7VnG4WV/Y+Y7NxX\nLTwnu4Y2KJk1PCXCORjNOhm6AM+56/nG8v5ds7rwfYkZuVJB86xj4vvgogPsydxush7pSJmor\nBih/2jNTYW1Xq5G7ixLB+qlf80tAZ22yRjnGZvyILl\nvrGs7T6Q0ncKZYldP/Cxu7H9SEs9AoGBAPv8mDUTkba6e4RCdtjntrQesSYEL5a04AFDhOrPlGxb\nQo6SHGl8FDv5xJVr33GdzjOajpvHfBLbm7JmCZA5jOpMCaRdR5oDzEM3mZYTvnlQfyaege40ayp0\nCaRFZBI7CoRC4yqbCNPvWYJ8gudLHfheYURz8HHMt7dT6IxYcz6DAoGBAPVOUXXVcUigks+Z83/M\nl6R0+RehKYdKl/XdK0tzKeaJ9qWOL0eEpIekJow9U1FYYhCuUWnJpEcUI2K/hmGeX4HOOLltuQZu\ncTajjIJaz5DKgIJIApghxRfKA3Ka3IjsMLi+uF4F+GbAInSFpHK3cFzSs2q1dlgVFUp6cQ4NqSf7\nAoGADcm6glz5wifeDlScsCaWzGUE+GCssP5u21Jbr6+LoYVd0upUA1wWxe\n66E8mbxflZawkTlr5aR9AH5otNzb+IxIBddTvcc6kNApdP84b9akLSMx5h7K00/8YaxdF3i8qO9B\nSo/PfrFhXLi47L0YomVMmQUCgYEAuzEfspbFktGOFsP5b+3VTldA+kouoaJHogQ7lKD2OYnQYPfG\nloHe9+9Ixz3JBcs3UlljoSGRr3XEiuRrJSElvlXuUFzm16Hhs9xi7\n7/SlHWXU1VMjAm3eHSMaobvgD8VtAMMnlZnqD8pVfL\n70wyYNRfSnwq9i7uPDSMOVlnAlMgRXO8rqursoBOz+SBaG2uuwtBkrFmmmxBP/IZs0g2OQbMnvkB\nmUbKa7m1ZAnqlsE7FIO073FWlXSg90bTLMWSEhMWgKFpf0dgT/iX93yjhySmzew1Msl7Kw==\n-----END RSA PRIVATE KEY-----",
+      "name": "credential",
+      "attributes": {
+        "IP": "145.100.100",
+        "user":"root",
+        "role":"master"
+      }
+    },
+    {
+      "url": null,
+      "encoding": "UTF-8",
+      "value": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEA8XXU0BSmjVxDWT23di1++beDDCiZkFHw+uQ/fyF3j4LSg+LRoE7NZkvrh\n056jlYGbK6lt/p5kPAI8SDPH/eHU2pAhK40StSvJHX1lnNDLBy7bDfwaUru3ZkOL2jf2M5Z9/PdE\n7RxWb9Vn3/jrW6ojRt29EQcIKwgxJPd4KrrKSwu5HifmxIFFY4DvSBt+/M0pPCj2fJdZ0x9X7yMM\n+f1uvYjXfwJKd5oT2h0pyXSl9golvtVkiVMHcU3jNjX4meG9RHdteRu9dSmtDxFHVd98cJMInScA\nxw3hP9NQ8lc9v5eiwFc2B52rlE1Hwh5mdJzA0pin/7aKKd9/Mv8/cQIDAQABAoIBAQCCJEtGt8OY\n4X1rQPTxrLqbE0i1Ok6FWvnYHLtFzauE+C4Jf/G++qWZ8LHXyYcMI1XyEAANgW16re5CdcX9+ILT\ncPPjtYlbStcJdQcZ8OtioRq8zWFd4UJi0zBfWwq23DDDz1oqjS/GSN7BuhkZm7VnG4WV/Y+Y7NxX\nLTwnu4Y2KJk1PCXCORjNOhm6AM+56/nG8v5ds7rwfYkZuVJB86xj4vvgogPsydxush7pSJmor\nBih/2jNTYW1Xq5G7ixLB+qlf80tAZ22yRjnGZdYLtHX01CsdioJZn2Z0KsP3LCmuPIHr39DvyILl\nvrGs7T6Q0ncKZYldP/Cxu7H9SEs9AoGBAPv8mDUTkba6e4RCdtjntrQesSYEL5a04AFDhOrPlGxb\nQo6SHGl8FDv5xJVr33GdzjOajpvHfBLbm7JmCZA5jOpMCaRdR5oDzEM3mZYTvnlQfyaege40ayp0\nCaRFZBI7CoRC4yqbCNPvWYJ8gudLHfheYURz8HHMt7dT6IxYcz6DAoGBAPVOUXXVcUigks+Z83/M\nl6R0+RehKYdKl/XdK0tzKeaJ9qWOL0eEpIekJow9U1FYYhCuUWnJpEcUI2K/hmGeX4HOOLltuQZu\ncTajjIJaz5DKgIJIApghxRfKA3Ka3IjsMLi+uF4F+GbAInSFpHK3cFzSs2q1dlgVFUp6cQ4NqSf7\nAoGADcm6glz5wifeDlScsC2tn5l2VAAyompvP2J0aWzGUE+GCssP5u21Jbr6+LoYVd0upUA1wWxe\n66E8mbxflZawkTlr5aR9AH5otNzb+IxIBddTvcc6kNApdP84b9akLSMx5h7K00/8YaxdF3i8qO9B\nSo/PfrFhXLi47L0YomVMmQUCgYEAuzEfspbFktGOFsP5b+3VTldA+kouoaJHogQ7lKD2OYnQYPfG\nloHe9+9Ixz3JBcs3UlljoSGRr3XEiuRrJSElvlXuUFzm16Hhs9xi7\n7/SlHWXU1VMjAm3eHSMaobvgD8VtyqFdBMxZ6fLTsRC1o98CgYB4K6q7GffLL9AMMnlZnqD8pVfL\n70wyYNRfSnwq9i7uPDSMOVlnAlMgRXO8rqursoBOz+SBaG2uuwtBkrFmmmxBP/IZs0g2OQbMnvkB\nmUbKa7m1ZAnqlsE7FIO073FWlXSg90bTLMWSEhMWgKFpf0dgT/iX93yjhySmzew1Msl7Kw==\n-----END RSA PRIVATE KEY-----",
+      "name": "credential",
+      "attributes": {
+        "IP": "145.200.100",
+        "user":"root",
+        "tole":"slave"
+      }
+    }
+  ]
+}

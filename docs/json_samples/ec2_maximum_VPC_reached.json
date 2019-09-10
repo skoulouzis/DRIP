@@ -1,0 +1,1 @@
+{"creationDate":1488794695660,"parameters":[{"name":"com.amazonaws.AmazonServiceException","encoding":"UTF-8","value":"The maximum number of VPCs has been reached. (Service: AmazonEC2; Status Code: 400; Error Code: VpcLimitExceeded; Request ID: e854939e-5386-46f3-baa8-4e3c425b98ee)"}]}
