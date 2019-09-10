@@ -1,0 +1,87 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+imports:
+  - nodes: types/nodes.yaml
+  - capabilities: types/capabilities.yaml
+  - policies: types/policies.yaml
+
+description: >
+  TOSCA example
+
+topology_template:
+
+  node_templates:
+    erica_topology:
+      interfaces:
+        Standard:
+          create: dumy.yaml
+      properties:
+        domain: UvA (Amsterdam, The Netherlands) XO Rack
+        name: name
+        provider: ExoGeni
+      requirements:
+      - vm:
+          capability: tosca.capabilities.ARTICONF.VM
+          node: james_compute
+          relationship: tosca.relationships.DependsOn
+      - vm:
+          capability: tosca.capabilities.ARTICONF.VM
+          node: james_compute
+          relationship: tosca.relationships.DependsOn
+      type: tosca.nodes.ARTICONF.VM.topology
+    heather_kubernetes:
+      interfaces:
+        Standard:
+          create: interfaces/playbooks/kubernetes_install.yaml
+      requirements:
+      - host:
+          capability: tosca.capabilities.Scalable
+          node: erica_topology
+          relationship: tosca.relationships.HostedOn
+      - host:
+          capability: tosca.capabilities.Compute
+          node: erica_topology
+          relationship: tosca.relationships.HostedOn
+      type: tosca.nodes.ARTICONF.Orchestrator.Kubernetes
+    james_compute:
+      interfaces:
+        Standard:
+          create: dumy.yaml
+      properties:
+        cpu_frequency: 2.9 GHz
+        disk_size: 25000 MB
+        host_name: vm
+        mem_size: 3000 MB
+        num_cpus: 1
+      type: tosca.nodes.ARTICONF.VM.Compute
+    mysql:
+      artifacts:
+        image:
+          file: mysql:5.7
+          repository: docker_hub
+          type: tosca.artifacts.Deployment.Image.Container.Docker
+      properties:
+        environment:
+          MYSQL_DATABASE: wordpress
+          MYSQL_PASSWORD: wordpress
+          MYSQL_ROOT_PASSWORD: somewordpress
+          MYSQL_USER: wordpress
+        volumes:
+        - db_data:/var/lib/mysql
+      requirements:
+      - host:
+          capability: tosca.capabilities.ARTICONF.Orchestrator
+          node: heather_kubernetes
+          relationship: tosca.relationships.HostedOn
+      type: tosca.nodes.ARTICONF.Container.Application.Docker
+    shenita_compute:
+      interfaces:
+        Standard:
+          create: dumy.yaml
+      properties:
+        cpu_frequency: 2.9 GHz
+        disk_size: 25000 MB
+        host_name: vm
+        mem_size: 3000 MB
+        num_cpus: 1
+      type: tosca.nodes.ARTICONF.VM.Compute
