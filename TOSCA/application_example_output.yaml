@@ -1,17 +1,15 @@
 tosca_definitions_version: tosca_simple_yaml_1_0
+repositories:
+ docker_hub: https://hub.docker.com/
 
 imports:
-  - nodes: types/nodes.yaml
-  - capabilities: types/capabilities.yaml
-  - policies: types/policies.yaml
-
-description: >
-  TOSCA example
+- nodes: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/nodes.yaml
+- capabilities: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/capabilities.yaml
+- policies: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/policies.yaml
 
 topology_template:
-
   node_templates:
-    erica_topology:
+    beverly_topology:
       interfaces:
         Standard:
           create: dumy.yaml
@@ -22,28 +20,14 @@ topology_template:
       requirements:
       - vm:
           capability: tosca.capabilities.ARTICONF.VM
-          node: james_compute
+          node: nancy_compute
           relationship: tosca.relationships.DependsOn
       - vm:
           capability: tosca.capabilities.ARTICONF.VM
-          node: james_compute
+          node: nancy_compute
           relationship: tosca.relationships.DependsOn
       type: tosca.nodes.ARTICONF.VM.topology
-    heather_kubernetes:
-      interfaces:
-        Standard:
-          create: interfaces/playbooks/kubernetes_install.yaml
-      requirements:
-      - host:
-          capability: tosca.capabilities.Scalable
-          node: erica_topology
-          relationship: tosca.relationships.HostedOn
-      - host:
-          capability: tosca.capabilities.Compute
-          node: erica_topology
-          relationship: tosca.relationships.HostedOn
-      type: tosca.nodes.ARTICONF.Orchestrator.Kubernetes
-    james_compute:
+    charles_compute:
       interfaces:
         Standard:
           create: dumy.yaml
@@ -54,6 +38,20 @@ topology_template:
         mem_size: 3000 MB
         num_cpus: 1
       type: tosca.nodes.ARTICONF.VM.Compute
+    heidi_kubernetes:
+      interfaces:
+        Standard:
+          create: interfaces/playbooks/kubernetes_install.yaml
+      requirements:
+      - host:
+          capability: tosca.capabilities.Scalable
+          node: beverly_topology
+          relationship: tosca.relationships.HostedOn
+      - host:
+          capability: tosca.capabilities.Compute
+          node: beverly_topology
+          relationship: tosca.relationships.HostedOn
+      type: tosca.nodes.ARTICONF.Orchestrator.Kubernetes
     mysql:
       artifacts:
         image:
@@ -71,10 +69,10 @@ topology_template:
       requirements:
       - host:
           capability: tosca.capabilities.ARTICONF.Orchestrator
-          node: heather_kubernetes
+          node: heidi_kubernetes
           relationship: tosca.relationships.HostedOn
       type: tosca.nodes.ARTICONF.Container.Application.Docker
-    shenita_compute:
+    nancy_compute:
       interfaces:
         Standard:
           create: dumy.yaml

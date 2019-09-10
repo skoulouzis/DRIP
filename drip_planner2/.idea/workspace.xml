@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="slolved cap error">
       <change beforePath="$PROJECT_DIR$/../TOSCA/application_example.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_output.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_output.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../drip-api/src/main/java/nl/uva/sne/drip/api/rpc/DRIPCaller.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-api/src/main/java/nl/uva/sne/drip/api/rpc/DRIPCaller.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../drip-api/src/main/java/nl/uva/sne/drip/controller/PlannerController.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../drip-api/src/main/java/nl/uva/sne/drip/controller/ProvisionController.java" beforeDir="false" />
@@ -19,9 +20,6 @@
       <change beforePath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/drip/commons/model/tosca/capabilities/Capabilities.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/drip/commons/model/tosca/nodes/NodeState.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/drip/commons/model/tosca/nodes/RootNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/planner/basic_planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/basic_planner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/rpc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rpc_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/easy-install.pth" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/prettytable.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/pyparsing.py" beforeDir="false" />
@@ -134,7 +132,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568115528728</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="format TOSCA output">
+      <created>1568123822036</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1568123822036</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -153,7 +158,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="slolved cap error" />
     <MESSAGE value="produces valid TOSCA" />
-    <option name="LAST_COMMIT_MESSAGE" value="produces valid TOSCA" />
+    <MESSAGE value="format TOSCA output" />
+    <option name="LAST_COMMIT_MESSAGE" value="format TOSCA output" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

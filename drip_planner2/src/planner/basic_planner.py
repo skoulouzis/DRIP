@@ -46,6 +46,8 @@ def set_VM_properties(node_template_dict):
     node_template_dict['properties'].pop('disk_size')
     node_template_dict['properties']['disk_size'] = get_disk_size()
     node_template_dict['properties']['mem_size'] = get_mem_size()
+    node_template_dict['properties'].pop('user_name')
+    node_template_dict['properties']['user_name'] = 'vm_user'
     return node_template_dict
 
 def set_topology_properties(node_template_dict):
