@@ -25,12 +25,12 @@ import org.json.JSONException;
 
 public class P2PConverter {
 
-    public static SimplePlanContainer transfer(String toscaPlan,
+    public static SimplePlanContainer transfer( Map<String, Object>  toscaPlanMap,
             String userName, String domainName, String cloudProvider) throws JsonParseException, JsonMappingException, IOException, JSONException {
         if (cloudProvider != null) {
             cloudProvider = cloudProvider.toUpperCase();
         }
-        Map<String, Object> toscaPlanMap = Converter.ymlString2Map(toscaPlan);
+        
         Map<String, Object> topologyTemplate = (Map<String, Object>) ((Map<String, Object>) toscaPlanMap.get("topology_template")).get("node_templates");
 
         //Get the domain provider and vm list
