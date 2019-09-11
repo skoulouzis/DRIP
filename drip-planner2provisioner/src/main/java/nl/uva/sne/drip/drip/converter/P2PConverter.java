@@ -56,6 +56,7 @@ public class P2PConverter {
         List<Object> vmList = new ArrayList<>();
         for (String vmName : vmNames) {
             Map<String, Object> vm = (Map<String, Object>) topologyTemplate.get(vmName);
+            userName = (String) ((Map<String, Object>)vm.get("properties")).get("user_name");
             vm.put("name", vmName);
             vmList.add(vm);
         }
@@ -66,15 +67,15 @@ public class P2PConverter {
         topTopology.topologies = new ArrayList<>();
 
         boolean firstVM = true;
-        SubTopologyInfo sti = new SubTopologyInfo();
+        SubTopologyInfo subTopologyInfo = new SubTopologyInfo();
         String provisionerScalingMode = "fixed";
         SubTopology subTopology = createSubTopology(cloudProvider);
-        sti.cloudProvider = cloudProvider;
-        sti.topology = UUID.randomUUID().toString();
-        sti.domain = domainName;
-        sti.status = "fresh";
-        sti.statusInfo = null;
-        sti.tag = provisionerScalingMode;
+        subTopologyInfo.cloudProvider = cloudProvider;
+        subTopologyInfo.topology = UUID.randomUUID().toString();
+        subTopologyInfo.domain = domainName;
+        subTopologyInfo.status = "fresh";
+        subTopologyInfo.statusInfo = null;
+        subTopologyInfo.tag = provisionerScalingMode;
 
         Map<String, SubTopologyInfo> subTopologyInfos = new HashMap<>();
         for (Object element : vmList) {
@@ -82,20 +83,20 @@ public class P2PConverter {
             firstVM = false;
 
             if (isScalable(element)) {
-                sti = new SubTopologyInfo();
+                subTopologyInfo = new SubTopologyInfo();
                 subTopology = createSubTopology(cloudProvider);
                 provisionerScalingMode = "scaling";
-                sti.cloudProvider = cloudProvider;
-                sti.topology = UUID.randomUUID().toString();
-                sti.domain = domainName;
-                sti.status = "fresh";
-                sti.tag = provisionerScalingMode;
-                sti.statusInfo = null;
+                subTopologyInfo.cloudProvider = cloudProvider;
+                subTopologyInfo.topology = UUID.randomUUID().toString();
+                subTopologyInfo.domain = domainName;
+                subTopologyInfo.status = "fresh";
+                subTopologyInfo.tag = provisionerScalingMode;
+                subTopologyInfo.statusInfo = null;
             } else {
                 for (SubTopologyInfo info : subTopologyInfos.values()) {
                     if (!info.tag.equals("scaling")) {
-                        sti = info;
-                        subTopology = sti.subTopology;
+                        subTopologyInfo = info;
+                        subTopology = subTopologyInfo.subTopology;
                         break;
                     }
                 }
@@ -109,8 +110,8 @@ public class P2PConverter {
                 subTopology.subnets = new ArrayList<>();
                 subTopology.subnets.add(s);
             }
-            sti.subTopology = subTopology;
-            subTopologyInfos.put(sti.topology, sti);
+            subTopologyInfo.subTopology = subTopology;
+            subTopologyInfos.put(subTopologyInfo.topology, subTopologyInfo);
         }
         for (SubTopologyInfo info : subTopologyInfos.values()) {
             topTopology.topologies.add(info);
@@ -128,7 +129,7 @@ public class P2PConverter {
         String yamlString = mapper.writeValueAsString(topTopology);
         spc.topLevelContents = yamlString.substring(4);
 
-        Map<String, String> output = new HashMap<>();
+        Map<String, Object> output = new HashMap<>();
         for (int i = 0; i < topTopology.topologies.size(); i++) {
             String key = topTopology.topologies.get(i).topology;
             String value = mapper.writeValueAsString(topTopology.topologies.get(i).subTopology);

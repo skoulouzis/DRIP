@@ -106,6 +106,9 @@ node_types:
       os:
         type: string
         required: true     
+      ssh_key:
+        type: string
+        required: false           
     interfaces:
       Standard:
         create: dumy.yaml
@@ -134,7 +137,10 @@ node_types:
         required: true
       domain:        
         type: string
-        required: true        
+        required: true
+      credential:
+        type: tosca.datatypes.Credential
+        required: false     
     interfaces:
       Standard:
         create: dumy.yaml

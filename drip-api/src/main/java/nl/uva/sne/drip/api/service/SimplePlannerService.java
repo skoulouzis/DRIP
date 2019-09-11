@@ -78,14 +78,14 @@ public class SimplePlannerService {
                 String originalFileName = p.getName();
                 String name = System.currentTimeMillis() + "_" + originalFileName;
                 if (originalFileName.equals("planner_output_all.yml")) {
-                    topLevel.setName(name);
-                    topLevel.setLevel(0);
+//                    topLevel.setName(name);
+//                    topLevel.setLevel(0);
                     topLevel.setKvMap(Converter.ymlString2Map(p.getValue()));
                 } else {
                     lowerLevelPlan = new PlanResponse();
-                    lowerLevelPlan.setName(name);
+//                    lowerLevelPlan.setName(name);
                     lowerLevelPlan.setKvMap(Converter.ymlString2Map(p.getValue()));
-                    lowerLevelPlan.setLevel(1);
+//                    lowerLevelPlan.setLevel(1);
                     planDao.save(lowerLevelPlan);
                     ids.add(lowerLevelPlan.getId());
                 }
@@ -166,12 +166,12 @@ public class SimplePlannerService {
 
     public List<PlanResponse> findAll() {
         List<PlanResponse> all = planDao.findAll();
-        List<PlanResponse> topLevel = new ArrayList<>();
-        for (PlanResponse p : all) {
-            if (p.getLevel() == 0) {
-                topLevel.add(p);
-            }
-        }
-        return topLevel;
+//        List<PlanResponse> topLevel = new ArrayList<>();
+//        for (PlanResponse p : all) {
+//            if (p.getLevel() == 0) {
+//                topLevel.add(p);
+//            }
+//        }
+        return all;
     }
 }

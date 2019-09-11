@@ -39,23 +39,6 @@ public class PlanResponse extends KeyValueHolder {
     private Set<String> loweLevelPlansIDs;
 
     /**
-     * The name of the generated plan
-     *
-     * @return the name
-     */
-    @DocumentationExample("planner_output_all.yml")
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
      * The id of the TOSCA <code>PlaybookRepresentation</code> description from
      * which this plan was generated
      *
@@ -72,25 +55,7 @@ public class PlanResponse extends KeyValueHolder {
     public void setToscaID(String toscaID) {
         this.toscaID = toscaID;
     }
-
-    /**
-     * The level of the plan. Some provisioners use levels to represent a plan.
-     * In these cases there are two levels of TOSCA descriptions.
-     *
-     * @return the level
-     */
-    @DocumentationExample("0")
-    public Integer getLevel() {
-        return level;
-    }
-
-    /**
-     * @param level the level to set
-     */
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
-
+    
     /**
      * The list of the lower level plans attached to this plan. Some
      * provisioners use levels to represent a plan. In these cases there are two

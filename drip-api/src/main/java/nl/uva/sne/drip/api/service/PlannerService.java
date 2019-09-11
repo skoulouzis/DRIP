@@ -95,34 +95,19 @@ public class PlannerService {
             for (MessageParameter mp : messageParams) {
                 String value = mp.getValue();
                 toscaPlan = new String(Base64.getDecoder().decode(value));
-                logger.log(Level.INFO, "TOSCA Plann: "+toscaPlan);
-                
+                logger.log(Level.INFO, "TOSCA Plann: " + toscaPlan);
+
             }
-//            String domainName = getBestDomain(cloudProvider);
+            Map<String, Object> toscaPlanMap = Converter.ymlString2Map(toscaPlan);
+//            SimplePlanContainer simplePlan = P2PConverter.transfer(toscaPlanMap, null, null, null);
 
-            SimplePlanContainer simplePlan = P2PConverter.transfer(toscaPlan, null, null, null);
+            PlanResponse planResponse = new PlanResponse();
+            planResponse.setToscaID(toscaId);
+            planResponse.setKvMap(toscaPlanMap);
 
-            PlanResponse topLevel = new PlanResponse();
-            topLevel.setLevel(0);
-            topLevel.setToscaID(toscaId);
-            topLevel.setName("planner_output_all.yml");
-            topLevel.setKvMap(Converter.ymlString2Map(simplePlan.topLevelContents));
-            Map<String, String> map = simplePlan.lowerLevelContents;
-            Set<String> loweLevelPlansIDs = new HashSet<>();
-            for (String lowLevelNames : map.keySet()) {
-                PlanResponse lowLevelPlan = new PlanResponse();
-                lowLevelPlan.setLevel(1);
-                lowLevelPlan.setToscaID(toscaId);
-                lowLevelPlan.setName(lowLevelNames);
-                lowLevelPlan.setKvMap(Converter.ymlString2Map(map.get(lowLevelNames)));
-                save(lowLevelPlan);
-                loweLevelPlansIDs.add(lowLevelPlan.getId());
-            }
-
-            topLevel.setLoweLevelPlansIDs(loweLevelPlansIDs);
-            save(topLevel);
+            save(planResponse);
             logger.log(Level.INFO, "Plan saved");
-            return topLevel;
+            return planResponse;
         }
     }
 
@@ -167,16 +152,6 @@ public class PlannerService {
         }
 
         Map<String, Object> map = plan.getKeyValue();
-        Set<String> ids = plan.getLoweLevelPlanIDs();
-        if (ids != null) {
-            for (String lowID : ids) {
-                PlanResponse ll = findOne(lowID);
-                Map<String, Object> lowLevelMap = ll.getKeyValue();
-                if (lowLevelMap != null) {
-                    map.put(ll.getName(), lowLevelMap);
-                }
-            }
-        }
 
         if (fromat != null && fromat.equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);
@@ -200,13 +175,7 @@ public class PlannerService {
     @PostFilter("(filterObject.owner == authentication.name) or (hasRole('ROLE_ADMIN'))")
     public List<PlanResponse> findAll() {
         List<PlanResponse> all = planDao.findAll();
-        List<PlanResponse> topLevel = new ArrayList<>();
-        for (PlanResponse p : all) {
-            if (p.getLevel() == 0) {
-                topLevel.add(p);
-            }
-        }
-        return topLevel;
+        return all;
     }
 
     public PlanResponse save(PlanResponse ownedObject) {
@@ -251,8 +220,6 @@ public class PlannerService {
         Map<String, Object> map = Converter.cleanStringContents(ymlContents, true);
         PlanResponse pr = new PlanResponse();
         pr.setKvMap(map);
-        pr.setLevel(level);
-        pr.setName(name);
         save(pr);
         return pr.getId();
     }
@@ -283,7 +250,6 @@ public class PlannerService {
 //        List<CloudCredentials> creds = credentialService.findAll();
 //        return creds.get(0).getCloudProviderName().toUpperCase();
 //    }
-
 //    private String getBestDomain(String cloudProvider) {
 //        switch (cloudProvider.trim().toLowerCase()) {
 //            case "ec2":
@@ -295,5 +261,4 @@ public class PlannerService {
 //        }
 //        return null;
 //    }
-
 }

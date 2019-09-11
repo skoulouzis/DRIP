@@ -27,13 +27,18 @@ import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import nl.uva.sne.drip.commons.utils.AAUtils;
 import nl.uva.sne.drip.commons.utils.AAUtils.SOURCE;
 import static nl.uva.sne.drip.commons.utils.AAUtils.downloadCACertificates;
+import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
+import nl.uva.sne.drip.drip.converter.P2PConverter;
+import nl.uva.sne.drip.drip.converter.SimplePlanContainer;
 import org.apache.commons.io.FileUtils;
 //import org.globus.myproxy.MyProxyException;
 import org.ietf.jgss.GSSException;
@@ -51,6 +56,7 @@ import provisioning.credential.ExoGENICredential;
  * @author S. Koulouzis
  */
 public class MessageParsing {
+    private static SimplePlanContainer simplePlan;
 
     public static List<File> getTopologies(JSONArray parameters, String tempInputDirPath, int level) throws JSONException, IOException {
         List<File> topologyFiles = new ArrayList<>();
@@ -58,23 +64,35 @@ public class MessageParsing {
             JSONObject param = (JSONObject) parameters.get(i);
             String name = (String) param.get("name");
             if (name.equals("topology")) {
-                JSONObject attributes = param.getJSONObject("attributes");
-                int fileLevel = Integer.valueOf((String) attributes.get("level"));
-                if (fileLevel == level) {
-                    String originalFilename = (String) attributes.get("filename");
-                    String fileName = originalFilename;
-                    if (!fileName.endsWith(".yml")) {
-                        fileName += ".yml";
-                    }
+                String toscaPlan = new String(Base64.getDecoder().decode((String) param.get("value")));
+                Map<String, Object> toscaPlanMap = Converter.ymlString2Map(toscaPlan);
+                
+                
+                if (level == 0) {
+                    simplePlan = P2PConverter.transfer(toscaPlanMap, null, null, null);
+                    String fileName = "planner_output_all.yml";
                     File topologyFile = new File(tempInputDirPath + File.separator + fileName);
                     topologyFile.createNewFile();
-                    String val = (String) param.get("value");
-                    writeValueToFile(val, topologyFile);
+                    writeValueToFile(simplePlan.topLevelContents, topologyFile);
                     topologyFiles.add(topologyFile);
                     //We should have only one top level topoloy
-                    if (level == 0) {
-                        return topologyFiles;
+//                    if (level == 0) {
+                    return topologyFiles;
+//                    }
+                } else {
+                    Set<String> keys = simplePlan.lowerLevelContents.keySet();
+                    for (String key : keys) {
+                        String fileName = key;
+                        if (!fileName.endsWith(".yml")) {
+                            fileName += ".yml";
+                        }
+                        File topologyFile = new File(tempInputDirPath + File.separator + fileName);
+                        topologyFile.createNewFile();
+                        String topologyContents = (String) simplePlan.lowerLevelContents.get(key);
+                        writeValueToFile(topologyContents, topologyFile);
+                        topologyFiles.add(topologyFile);
                     }
+
                 }
             }
         }

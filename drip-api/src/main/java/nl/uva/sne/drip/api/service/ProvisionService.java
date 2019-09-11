@@ -63,6 +63,7 @@ import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
 import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  *
@@ -133,61 +134,38 @@ public class ProvisionService {
     }
 
     public ProvisionResponse provisionResources(ProvisionRequest provisionRequest, int provisionerVersion) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
-
-        switch (provisionerVersion) {
-            case 0:
-                return callProvisioner0(provisionRequest);
-            case 1:
-                return callProvisioner1(provisionRequest);
-        }
-        return null;
-
+        return callProvisioner1(provisionRequest);
     }
 
-    private Message buildProvisioner0Message(ProvisionRequest pReq) throws JSONException, IOException {
-        Message invokationMessage = new Message();
-        List<MessageParameter> parameters = new ArrayList();
-        CloudCredentials cred = cloudCredentialsService.findOne(pReq.getCloudCredentialsIDs().get(0));
-        if (cred == null) {
-            throw new CloudCredentialsNotFoundException();
-        }
-        MessageParameter conf = buildCloudCredentialParam(cred, 0).get(0);
-        parameters.add(conf);
-
-        List<MessageParameter> certs = buildCertificatesParam(cred);
-        parameters.addAll(certs);
-
-        List<MessageParameter> topologies = buildTopologyParams(pReq.getPlanID());
-        parameters.addAll(topologies);
-
-        List<String> userKeyIDs = pReq.getUserKeyPairIDs();
-        if (userKeyIDs != null) {
-            List<MessageParameter> userKeys = buildUserKeysParams(userKeyIDs.get(0), 0);
-            parameters.addAll(userKeys);
-        }
-
-        invokationMessage.setParameters(parameters);
-        invokationMessage.setCreationDate((System.currentTimeMillis()));
-        return invokationMessage;
-    }
-
+//    private Message buildProvisioner0Message(ProvisionRequest pReq) throws JSONException, IOException {
+//        Message invokationMessage = new Message();
+//        List<MessageParameter> parameters = new ArrayList();
+//        CloudCredentials cred = cloudCredentialsService.findOne(pReq.getCloudCredentialsIDs().get(0));
+//        if (cred == null) {
+//            throw new CloudCredentialsNotFoundException();
+//        }
+//        MessageParameter conf = buildCloudCredentialParam(cred, 0).get(0);
+//        parameters.add(conf);
+//
+//        List<MessageParameter> certs = buildCertificatesParam(cred);
+//        parameters.addAll(certs);
+//
+//        List<MessageParameter> topologies = buildTopologyParams(pReq.getPlanID());
+//        parameters.addAll(topologies);
+//
+//        List<String> userKeyIDs = pReq.getUserKeyPairIDs();
+//        if (userKeyIDs != null) {
+//            List<MessageParameter> userKeys = buildUserKeysParams(userKeyIDs.get(0), 0);
+//            parameters.addAll(userKeys);
+//        }
+//
+//        invokationMessage.setParameters(parameters);
+//        invokationMessage.setCreationDate((System.currentTimeMillis()));
+//        return invokationMessage;
+//    }
     private List<MessageParameter> buildCloudCredentialParam(CloudCredentials cred, int version) throws JsonProcessingException, JSONException, IOException {
         List<MessageParameter> cloudCredentialParams = new ArrayList<>();
-        if (version == 0) {
-            MessageParameter cloudCredentialParam = new MessageParameter();
-            String provider = cred.getCloudProviderName();
-            if (provider == null) {
-                throw new BadRequestException("Provider name can't be null. Check the cloud credentials: " + cred.getId());
-            }
-            switch (cred.getCloudProviderName().toLowerCase()) {
-                case "ec2":
-                    cloudCredentialParam = buildEC2Conf(cred);
-                    break;
-            }
-            cloudCredentialParams.add(cloudCredentialParam);
-            return cloudCredentialParams;
-        }
-        if (version == 1) {
+        
             MessageParameter cloudCred = new MessageParameter();
             cloudCred.setName("cloud_credential");
             cloudCred.setEncoding("UTF-8");
@@ -209,38 +187,37 @@ public class ProvisionService {
             cloudCredentialParams.add(cloudCred);
 
             return cloudCredentialParams;
-        }
-        return null;
+        
+        
 
     }
 
-    private List<MessageParameter> buildCertificatesParam(CloudCredentials cred) {
-//        List<String> loginKeysIDs = cred.getkeyPairIDs();
-        List<KeyPair> loginKeys = new ArrayList<>();
-//        for (String keyID : loginKeysIDs) {
-//            KeyPair key = keyDao.findOne(keyID);
-//            loginKeys.add(key);
+//    private List<MessageParameter> buildCertificatesParam(CloudCredentials cred) {
+////        List<String> loginKeysIDs = cred.getkeyPairIDs();
+//        List<KeyPair> loginKeys = new ArrayList<>();
+////        for (String keyID : loginKeysIDs) {
+////            KeyPair key = keyDao.findOne(keyID);
+////            loginKeys.add(key);
+////        }
+//        if (loginKeys.isEmpty()) {
+//            throw new BadRequestException("Log in keys can't be empty");
 //        }
-        if (loginKeys.isEmpty()) {
-            throw new BadRequestException("Log in keys can't be empty");
-        }
-        List<MessageParameter> parameters = new ArrayList<>();
-        for (KeyPair lk : loginKeys) {
-            String domainName = lk.getPrivateKey().getAttributes().get("domain_name");
-            if (domainName == null) {
-                domainName = lk.getPrivateKey().getAttributes().get("domain_name ");
-            }
-            MessageParameter cert = new MessageParameter();
-            cert.setName("certificate");
-            cert.setValue(lk.getPrivateKey().getKey());
-            Map<String, String> attributes = new HashMap<>();
-            attributes.put("filename", domainName);
-            cert.setAttributes(attributes);
-            parameters.add(cert);
-        }
-        return parameters;
-    }
-
+//        List<MessageParameter> parameters = new ArrayList<>();
+//        for (KeyPair lk : loginKeys) {
+//            String domainName = lk.getPrivateKey().getAttributes().get("domain_name");
+//            if (domainName == null) {
+//                domainName = lk.getPrivateKey().getAttributes().get("domain_name ");
+//            }
+//            MessageParameter cert = new MessageParameter();
+//            cert.setName("certificate");
+//            cert.setValue(lk.getPrivateKey().getKey());
+//            Map<String, String> attributes = new HashMap<>();
+//            attributes.put("filename", domainName);
+//            cert.setAttributes(attributes);
+//            parameters.add(cert);
+//        }
+//        return parameters;
+//    }
     private List<MessageParameter> buildTopologyParams(String planID) throws JSONException, FileNotFoundException {
         PlanResponse plan = simplePlanService.getDao().findOne(planID);
 
@@ -252,29 +229,30 @@ public class ProvisionService {
         topology.setName("topology");
         String val = Converter.map2YmlString(plan.getKeyValue());
         val = val.replaceAll("\\uff0E", ".");
-        topology.setValue(val);
+        String encodedValue = new String(Base64.encodeBase64(val.getBytes()));
+        topology.setValue(encodedValue);
         Map<String, String> attributes = new HashMap<>();
-        attributes.put("level", String.valueOf(plan.getLevel()));
-        attributes.put("filename", FilenameUtils.removeExtension(plan.getName()));
+//        attributes.put("level", String.valueOf(plan.getLevel()));
+//        attributes.put("filename", FilenameUtils.removeExtension(plan.getName()));
         topology.setAttributes(attributes);
         parameters.add(topology);
 
-        Set<String> ids = plan.getLoweLevelPlanIDs();
-        if (ids != null) {
-            for (String lowID : ids) {
-                PlanResponse lowPlan = simplePlanService.getDao().findOne(lowID);
-                topology = new MessageParameter();
-                topology.setName("topology");
-                String value = Converter.map2YmlString(lowPlan.getKeyValue());
-                value = value.replaceAll("\\uff0E", ".");
-                topology.setValue(value);
-                attributes = new HashMap<>();
-                attributes.put("level", String.valueOf(lowPlan.getLevel()));
-                attributes.put("filename", FilenameUtils.removeExtension(lowPlan.getName()));
-                topology.setAttributes(attributes);
-                parameters.add(topology);
-            }
-        }
+//        Set<String> ids = plan.getLoweLevelPlanIDs();
+//        if (ids != null) {
+//            for (String lowID : ids) {
+//                PlanResponse lowPlan = simplePlanService.getDao().findOne(lowID);
+//                topology = new MessageParameter();
+//                topology.setName("topology");
+//                String value = Converter.map2YmlString(lowPlan.getKeyValue());
+//                value = value.replaceAll("\\uff0E", ".");
+//                topology.setValue(value);
+//                attributes = new HashMap<>();
+////                attributes.put("level", String.valueOf(lowPlan.getLevel()));
+////                attributes.put("filename", FilenameUtils.removeExtension(lowPlan.getName()));
+//                topology.setAttributes(attributes);
+//                parameters.add(topology);
+//            }
+//        }
         return parameters;
     }
 
@@ -408,20 +386,19 @@ public class ProvisionService {
 
     }
 
-    private List<MessageParameter> buildScriptParams(String userScriptID) {
-        Script script = userScriptService.findOne(userScriptID);
-        if (script == null) {
-            throw new BadRequestException("User script: " + userScriptID + " was not found");
-        }
-        List<MessageParameter> parameters = new ArrayList();
-        MessageParameter scriptParameter = new MessageParameter();
-        scriptParameter.setName("guiscript");
-        scriptParameter.setValue(script.getContents());
-        scriptParameter.setEncoding("UTF-8");
-        parameters.add(scriptParameter);
-        return parameters;
-    }
-
+//    private List<MessageParameter> buildScriptParams(String userScriptID) {
+//        Script script = userScriptService.findOne(userScriptID);
+//        if (script == null) {
+//            throw new BadRequestException("User script: " + userScriptID + " was not found");
+//        }
+//        List<MessageParameter> parameters = new ArrayList();
+//        MessageParameter scriptParameter = new MessageParameter();
+//        scriptParameter.setName("guiscript");
+//        scriptParameter.setValue(script.getContents());
+//        scriptParameter.setEncoding("UTF-8");
+//        parameters.add(scriptParameter);
+//        return parameters;
+//    }
     private List<MessageParameter> buildUserKeysParams(String userKeyID, int version) {
         KeyPair key = keyPairService.findOne(userKeyID);
         if (key == null) {
@@ -446,17 +423,16 @@ public class ProvisionService {
         provisionDao.deleteAll();
     }
 
-    private ProvisionResponse callProvisioner0(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
-        try (DRIPCaller provisioner = new ProvisionerCaller0(messageBrokerHost);) {
-            Message provisionerInvokationMessage = buildProvisioner0Message(provisionRequest);
-            provisionerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-            logger.info("Calling provisioner");
-            Message response = (provisioner.call(provisionerInvokationMessage));
-            logger.info("Got provisioner response");
-            return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null, true, true);
-        }
-    }
-
+//    private ProvisionResponse callProvisioner0(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
+//        try (DRIPCaller provisioner = new ProvisionerCaller0(messageBrokerHost);) {
+//            Message provisionerInvokationMessage = buildProvisioner0Message(provisionRequest);
+//            provisionerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+//            logger.info("Calling provisioner");
+//            Message response = (provisioner.call(provisionerInvokationMessage));
+//            logger.info("Got provisioner response");
+//            return parseCreateResourcesResponse(response.getParameters(), provisionRequest, null, true, true);
+//        }
+//    }
     private ProvisionResponse callProvisioner1(ProvisionRequest provisionRequest) throws IOException, TimeoutException, JSONException, InterruptedException, Exception {
         try (DRIPCaller provisioner = new ProvisionerCaller1(messageBrokerHost);) {
             Message provisionerInvokationMessage = buildProvisioner1Message(provisionRequest);

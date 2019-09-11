@@ -185,9 +185,7 @@ public class PlannerController {
         List<PlanResponse> all = plannerService.findAll();
         List<String> ids = new ArrayList<>();
         for (PlanResponse tr : all) {
-            if (tr.getLevel() == 0) {
-                ids.add(tr.getId());
-            }
+            ids.add(tr.getId());
         }
         return ids;
     }

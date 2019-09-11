@@ -70,11 +70,11 @@ public class RPCServer {
             //We define the queue name 
             channel.queueDeclare(PropertyValues.RPC_QUEUE_NAME, false, false, false, null);
             DefaultConsumer c;
-            if (PropertyValues.RPC_QUEUE_NAME.endsWith("v0")) {
-                c = new nl.uva.sne.drip.drip.provisioner.v0.Consumer(channel);
-            } else {
-                c = new nl.uva.sne.drip.drip.provisioner.v1.Consumer(channel, PropertyValues.HOST);
-            }
+//            if (PropertyValues.RPC_QUEUE_NAME.endsWith("v0")) {
+//                c = new nl.uva.sne.drip.drip.provisioner.v0.Consumer(channel);
+//            } else {
+            c = new nl.uva.sne.drip.drip.provisioner.v1.Consumer(channel, PropertyValues.HOST);
+//            }
 
             //Start listening for messages 
             channel.basicConsume(PropertyValues.RPC_QUEUE_NAME, false, c);
