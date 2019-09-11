@@ -36,6 +36,11 @@ def get_mem_size():
     return '3000 MB'
 
 
+def get_os_distribution():
+    return 'Ubuntu 14.04'
+
+
+
 def set_VM_properties(node_template_dict):
     node_template_dict['properties'].pop('host_name')
     node_template_dict['properties']['host_name'] = 'vm'
@@ -48,6 +53,7 @@ def set_VM_properties(node_template_dict):
     node_template_dict['properties']['mem_size'] = get_mem_size()
     node_template_dict['properties'].pop('user_name')
     node_template_dict['properties']['user_name'] = 'vm_user'
+    node_template_dict['properties']['os'] = get_os_distribution()
     return node_template_dict
 
 def set_topology_properties(node_template_dict):
@@ -121,7 +127,7 @@ class BasicPlanner:
         yaml_str = yaml_str.replace('description: TOSCA example', '')
         yaml_str = yaml_str.replace('tosca_template', 'topology_template')
         self.formatted_yaml_str = 'tosca_definitions_version: tosca_simple_yaml_1_0\nrepositories:\n docker_hub: https://hub.docker.com/\n'+yaml_str
-        # logging.info('TOSCA template: \n' + formatted_yaml_str)
+        logging.info('TOSCA template: \n' + self.formatted_yaml_str)
 
     def get_plan(self):
         return  self.formatted_yaml_str

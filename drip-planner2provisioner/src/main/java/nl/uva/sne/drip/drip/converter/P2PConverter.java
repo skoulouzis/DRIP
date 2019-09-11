@@ -25,10 +25,40 @@ import org.json.JSONException;
 
 public class P2PConverter {
 
-    public static SimplePlanContainer transfer(String plannerOutputJson,
+    public static SimplePlanContainer transfer(String toscaPlan,
             String userName, String domainName, String cloudProvider) throws JsonParseException, JsonMappingException, IOException, JSONException {
-        cloudProvider = cloudProvider.toUpperCase();
-        List<Object> vmList = Converter.jsonString2List(plannerOutputJson);
+        if (cloudProvider != null) {
+            cloudProvider = cloudProvider.toUpperCase();
+        }
+        Map<String, Object> toscaPlanMap = Converter.ymlString2Map(toscaPlan);
+        Map<String, Object> topologyTemplate = (Map<String, Object>) ((Map<String, Object>) toscaPlanMap.get("topology_template")).get("node_templates");
+
+        //Get the domain provider and vm list
+        List<String> vmNames = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : topologyTemplate.entrySet()) {
+            Map<String, Object> node = (Map<String, Object>) entry.getValue();
+            String type = (String) node.get("type");
+            if (type.equals("tosca.nodes.ARTICONF.VM.topology")) {
+                Map<String, Object> properties = (Map<String, Object>) node.get("properties");
+                domainName = (String) properties.get("domain");
+                cloudProvider = (String) properties.get("provider");
+                List<Object> requirements = (List<Object>) node.get("requirements");
+
+                for (Object requirement : requirements) {
+                    Map<String, Object> requirementMap = (Map<String, Object>) requirement;
+
+                    Map.Entry<String, Object> requirementEntry = requirementMap.entrySet().iterator().next();
+                    String nodeName = (String) ((Map<String, Object>) requirementMap.get(requirementEntry.getKey())).get("node");
+                    vmNames.add(nodeName);
+                }
+            }
+        }
+        List<Object> vmList = new ArrayList<>();
+        for (String vmName : vmNames) {
+            Map<String, Object> vm = (Map<String, Object>) topologyTemplate.get(vmName);
+            vm.put("name", vmName);
+            vmList.add(vm);
+        }
 
         TopTopology topTopology = new TopTopology();
         topTopology.publicKeyPath = "name@id_rsa.pub";
@@ -81,7 +111,6 @@ public class P2PConverter {
             }
             sti.subTopology = subTopology;
             subTopologyInfos.put(sti.topology, sti);
-
         }
         for (SubTopologyInfo info : subTopologyInfos.values()) {
             topTopology.topologies.add(info);
@@ -116,7 +145,7 @@ public class P2PConverter {
 
         Number memSize = Converter.castToNumber(map.get("mem_size"));
         Number num_cpus = Converter.castToNumber(map.get("num_cpus"));
-        if (num_cpus.intValue() >= 16 && memSize.intValue() >= 32) {
+        if (num_cpus.intValue() >= 16 && memSize.intValue() >= 32000) {
             size = 10;
         }
         return size;
@@ -175,7 +204,7 @@ public class P2PConverter {
                 }
                 if (size > 5 && size <= 10) {
                     return "XOLarge";
-                }                
+                }
             default:
                 Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
                 return null;
@@ -194,7 +223,7 @@ public class P2PConverter {
                 break;
             case "exogeni":
                 curVM = new ExoGeniVM();
-                break;                
+                break;
             default:
                 Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
                 return null;
@@ -210,10 +239,12 @@ public class P2PConverter {
             curVM.name = "node_vm";
         }
         curVM.type = (String) map.get("type");
-        curVM.OStype = ((Map<String, String>) map.get("os")).get("distribution") + " " + ((Map<String, Double>) map.get("os")).get("os_version");
+        Map<String, String> properties = (Map<String, String>) map.get("properties");
+
+        curVM.OStype = (String) properties.get("os");
 //            curVM.clusterType = clusterType;
 //            curVM.dockers = curValue.getDocker();
-        curVM.nodeType = getSize((Map<String, String>) map.get("host"), cloudProvider);
+        curVM.nodeType = getSize(properties, cloudProvider);
 
 //                Eth eth = new Eth();
 //                eth.name = "p1";
@@ -246,7 +277,7 @@ public class P2PConverter {
             case "exogeni":
                 subTopology = new ExoGeniSubTopology();
                 ((ExoGeniSubTopology) subTopology).components = new ArrayList<>();
-                break;                
+                break;
             default:
                 Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
                 return null;
@@ -264,7 +295,7 @@ public class P2PConverter {
                 break;
             case "exogeni":
                 ((ExoGeniSubTopology) subTopology).components.add((ExoGeniVM) vm);
-                break;                
+                break;
             default:
                 Logger.getLogger(P2PConverter.class.getName()).log(Level.WARNING, "The {0} is not supported yet!", cloudProvider);
 //                    return null;
@@ -285,6 +316,6 @@ public class P2PConverter {
                 return true;
             }
         }
-        return false;
+        return true;
     }
 }

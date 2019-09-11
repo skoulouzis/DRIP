@@ -50,6 +50,7 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import java.util.Base64;
 
 /**
  *
@@ -90,32 +91,35 @@ public class PlannerService {
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
             List<MessageParameter> messageParams = plannerReturnedMessage.getParameters();
 
+            String toscaPlan = null;
             for (MessageParameter mp : messageParams) {
                 String value = mp.getValue();
-                logger.log(Level.INFO, "value: "+value);
+                toscaPlan = new String(Base64.getDecoder().decode(value));
+                logger.log(Level.INFO, "TOSCA Plann: "+toscaPlan);
+                
             }
-            String domainName = getBestDomain(cloudProvider);
+//            String domainName = getBestDomain(cloudProvider);
 
-//            SimplePlanContainer simplePlan = P2PConverter.transfer(jsonArrayString.toString(), "vm_user", domainName, cloudProvider);
+            SimplePlanContainer simplePlan = P2PConverter.transfer(toscaPlan, null, null, null);
 
             PlanResponse topLevel = new PlanResponse();
-//            topLevel.setLevel(0);
-//            topLevel.setToscaID(toscaId);
-//            topLevel.setName("planner_output_all.yml");
-//            topLevel.setKvMap(Converter.ymlString2Map(simplePlan.topLevelContents));
-//            Map<String, String> map = simplePlan.lowerLevelContents;
-//            Set<String> loweLevelPlansIDs = new HashSet<>();
-//            for (String lowLevelNames : map.keySet()) {
-//                PlanResponse lowLevelPlan = new PlanResponse();
-//                lowLevelPlan.setLevel(1);
-//                lowLevelPlan.setToscaID(toscaId);
-//                lowLevelPlan.setName(lowLevelNames);
-//                lowLevelPlan.setKvMap(Converter.ymlString2Map(map.get(lowLevelNames)));
-//                save(lowLevelPlan);
-//                loweLevelPlansIDs.add(lowLevelPlan.getId());
-//            }
-//
-//            topLevel.setLoweLevelPlansIDs(loweLevelPlansIDs);
+            topLevel.setLevel(0);
+            topLevel.setToscaID(toscaId);
+            topLevel.setName("planner_output_all.yml");
+            topLevel.setKvMap(Converter.ymlString2Map(simplePlan.topLevelContents));
+            Map<String, String> map = simplePlan.lowerLevelContents;
+            Set<String> loweLevelPlansIDs = new HashSet<>();
+            for (String lowLevelNames : map.keySet()) {
+                PlanResponse lowLevelPlan = new PlanResponse();
+                lowLevelPlan.setLevel(1);
+                lowLevelPlan.setToscaID(toscaId);
+                lowLevelPlan.setName(lowLevelNames);
+                lowLevelPlan.setKvMap(Converter.ymlString2Map(map.get(lowLevelNames)));
+                save(lowLevelPlan);
+                loweLevelPlansIDs.add(lowLevelPlan.getId());
+            }
+
+            topLevel.setLoweLevelPlansIDs(loweLevelPlansIDs);
             save(topLevel);
             logger.log(Level.INFO, "Plan saved");
             return topLevel;
@@ -275,21 +279,21 @@ public class PlannerService {
         return false;
     }
 
-    private String getBestCloudProvider() {
-        List<CloudCredentials> creds = credentialService.findAll();
-        return creds.get(0).getCloudProviderName().toUpperCase();
-    }
+//    private String getBestCloudProvider() {
+//        List<CloudCredentials> creds = credentialService.findAll();
+//        return creds.get(0).getCloudProviderName().toUpperCase();
+//    }
 
-    private String getBestDomain(String cloudProvider) {
-        switch (cloudProvider.trim().toLowerCase()) {
-            case "ec2":
-                return "Frankfurt";
-            case "egi":
-                return "CESNET";
-            case "exogeni":
-                return "RENCI (Chapel Hill, NC USA) XO Rack";                
-        }
-        return null;
-    }
+//    private String getBestDomain(String cloudProvider) {
+//        switch (cloudProvider.trim().toLowerCase()) {
+//            case "ec2":
+//                return "Frankfurt";
+//            case "egi":
+//                return "CESNET";
+//            case "exogeni":
+//                return "RENCI (Chapel Hill, NC USA) XO Rack";                
+//        }
+//        return null;
+//    }
 
 }

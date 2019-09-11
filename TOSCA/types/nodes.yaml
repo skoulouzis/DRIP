@@ -102,7 +102,10 @@ node_types:
         type: scalar-unit.size
         required: true
         constraints:
-          - greater_or_equal: 0 MB      
+          - greater_or_equal: 0 MB 
+      os:
+        type: string
+        required: true     
     interfaces:
       Standard:
         create: dumy.yaml
