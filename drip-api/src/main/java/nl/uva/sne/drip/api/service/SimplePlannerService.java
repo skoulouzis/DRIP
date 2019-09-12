@@ -64,10 +64,10 @@ public class SimplePlannerService {
             Message plannerReturnedMessage = (planner.call(plannerInvokationMessage));
             List<MessageParameter> planFiles = plannerReturnedMessage.getParameters();
             topLevel = new PlanResponse();
-            Set<String> ids = topLevel.getLoweLevelPlanIDs();
-            if (ids == null) {
-                ids = new HashSet<>();
-            }
+//            Set<String> ids = topLevel.getLoweLevelPlanIDs();
+//            if (ids == null) {
+//                ids = new HashSet<>();
+//            }
             PlanResponse lowerLevelPlan = null;
             for (MessageParameter p : planFiles) {
                 //Should have levels in attributes
@@ -87,10 +87,10 @@ public class SimplePlannerService {
                     lowerLevelPlan.setKvMap(Converter.ymlString2Map(p.getValue()));
 //                    lowerLevelPlan.setLevel(1);
                     planDao.save(lowerLevelPlan);
-                    ids.add(lowerLevelPlan.getId());
+//                    ids.add(lowerLevelPlan.getId());
                 }
             }
-            topLevel.setLoweLevelPlansIDs(ids);
+//            topLevel.setLoweLevelPlansIDs(ids);
         }
         topLevel.setToscaID(toscaId);
         planDao.save(topLevel);
@@ -135,11 +135,11 @@ public class SimplePlannerService {
         }
 
         Map<String, Object> map = plan.getKeyValue();
-        Set<String> ids = plan.getLoweLevelPlanIDs();
-        for (String lowID : ids) {
-            Map<String, Object> lowLevelMap = planDao.findOne(lowID).getKeyValue();
-            map.putAll(lowLevelMap);
-        }
+//        Set<String> ids = plan.getLoweLevelPlanIDs();
+//        for (String lowID : ids) {
+//            Map<String, Object> lowLevelMap = planDao.findOne(lowID).getKeyValue();
+//            map.putAll(lowLevelMap);
+//        }
 
         if (fromat != null && fromat.equals("yml")) {
             String ymlStr = Converter.map2YmlString(map);

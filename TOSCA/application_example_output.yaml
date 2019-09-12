@@ -24,7 +24,7 @@ topology_template:
           relationship: tosca.relationships.DependsOn
       - vm:
           capability: tosca.capabilities.ARTICONF.VM
-          node: nancy_compute
+          node: charles_compute
           relationship: tosca.relationships.DependsOn
       type: tosca.nodes.ARTICONF.VM.topology
     charles_compute:

@@ -36,7 +36,6 @@ import org.yaml.snakeyaml.Yaml;
 
 import nl.uva.sne.drip.drip.commons.data.internal.Message;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
-import nl.uva.sne.drip.drip.commons.data.v0.external.Attribute;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 
 /**
@@ -207,31 +206,6 @@ public class Converter {
         }
         mess.setParameters(params);
         return mess;
-    }
-
-    public static Attribute plan1toFile(PlanResponse plan1) throws JSONException {
-        Attribute e = new Attribute();
-//        e.level = String.valueOf(plan1.getLevel());
-//        String p1Name = FilenameUtils.getBaseName(plan1.getName());
-//        if (p1Name == null) {
-//            p1Name = "Planned_tosca_file_" + plan1.getLevel();
-//            plan1.setName(p1Name);
-//        }
-
-//        e.name = p1Name;
-        String ymlString = Converter.map2YmlString(plan1.getKeyValue());
-        e.content = ymlString.replaceAll("\n", "\\\\n");
-        return e;
-    }
-
-    public static PlanResponse File2Plan1(Attribute p0) {
-        PlanResponse p1 = new PlanResponse();
-//        p1.setLevel(Integer.valueOf(p0.level));
-//        p1.setName(p0.name);
-        String yaml = p0.content.replaceAll("\\\\n", "\n");
-        p1.setKvMap(ymlString2Map(yaml));
-
-        return p1;
     }
 
     public static Map<String, Object> cleanStringContents(String ymlContents, boolean removeNewLine) {

@@ -197,25 +197,25 @@ public class PlannerController {
         return plannerService.saveStringContents(toscaContents, 0, name);
     }
 
-    @RequestMapping(value = "/post/{level}/{name}/{id}", method = RequestMethod.POST)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    String postLow(@RequestBody String toscaContents, @PathVariable("level") String level, @PathVariable("name") String name, @PathVariable("id") String id) {
-        int intLevel = Integer.valueOf(level);
-        if (intLevel == 0) {
-            return plannerService.saveStringContents(toscaContents, 0, name);
-        }
-
-        PlanResponse topPlan = plannerService.findOne(id);
-        Set<String> lowIDs = topPlan.getLoweLevelPlanIDs();
-        if (lowIDs == null) {
-            lowIDs = new HashSet<>();
-        }
-        String lowPlanID = plannerService.saveStringContents(toscaContents, intLevel, name);
-        lowIDs.add(lowPlanID);
-        topPlan.setLoweLevelPlansIDs(lowIDs);
-        topPlan = plannerService.save(topPlan);
-        return topPlan.getId();
-    }
+//    @RequestMapping(value = "/post/{level}/{name}/{id}", method = RequestMethod.POST)
+//    @RolesAllowed({UserService.USER, UserService.ADMIN})
+//    public @ResponseBody
+//    String postLow(@RequestBody String toscaContents, @PathVariable("level") String level, @PathVariable("name") String name, @PathVariable("id") String id) {
+//        int intLevel = Integer.valueOf(level);
+//        if (intLevel == 0) {
+//            return plannerService.saveStringContents(toscaContents, 0, name);
+//        }
+//
+//        PlanResponse topPlan = plannerService.findOne(id);
+//        Set<String> lowIDs = topPlan.getLoweLevelPlanIDs();
+//        if (lowIDs == null) {
+//            lowIDs = new HashSet<>();
+//        }
+//        String lowPlanID = plannerService.saveStringContents(toscaContents, intLevel, name);
+//        lowIDs.add(lowPlanID);
+//        topPlan.setLoweLevelPlansIDs(lowIDs);
+//        topPlan = plannerService.save(topPlan);
+//        return topPlan.getId();
+//    }
 
 }

@@ -105,10 +105,7 @@ node_types:
           - greater_or_equal: 0 MB 
       os:
         type: string
-        required: true     
-      ssh_key:
-        type: string
-        required: false           
+        required: true          
     interfaces:
       Standard:
         create: dumy.yaml
@@ -140,7 +137,7 @@ node_types:
         required: true
       credential:
         type: tosca.datatypes.Credential
-        required: false     
+        required: false
     interfaces:
       Standard:
         create: dumy.yaml

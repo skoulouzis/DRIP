@@ -45,7 +45,6 @@ import nl.uva.sne.drip.drip.provisioner.utils.MessageParsing;
 import nl.uva.sne.drip.drip.provisioner.utils.PropertyValues;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-//import org.globus.myproxy.MyProxyException;
 import org.ietf.jgss.GSSException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -130,7 +129,7 @@ public class Consumer extends DefaultConsumer {
                         + ex.getClass().getName() + "\",\"attributes\": null}]}";
             }
         } finally {
-            logger.fine("Sending Response: {0}" + response);
+            logger.info("Sending Response: {0}" + response);
 //            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Sending Response: {0}", response);
             //We send the response back. No need to change anything here 
             channel.basicPublish("", properties.getReplyTo(), replyProps, response.getBytes("UTF-8"));
@@ -180,11 +179,6 @@ public class Consumer extends DefaultConsumer {
             FileUtils.moveFile(topologyFile, mainTopologyFile);
             String topTopologyLoadingPath = mainTopologyFile.getAbsolutePath();
             List<File> topologyFiles = MessageParsing.getTopologies(parameters, tempInputDirPath, 1);
-//            for (File lowLevelTopologyFile : topologyFiles) {
-//                File secondaryTopologyFile = new File(tempInputDirPath + File.separator + lowLevelTopologyFile.getName() + ".yml");
-//                FileUtils.moveFile(lowLevelTopologyFile, secondaryTopologyFile);
-//            }
-//            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Saved topology file");
             logger.info("Saved topology file");
             Map<String, Object> map = Converter.ymlStream2Map(new FileInputStream(topTopologyLoadingPath));
             String userPublicKeyName = ((String) map.get("publicKeyPath"));

@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +37,6 @@ import nl.uva.sne.drip.api.exception.ExceptionHandler;
 import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.exception.PlanNotFoundException;
 import nl.uva.sne.drip.api.rpc.DRIPCaller;
-import nl.uva.sne.drip.api.rpc.ProvisionerCaller0;
 import nl.uva.sne.drip.api.v1.rest.ProvisionController;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
@@ -48,9 +46,7 @@ import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionRequest;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ProvisionResponse;
-import nl.uva.sne.drip.drip.commons.data.v1.external.Script;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
-import org.apache.commons.io.FilenameUtils;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -192,32 +188,6 @@ public class ProvisionService {
 
     }
 
-//    private List<MessageParameter> buildCertificatesParam(CloudCredentials cred) {
-////        List<String> loginKeysIDs = cred.getkeyPairIDs();
-//        List<KeyPair> loginKeys = new ArrayList<>();
-////        for (String keyID : loginKeysIDs) {
-////            KeyPair key = keyDao.findOne(keyID);
-////            loginKeys.add(key);
-////        }
-//        if (loginKeys.isEmpty()) {
-//            throw new BadRequestException("Log in keys can't be empty");
-//        }
-//        List<MessageParameter> parameters = new ArrayList<>();
-//        for (KeyPair lk : loginKeys) {
-//            String domainName = lk.getPrivateKey().getAttributes().get("domain_name");
-//            if (domainName == null) {
-//                domainName = lk.getPrivateKey().getAttributes().get("domain_name ");
-//            }
-//            MessageParameter cert = new MessageParameter();
-//            cert.setName("certificate");
-//            cert.setValue(lk.getPrivateKey().getKey());
-//            Map<String, String> attributes = new HashMap<>();
-//            attributes.put("filename", domainName);
-//            cert.setAttributes(attributes);
-//            parameters.add(cert);
-//        }
-//        return parameters;
-//    }
     private List<MessageParameter> buildTopologyParams(String planID) throws JSONException, FileNotFoundException {
         PlanResponse plan = simplePlanService.getDao().findOne(planID);
 
@@ -232,27 +202,8 @@ public class ProvisionService {
         String encodedValue = new String(Base64.encodeBase64(val.getBytes()));
         topology.setValue(encodedValue);
         Map<String, String> attributes = new HashMap<>();
-//        attributes.put("level", String.valueOf(plan.getLevel()));
-//        attributes.put("filename", FilenameUtils.removeExtension(plan.getName()));
         topology.setAttributes(attributes);
         parameters.add(topology);
-
-//        Set<String> ids = plan.getLoweLevelPlanIDs();
-//        if (ids != null) {
-//            for (String lowID : ids) {
-//                PlanResponse lowPlan = simplePlanService.getDao().findOne(lowID);
-//                topology = new MessageParameter();
-//                topology.setName("topology");
-//                String value = Converter.map2YmlString(lowPlan.getKeyValue());
-//                value = value.replaceAll("\\uff0E", ".");
-//                topology.setValue(value);
-//                attributes = new HashMap<>();
-////                attributes.put("level", String.valueOf(lowPlan.getLevel()));
-////                attributes.put("filename", FilenameUtils.removeExtension(lowPlan.getName()));
-//                topology.setAttributes(attributes);
-//                parameters.add(topology);
-//            }
-//        }
         return parameters;
     }
 
@@ -280,63 +231,63 @@ public class ProvisionService {
 
     private List<MessageParameter> buildClusterKeyParams(ProvisionResponse provisionInfo) {
         List<MessageParameter> parameters = new ArrayList();
-        List<String> ids = provisionInfo.getDeployerKeyPairIDs();
-        for (String id : ids) {
-            KeyPair pair = keyPairService.findOne(id);
-
-            MessageParameter param = new MessageParameter();
-            param.setName("private_deployer_key");
-            param.setValue(pair.getPrivateKey().getKey());
-            HashMap<String, String> attributes = new HashMap<>();
-            if (pair.getPrivateKey() != null && pair.getPrivateKey().getAttributes() != null) {
-                attributes.putAll(pair.getPrivateKey().getAttributes());
-            }
-            attributes.put("name", pair.getPrivateKey().getName());
-            param.setAttributes(attributes);
-            parameters.add(param);
-
-            param = new MessageParameter();
-            param.setName("public_deployer_key");
-            param.setValue(pair.getPublicKey().getKey());
-            attributes = new HashMap<>();
-            if (pair.getPublicKey() != null && pair.getPublicKey().getAttributes() != null) {
-                attributes.putAll(pair.getPublicKey().getAttributes());
-            }
-            param.setAttributes(attributes);
-            attributes.put("name", pair.getPublicKey().getName());
-            parameters.add(param);
-        }
+//        List<String> ids = provisionInfo.getDeployerKeyPairIDs();
+//        for (String id : ids) {
+//            KeyPair pair = keyPairService.findOne(id);
+//
+//            MessageParameter param = new MessageParameter();
+//            param.setName("private_deployer_key");
+//            param.setValue(pair.getPrivateKey().getKey());
+//            HashMap<String, String> attributes = new HashMap<>();
+//            if (pair.getPrivateKey() != null && pair.getPrivateKey().getAttributes() != null) {
+//                attributes.putAll(pair.getPrivateKey().getAttributes());
+//            }
+//            attributes.put("name", pair.getPrivateKey().getName());
+//            param.setAttributes(attributes);
+//            parameters.add(param);
+//
+//            param = new MessageParameter();
+//            param.setName("public_deployer_key");
+//            param.setValue(pair.getPublicKey().getKey());
+//            attributes = new HashMap<>();
+//            if (pair.getPublicKey() != null && pair.getPublicKey().getAttributes() != null) {
+//                attributes.putAll(pair.getPublicKey().getAttributes());
+//            }
+//            param.setAttributes(attributes);
+//            attributes.put("name", pair.getPublicKey().getName());
+//            parameters.add(param);
+//        }
 
         return parameters;
     }
 
     private List<MessageParameter> buildUserKeyParams(ProvisionResponse provisionInfo) {
         List<MessageParameter> parameters = new ArrayList();
-        List<String> ids = provisionInfo.getUserKeyPairIDs();
-        for (String id : ids) {
-            KeyPair pair = keyPairService.findOne(id);
-
-            MessageParameter param = new MessageParameter();
-            param.setName("private_user_key");
-            param.setValue(pair.getPrivateKey().getKey());
-            HashMap<String, String> attributes = new HashMap<>();
-            if (pair.getPrivateKey().getAttributes() != null) {
-                attributes.putAll(pair.getPrivateKey().getAttributes());
-            }
-            attributes.put("name", pair.getPrivateKey().getName());
-            param.setAttributes(attributes);
-            parameters.add(param);
-
-            param = new MessageParameter();
-            param.setName("public_user_key");
-            param.setValue(pair.getPublicKey().getKey());
-            if (pair.getPublicKey().getAttributes() != null) {
-                attributes.putAll(pair.getPublicKey().getAttributes());
-            }
-            attributes.put("name", pair.getPublicKey().getName());
-            param.setAttributes(attributes);
-            parameters.add(param);
-        }
+//        List<String> ids = provisionInfo.getUserKeyPairIDs();
+//        for (String id : ids) {
+//            KeyPair pair = keyPairService.findOne(id);
+//
+//            MessageParameter param = new MessageParameter();
+//            param.setName("private_user_key");
+//            param.setValue(pair.getPrivateKey().getKey());
+//            HashMap<String, String> attributes = new HashMap<>();
+//            if (pair.getPrivateKey().getAttributes() != null) {
+//                attributes.putAll(pair.getPrivateKey().getAttributes());
+//            }
+//            attributes.put("name", pair.getPrivateKey().getName());
+//            param.setAttributes(attributes);
+//            parameters.add(param);
+//
+//            param = new MessageParameter();
+//            param.setName("public_user_key");
+//            param.setValue(pair.getPublicKey().getKey());
+//            if (pair.getPublicKey().getAttributes() != null) {
+//                attributes.putAll(pair.getPublicKey().getAttributes());
+//            }
+//            attributes.put("name", pair.getPublicKey().getName());
+//            param.setAttributes(attributes);
+//            parameters.add(param);
+//        }
         return parameters;
     }
 

@@ -31,12 +31,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class PlanResponse extends KeyValueHolder {
 
     private String toscaID;
-
-    private String name;
-
-    private Integer level;
-
-    private Set<String> loweLevelPlansIDs;
+    
+//    private Set<String> loweLevelPlansIDs;
 
     /**
      * The id of the TOSCA <code>PlaybookRepresentation</code> description from
@@ -64,12 +60,12 @@ public class PlanResponse extends KeyValueHolder {
      *
      * @return the loweLevelPlansIDs
      */
-    @DocumentationExample("ew44Ae3946e0sdds4f562d84baA")
-    public Set<String> getLoweLevelPlanIDs() {
-        return loweLevelPlansIDs;
-    }
-
-    public void setLoweLevelPlansIDs(Set<String> loweLevelPlansIDs) {
-        this.loweLevelPlansIDs = loweLevelPlansIDs;
-    }
+//    @DocumentationExample("ew44Ae3946e0sdds4f562d84baA")
+//    public Set<String> getLoweLevelPlanIDs() {
+//        return loweLevelPlansIDs;
+//    }
+//
+//    public void setLoweLevelPlansIDs(Set<String> loweLevelPlansIDs) {
+//        this.loweLevelPlansIDs = loweLevelPlansIDs;
+//    }
 }
