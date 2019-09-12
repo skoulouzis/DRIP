@@ -16,6 +16,7 @@
 package nl.uva.sne.drip.drip.commons.data.v1.external;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.webcohesion.enunciate.metadata.DocumentationExample;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,36 +26,55 @@ import java.util.List;
  * @author S. Koulouzis
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProvisionResponse extends ProvisionRequest {
-
-    private List<DeployParameter> deployParameters;
-    private ArrayList<String> cloudKeyPairIDs;
-
-    /**
-     * The deploy parameters.
+public class ProvisionResponse extends KeyValueHolder {
+    
+    private String planID;
+    
+        /**
+     * The ID of the plan <code>PlanResponse</code> to provision for.
      *
-     * @return the deployParameters
+     * @return the planID
      */
-    public List<DeployParameter> getDeployParameters() {
-        return deployParameters;
+    @DocumentationExample("ASedsfd46b4fDFd83ba1q")
+    public String getPlanID() {
+        return planID;
     }
 
     /**
-     * @param deployParameters the deployParameters to set
+     * @param planID the planID to set
      */
-    public void setDeployParameters(List<DeployParameter> deployParameters) {
-        this.deployParameters = deployParameters;
+    public void setPlanID(String planID) {
+        this.planID = planID;
     }
 
-    public void setCloudKeyPairIDs(ArrayList<String> cloudKeyPairIDs) {
-        this.cloudKeyPairIDs = cloudKeyPairIDs;
-    }
-
-    /**
-     * @return the cloudKeyPairIDs
-     */
-    public ArrayList<String> getCloudKeyPairIDs() {
-        return cloudKeyPairIDs;
-    }
+//    private List<DeployParameter> deployParameters;
+//    private ArrayList<String> cloudKeyPairIDs;
+//
+//    /**
+//     * The deploy parameters.
+//     *
+//     * @return the deployParameters
+//     */
+//    public List<DeployParameter> getDeployParameters() {
+//        return deployParameters;
+//    }
+//
+//    /**
+//     * @param deployParameters the deployParameters to set
+//     */
+//    public void setDeployParameters(List<DeployParameter> deployParameters) {
+//        this.deployParameters = deployParameters;
+//    }
+//
+//    public void setCloudKeyPairIDs(ArrayList<String> cloudKeyPairIDs) {
+//        this.cloudKeyPairIDs = cloudKeyPairIDs;
+//    }
+//
+//    /**
+//     * @return the cloudKeyPairIDs
+//     */
+//    public ArrayList<String> getCloudKeyPairIDs() {
+//        return cloudKeyPairIDs;
+//    }
 
 }

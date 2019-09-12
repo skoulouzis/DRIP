@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,24 +24,28 @@ import org.json.JSONException;
 
 public class P2PConverter {
 
-    public static SimplePlanContainer transfer( Map<String, Object>  toscaPlanMap,
+    public static SimplePlanContainer transfer(Map<String, Object> toscaPlanMap,
             String userName, String domainName, String cloudProvider) throws JsonParseException, JsonMappingException, IOException, JSONException {
         if (cloudProvider != null) {
             cloudProvider = cloudProvider.toUpperCase();
         }
-        
+
         Map<String, Object> topologyTemplate = (Map<String, Object>) ((Map<String, Object>) toscaPlanMap.get("topology_template")).get("node_templates");
 
         //Get the domain provider and vm list
+        Map<String, Object> topologyNode = null;
+        String topologyNodeName = null;
         List<String> vmNames = new ArrayList<>();
         for (Map.Entry<String, Object> entry : topologyTemplate.entrySet()) {
             Map<String, Object> node = (Map<String, Object>) entry.getValue();
             String type = (String) node.get("type");
             if (type.equals("tosca.nodes.ARTICONF.VM.topology")) {
-                Map<String, Object> properties = (Map<String, Object>) node.get("properties");
+                topologyNode = node;
+                topologyNodeName = entry.getKey();
+                Map<String, Object> properties = (Map<String, Object>) topologyNode.get("properties");
                 domainName = (String) properties.get("domain");
                 cloudProvider = (String) properties.get("provider");
-                List<Object> requirements = (List<Object>) node.get("requirements");
+                List<Object> requirements = (List<Object>) topologyNode.get("requirements");
 
                 for (Object requirement : requirements) {
                     Map<String, Object> requirementMap = (Map<String, Object>) requirement;
@@ -51,13 +54,16 @@ public class P2PConverter {
                     String nodeName = (String) ((Map<String, Object>) requirementMap.get(requirementEntry.getKey())).get("node");
                     vmNames.add(nodeName);
                 }
+                break;
             }
         }
         List<Object> vmList = new ArrayList<>();
         for (String vmName : vmNames) {
             Map<String, Object> vm = (Map<String, Object>) topologyTemplate.get(vmName);
-            userName = (String) ((Map<String, Object>)vm.get("properties")).get("user_name");
-            vm.put("name", vmName);
+            Map<String, Object> properties = (Map<String, Object>) vm.get("properties");
+            userName = (String) properties.get("user_name");
+            String hostName = (String) properties.get("host_name");
+            vm.put("name", hostName);
             vmList.add(vm);
         }
 
@@ -71,23 +77,24 @@ public class P2PConverter {
         String provisionerScalingMode = "fixed";
         SubTopology subTopology = createSubTopology(cloudProvider);
         subTopologyInfo.cloudProvider = cloudProvider;
-        subTopologyInfo.topology = UUID.randomUUID().toString();
+        subTopologyInfo.topology = topologyNodeName.replaceAll("_", "");
         subTopologyInfo.domain = domainName;
         subTopologyInfo.status = "fresh";
         subTopologyInfo.statusInfo = null;
         subTopologyInfo.tag = provisionerScalingMode;
 
         Map<String, SubTopologyInfo> subTopologyInfos = new HashMap<>();
+        int counter = 0;
         for (Object element : vmList) {
             VM vm = createVM(element, cloudProvider, firstVM);
             firstVM = false;
-
+            counter++;
             if (isScalable(element)) {
                 subTopologyInfo = new SubTopologyInfo();
                 subTopology = createSubTopology(cloudProvider);
                 provisionerScalingMode = "scaling";
                 subTopologyInfo.cloudProvider = cloudProvider;
-                subTopologyInfo.topology = UUID.randomUUID().toString();
+                subTopologyInfo.topology = "subTopology"+counter;
                 subTopologyInfo.domain = domainName;
                 subTopologyInfo.status = "fresh";
                 subTopologyInfo.tag = provisionerScalingMode;

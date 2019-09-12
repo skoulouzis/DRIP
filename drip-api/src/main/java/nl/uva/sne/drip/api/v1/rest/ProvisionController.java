@@ -153,7 +153,7 @@ public class ProvisionController {
     List<String> getIds() {
         List<ProvisionResponse> all = provisionService.findAll();
         List<String> ids = new ArrayList<>(all.size());
-        for (ProvisionRequest pi : all) {
+        for (ProvisionResponse pi : all) {
             ids.add(pi.getId());
         }
         return ids;
@@ -181,9 +181,9 @@ public class ProvisionController {
             throw new BadRequestException();
         }
         try {
-            req = provisionService.provisionResources(req, 1);
+            ProvisionResponse resp = provisionService.provisionResources(req, 1);
 
-            return req.getId();
+            return resp.getId();
 
         } catch (Exception ex) {
             if (ex instanceof nl.uva.sne.drip.api.exception.PlanNotFoundException
@@ -210,16 +210,16 @@ public class ProvisionController {
     })
     public @ResponseBody
     String postProvisionResponse(@RequestBody ProvisionResponse resp) {
-        if (resp.getCloudCredentialsIDs() == null || resp.getCloudCredentialsIDs().get(0) == null
-                || resp.getCloudCredentialsIDs().get(0).length() < 2) {
-            throw new BadRequestException();
-        }
-        if (resp.getPlanID() == null || resp.getPlanID().length() < 2) {
-            throw new BadRequestException();
-        }
-        if (resp.getDeployParameters() == null || resp.getDeployParameters().get(0) == null) {
-            throw new BadRequestException();
-        }
+//        if (resp.getCloudCredentialsIDs() == null || resp.getCloudCredentialsIDs().get(0) == null
+//                || resp.getCloudCredentialsIDs().get(0).length() < 2) {
+//            throw new BadRequestException();
+//        }
+//        if (resp.getPlanID() == null || resp.getPlanID().length() < 2) {
+//            throw new BadRequestException();
+//        }
+//        if (resp.getDeployParameters() == null || resp.getDeployParameters().get(0) == null) {
+//            throw new BadRequestException();
+//        }
         resp = provisionService.save(resp);
 
         return resp.getId();

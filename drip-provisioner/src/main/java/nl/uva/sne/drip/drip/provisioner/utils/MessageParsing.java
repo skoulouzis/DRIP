@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +57,7 @@ import provisioning.credential.ExoGENICredential;
  * @author S. Koulouzis
  */
 public class MessageParsing {
+
     private static SimplePlanContainer simplePlan;
 
     public static List<File> getTopologies(JSONArray parameters, String tempInputDirPath, int level) throws JSONException, IOException {
@@ -66,8 +68,7 @@ public class MessageParsing {
             if (name.equals("topology")) {
                 String toscaPlan = new String(Base64.getDecoder().decode((String) param.get("value")));
                 Map<String, Object> toscaPlanMap = Converter.ymlString2Map(toscaPlan);
-                
-                
+
                 if (level == 0) {
                     simplePlan = P2PConverter.transfer(toscaPlanMap, null, null, null);
                     String fileName = "planner_output_all.yml";
@@ -178,79 +179,82 @@ public class MessageParsing {
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
             MessageParameter messageParam = mapper.readValue(param.toString(), MessageParameter.class);
             String name = messageParam.getName();
-            String value = messageParam.getValue();
+            
 
-            if (name.equals("cloud_credential")) {
+            if (name.equals("topology")) {
                 Credential credential = null;
 
-                value = value.substring(1, value.length() - 1);
-                CloudCredentials cred = mapper.readValue(value, CloudCredentials.class);
-                if (cred.getCloudProviderName().toLowerCase().equals("ec2")) {
-                    EC2Credential ec2 = new EC2Credential();
-                    ec2.accessKey = cred.getAccessKeyId();
-                    ec2.secretKey = cred.getSecretKey();
-                    credential = ec2;
+                String toscaPlan = new String(Base64.getDecoder().decode((String) param.get("value")));
+                Map<String, Object> toscaPlanMap = Converter.ymlString2Map(toscaPlan);
+                Map<String, Object> nodeTemplates = (Map<String, Object>) ((Map<String, Object>) toscaPlanMap.get("topology_template")).get("node_templates");
+                Iterator it = nodeTemplates.entrySet().iterator();
+                List<Map<String, Object>> toscaCredentialsList = new ArrayList<>();
+                while (it.hasNext()) {
+                    Map.Entry node = (Map.Entry) it.next();
+                    Map<String, Object> nodeValue = (Map<String, Object>) node.getValue();
+                    String type = (String) nodeValue.get("type");
+                    if (type.equals("tosca.nodes.ARTICONF.VM.topology")) {
+                        Map<String, Object> properties = (Map<String, Object>) nodeValue.get("properties");
+                        toscaCredentialsList = (List<Map<String, Object>>) properties.get("credentials");
+                        break;
+                    }
                 }
-                if (cred.getCloudProviderName().toLowerCase().equals("egi")) {
-                    EGICredential egi = new EGICredential();
-                    Map<String, Object> att = cred.getAttributes();
-                    String trustedCertificatesURL = null;
-                    if (att != null && att.containsKey("trustedCertificatesURL")) {
-                        trustedCertificatesURL = (String) att.get("trustedCertificatesURL");
+                for (Map<String, Object> toscaCredential : toscaCredentialsList) {
+
+                    Map<String, Object> toscaCredentialProperties = (Map<String, Object>) toscaCredential.get("properties");
+                    String cloudProviderName = (String) toscaCredentialProperties.get("cloud_provider_name");
+                    if (cloudProviderName.toLowerCase().equals("ec2")) {
+                        EC2Credential ec2 = new EC2Credential();
+                        ec2.accessKey = (String) toscaCredentialProperties.get("accessKeyId");
+                        ec2.secretKey = (String) toscaCredentialProperties.get("token");
+                        credential = ec2;
                     }
-                    if (trustedCertificatesURL != null) {
-                        downloadCACertificates(new URL(trustedCertificatesURL), PropertyValues.TRUSTED_CERTIFICATE_FOLDER);
-                    } else {
-                        downloadCACertificates(PropertyValues.CA_BUNDLE_URL, PropertyValues.TRUSTED_CERTIFICATE_FOLDER);
-                    }
-                    String myProxyEndpoint = null;
-                    if (att != null && att.containsKey("myProxyEndpoint")) {
-                        myProxyEndpoint = (String) att.get("myProxyEndpoint");
-                    }
-                    if (myProxyEndpoint != null) {
-                        String[] myVOs = null;
-                        List voNames = null;
-                        if (att != null && att.containsKey("voms")) {
-                            myVOs = ((String) att.get("voms")).split(",");
-                            voNames = (List) Arrays.asList(myVOs);
+                    if (cloudProviderName.toLowerCase().equals("egi")) {
+                        EGICredential egi = new EGICredential();
+                        Map<String, Object> att = (Map<String, Object>) toscaCredentialProperties.get("attributes");
+                        String trustedCertificatesURL = null;
+                        if (att != null && att.containsKey("trustedCertificatesURL")) {
+                            trustedCertificatesURL = (String) att.get("trustedCertificatesURL");
                         }
-                        egi.proxyFilePath = AAUtils.generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.MY_PROXY, myProxyEndpoint, voNames);
-                    } else {
-                        egi.proxyFilePath = AAUtils.generateProxy(cred.getAccessKeyId(), cred.getSecretKey(), SOURCE.PROXY_FILE, myProxyEndpoint, null);
+                        if (trustedCertificatesURL != null) {
+                            downloadCACertificates(new URL(trustedCertificatesURL), PropertyValues.TRUSTED_CERTIFICATE_FOLDER);
+                        } else {
+                            downloadCACertificates(PropertyValues.CA_BUNDLE_URL, PropertyValues.TRUSTED_CERTIFICATE_FOLDER);
+                        }
+                        String myProxyEndpoint = null;
+                        if (att != null && att.containsKey("myProxyEndpoint")) {
+                            myProxyEndpoint = (String) att.get("myProxyEndpoint");
+                        }
+                        if (myProxyEndpoint != null) {
+                            String[] myVOs = null;
+                            List voNames = null;
+                            if (att != null && att.containsKey("voms")) {
+                                myVOs = ((String) att.get("voms")).split(",");
+                                voNames = (List) Arrays.asList(myVOs);
+                            }
+                            egi.proxyFilePath = AAUtils.generateProxy((String) toscaCredentialProperties.get("accessKeyId"), (String) toscaCredentialProperties.get("token"), SOURCE.MY_PROXY, myProxyEndpoint, voNames);
+                        } else {
+                            egi.proxyFilePath = AAUtils.generateProxy((String) toscaCredentialProperties.get("accessKeyId"), (String) toscaCredentialProperties.get("token"), SOURCE.PROXY_FILE, myProxyEndpoint, null);
+                        }
+                        egi.trustedCertPath = PropertyValues.TRUSTED_CERTIFICATE_FOLDER;
+                        credential = egi;
                     }
-                    egi.trustedCertPath = PropertyValues.TRUSTED_CERTIFICATE_FOLDER;
-                    credential = egi;
-                }
-                if (cred.getCloudProviderName().toLowerCase().equals("exogeni")) {
-                    ExoGENICredential exoGeniCredential = new ExoGENICredential();
-                    exoGeniCredential.keyAlias = cred.getAccessKeyId();
-                    exoGeniCredential.keyPassword = cred.getSecretKey();
-                    Map<String, Object> att = cred.getAttributes();
-                    if (att != null && att.containsKey("keystore")) {
-                        String javaKeyStoreEncoded = (String) att.get("keystore");
-                        byte[] decoded = Base64.getDecoder().decode(javaKeyStoreEncoded);
-                        File keyStoreFile = new File(tempInputDirPath + File.separator + "user.jks");
-                        FileUtils.writeByteArrayToFile(keyStoreFile, decoded);
-                        exoGeniCredential.userKeyPath = keyStoreFile.getAbsolutePath();
+                    if (cloudProviderName.toLowerCase().equals("exogeni")) {
+                        ExoGENICredential exoGeniCredential = new ExoGENICredential();
+                        exoGeniCredential.keyAlias = (String) toscaCredentialProperties.get("accessKeyId");
+                        exoGeniCredential.keyPassword = (String) toscaCredentialProperties.get("token");
+                        Map<String, Object> att = (Map<String, Object>) toscaCredentialProperties.get("attributes");
+                        if (att != null && att.containsKey("keystore")) {
+                            String javaKeyStoreEncoded = (String) att.get("keystore");
+                            byte[] decoded = Base64.getDecoder().decode(javaKeyStoreEncoded);
+                            File keyStoreFile = new File(tempInputDirPath + File.separator + "user.jks");
+                            FileUtils.writeByteArrayToFile(keyStoreFile, decoded);
+                            exoGeniCredential.userKeyPath = keyStoreFile.getAbsolutePath();
+                        }
+                        credential = exoGeniCredential;
                     }
-
-                    credential = exoGeniCredential;
                 }
 
-//                for (KeyPair pair : cred.getKeyPairs()) {
-//                    if (pair != null) {
-//                        File dir = new File(tempInputDirPath + File.separator + pair.getId());
-//                        dir.mkdir();
-//                        Key privateKey = pair.getPrivateKey();
-//                        if (privateKey != null) {
-//                            writeValueToFile(privateKey.getKey(), new File(dir.getAbsolutePath() + File.separator + privateKey.getName()));
-//                        }
-//                        Key publicKey = pair.getPublicKey();
-//                        if (publicKey != null) {
-//                            writeValueToFile(publicKey.getKey(), new File(dir.getAbsolutePath() + File.separator + publicKey.getName()));
-//                        }
-//                    }
-//                }
                 credentials.add(credential);
             }
         }
