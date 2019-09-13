@@ -57,7 +57,7 @@ public class P2PConverter {
                 break;
             }
         }
-        List<Object> vmList = new ArrayList<>();
+        List<Map<String, Object>> vmList = new ArrayList<>();
         for (String vmName : vmNames) {
             Map<String, Object> vm = (Map<String, Object>) topologyTemplate.get(vmName);
             Map<String, Object> properties = (Map<String, Object>) vm.get("properties");

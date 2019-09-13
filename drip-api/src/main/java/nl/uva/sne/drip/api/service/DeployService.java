@@ -200,27 +200,22 @@ public class DeployService {
         if (pro == null) {
             throw new NotFoundException();
         }
-        List<String> loginKeysIDs = pro.getDeployerKeyPairIDs();
+//        List<String> loginKeysIDs = pro.getDeployerKeyPairIDs();
 
         List<Message> messages = new ArrayList<>();
-//        if (loginKeysIDs == null || loginKeysIDs.isEmpty()) {
-//            List<String> cloudConfIDs = pro.getCloudCredentialsIDs();
-//            CloudCredentials cCred = cloudCredentialsService.findOne(cloudConfIDs.get(0));
-//            loginKeysIDs = cCred.getkeyPairIDs();
-//        }
         List<KeyPair> loginKeys = new ArrayList<>();
-        for (String keyID : loginKeysIDs) {
-            KeyPair key = keyDao.findOne(keyID);
-            loginKeys.add(key);
-        }
+//        for (String keyID : loginKeysIDs) {
+//            KeyPair key = keyDao.findOne(keyID);
+//            loginKeys.add(key);
+//        }
 
-        List<DeployParameter> deployParams = pro.getDeployParameters();
+//        List<DeployParameter> deployParams = pro.getDeployParameters();
         List<MessageParameter> parameters = new ArrayList<>();
 
-        for (DeployParameter dp : deployParams) {
-            MessageParameter messageParameter = createCredentialPartameter(dp, loginKeys);
-            parameters.add(messageParameter);
-        }
+//        for (DeployParameter dp : deployParams) {
+//            MessageParameter messageParameter = createCredentialPartameter(dp, loginKeys);
+//            parameters.add(messageParameter);
+//        }
 
         MessageParameter managerTypeParameter = createManagerTypeParameter(managerType);
         parameters.add(managerTypeParameter);
@@ -258,17 +253,12 @@ public class DeployService {
     }
 
     private MessageParameter createCredentialPartameter(DeployParameter dp, List<KeyPair> loginKeys) {
-//        String cName = dp.getCloudCertificateName();
         MessageParameter messageParameter = new MessageParameter();
         messageParameter.setName("credential");
         messageParameter.setEncoding("UTF-8");
         String key = null;
         for (KeyPair lk : loginKeys) {
-//            String lkName = lk.getPrivateKey().getAttributes().get("domain_name");
-//            if (lkName.equals(cName)) {
             key = lk.getPrivateKey().getKey();
-//                break;
-//            }
         }
         messageParameter.setValue(key);
         Map<String, String> attributes = new HashMap<>();
@@ -474,112 +464,7 @@ public class DeployService {
     }
 
     private BenchmarkResult parseSaveBenchmarkResult(AnsibleOutput ansOut) {
-//        KeyValueHolder res = ansOut.getAnsibleResult();
-//        if (res != null) {
-//            List<String> cmdList = res.getCmd();
-//            if (cmdList != null) {
-//
-//                switch (cmdList.get(0)) {
-//                    case "sysbench":
-//                        String[] out = res.getStdout().split("\n");
-//                        String version = getSysbeanchVersion(out[0]);
-//                        int numOfThreads = getNumberOfThreads(out[3]);
-//                        Double executionTime = getExecutionTime(out[14]);
-//                        int totalNumberOfEvents = getTotalNumberOfEvents(out[15]);
-//
-//                        double minExecutionTimePerRequest = getMinExecutionTimePerRequest(out[18]);
-//                        double avgExecutionTimePerRequest = getAvgExecutionTimePerRequest(out[19]);
-//                        double maxExecutionTimePerRequest = getMaxExecutionTimePerRequest(out[20]);
-//                        double approx95Percentile = getApprox95Percentile(out[21]);
-//
-//                        double avgEventsPerThread = getAvgEventsPerThread(out[24]);
-//                        double stddevEventsPerThread = getStddevEventsPerThread(out[24]);
-//
-//                        double avgExecTimePerThread = getAvgExecTimePerThread(out[25]);
-//                        double stddevExecTimePerThread = getStddevExecTimePerThread(out[25]);
-//
-//                        SysbenchCPUBenchmark b = new SysbenchCPUBenchmark();
-//                        b.setSysbenchVersion(version);
-//
-//                        b.setNumberOfThreads(numOfThreads);
-//                        b.setExecutionTime(executionTime * 1000);
-//
-//                        b.setTotalNumberOfEvents(totalNumberOfEvents);
-//
-//                        b.setAvgEventsPerThread(avgEventsPerThread);
-//                        b.setStddevEventsPerThread(stddevEventsPerThread);
-//
-//                        b.setAvgExecTimePerThread(avgExecTimePerThread * 1000);
-//                        b.setStddevExecTimePerThread(stddevExecTimePerThread);
-//                        b.setApprox95Percentile(approx95Percentile);
-//
-//                        b.setMinExecutionTimePerRequest(minExecutionTimePerRequest);
-//                        b.setAvgExecutionTimePerRequest(avgExecutionTimePerRequest);
-//                        b.setMaxExecutionTimePerRequest(maxExecutionTimePerRequest);
-//
-//                        b.setAnsibleOutputID(ansOut.getId());
-//
-//                        b.setCloudDeploymentDomain(ansOut.getCloudDeploymentDomain());
-//                        b.setHost(ansOut.getHost());
-//                        b.setVmType(ansOut.getVmType());
-//                        b = (SysbenchCPUBenchmark) benchmarkResultService.save(b);
-//                        return b;
-//
-//                    default:
-//                        return null;
-//
-//                }
-//            }
-//        }
         return null;
-    }
-
-    private String getSysbeanchVersion(String string) {
-        return string.replaceAll("sysbench", "").replaceAll(":  multi-threaded system evaluation benchmark", "");
-    }
-
-    private int getNumberOfThreads(String string) {
-        return Integer.valueOf(string.replaceAll("Number of threads: ", ""));
-    }
-
-    private Double getExecutionTime(String string) {
-        return Double.valueOf(string.replaceAll("total time:", "").replaceAll("s", "").trim());
-    }
-
-    private int getTotalNumberOfEvents(String string) {
-        return Integer.valueOf(string.replaceAll("total number of events:", "").replaceAll("s", "").trim());
-    }
-
-    private Double getAvgEventsPerThread(String string) {
-        return Double.valueOf(string.replaceAll("events \\(avg/stddev\\):", "").trim().split("/")[0]);
-    }
-
-    private Double getStddevEventsPerThread(String string) {
-        return Double.valueOf(string.replaceAll("events \\(avg/stddev\\):", "").trim().split("/")[1]);
-    }
-
-    private Double getAvgExecTimePerThread(String string) {
-        return Double.valueOf(string.replaceAll("execution time \\(avg/stddev\\):", "").trim().split("/")[0]);
-    }
-
-    private Double getStddevExecTimePerThread(String string) {
-        return Double.valueOf(string.replaceAll("execution time \\(avg/stddev\\):", "").trim().split("/")[1]);
-    }
-
-    private double getMinExecutionTimePerRequest(String string) {
-        return Double.valueOf(string.replaceAll("min:", "").replaceAll("ms", "").trim());
-    }
-
-    private double getAvgExecutionTimePerRequest(String string) {
-        return Double.valueOf(string.replaceAll("avg:", "").replaceAll("ms", "").trim());
-    }
-
-    private double getMaxExecutionTimePerRequest(String string) {
-        return Double.valueOf(string.replaceAll("max:", "").replaceAll("ms", "").trim());
-    }
-
-    private double getApprox95Percentile(String string) {
-        return Double.valueOf(string.replaceAll("approx.  95 percentile:", "").replaceAll("ms", "").trim());
     }
 
     private String parseValue(String value) throws JSONException {

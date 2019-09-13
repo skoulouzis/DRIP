@@ -58,6 +58,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import nl.uva.sne.drip.api.dao.ProvisionResponseDao;
 import nl.uva.sne.drip.api.rpc.ProvisionerCaller1;
 import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
+import nl.uva.sne.drip.commons.utils.TOSCAUtils;
+import static nl.uva.sne.drip.commons.utils.TOSCAUtils.getVMsFromTopology;
+import static nl.uva.sne.drip.commons.utils.TOSCAUtils.getVMsNodeNamesFromTopology;
 import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
@@ -343,7 +346,6 @@ public class ProvisionService {
         parameters.add(action);
 
         PlanResponse plan = addCloudCredentialsOnTOSCAPlan(provisionRequest);
-
         List<MessageParameter> topologies = buildTopologyParams(plan);
         parameters.addAll(topologies);
         invokationMessage.setParameters(parameters);
@@ -418,13 +420,20 @@ public class ProvisionService {
             provisionResponse = new ProvisionResponse();
         }
 
-        List<DeployParameter> deployParameters = new ArrayList<>();
         Map<String, Object> kvMap = null;
         KeyPair userKey = new KeyPair();
         KeyPair deployerKey = new KeyPair();
 
         Map<String, Key> privateCloudKeys = new HashMap<>();
         Map<String, Key> publicCloudKeys = new HashMap<>();
+
+        PlanResponse plan = addCloudCredentialsOnTOSCAPlan(provisionRequest);
+        Map<String, Object> toscaPlan = plan.getKeyValue();
+        Map<String, Object> topologyTemplate = (Map<String, Object>) ((Map<String, Object>) toscaPlan.get("topology_template"));
+        List<Map<String, Object>> vmList = getVMsFromTopology(toscaPlan);
+        List<String> nodeNames = getVMsNodeNamesFromTopology(toscaPlan);
+
+        Map<String, Object> outputs = new HashMap<>();
 
         for (MessageParameter p : parameters) {
             String name = p.getName();
@@ -441,21 +450,27 @@ public class ProvisionService {
                         throw new Exception("Provision failed");
 //                        this.deleteProvisionedResources(provisionResponse);
                     }
-                    for (String line : lines) {
-                        DeployParameter deployParam = new DeployParameter();
-                        String[] parts = line.split(" ");
+
+                    for (int i = 0; i < lines.length; i++) {
+//                        DeployParameter deployParam = new DeployParameter();
+                        String[] parts = lines[i].split(" ");
                         String deployIP = parts[0];
                         String deployUser = parts[1];
 //                        String deployCertPath = parts[2];
 //                        String cloudCertificateName = FilenameUtils.removeExtension(FilenameUtils.getBaseName(deployCertPath));
                         String deployRole = parts[2];
 
-                        deployParam.setIP(deployIP);
-                        deployParam.setRole(deployRole);
-                        deployParam.setUser(deployUser);
-//                        deployParam.setCloudCertificateName(cloudCertificateName);
-                        deployParameters.add(deployParam);
+                        String nodeName = nodeNames.get(i);
+
+                        Map<String, Object> ipOutput = TOSCAUtils.buildTOSCAOutput(nodeName, deployIP);
+                        Map<String, Object> roleOutput = TOSCAUtils.buildTOSCAOutput(nodeName, deployRole);
+                        outputs.put("ip", ipOutput);
+                        outputs.put("role", roleOutput);
+
+                        Map<String, Object> properties = (Map<String, Object>) vmList.get(i).get("properties");
+                        properties.put("user_name", deployUser);
                     }
+
                     break;
                 case "public_user_key":
                     Key key = new Key();
@@ -511,7 +526,13 @@ public class ProvisionService {
                     kvMap.put(name, Converter.ymlString2Map(value));
                     break;
             }
+            for (String nodeName : nodeNames) {
+                Map<String, Object> keyOutput = TOSCAUtils.buildTOSCAOutput(nodeName, p.getValue());
+                outputs.put(name, keyOutput);
+            }
         }
+
+        topologyTemplate.put("outputs", outputs);
         List<String> userKeyIds = null;
         if (provisionRequest != null) {
             userKeyIds = provisionRequest.getUserKeyPairIDs();
@@ -571,7 +592,8 @@ public class ProvisionService {
 //        provisionResponse.setCloudKeyPairIDs(existingCloudKeyPairIDs);
 
 //        provisionResponse.setDeployParameters(deployParameters);
-        provisionResponse.setKvMap(kvMap);
+//        provisionResponse.setKvMap(kvMap);
+        provisionResponse.setKvMap(toscaPlan);
         if (provisionRequest != null) {
 //            provisionResponse.setCloudCredentialsIDs(provisionRequest.getCloudCredentialsIDs());
             provisionResponse.setPlanID(provisionRequest.getPlanID());
