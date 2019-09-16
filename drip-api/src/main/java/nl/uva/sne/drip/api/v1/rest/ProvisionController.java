@@ -41,6 +41,7 @@ import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
 import org.json.JSONException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * This controller is responsible for obtaining resources from cloud providers
@@ -67,33 +68,41 @@ public class ProvisionController {
     @RequestMapping(value = "/providers", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 404, condition = "object not found"),
+        @ResponseCode(code = 404, condition = "object not found")
+        ,
         @ResponseCode(code = 200, condition = "object exists")
     })
     public @ResponseBody
     String[] getSuportedProviders() {
-        return new String[]{"egi", "ec2"};
+        return new String[]{"egi", "ec2", "exogeni"};
     }
 
     /**
      * Gets the ProvisionRequest
      *
      * @param id. The id of the ProvisionRequest
+     * @param format
      * @return the requested ProvisionRequest
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"format"})
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 404, condition = "object not found"),
+        @ResponseCode(code = 404, condition = "object not found")
+        ,
         @ResponseCode(code = 200, condition = "object exists")
     })
     public @ResponseBody
-    ProvisionResponse get(@PathVariable("id") String id) {
-        ProvisionResponse pro = provisionService.findOne(id);
-        if (pro == null) {
-            throw new NotFoundException();
+    String get(@PathVariable("id") String id, @RequestParam(value = "format") String format) {
+        try {
+            String pro = provisionService.get(id, format);
+            if (pro == null) {
+                throw new NotFoundException();
+            }
+            return pro;
+        } catch (JSONException ex) {
+            Logger.getLogger(ProvisionController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return provisionService.findOne(id);
+        return null;
     }
 
     /**
@@ -105,7 +114,8 @@ public class ProvisionController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 404, condition = "object not found"),
+        @ResponseCode(code = 404, condition = "object not found")
+        ,
         @ResponseCode(code = 200, condition = "delete successful")
     })
     public @ResponseBody
@@ -169,7 +179,8 @@ public class ProvisionController {
     @RequestMapping(value = "/provision", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 400, condition = "Plan not found or credentials not found"),
+        @ResponseCode(code = 400, condition = "Plan not found or credentials not found")
+        ,
         @ResponseCode(code = 200, condition = "provision success")
     })
     public @ResponseBody
@@ -205,7 +216,8 @@ public class ProvisionController {
     @RequestMapping(value = "/post/provision", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 400, condition = "Plan not found or credentials not found or something important"),
+        @ResponseCode(code = 400, condition = "Plan not found or credentials not found or something important")
+        ,
         @ResponseCode(code = 200, condition = "provision success")
     })
     public @ResponseBody

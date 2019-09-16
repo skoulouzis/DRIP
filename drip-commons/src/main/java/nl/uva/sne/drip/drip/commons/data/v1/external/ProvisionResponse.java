@@ -47,34 +47,4 @@ public class ProvisionResponse extends KeyValueHolder {
         this.planID = planID;
     }
 
-//    private List<DeployParameter> deployParameters;
-//    private ArrayList<String> cloudKeyPairIDs;
-//
-//    /**
-//     * The deploy parameters.
-//     *
-//     * @return the deployParameters
-//     */
-//    public List<DeployParameter> getDeployParameters() {
-//        return deployParameters;
-//    }
-//
-//    /**
-//     * @param deployParameters the deployParameters to set
-//     */
-//    public void setDeployParameters(List<DeployParameter> deployParameters) {
-//        this.deployParameters = deployParameters;
-//    }
-//
-//    public void setCloudKeyPairIDs(ArrayList<String> cloudKeyPairIDs) {
-//        this.cloudKeyPairIDs = cloudKeyPairIDs;
-//    }
-//
-//    /**
-//     * @return the cloudKeyPairIDs
-//     */
-//    public ArrayList<String> getCloudKeyPairIDs() {
-//        return cloudKeyPairIDs;
-//    }
-
 }

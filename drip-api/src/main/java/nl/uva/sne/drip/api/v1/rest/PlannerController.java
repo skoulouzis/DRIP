@@ -100,24 +100,7 @@ public class PlannerController {
         return null;
     }
 
-//    @RequestMapping(value = "/plan/", method = RequestMethod.POST)
-//    @RolesAllowed({UserService.USER, UserService.ADMIN})
-//    public @ResponseBody
-//    String plan(@RequestBody PlanRequest planRequest) {
-//
-//        try {
-//            PlanResponse plan = plannerService.getPlan(planRequest.getToscaID(),
-//                    planRequest.getManagerType(), planRequest.getVmUserName(),
-//                    planRequest.getCloudProvider(), planRequest.getOsType(), planRequest.getDomain());
-//            if (plan == null) {
-//                throw new NotFoundException("Could not make plan");
-//            }
-//            return plan.getId();
-//        } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
-//            Logger.getLogger(PlannerController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
+
     /**
      * Gets a plan
      *
@@ -190,32 +173,11 @@ public class PlannerController {
         return ids;
     }
 
-    @RequestMapping(value = "/post/{name}", method = RequestMethod.POST)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    String postTop(@RequestBody String toscaContents, @PathVariable("name") String name) {
-        return plannerService.saveStringContents(toscaContents, 0, name);
-    }
-
-//    @RequestMapping(value = "/post/{level}/{name}/{id}", method = RequestMethod.POST)
+//    @RequestMapping(value = "/post/{name}", method = RequestMethod.POST)
 //    @RolesAllowed({UserService.USER, UserService.ADMIN})
 //    public @ResponseBody
-//    String postLow(@RequestBody String toscaContents, @PathVariable("level") String level, @PathVariable("name") String name, @PathVariable("id") String id) {
-//        int intLevel = Integer.valueOf(level);
-//        if (intLevel == 0) {
-//            return plannerService.saveStringContents(toscaContents, 0, name);
-//        }
-//
-//        PlanResponse topPlan = plannerService.findOne(id);
-//        Set<String> lowIDs = topPlan.getLoweLevelPlanIDs();
-//        if (lowIDs == null) {
-//            lowIDs = new HashSet<>();
-//        }
-//        String lowPlanID = plannerService.saveStringContents(toscaContents, intLevel, name);
-//        lowIDs.add(lowPlanID);
-//        topPlan.setLoweLevelPlansIDs(lowIDs);
-//        topPlan = plannerService.save(topPlan);
-//        return topPlan.getId();
+//    String postTop(@RequestBody String toscaContents, @PathVariable("name") String name) {
+//        return plannerService.saveStringContents(toscaContents, 0, name);
 //    }
 
 }

@@ -449,12 +449,9 @@ public class ProvisionService {
                 }
 
                 for (int i = 0; i < lines.length; i++) {
-//                        DeployParameter deployParam = new DeployParameter();
                     String[] parts = lines[i].split(" ");
                     String deployIP = parts[0];
                     String deployUser = parts[1];
-//                        String deployCertPath = parts[2];
-//                        String cloudCertificateName = FilenameUtils.removeExtension(FilenameUtils.getBaseName(deployCertPath));
                     String deployRole = parts[2];
 
                     String nodeName = nodeNames.get(i);
@@ -474,137 +471,10 @@ public class ProvisionService {
                     outputs.put(name, keyOutput);
                 }
             }
-//            switch (name) {
-//                case "deploy_parameters":
-//                    break;
-//                case "public_user_key":
-//                    Key key = new Key();
-//                    key.setKey(p.getValue());
-//                    key.setName(p.getAttributes().get("name"));
-//                    key.setType(Key.KeyType.PUBLIC);
-//                    userKey.setPublicKey(key);
-//                    break;
-//                case "private_user_key":
-//                    key = new Key();
-//                    key.setKey(p.getValue());
-//                    key.setName(p.getAttributes().get("name"));
-//                    key.setType(Key.KeyType.PRIVATE);
-//                    userKey.setPrivateKey(key);
-//                    break;
-//                case "private_deployer_key":
-//                    key = new Key();
-//                    key.setKey(p.getValue());
-//                    key.setName(p.getAttributes().get("name"));
-//                    key.setType(Key.KeyType.PRIVATE);
-//                    deployerKey.setPrivateKey(key);
-//                    break;
-//                case "public_deployer_key":
-//                    key = new Key();
-//                    key.setKey(p.getValue());
-//                    key.setName(p.getAttributes().get("name"));
-//                    key.setType(Key.KeyType.PUBLIC);
-//                    deployerKey.setPublicKey(key);
-//                    break;
-//                case "public_cloud_key":
-//                    key = new Key();
-//                    key.setKey(p.getValue());
-//                    key.setName(p.getAttributes().get("name"));
-//                    key.setType(Key.KeyType.PUBLIC);
-//                    key.setAttributes(p.getAttributes());
-//                    publicCloudKeys.put(p.getAttributes().get("key_pair_id"), key);
-//                    break;
-//
-//                case "private_cloud_key":
-//                    key = new Key();
-//                    key.setKey(p.getValue());
-//                    key.setName(p.getAttributes().get("name"));
-//                    key.setType(Key.KeyType.PRIVATE);
-//                    key.setAttributes(p.getAttributes());
-//                    privateCloudKeys.put(p.getAttributes().get("key_pair_id"), key);
-//                    break;
-//
-//                default:
-//                    value = p.getValue();
-//                    if (kvMap == null) {
-//                        kvMap = new HashMap();
-//                    }
-//                    kvMap.put(name, Converter.ymlString2Map(value));
-//                    break;
-//            }
         }
 
         topologyTemplate.put("outputs", outputs);
-//        List<String> userKeyIds = null;
-//        if (provisionRequest != null) {
-//            userKeyIds = provisionRequest.getUserKeyPairIDs();
-//        } else {
-////            userKeyIds = provisionResponse.getUserKeyPairIDs();
-//        }
-
-//        if (saveUserKeys) {
-//            if (userKeyIds != null && !userKeyIds.isEmpty()) {
-//            } else {
-//                userKeyIds = new ArrayList<>();
-//                if (userKey.getPublicKey() != null) {
-//                    userKey = keyPairService.save(userKey);
-//                    userKeyIds.add(userKey.getId());
-//                }
-//            }
-//        }
-//        ArrayList<String> deployerKeyIds = null;
-//        if (saveDeployerKeyI) {
-//            deployerKeyIds = new ArrayList<>();
-//            if (deployerKey.getPublicKey() != null) {
-//                deployerKey = keyPairService.save(deployerKey);
-//                deployerKeyIds.add(deployerKey.getId());
-//            }
-//        }
-//        ArrayList<String> cloudKeyPairIDs = new ArrayList<>();
-//        List<KeyPair> allPirs = keyPairService.findAll();
-//        for (String id : publicCloudKeys.keySet()) {
-//            boolean save = true;
-//            String key_pair_id = privateCloudKeys.get(id).getAttributes().get("key_pair_id");
-//            for (KeyPair p : allPirs) {
-//                Key pk = p.getPrivateKey();
-//                if (pk != null && pk.getAttributes() != null && pk.getAttributes().containsKey("key_pair_id")) {
-//                    if (key_pair_id.equals(pk.getAttributes().get("key_pair_id"))) {
-//                        save = false;
-//                        break;
-//                    }
-//                }
-//            }
-//            if (save) {
-//                KeyPair cloudPair = new KeyPair();
-//                cloudPair.setPrivateKey(privateCloudKeys.get(id));
-//                cloudPair.setPublicKey(publicCloudKeys.get(id));
-//                cloudPair.setKeyPairId(id);
-//                cloudPair = keyPairService.save(cloudPair);
-//                cloudKeyPairIDs.add(cloudPair.getId());
-//            }
-//
-//        }
-//        ArrayList<String> existingCloudKeyPairIDs = provisionResponse.getCloudKeyPairIDs();
-//        if (existingCloudKeyPairIDs != null) {
-//            existingCloudKeyPairIDs.addAll(cloudKeyPairIDs);
-//        } else {
-//            existingCloudKeyPairIDs = cloudKeyPairIDs;
-//        }
-//        provisionResponse.setCloudKeyPairIDs(existingCloudKeyPairIDs);
-//        provisionResponse.setDeployParameters(deployParameters);
-//        provisionResponse.setKvMap(kvMap);
         provisionResponse.setKvMap(toscaPlan);
-//        if (provisionRequest != null) {
-////            provisionResponse.setCloudCredentialsIDs(provisionRequest.getCloudCredentialsIDs());
-//            provisionResponse.setPlanID(provisionRequest.getPlanID());
-//        }
-//
-//        if (userKeyIds != null) {
-////            provisionResponse.setUserKeyPairIDs(userKeyIds);
-//        }
-//        if (deployerKeyIds != null) {
-////            provisionResponse.setDeployerKeyPairIDs(deployerKeyIds);
-//        }
-
         provisionResponse = save(provisionResponse);
         return provisionResponse;
     }
@@ -644,5 +514,25 @@ public class ProvisionService {
             }
         }
         return plan;
+    }
+
+    public String get(String id, String format) throws JSONException {
+        ProvisionResponse pro = findOne(id);
+        Map<String, Object> map = pro.getKeyValue();
+
+        if (format != null && format.equals("yml")) {
+            String ymlStr = Converter.map2YmlString(map);
+            ymlStr = ymlStr.replaceAll("\\uff0E", ".");
+            return ymlStr;
+        }
+        if (format != null && format.equals("json")) {
+            String jsonStr = Converter.map2JsonString(map);
+            jsonStr = jsonStr.replaceAll("\\uff0E", ".");
+            return jsonStr;
+        }
+        String ymlStr = Converter.map2YmlString(map);
+        ymlStr = ymlStr.replaceAll("\\uff0E", ".");
+        return ymlStr;
+
     }
 }

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="slolved cap error">
-      <change beforePath="$PROJECT_DIR$/../drip-api/src/main/java/nl/uva/sne/drip/api/service/DeployService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-api/src/main/java/nl/uva/sne/drip/api/service/DeployService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../drip-api/src/main/java/nl/uva/sne/drip/api/service/ProvisionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-api/src/main/java/nl/uva/sne/drip/api/service/ProvisionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/easy-install.pth" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/prettytable.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/pyparsing.py" beforeDir="false" />
@@ -33,7 +33,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="TODO_SCOPE" value="All Places" />
     <property name="full.screen.before.presentation.mode" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../drip-provisioner" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
