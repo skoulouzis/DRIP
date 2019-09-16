@@ -423,10 +423,8 @@ public class ProvisionService {
 //        Map<String, Object> kvMap = null;
 //        KeyPair userKey = new KeyPair();
 //        KeyPair deployerKey = new KeyPair();
-
 //        Map<String, Key> privateCloudKeys = new HashMap<>();
 //        Map<String, Key> publicCloudKeys = new HashMap<>();
-
         PlanResponse plan = addCloudCredentialsOnTOSCAPlan(provisionRequest);
         Map<String, Object> toscaPlan = plan.getKeyValue();
         Map<String, Object> topologyTemplate = (Map<String, Object>) ((Map<String, Object>) toscaPlan.get("topology_template"));
@@ -469,11 +467,11 @@ public class ProvisionService {
                     Map<String, Object> properties = (Map<String, Object>) vmList.get(i).get("properties");
                     properties.put("user_name", deployUser);
                 }
-                if (name.contains("_key")) {
-                    for (String nodeName : nodeNames) {
-                        Map<String, Object> keyOutput = TOSCAUtils.buildTOSCAOutput(nodeName, p.getValue());
-                        outputs.put(name, keyOutput);
-                    }
+            }
+            if (name.contains("_key")) {
+                for (String nodeName : nodeNames) {
+                    Map<String, Object> keyOutput = TOSCAUtils.buildTOSCAOutput(nodeName, p.getValue());
+                    outputs.put(name, keyOutput);
                 }
             }
 //            switch (name) {
@@ -536,12 +534,12 @@ public class ProvisionService {
         }
 
         topologyTemplate.put("outputs", outputs);
-        List<String> userKeyIds = null;
-        if (provisionRequest != null) {
-            userKeyIds = provisionRequest.getUserKeyPairIDs();
-        } else {
-//            userKeyIds = provisionResponse.getUserKeyPairIDs();
-        }
+//        List<String> userKeyIds = null;
+//        if (provisionRequest != null) {
+//            userKeyIds = provisionRequest.getUserKeyPairIDs();
+//        } else {
+////            userKeyIds = provisionResponse.getUserKeyPairIDs();
+//        }
 
 //        if (saveUserKeys) {
 //            if (userKeyIds != null && !userKeyIds.isEmpty()) {
@@ -592,7 +590,6 @@ public class ProvisionService {
 //            existingCloudKeyPairIDs = cloudKeyPairIDs;
 //        }
 //        provisionResponse.setCloudKeyPairIDs(existingCloudKeyPairIDs);
-
 //        provisionResponse.setDeployParameters(deployParameters);
 //        provisionResponse.setKvMap(kvMap);
         provisionResponse.setKvMap(toscaPlan);

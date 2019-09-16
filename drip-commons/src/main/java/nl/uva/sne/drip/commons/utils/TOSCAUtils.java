@@ -29,10 +29,10 @@ public class TOSCAUtils {
 
     public static List<Map<String, Object>> getVMsFromTopology(Map<String, Object> toscaPlan) {
         List<String> vmNames = getVMsNodeNamesFromTopology(toscaPlan);
-        Map<String, Object> topologyTemplate = (Map<String, Object>) toscaPlan.get("topology_template");
+        Map<String, Object> nodeTemplates = (Map<String, Object>) ((Map<String, Object>) toscaPlan.get("topology_template")).get("node_templates");
         List<Map<String, Object>> vmList = new ArrayList<>();
         for (String vmName : vmNames) {
-            Map<String, Object> vm = (Map<String, Object>) topologyTemplate.get(vmName);
+            Map<String, Object> vm = (Map<String, Object>) nodeTemplates.get(vmName);
 //            Map<String, Object> properties = (Map<String, Object>) vm.get("properties");
             vmList.add(vm);
         }
