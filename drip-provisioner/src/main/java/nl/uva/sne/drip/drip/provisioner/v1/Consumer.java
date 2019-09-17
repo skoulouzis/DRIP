@@ -282,7 +282,6 @@ public class Consumer extends DefaultConsumer {
 
 //        List<File> public_cloud_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "name.pub", "public_cloud_key");
 //        List<File> private_cloud_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "id_rsa", "private_cloud_key");
-
         UserCredential userCredential = getUserCredential(parameters, tempInputDirPath);
         UserDatabase userDatabase = getUserDB();
 
@@ -494,8 +493,8 @@ public class Consumer extends DefaultConsumer {
             if (cred instanceof EC2Credential) {
                 userCredential.cloudAccess.put("ec2", cred);
             }
-            if (cred instanceof EGICredential) { 
-               userCredential.cloudAccess.put("egi", cred);
+            if (cred instanceof EGICredential) {
+                userCredential.cloudAccess.put("egi", cred);
             }
             if (cred instanceof ExoGENICredential) {
                 userCredential.cloudAccess.put("exogeni", cred);
@@ -563,6 +562,7 @@ public class Consumer extends DefaultConsumer {
         if (userPrivateName != null) {
             param = new MessageParameter();
             param.setEncoding(charset);
+            //        This key is configured on all vms fo the 'user_name'
             param.setName("private_user_key");
             byte[] bytes = Files.readAllBytes(Paths.get(tempInputDirPath + File.separator + userPrivateName));
             param.setValue(new String(bytes, charset));

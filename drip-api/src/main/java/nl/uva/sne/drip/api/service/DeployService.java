@@ -207,7 +207,7 @@ public class DeployService {
         Map<String, Object> toscaProvisonMap = pro.getKeyValue();
         List<String> vmNames = TOSCAUtils.getVMsNodeNamesFromTopology(toscaProvisonMap);
         for (String name : vmNames) {
-            Map<String, Object> outputs = TOSCAUtils.getOutputsForNode(toscaProvisonMap, name);
+            Map<String, String> outputs = TOSCAUtils.getOutputsForNode(toscaProvisonMap, name);
             MessageParameter messageParameter = createCredentialPartameter(outputs);
             parameters.add(messageParameter);
         }
@@ -235,20 +235,16 @@ public class DeployService {
         deployDao.deleteAll();
     }
 
-    private MessageParameter createCredentialPartameter(Map<String, Object> outputs) {
+    private MessageParameter createCredentialPartameter(Map<String, String> outputs) {
         MessageParameter messageParameter = new MessageParameter();
         messageParameter.setName("credential");
         messageParameter.setEncoding("UTF-8");
-        
-        String key = TOSCAUtils.getOutputPair(outputs, "private_deployer_key").get(1);
-        messageParameter.setValue(key);
+//        This key is configured on all vms fo the 'user_name'
+        messageParameter.setValue(outputs.get("private_user_key"));
         Map<String, String> attributes = new HashMap<>();
-        String ip = TOSCAUtils.getOutputPair(outputs, "ip").get(1);
-        attributes.put("IP", ip);
-        String role = TOSCAUtils.getOutputPair(outputs, "role").get(1);
-        attributes.put("role", role);
-        String user = TOSCAUtils.getOutputPair(outputs, "user_name").get(1);
-        attributes.put("user", user);
+        attributes.put("IP", outputs.get("ip"));
+        attributes.put("role", outputs.get("role"));
+        attributes.put("user", outputs.get("user_name"));
         messageParameter.setAttributes(attributes);
         return messageParameter;
     }

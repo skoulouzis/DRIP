@@ -78,18 +78,18 @@ public class TOSCAUtils {
         return outputs;
     }
 
-    public static Map<String, Object> getOutputsForNode(Map<String, Object> toscaProvisonMap, String nodeName) {
+    public static Map<String, String> getOutputsForNode(Map<String, Object> toscaProvisonMap, String nodeName) {
         Map<String, Object> topologyTemplate = (Map<String, Object>) ((Map<String, Object>) toscaProvisonMap.get("topology_template"));
         Map<String, Object> outputs = (Map<String, Object>) topologyTemplate.get("outputs");
-        Map<String, Object> matchedOutputs = new HashMap<>();
+        Map<String, String> matchedOutputs = new HashMap<>();
         Iterator it = outputs.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry output = (Map.Entry) it.next();
-            Map<String, Object> outputValue = (Map<String, Object>) output.getValue();
-            Map<String, Object> val = (Map<String, Object>) outputValue.get("value");
-            List<String> attribute = (List<String>) val.get("get_attribute");
-            if (attribute.get(0).equals(nodeName)) {
-                matchedOutputs.put((String) output.getKey(), outputValue);
+            List<Map<String, String>> val = (List<Map<String, String>>) output.getValue();
+            for (Map<String, String> map : val) {
+                if (map.containsKey(nodeName)) {
+                    matchedOutputs.put((String) output.getKey(), map.get(nodeName));
+                }
             }
         }
         return matchedOutputs;
