@@ -1,22 +1,24 @@
 #!/usr/bin/env python
-import pika
+import base64
 import json
+import logging
 import os
-import time
-from vm_info import VmInfo
-import docker_kubernetes
-import docker_engine
-import docker_swarm
-import docker_compose
-import docker_service
-import docker_check
-import control_agent
+import os.path
 # import ansible_playbook
-import sys, argparse
+import sys
+import time
 from threading import Thread
 from time import sleep
-import os.path
-import logging
+
+import pika
+
+import docker_check
+import docker_compose
+import docker_engine
+import docker_kubernetes
+import docker_service
+import docker_swarm
+from vm_info import VmInfo
 
 global rabbitmq_host
 if len(sys.argv) > 1:
@@ -69,6 +71,7 @@ def handleDelivery(message):
             manager_type = param["value"]
         elif name == "credential":
             value = param["value"]
+            value = base64.b64decode(value)
             ip = param["attributes"]["IP"]
             user = param["attributes"]["user"]
             role = param["attributes"]["role"]

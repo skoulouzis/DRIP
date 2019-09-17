@@ -20,28 +20,32 @@ import logging
 def get_cpu_frequency():
     return '2.9 GHz'
 
+
 def get_num_cpus():
     return 1
+
 
 def get_cloud_domain():
     return 'UvA (Amsterdam, The Netherlands) XO Rack'
 
+
 def get_cloud_provider():
     return 'ExoGeni'
 
+
 def get_disk_size():
     return '25000 MB'
+
 
 def get_mem_size():
     return '3000 MB'
 
 
 def get_os_distribution():
-    return 'Ubuntu 14.04'
+    return 'Ubuntu 16.04'
 
 
-
-def set_VM_properties(node_template_dict):
+def set_vm_properties(node_template_dict):
     node_template_dict['properties'].pop('host_name')
     node_template_dict['properties']['host_name'] = 'vm'
     node_template_dict['properties'].pop('num_cpus')
@@ -55,6 +59,7 @@ def set_VM_properties(node_template_dict):
     node_template_dict['properties']['user_name'] = 'vm_user'
     node_template_dict['properties']['os'] = get_os_distribution()
     return node_template_dict
+
 
 def set_topology_properties(node_template_dict):
     node_template_dict['properties'].pop('provider')
@@ -71,8 +76,9 @@ def fill_in_properties(nodetemplate_dict):
         if 'type' in nodetemplate_dict and nodetemplate_dict['type'] == 'tosca.nodes.ARTICONF.VM.topology':
             nodetemplate_dict = set_topology_properties(nodetemplate_dict)
         if 'type' in nodetemplate_dict and nodetemplate_dict['type'] == 'tosca.nodes.ARTICONF.VM.Compute':
-            nodetemplate_dict = set_VM_properties(nodetemplate_dict)
+            nodetemplate_dict = set_vm_properties(nodetemplate_dict)
     return nodetemplate_dict
+
 
 def fix_occurrences(node_templates):
     # Replace  'occurrences': [1, 'UNBOUNDED']  with 'occurrences': 1
@@ -81,6 +87,7 @@ def fix_occurrences(node_templates):
             if 'occurrences' in req[next(iter(req))]:
                 req[next(iter(req))].pop('occurrences')
     return node_templates
+
 
 def node_type_2_node_template(node_type):
     nodetemplate_dict = {}
@@ -121,6 +128,8 @@ def get_requirement_occurrences(req):
     if 'occurrences' in req:
         return req['occurrences']
     return None
+
+
 def fix_duplicate_vm_names(yaml_str):
     topology_dict = yaml.load(yaml_str)
     node_templates = topology_dict['tosca_template']['node_templates']
@@ -131,10 +140,10 @@ def fix_duplicate_vm_names(yaml_str):
 
     for node_name in node_templates:
         if node_templates[node_name]['type'] == 'tosca.nodes.ARTICONF.VM.topology':
-            i=0
+            i = 0
             for req in node_templates[node_name]['requirements']:
                 req['vm']['node'] = vm_names[i]
-                i+=1
+                i += 1
     return yaml.dump(topology_dict)
 
 
@@ -163,11 +172,11 @@ class BasicPlanner:
         yaml_str = yaml_str.replace('tosca_definitions_version: tosca_simple_yaml_1_0', '')
         yaml_str = yaml_str.replace('description: TOSCA example', '')
         yaml_str = yaml_str.replace('tosca_template', 'topology_template')
-        self.formatted_yaml_str = 'tosca_definitions_version: tosca_simple_yaml_1_0\nrepositories:\n docker_hub: https://hub.docker.com/\n'+yaml_str
+        self.formatted_yaml_str = 'tosca_definitions_version: tosca_simple_yaml_1_0\nrepositories:\n docker_hub: https://hub.docker.com/\n' + yaml_str
         logging.info('TOSCA template: \n' + self.formatted_yaml_str)
 
     def get_plan(self):
-        return  self.formatted_yaml_str
+        return self.formatted_yaml_str
 
     def get_missing_requirements(self, node):
         logging.info('Looking for requirements for node: ' + node.name)
@@ -224,7 +233,8 @@ class BasicPlanner:
 
         # Only return the nodes that have interfaces. This means that they are not "abstract"
         for candidate_node_name in candidate_nodes:
-            if 'interfaces' in candidate_nodes[candidate_node_name].keys() and 'tosca.nodes.Root' != candidate_node_name:
+            if 'interfaces' in candidate_nodes[
+                candidate_node_name].keys() and 'tosca.nodes.Root' != candidate_node_name:
                 capable_nodes[candidate_node_name] = candidate_nodes[candidate_node_name]
         return capable_nodes
 
@@ -308,4 +318,3 @@ class BasicPlanner:
                 node_templates.append(node)
 
         return node_templates
-
