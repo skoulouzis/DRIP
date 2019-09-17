@@ -28,8 +28,8 @@ import com.webcohesion.enunciate.metadata.DocumentationExample;
 public class DeployRequest extends OwnedObject {
 
     private String provisionID;
-    private String managerType;
-    private String configurationID;
+//    private String managerType;
+//    private String configurationID;
 
     /**
      * The ID of the provision resources description <code>ProvisionResponse</code>
@@ -46,39 +46,4 @@ public class DeployRequest extends OwnedObject {
     public void setProvisionID(String provisionID) {
         this.provisionID = provisionID;
     }
-
-    /**
-     * The type of deployment manager to be used (swarm, ansile, kubernetes)
-     * @return the managerType
-     */
-    @DocumentationExample("ansible")
-    public String getManagerType() {
-        return managerType;
-    }
-
-    /**
-     * @param managerType the managerType to set
-     */
-    public void setManagerType(String managerType) {
-        this.managerType = managerType;
-    }
-
-    /**
-     * The ID of the configuration POJO that contains information used the 
-     * chosen deployment manager (for now only ansible) 
-     * <code>PlaybookRepresentation</code>
-     * @return the configurationID
-     */
-    @DocumentationExample("58e3946e0fb4f562d84ba1ad")
-    public String getConfigurationID() {
-        return configurationID;
-    }
-
-    /**
-     * @param configurationID the configurationID to set
-     */
-    public void setConfigurationID(String configurationID) {
-        this.configurationID = configurationID;
-    }
-
 }

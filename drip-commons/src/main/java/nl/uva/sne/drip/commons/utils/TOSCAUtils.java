@@ -16,6 +16,7 @@
 package nl.uva.sne.drip.commons.utils;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -60,14 +61,42 @@ public class TOSCAUtils {
         return vmNames;
     }
 
-    public static Map<String, Object> buildTOSCAOutput(String nodeName, String value) {
-        Map<String, Object> output = new HashMap();
-        Map<String, Object> outputValue = new HashMap();
-        List<String> att = new ArrayList<>();
-        att.add(nodeName);
-        att.add(value);
-        outputValue.put("get_attribute", att);
-        output.put("value", outputValue);
-        return output;
+    public static Map<String, Object> buildTOSCAOutput(Map<String, Object> outputs, String nodeName, String value, String key, boolean encodeValueToBas64) {
+        List<Map<String, String>> values;
+        if (outputs.containsKey(key)) {
+            values = (List<Map<String, String>>) outputs.get(key);
+        } else {
+            values = new ArrayList<>();
+        }
+        if (encodeValueToBas64) {
+            value = Base64.getEncoder().encodeToString(value.getBytes());
+        }
+        Map<String, String> map = new HashMap<>();
+        map.put(nodeName, value);
+        values.add(map);
+        outputs.put(key, values);
+        return outputs;
+    }
+
+    public static Map<String, Object> getOutputsForNode(Map<String, Object> toscaProvisonMap, String nodeName) {
+        Map<String, Object> topologyTemplate = (Map<String, Object>) ((Map<String, Object>) toscaProvisonMap.get("topology_template"));
+        Map<String, Object> outputs = (Map<String, Object>) topologyTemplate.get("outputs");
+        Map<String, Object> matchedOutputs = new HashMap<>();
+        Iterator it = outputs.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry output = (Map.Entry) it.next();
+            Map<String, Object> outputValue = (Map<String, Object>) output.getValue();
+            Map<String, Object> val = (Map<String, Object>) outputValue.get("value");
+            List<String> attribute = (List<String>) val.get("get_attribute");
+            if (attribute.get(0).equals(nodeName)) {
+                matchedOutputs.put((String) output.getKey(), outputValue);
+            }
+        }
+        return matchedOutputs;
+    }
+
+    public static List<String> getOutputPair(Map<String, Object> outputs, String key) {
+        List<String> outputPair = (List<String>) ((Map<String, Object>) ((Map<String, Object>) outputs.get(key)).get("value")).get("get_attribute");
+        return outputPair;
     }
 }

@@ -21,7 +21,7 @@ from vm_info import VmInfo
 import linecache
 import sys
 import logging
-from drip_logging.drip_logging_handler import *
+# from drip_logging.drip_logging_handler import *
 
 
 logger = logging.getLogger(__name__)
@@ -123,8 +123,8 @@ def install_worker(join_cmd, vm):
 	return "SUCCESS"
 
 def run(vm_list,rabbitmq_host,owner):
-        rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
-        logger.addHandler(rabbit)    
+        # rabbit = DRIPLoggingHandler(host=rabbitmq_host, port=5672,user=owner)
+        # logger.addHandler(rabbit)
 	for i in vm_list:
 		if i.role == "master": 
 			join_cmd = install_manager(i)

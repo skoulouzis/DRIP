@@ -269,19 +269,19 @@ public class Consumer extends DefaultConsumer {
 
         File clusterDir = new File(tempInputDirPath + File.separator + "clusterKeyPair");
         clusterDir.mkdir();
-        List<File> public_deployer_key = MessageParsing.getSSHKeys(parameters, clusterDir.getAbsolutePath(), "id_rsa.pub", "public_deployer_key");
-        List<File> private_deployer_key = MessageParsing.getSSHKeys(parameters, clusterDir.getAbsolutePath(), "id_rsa", "private_deployer_key");
+//        List<File> public_deployer_key = MessageParsing.getSSHKeys(parameters, clusterDir.getAbsolutePath(), "id_rsa.pub", "public_deployer_key");
+//        List<File> private_deployer_key = MessageParsing.getSSHKeys(parameters, clusterDir.getAbsolutePath(), "id_rsa", "private_deployer_key");
 
         Map<String, Object> map = MessageParsing.ymlStream2Map(new FileInputStream(topTopologyLoadingPath));
         String userPublicKeyName = ((String) map.get("publicKeyPath")).split("@")[1].replaceAll("\"", "");
         String userPrivateName = FilenameUtils.removeExtension(userPublicKeyName);
 
-        List<File> public_user_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, userPublicKeyName, "public_user_key");
+//        List<File> public_user_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, userPublicKeyName, "public_user_key");
         List<File> private_user_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "id_rsa", "private_user_key");
         FileUtils.moveFile(private_user_key.get(0), new File(private_user_key.get(0).getParent() + File.separator + userPrivateName));
 
-        List<File> public_cloud_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "name.pub", "public_cloud_key");
-        List<File> private_cloud_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "id_rsa", "private_cloud_key");
+//        List<File> public_cloud_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "name.pub", "public_cloud_key");
+//        List<File> private_cloud_key = MessageParsing.getSSHKeys(parameters, tempInputDirPath + File.separator, "id_rsa", "private_cloud_key");
 
         UserCredential userCredential = getUserCredential(parameters, tempInputDirPath);
         UserDatabase userDatabase = getUserDB();

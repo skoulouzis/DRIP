@@ -70,7 +70,6 @@ public class DeployController {
     @RequestMapping(value = "/deploy", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 400, condition = "Empty manager type. Aveliable: ansible, swarm ,kubernetes"),
         @ResponseCode(code = 400, condition = "Empty provision ID"),
         @ResponseCode(code = 500, condition = "Deploymet failed"),
         @ResponseCode(code = 200, condition = "Successful deploymet")
@@ -78,9 +77,6 @@ public class DeployController {
     public @ResponseBody
     String deploy(@RequestBody DeployRequest deployRequest) {
         try {
-            if (deployRequest.getManagerType() == null) {
-                throw new BadRequestException("Must provide manager type. Aveliable: ansible, swarm ,kubernetes");
-            }
             if (deployRequest.getProvisionID() == null) {
                 throw new BadRequestException("Must provide provision ID");
             }
@@ -115,16 +111,6 @@ public class DeployController {
         return null;
     }
 
-    @RequestMapping(value = "/sample", method = RequestMethod.GET)
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    DeployRequest sample() {
-        DeployRequest req = new DeployRequest();
-        req.setManagerType("ansible");
-        req.setConfigurationID("58e2681ba9961baa096c8541");
-        req.setProvisionID("58f8dd3a2af41387c32ff602");
-        return req;
-    }
 
     /**
      * Returns a deployment description
@@ -144,10 +130,10 @@ public class DeployController {
         try {
             resp = deployService.findOne(id);
 
-            if (resp.getManagerType().equals("swarm")) {
-                Map<String, Object> swarmInfo = deployService.getSwarmInfo(resp);
-                resp.setManagerInfo(swarmInfo);
-            }
+//            if (resp.getManagerType().equals("swarm")) {
+//                Map<String, Object> swarmInfo = deployService.getSwarmInfo(resp);
+//                resp.setManagerInfo(swarmInfo);
+//            }
 
         } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
             Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);

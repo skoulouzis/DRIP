@@ -74,6 +74,13 @@ def fill_in_properties(nodetemplate_dict):
             nodetemplate_dict = set_VM_properties(nodetemplate_dict)
     return nodetemplate_dict
 
+def fix_occurrences(node_templates):
+    # Replace  'occurrences': [1, 'UNBOUNDED']  with 'occurrences': 1
+    for node in node_templates:
+        for req in node.requirements:
+            if 'occurrences' in req[next(iter(req))]:
+                req[next(iter(req))].pop('occurrences')
+    return node_templates
 
 def node_type_2_node_template(node_type):
     nodetemplate_dict = {}
@@ -97,6 +104,40 @@ def node_type_2_node_template(node_type):
     return NodeTemplate(name, nodetemplate_dict, node_type)
 
 
+def contains_node_type(capable_node_types_list, node_type):
+    if capable_node_types_list == None:
+        return False
+    for capable_node_type in capable_node_types_list:
+        if isinstance(capable_node_type, NodeTemplate):
+            type_name = capable_node_type.type
+        elif isinstance(capable_node_type, dict):
+            type_name = next(iter(capable_node_type))
+        if type_name == node_type:
+            return True
+    return False
+
+
+def get_requirement_occurrences(req):
+    if 'occurrences' in req:
+        return req['occurrences']
+    return None
+def fix_duplicate_vm_names(yaml_str):
+    topology_dict = yaml.load(yaml_str)
+    node_templates = topology_dict['tosca_template']['node_templates']
+    vm_names = []
+    for node_name in node_templates:
+        if node_templates[node_name]['type'] == 'tosca.nodes.ARTICONF.VM.Compute':
+            vm_names.append(node_name)
+
+    for node_name in node_templates:
+        if node_templates[node_name]['type'] == 'tosca.nodes.ARTICONF.VM.topology':
+            i=0
+            for req in node_templates[node_name]['requirements']:
+                req['vm']['node'] = vm_names[i]
+                i+=1
+    return yaml.dump(topology_dict)
+
+
 class BasicPlanner:
 
     def __init__(self, path):
@@ -112,17 +153,13 @@ class BasicPlanner:
             node_templates = self.add_reqired_nods(node, None)
 
         if node_templates:
-            # Replace  'occurrences': [1, 'UNBOUNDED']  with 'occurrences': 1
-            for node in node_templates:
-                for req in node.requirements:
-                    if 'occurrences' in req[next(iter(req))]:
-                        req[next(iter(req))].pop('occurrences')
-
+            node_templates = fix_occurrences(node_templates)
             self.template.nodetemplates = node_templates
         else:
             logging.info('The TOSCA template in: ' + path + ' has no requirements')
         tp = TOSCAParser()
         yaml_str = tp.tosca_template2_yaml(self.template)
+        yaml_str = fix_duplicate_vm_names(yaml_str)
         yaml_str = yaml_str.replace('tosca_definitions_version: tosca_simple_yaml_1_0', '')
         yaml_str = yaml_str.replace('description: TOSCA example', '')
         yaml_str = yaml_str.replace('tosca_template', 'topology_template')
@@ -187,8 +224,7 @@ class BasicPlanner:
 
         # Only return the nodes that have interfaces. This means that they are not "abstract"
         for candidate_node_name in candidate_nodes:
-            if 'interfaces' in candidate_nodes[
-                candidate_node_name].keys() and 'tosca.nodes.Root' != candidate_node_name:
+            if 'interfaces' in candidate_nodes[candidate_node_name].keys() and 'tosca.nodes.Root' != candidate_node_name:
                 capable_nodes[candidate_node_name] = candidate_nodes[candidate_node_name]
         return capable_nodes
 
@@ -210,23 +246,6 @@ class BasicPlanner:
             return True
         else:
             return False
-
-    def contains_node_type(self, capable_node_types_list, node_type):
-        if capable_node_types_list == None:
-            return False
-        for capable_node_type in capable_node_types_list:
-            if isinstance(capable_node_type, NodeTemplate):
-                type_name = capable_node_type.type
-            elif isinstance(capable_node_type, dict):
-                type_name = next(iter(capable_node_type))
-            if type_name == node_type:
-                return True
-        return False
-
-    def get_requirement_occurrences(self, req):
-        if 'occurrences' in req:
-            return req['occurrences']
-        return None
 
     def get_optimal_num_of_occurrences(self, node_type, min_max_occurrences):
         max_occurrences = -1
@@ -255,7 +274,7 @@ class BasicPlanner:
         min_max_occurrences = []
         for req in missing_requirements:
             for key in req:
-                min_max_occurrences = self.get_requirement_occurrences(req[key])
+                min_max_occurrences = get_requirement_occurrences(req[key])
                 logging.info('Looking for capability: ' + req[key]['capability'] + ' for node: ' + node.name)
                 capable_node = self.get_node_types_by_capability(req[key]['capability'])
                 if capable_node:
@@ -265,7 +284,7 @@ class BasicPlanner:
                     logging.error('Did not find node with reuired capability: ' + str(req[key]['capability']))
 
             occurrences = self.get_optimal_num_of_occurrences(capable_node_type, min_max_occurrences)
-            if not self.contains_node_type(node_templates, capable_node_type) and occurrences == 1:
+            if not contains_node_type(node_templates, capable_node_type) and occurrences == 1:
                 capable_node_template = node_type_2_node_template(capable_node)
                 capable_node_name = capable_node_template.name
                 node_templates.append(capable_node_template)
@@ -285,7 +304,7 @@ class BasicPlanner:
                 req[next(iter(req))]['node'] = capable_node_name
                 node.requirements.append(req)
 
-            if not self.contains_node_type(node_templates, node):
+            if not contains_node_type(node_templates, node):
                 node_templates.append(node)
 
         return node_templates

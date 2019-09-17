@@ -20,7 +20,7 @@ __author__ = 'Yang Hu'
 import paramiko, os
 import threading
 import logging
-from drip_logging.drip_logging_handler import *
+# from drip_logging.drip_logging_handler import *
 import multiprocessing
 
 logger = logging.getLogger(__name__)

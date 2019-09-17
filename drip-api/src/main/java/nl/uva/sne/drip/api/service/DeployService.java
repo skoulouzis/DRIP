@@ -52,6 +52,7 @@ import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
+import nl.uva.sne.drip.commons.utils.TOSCAUtils;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
@@ -156,8 +157,8 @@ public class DeployService {
             List<MessageParameter> params = response.getParameters();
             DeployResponse deploy = handleResponse(params, deployInfo);
             deploy.setProvisionID(deployInfo.getProvisionID());
-            deploy.setConfigurationID(deployInfo.getConfigurationID());
-            deploy.setManagerType(deployInfo.getManagerType().toLowerCase());
+//            deploy.setConfigurationID(deployInfo.getConfigurationID());
+//            deploy.setManagerType(deployInfo.getManagerType().toLowerCase());
             logger.info("Deployment saved");
             save(deploy);
             return deploy;
@@ -171,7 +172,7 @@ public class DeployService {
     }
 
     public Map<String, Object> getSwarmInfo(DeployResponse deployResp) throws JSONException, IOException, TimeoutException, InterruptedException {
-        deployResp.setManagerType("swarm_info");
+//        deployResp.setManagerType("swarm_info");
         Message deployerInvokationMessage = buildDeployerMessages(
                 deployResp,
                 null,
@@ -193,8 +194,7 @@ public class DeployService {
             String serviceName,
             Integer numOfContainers) throws JSONException {
         String provisionID = deployInfo.getProvisionID();
-        String managerType = deployInfo.getManagerType();
-        String configurationID = deployInfo.getConfigurationID();
+        
 
         ProvisionResponse pro = provisionService.findOne(provisionID);
         if (pro == null) {
@@ -203,43 +203,26 @@ public class DeployService {
 //        List<String> loginKeysIDs = pro.getDeployerKeyPairIDs();
 
         List<Message> messages = new ArrayList<>();
-        List<KeyPair> loginKeys = new ArrayList<>();
-//        for (String keyID : loginKeysIDs) {
-//            KeyPair key = keyDao.findOne(keyID);
-//            loginKeys.add(key);
-//        }
-
-//        List<DeployParameter> deployParams = pro.getDeployParameters();
         List<MessageParameter> parameters = new ArrayList<>();
+        Map<String, Object> toscaProvisonMap = pro.getKeyValue();
+        List<String> vmNames = TOSCAUtils.getVMsNodeNamesFromTopology(toscaProvisonMap);
+        for (String name : vmNames) {
+            Map<String, Object> outputs = TOSCAUtils.getOutputsForNode(toscaProvisonMap, name);
+            MessageParameter messageParameter = createCredentialPartameter(outputs);
+            parameters.add(messageParameter);
+        }
 
-//        for (DeployParameter dp : deployParams) {
-//            MessageParameter messageParameter = createCredentialPartameter(dp, loginKeys);
-//            parameters.add(messageParameter);
-//        }
-
-        MessageParameter managerTypeParameter = createManagerTypeParameter(managerType);
+        MessageParameter managerTypeParameter = createManagerTypeParameter("kubernetes");
         parameters.add(managerTypeParameter);
-
-        if (managerType.toLowerCase().equals("ansible") && configurationID != null) {
-            MessageParameter ansibleParameter = createAnsibleParameter(configurationID);
-            parameters.add(ansibleParameter);
-        }
-
-        if (managerType.toLowerCase().equals("swarm") && configurationID != null) {
-            Map<String, String> dockerLogin = getDockerLogin(pro);
-
-            MessageParameter composerParameter = createComposerParameter(configurationID, dockerLogin);
-            parameters.add(composerParameter);
-        }
-
-        if (managerType.toLowerCase().equals("scale") && configurationID != null) {
-            MessageParameter scaleParameter = createScaleParameter(configurationID, serviceName, numOfContainers);
-            parameters.add(scaleParameter);
-        }
-        if (managerType.toLowerCase().equals("swarm_info") && configurationID != null) {
-            MessageParameter swarmInfo = createSwarmInforparameter(configurationID, serviceName);
-            parameters.add(swarmInfo);
-        }
+        
+//        if (action.toLowerCase().equals("scale")) {
+//            MessageParameter scaleParameter = createScaleParameter(null, serviceName, numOfContainers);
+//            parameters.add(scaleParameter);
+//        }
+//        if (action.toLowerCase().equals("swarm_info") ) {
+//            MessageParameter swarmInfo = createSwarmInforparameter(null, serviceName);
+//            parameters.add(swarmInfo);
+//        }
         Message deployInvokationMessage = new Message();
         deployInvokationMessage.setParameters(parameters);
         deployInvokationMessage.setCreationDate(System.currentTimeMillis());
@@ -252,19 +235,20 @@ public class DeployService {
         deployDao.deleteAll();
     }
 
-    private MessageParameter createCredentialPartameter(DeployParameter dp, List<KeyPair> loginKeys) {
+    private MessageParameter createCredentialPartameter(Map<String, Object> outputs) {
         MessageParameter messageParameter = new MessageParameter();
         messageParameter.setName("credential");
         messageParameter.setEncoding("UTF-8");
-        String key = null;
-        for (KeyPair lk : loginKeys) {
-            key = lk.getPrivateKey().getKey();
-        }
+        
+        String key = TOSCAUtils.getOutputPair(outputs, "private_deployer_key").get(1);
         messageParameter.setValue(key);
         Map<String, String> attributes = new HashMap<>();
-        attributes.put("IP", dp.getIP());
-        attributes.put("role", dp.getRole());
-        attributes.put("user", dp.getUser());
+        String ip = TOSCAUtils.getOutputPair(outputs, "ip").get(1);
+        attributes.put("IP", ip);
+        String role = TOSCAUtils.getOutputPair(outputs, "role").get(1);
+        attributes.put("role", role);
+        String user = TOSCAUtils.getOutputPair(outputs, "user_name").get(1);
+        attributes.put("user", user);
         messageParameter.setAttributes(attributes);
         return messageParameter;
     }
@@ -295,8 +279,7 @@ public class DeployService {
         return configurationParameter;
     }
 
-    private MessageParameter createConfigurationParameter(String configurationID, String confType) throws JSONException {
-        String configuration = configurationService.get(configurationID, "yml");
+    private MessageParameter createConfigurationParameter(String configuration, String confType) throws JSONException {
         MessageParameter configurationParameter = new MessageParameter();
         if (confType.equals("ansible")) {
             configurationParameter.setName("playbook");
@@ -333,34 +316,34 @@ public class DeployService {
     }
 
     public DeployResponse scale(ScaleRequest scaleReq) throws IOException, TimeoutException, InterruptedException, JSONException, Exception {
-        //Deployer needs configurationID -> name_of_deployment
-        String deployId = scaleReq.getScaleTargetID();
-        DeployResponse deployment = this.findOne(deployId);
-        String confID = deployment.getConfigurationID();
-        ConfigurationRepresentation configuration = configurationService.findOne(confID);
-        Map<String, Object> map = configuration.getKeyValue();
-        Map<String, Object> services = (Map<String, Object>) map.get("services");
-        if (!services.containsKey(scaleReq.getScaleTargetName())) {
-            throw new BadRequestException("Service name does not exist in this deployment");
-        }
-
-        deployment.setManagerType("scale");
-        Message message = buildDeployerMessages(deployment,
-                scaleReq.getScaleTargetName(),
-                scaleReq.getNumOfInstances()).get(0);
-
-        message.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-        try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
-            logger.info("Calling deployer");
-            Message response = (deployer.call(message));
-            logger.info("Got response from deployer");
-            List<MessageParameter> params = response.getParameters();
-            handleResponse(params, null);
-        }
-        deployment.setScale(scaleReq);
-        deployment.setManagerType("swarm");
-        save(deployment);
-        return deployment;
+//        //Deployer needs configurationID -> name_of_deployment
+//        String deployId = scaleReq.getScaleTargetID();
+//        DeployResponse deployment = this.findOne(deployId);
+//        String confID = deployment.getConfigurationID();
+//        ConfigurationRepresentation configuration = configurationService.findOne(confID);
+//        Map<String, Object> map = configuration.getKeyValue();
+//        Map<String, Object> services = (Map<String, Object>) map.get("services");
+//        if (!services.containsKey(scaleReq.getScaleTargetName())) {
+//            throw new BadRequestException("Service name does not exist in this deployment");
+//        }
+//
+//        deployment.setManagerType("scale");
+//        Message message = buildDeployerMessages(deployment,
+//                scaleReq.getScaleTargetName(),
+//                scaleReq.getNumOfInstances()).get(0);
+//
+//        message.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+//        try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
+//            logger.info("Calling deployer");
+//            Message response = (deployer.call(message));
+//            logger.info("Got response from deployer");
+//            List<MessageParameter> params = response.getParameters();
+//            handleResponse(params, null);
+//        }
+//        deployment.setScale(scaleReq);
+//        deployment.setManagerType("swarm");
+//        save(deployment);
+        return null;
     }
 
     private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException, Exception {
@@ -532,48 +515,48 @@ public class DeployService {
 
     public List<String> getServiceNames(String id) throws JSONException, IOException, TimeoutException, InterruptedException {
         DeployResponse resp = findOne(id);
-        if (resp.getManagerType().equals("swarm")) {
-            Map<String, Object> swarmInfo = getSwarmInfo(resp);
-
-            List< Map<String, Object>> stackInfo = (List) swarmInfo.get("stack_info");
-            List<String> serviceNames = new ArrayList<>();
-            for (Map<String, Object> map : stackInfo) {
-                if (map.containsKey("name")) {
-                    serviceNames.add(((String) map.get("name")));
-                }
-            }
-            return serviceNames;
-        }
+//        if (resp.getManagerType().equals("swarm")) {
+//            Map<String, Object> swarmInfo = getSwarmInfo(resp);
+//
+//            List< Map<String, Object>> stackInfo = (List) swarmInfo.get("stack_info");
+//            List<String> serviceNames = new ArrayList<>();
+//            for (Map<String, Object> map : stackInfo) {
+//                if (map.containsKey("name")) {
+//                    serviceNames.add(((String) map.get("name")));
+//                }
+//            }
+//            return serviceNames;
+//        }
         return null;
     }
 
     public DeployResponse getContainersStatus(String id, String serviceName) throws JSONException, IOException, TimeoutException, InterruptedException {
         DeployResponse resp = findOne(id);
         Map<String, Object> result = new HashMap<>();
-        if (resp.getManagerType().equals("swarm")) {
-            Map<String, Object> swarmInfo = getSwarmInfo(resp);
-
-            List< Map<String, Object>> servicesInfo = (List) swarmInfo.get("services_info");
-            List<String> taskIDs = new ArrayList<>();
-            for (Map<String, Object> map : servicesInfo) {
-                if (map.containsKey("name") && ((String) map.get("name")).startsWith(serviceName)) {
-                    taskIDs.add(((String) map.get("ID")));
-                }
-            }
-            List< Map<String, Object>> inspecInfo = (List) swarmInfo.get("inspect_info");
-            List< Map<String, Object>> inspecInfoResult = new ArrayList<>();
-            for (String taskID : taskIDs) {
-                for (Map<String, Object> map : inspecInfo) {
-                    if (map.containsKey("ID") && ((String) map.get("ID")).startsWith(taskID)) {
-                        inspecInfoResult.add((Map<String, Object>) map.get("Status"));
-                    }
-                }
-            }
-            result.put("inspect_info", inspecInfoResult);
-            resp.setManagerInfo(result);
-            resp.setKey(null);
-            resp.setScale(null);
-        }
+//        if (resp.getManagerType().equals("swarm")) {
+//            Map<String, Object> swarmInfo = getSwarmInfo(resp);
+//
+//            List< Map<String, Object>> servicesInfo = (List) swarmInfo.get("services_info");
+//            List<String> taskIDs = new ArrayList<>();
+//            for (Map<String, Object> map : servicesInfo) {
+//                if (map.containsKey("name") && ((String) map.get("name")).startsWith(serviceName)) {
+//                    taskIDs.add(((String) map.get("ID")));
+//                }
+//            }
+//            List< Map<String, Object>> inspecInfo = (List) swarmInfo.get("inspect_info");
+//            List< Map<String, Object>> inspecInfoResult = new ArrayList<>();
+//            for (String taskID : taskIDs) {
+//                for (Map<String, Object> map : inspecInfo) {
+//                    if (map.containsKey("ID") && ((String) map.get("ID")).startsWith(taskID)) {
+//                        inspecInfoResult.add((Map<String, Object>) map.get("Status"));
+//                    }
+//                }
+//            }
+//            result.put("inspect_info", inspecInfoResult);
+//            resp.setManagerInfo(result);
+//            resp.setKey(null);
+//            resp.setScale(null);
+//        }
         return resp;
     }
 

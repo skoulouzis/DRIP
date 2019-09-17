@@ -11,7 +11,7 @@ import docker_compose
 import docker_service
 import docker_check
 import control_agent
-import ansible_playbook
+# import ansible_playbook
 import sys, argparse
 from threading import Thread
 from time import sleep

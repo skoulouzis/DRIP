@@ -19,7 +19,7 @@ __author__ = 'Yang Hu'
 
 import paramiko, os
 import logging
-from drip_logging.drip_logging_handler import *
+# from drip_logging.drip_logging_handler import *
 
 
 logger = logging.getLogger(__name__)

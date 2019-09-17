@@ -25,7 +25,7 @@ import linecache
 import sys
 import ast
 import re
-from drip_logging.drip_logging_handler import *
+# from drip_logging.drip_logging_handler import *
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):

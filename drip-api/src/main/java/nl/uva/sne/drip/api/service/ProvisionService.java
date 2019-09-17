@@ -399,32 +399,12 @@ public class ProvisionService {
         return null;
     }
 
-//    private List<MessageParameter> buildDeployKeysParams(String keyID) {
-//        KeyPair key = keyPairService.findOne(keyID);
-//        if (key == null) {
-//            throw new BadRequestException("User key: " + keyID + " was not found");
-//        }
-//        List<MessageParameter> parameters = new ArrayList();
-//        MessageParameter keyParameter = new MessageParameter();
-//
-//        keyParameter.setName("deployer_ssh_key");
-//
-//        keyParameter.setValue(key.getPublicKey().getKey());
-//        keyParameter.setEncoding("UTF-8");
-//        parameters.add(keyParameter);
-//        return parameters;
-//    }
     private ProvisionResponse parseCreateResourcesResponse(List<MessageParameter> parameters,
             ProvisionRequest provisionRequest, ProvisionResponse provisionResponse, boolean saveUserKeys, boolean saveDeployerKeyI) throws Exception {
         if (provisionResponse == null) {
             provisionResponse = new ProvisionResponse();
         }
 
-//        Map<String, Object> kvMap = null;
-//        KeyPair userKey = new KeyPair();
-//        KeyPair deployerKey = new KeyPair();
-//        Map<String, Key> privateCloudKeys = new HashMap<>();
-//        Map<String, Key> publicCloudKeys = new HashMap<>();
         PlanResponse plan = addCloudCredentialsOnTOSCAPlan(provisionRequest);
         Map<String, Object> toscaPlan = plan.getKeyValue();
         Map<String, Object> topologyTemplate = (Map<String, Object>) ((Map<String, Object>) toscaPlan.get("topology_template"));
@@ -456,19 +436,17 @@ public class ProvisionService {
 
                     String nodeName = nodeNames.get(i);
 
-                    Map<String, Object> ipOutput = TOSCAUtils.buildTOSCAOutput(nodeName, deployIP);
-                    Map<String, Object> roleOutput = TOSCAUtils.buildTOSCAOutput(nodeName, deployRole);
-                    outputs.put("ip", ipOutput);
-                    outputs.put("role", roleOutput);
-
                     Map<String, Object> properties = (Map<String, Object>) vmList.get(i).get("properties");
                     properties.put("user_name", deployUser);
+
+                    outputs = TOSCAUtils.buildTOSCAOutput(outputs, nodeName, deployIP, "ip", false);
+                    outputs = TOSCAUtils.buildTOSCAOutput(outputs, nodeName, deployUser, "user_name", false);
+                    outputs = TOSCAUtils.buildTOSCAOutput(outputs, nodeName, deployRole, "role", false);
                 }
             }
             if (name.contains("_key")) {
                 for (String nodeName : nodeNames) {
-                    Map<String, Object> keyOutput = TOSCAUtils.buildTOSCAOutput(nodeName, p.getValue());
-                    outputs.put(name, keyOutput);
+                    outputs = TOSCAUtils.buildTOSCAOutput(outputs, nodeName, p.getValue(), name, true);
                 }
             }
         }

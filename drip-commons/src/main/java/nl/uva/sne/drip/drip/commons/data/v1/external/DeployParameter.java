@@ -36,23 +36,6 @@ public class DeployParameter {
     private String user;
     private String role;
 
-//    /**
-//     * The file name of the certificate used to log in as root to the 
-//     * provisioned VM.
-//     * @return the cloudCertificateName
-//     */
-//    @DocumentationExample("Virginia")
-//    public String getCloudCertificateName() {
-//        return cloudCertificateName;
-//    }
-//
-//    /**
-//     * @param cloudCertificateName the cloudCertificateName to set
-//     */
-//    public void setCloudCertificateName(String cloudCertificateName) {
-//        this.cloudCertificateName = cloudCertificateName;
-//    }
-
     /**
      * The public IP of the provisioned VM
      * @return the IP
