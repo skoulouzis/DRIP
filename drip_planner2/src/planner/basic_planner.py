@@ -42,7 +42,7 @@ def get_mem_size():
 
 
 def get_os_distribution():
-    return 'Ubuntu 16.04'
+    return 'Ubuntu 14.04'
 
 
 def set_vm_properties(node_template_dict):
