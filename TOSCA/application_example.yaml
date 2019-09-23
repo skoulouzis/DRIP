@@ -23,7 +23,7 @@ topology_template:
                 #type: tosca.relationships.ConnectsTo
                 type: tosca.relationships.DependsOn
       artifacts:
-        my_image:
+        image:
           file: wordpress:latest
           type: tosca.artifacts.Deployment.Image.Container.Docker
           repository: docker_hub

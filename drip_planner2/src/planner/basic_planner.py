@@ -269,7 +269,7 @@ class BasicPlanner:
                 return max_occurrences
             if max_occurrences and max_occurrences <= -1 and min_max_occurrences[
                 1] == 'UNBOUNDED' and node_type == 'tosca.nodes.ARTICONF.VM.Compute':
-                return 2
+                return 1
         else:
             return 1
 

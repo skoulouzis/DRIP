@@ -37,7 +37,7 @@ if not getattr(logger, 'handler_set', None):
 retry = 0
 
 
-def PrintException():
+def print_exception():
     exc_type, exc_obj, tb = sys.exc_info()
     f = tb.tb_frame
     lineno = tb.tb_lineno
@@ -62,15 +62,16 @@ def install_manager(vm):
         sftp.chdir('/tmp/')
         install_script = file_path + "/" + "docker_kubernetes.sh"
         sftp.put(install_script, "kubernetes_setup.sh")
-
         # stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.','-')))
         # stdout.read()
         stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/kubernetes_setup.sh")
-        stdout.read()
-        stdin, stdout, stderr = ssh.exec_command("sudo kubeadm reset")
+        out = stdout.read()
+        out = stderr.read()
+        stdin, stdout, stderr = ssh.exec_command("sudo kubeadm kubernetes-xenialreset --force")
         stdout.read()
 
-        stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init --apiserver-advertise-address=%s" % (vm.ip))
+        # stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init --apiserver-advertise-address=%s" % (vm.ip))
+        stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init")
         retstr = stdout.readlines()
 
         stdin, stdout, stderr = ssh.exec_command("sudo cp /etc/kubernetes/admin.conf /tmp/")
@@ -85,7 +86,7 @@ def install_manager(vm):
         global retry
         # print '%s: %s' % (vm.ip, e)
         logger.error(vm.ip + " " + str(e))
-        PrintException()
+        print_exception()
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()
     return retstr[-1]
@@ -94,6 +95,7 @@ def install_manager(vm):
 def install_worker(join_cmd, vm):
     try:
         logger.info("Starting kubernetes slave installation on: " + (vm.ip))
+        logger.info("User: " + (vm.user) + " key file: " + vm.key)
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(vm.ip, username=vm.user, key_filename=vm.key, timeout=30)
@@ -107,8 +109,8 @@ def install_worker(join_cmd, vm):
         file_path = os.path.dirname(os.path.abspath(__file__))
         install_script = file_path + "/" + "docker_kubernetes.sh"
         sftp.put(install_script, "kubernetes_setup.sh")
-        stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.', '-')))
-        stdout.read()
+        # stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.', '-')))
+        # stdout.read()
         stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/kubernetes_setup.sh")
         stdout.read()
         stdin, stdout, stderr = ssh.exec_command("sudo kubeadm reset")
@@ -122,6 +124,12 @@ def install_worker(join_cmd, vm):
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()
     return "SUCCESS"
+
+
+def deploy(vm_list, deployment_file):
+    for i in vm_list:
+        if i.role == "master":
+            return None
 
 
 def run(vm_list, rabbitmq_host, owner):
@@ -142,7 +150,6 @@ def run(vm_list, rabbitmq_host, owner):
             worker_cmd = install_worker(join_cmd, i)
             if "ERROR" in worker_cmd:
                 return worker_cmd
-
     file_path = os.path.dirname(os.path.abspath(__file__))
     kuber_file = open(file_path + "/admin.conf", "r")
     kuber_string = kuber_file.read()

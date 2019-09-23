@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -173,20 +174,20 @@ public class DeployService {
 
     public Map<String, Object> getSwarmInfo(DeployResponse deployResp) throws JSONException, IOException, TimeoutException, InterruptedException {
 //        deployResp.setManagerType("swarm_info");
-        Message deployerInvokationMessage = buildDeployerMessages(
-                deployResp,
-                null,
-                null).get(0);
-        Map<String, Object> info;
-        deployerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-        try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
-            logger.info("Calling deployer");
-            Message response = (deployer.call(deployerInvokationMessage));
-            logger.info("Got response from deployer");
-            List<MessageParameter> params = response.getParameters();
-            info = buildSwarmInfo(params);
-        }
-        return info;
+//        Message deployerInvokationMessage = buildDeployerMessages(
+//                deployResp,
+//                null,
+//                null).get(0);
+//        Map<String, Object> info;
+//        deployerInvokationMessage.setOwner(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+//        try (DRIPCaller deployer = new DeployerCaller(messageBrokerHost);) {
+//            logger.info("Calling deployer");
+//            Message response = (deployer.call(deployerInvokationMessage));
+//            logger.info("Got response from deployer");
+//            List<MessageParameter> params = response.getParameters();
+//            info = buildSwarmInfo(params);
+//        }
+        return null;
     }
 
     private List<Message> buildDeployerMessages(
@@ -194,13 +195,11 @@ public class DeployService {
             String serviceName,
             Integer numOfContainers) throws JSONException {
         String provisionID = deployInfo.getProvisionID();
-        
 
         ProvisionResponse pro = provisionService.findOne(provisionID);
         if (pro == null) {
             throw new NotFoundException();
         }
-//        List<String> loginKeysIDs = pro.getDeployerKeyPairIDs();
 
         List<Message> messages = new ArrayList<>();
         List<MessageParameter> parameters = new ArrayList<>();
@@ -215,14 +214,11 @@ public class DeployService {
         MessageParameter managerTypeParameter = createManagerTypeParameter("kubernetes");
         parameters.add(managerTypeParameter);
         
-//        if (action.toLowerCase().equals("scale")) {
-//            MessageParameter scaleParameter = createScaleParameter(null, serviceName, numOfContainers);
-//            parameters.add(scaleParameter);
-//        }
-//        if (action.toLowerCase().equals("swarm_info") ) {
-//            MessageParameter swarmInfo = createSwarmInforparameter(null, serviceName);
-//            parameters.add(swarmInfo);
-//        }
+        List<Map<String, Object>> deployments = TOSCAUtils.tosca2KubernetesDeployment(toscaProvisonMap);
+//        String deploymentEncoded = new String(Base64.getDecoder().decode(Converter.map2YmlString(deployments)));
+//        MessageParameter confParam = createConfigurationParameter(deploymentEncoded, "kubernetes");
+//        parameters.add(confParam);
+
         Message deployInvokationMessage = new Message();
         deployInvokationMessage.setParameters(parameters);
         deployInvokationMessage.setCreationDate(System.currentTimeMillis());
@@ -279,6 +275,8 @@ public class DeployService {
         MessageParameter configurationParameter = new MessageParameter();
         if (confType.equals("ansible")) {
             configurationParameter.setName("playbook");
+        } else if (confType.equals("kubernetes")) {
+            configurationParameter.setName("deployment");
         } else {
             configurationParameter.setName(confType);
         }
@@ -344,7 +342,8 @@ public class DeployService {
 
     private DeployResponse handleResponse(List<MessageParameter> params, DeployRequest deployInfo) throws KeyException, IOException, Exception {
         DeployResponse deployResponse = new DeployResponse();
-
+        deployResponse.setProvisionID(deployInfo.getProvisionID());
+        deployResponse.setKvMap(provisionService.findOne(deployInfo.getProvisionID()).getKeyValue());
         for (MessageParameter p : params) {
             String name = p.getName();
 
@@ -355,7 +354,7 @@ public class DeployService {
                 k.setType(Key.KeyType.PRIVATE);
                 KeyPair pair = new KeyPair();
                 pair.setPrivateKey(k);
-                deployResponse.setKey(pair);
+//                deployResponse.setKey(pair);
                 save(deployResponse);
                 return deployResponse;
             }
@@ -365,7 +364,7 @@ public class DeployService {
                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
                 value = parseValue(value);
-                
+
                 List<AnsibleOutput> outputList = mapper.readValue(value, new TypeReference<List<AnsibleOutput>>() {
                 });
 
@@ -436,7 +435,7 @@ public class DeployService {
 
                     outputListIds.add(ansOut.getId());
                 }
-                deployResponse.setAnsibleOutputList(outputListIds);
+//                deployResponse.setAnsibleOutputList(outputListIds);
             }
         }
         return deployResponse;
@@ -568,6 +567,25 @@ public class DeployService {
             return dockerLogin;
         }
         return null;
+    }
+
+    public String get(String id, String format) throws JSONException, IOException, TimeoutException, InterruptedException {
+        DeployResponse deploy = findOne(id);
+        Map<String, Object> map = deploy.getKeyValue();
+        if (format != null && format.equals("yml")) {
+            String ymlStr = Converter.map2YmlString(map);
+            ymlStr = ymlStr.replaceAll("\\uff0E", ".");
+            return ymlStr;
+        }
+        if (format != null && format.equals("json")) {
+            String jsonStr = Converter.map2JsonString(map);
+            jsonStr = jsonStr.replaceAll("\\uff0E", ".");
+            return jsonStr;
+        }
+        String ymlStr = Converter.map2YmlString(map);
+        ymlStr = ymlStr.replaceAll("\\uff0E", ".");
+        return ymlStr;
+
     }
 
 }

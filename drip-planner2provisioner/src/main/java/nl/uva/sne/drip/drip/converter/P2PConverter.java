@@ -207,10 +207,10 @@ public class P2PConverter {
                 if (size <= 1) {
                     return "XOSmall";
                 }
-                if (size > 1 && size <= 5) {
+                if (size > 1 && size < 5) {
                     return "XOMedium";
                 }
-                if (size > 5 && size <= 10) {
+                if (size >= 5 && size <= 10) {
                     return "XOLarge";
                 }
             default:

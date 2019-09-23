@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * This controller is responsible for deploying a cluster on provisioned 
+ * This controller is responsible for deploying a cluster on provisioned
  * resources.
  *
  * @author S. Koulouzis
@@ -70,8 +70,10 @@ public class DeployController {
     @RequestMapping(value = "/deploy", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 400, condition = "Empty provision ID"),
-        @ResponseCode(code = 500, condition = "Deploymet failed"),
+        @ResponseCode(code = 400, condition = "Empty provision ID")
+        ,
+        @ResponseCode(code = 500, condition = "Deploymet failed")
+        ,
         @ResponseCode(code = 200, condition = "Successful deploymet")
     })
     public @ResponseBody
@@ -88,9 +90,10 @@ public class DeployController {
     }
 
     /**
-     * Scales deployment  
+     * Scales deployment
+     *
      * @param scaleRequest
-     * @return 
+     * @return
      */
     @RequestMapping(value = "/scale", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
@@ -111,37 +114,29 @@ public class DeployController {
         return null;
     }
 
-
     /**
      * Returns a deployment description
      *
      * @param id
+     * @param format
      * @return
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, params = {"format"})
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 404, condition = "Object not found"),
+        @ResponseCode(code = 404, condition = "Object not found")
+        ,
         @ResponseCode(code = 200, condition = "Object found")
     })
     public @ResponseBody
-    DeployResponse get(@PathVariable("id") String id) {
-        DeployResponse resp = null;
+    String get(@PathVariable("id") String id, @RequestParam(value = "format") String format) {
         try {
-            resp = deployService.findOne(id);
-
-//            if (resp.getManagerType().equals("swarm")) {
-//                Map<String, Object> swarmInfo = deployService.getSwarmInfo(resp);
-//                resp.setManagerInfo(swarmInfo);
-//            }
-
+            DeployResponse resp = null;
+            return deployService.get(id, format);
         } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
             Logger.getLogger(DeployController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (resp == null) {
-            throw new NotFoundException();
-        }
-        return resp;
+        return null;
     }
 
     /**
@@ -154,7 +149,8 @@ public class DeployController {
     @RequestMapping(value = "/{id}/container_status", method = RequestMethod.GET, params = {"service_name"})
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 404, condition = "Object not found"),
+        @ResponseCode(code = 404, condition = "Object not found")
+        ,
         @ResponseCode(code = 200, condition = "Object found")
     })
     public @ResponseBody
@@ -174,16 +170,17 @@ public class DeployController {
         return resp;
     }
 
-    
     /**
      * Returns the service names running on the cluster
+     *
      * @param id
-     * @return 
+     * @return
      */
     @RequestMapping(value = "/{id}/service_names", method = RequestMethod.GET)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 404, condition = "Object not found"),
+        @ResponseCode(code = 404, condition = "Object not found")
+        ,
         @ResponseCode(code = 200, condition = "Object found")
     })
     public @ResponseBody
@@ -229,7 +226,8 @@ public class DeployController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     @StatusCodes({
-        @ResponseCode(code = 200, condition = "Successful delete"),
+        @ResponseCode(code = 200, condition = "Successful delete")
+        ,
         @ResponseCode(code = 404, condition = "Object not found")
     })
     public @ResponseBody

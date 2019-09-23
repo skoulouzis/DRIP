@@ -30,69 +30,23 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DeployResponse extends DeployRequest {
+public class DeployResponse extends KeyValueHolder {
 
-    private KeyPair key;
-
-    private List<String> ansibleOutputListIDs;
-
-    private ScaleRequest scale;
-
-    private Map<String, Object> managerInfo;
-
-    public void setAnsibleOutputList(List<String> outputListIDs) {
-        this.ansibleOutputListIDs = outputListIDs;
+    /**
+     * @return the provisionID
+     */
+    public String getProvisionID() {
+        return provisionID;
     }
 
     /**
-     * @return the ansibleOutputList
+     * @param provisionID the provisionID to set
      */
-    public List<String> getAnsibleOutputList() {
-        return ansibleOutputListIDs;
+    public void setProvisionID(String provisionID) {
+        this.provisionID = provisionID;
     }
-
-    public void setKey(KeyPair key) {
-        this.key = key;
-    }
-
-    /**
-     * The key pair to log in and manage a docker cluster
-     *
-     * @return
-     */
-    public KeyPair getKeyPair() {
-        return key;
-    }
-
-    /**
-     * The scale information if any for this deployment
-     *
-     * @return the scale
-     */
-    public ScaleRequest getScale() {
-        return scale;
-    }
-
-    /**
-     * @param scale the scale to set
-     */
-    public void setScale(ScaleRequest scale) {
-        this.scale = scale;
-    }
-
-    public void setManagerInfo(Map<String, Object> managerInfo) {
-        this.managerInfo = managerInfo;
-    }
-
-    /**
-     * Returns manager info e.g. service status etc.
-     *
-     * @return
-     */
-    @DocumentationExample("{\"services_info\": {\"status\": \"Ready\", \"hostname\": "
-            + "\"stoor74\", \"ID\": \"v5y8cs7zd5atej53buq86g8j7\", \"availability\": \"Active\"}, ."
-            + "\"cluster_node_info\": {\"status\": \"Ready\", \"hostname\": \"stoor74\", \"ID\": \"v5y8cs7zd5atej53buq86g8j7\", \"availability\": \"Active\"}}")
-    public Map<String, Object> getManagerInfo() {
-        return this.managerInfo;
-    }
+    
+    private String provisionID;
+    
+    
 }
