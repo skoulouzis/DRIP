@@ -16,6 +16,8 @@ import yaml
 from utils.TOSCA_parser import *
 import logging
 
+from src.utils.TOSCA_parser import TOSCAParser
+
 
 def get_cpu_frequency():
     return '2.9 GHz'
@@ -71,13 +73,13 @@ def set_topology_properties(node_template_dict):
     return node_template_dict
 
 
-def fill_in_properties(nodetemplate_dict):
-    if 'properties' in nodetemplate_dict:
-        if 'type' in nodetemplate_dict and nodetemplate_dict['type'] == 'tosca.nodes.ARTICONF.VM.topology':
-            nodetemplate_dict = set_topology_properties(nodetemplate_dict)
-        if 'type' in nodetemplate_dict and nodetemplate_dict['type'] == 'tosca.nodes.ARTICONF.VM.Compute':
-            nodetemplate_dict = set_vm_properties(nodetemplate_dict)
-    return nodetemplate_dict
+def fill_in_properties(node_template_dict):
+    if 'properties' in node_template_dict:
+        if 'type' in node_template_dict and node_template_dict['type'] == 'tosca.nodes.ARTICONF.VM.topology':
+            node_template_dict = set_topology_properties(node_template_dict)
+        if 'type' in node_template_dict and node_template_dict['type'] == 'tosca.nodes.ARTICONF.VM.Compute':
+            node_template_dict = set_vm_properties(node_template_dict)
+    return node_template_dict
 
 
 def fix_occurrences(node_templates):
@@ -112,7 +114,7 @@ def node_type_2_node_template(node_type):
 
 
 def contains_node_type(capable_node_types_list, node_type):
-    if capable_node_types_list == None:
+    if capable_node_types_list is None:
         return False
     for capable_node_type in capable_node_types_list:
         if isinstance(capable_node_type, NodeTemplate):
@@ -147,6 +149,44 @@ def fix_duplicate_vm_names(yaml_str):
     return yaml.dump(topology_dict)
 
 
+def get_optimal_num_of_occurrences(node_type, min_max_occurrences):
+    max_occurrences = -1
+    min_occurrences = -1
+    if min_max_occurrences:
+        if isinstance(min_max_occurrences[1], int):
+            max_occurrences = int(min_max_occurrences[1])
+        if isinstance(min_max_occurrences[0], int):
+            min_occurrences = int(min_max_occurrences[0])
+        if max_occurrences and max_occurrences > -1:
+            return max_occurrences
+        if max_occurrences and max_occurrences <= -1 and min_max_occurrences[
+            1] == 'UNBOUNDED' and node_type == 'tosca.nodes.ARTICONF.VM.Compute':
+            return 1
+    else:
+        return 1
+
+
+def has_capability_max_one_occurrence(capability):
+    if 'occurrences' in capability and capability['occurrences'][1] == 1:
+        return True
+    else:
+        return False
+
+
+def copy_capabilities_with_one_occurrences(parent_capabilities, candidate_child_node):
+    inherited_capabilities = []
+    if not 'capabilities' in candidate_child_node.keys():
+        candidate_child_node['capabilities'] = {}
+
+    for capability in parent_capabilities:
+        inherited_capability = parent_capabilities[capability]
+        if has_capability_max_one_occurrence(inherited_capability):
+            inherited_capabilities.append(parent_capabilities)
+            for key in parent_capabilities:
+                candidate_child_node['capabilities'][key] = parent_capabilities[key]
+    return candidate_child_node
+
+
 class BasicPlanner:
 
     def __init__(self, path):
@@ -157,9 +197,10 @@ class BasicPlanner:
         self.all_nodes.update(self.tosca_node_types.items())
         self.all_nodes.update(self.all_custom_def.items())
 
-        #        capable_node_name = ''
+        node_templates = []
         for node in self.template.nodetemplates:
-            node_templates = self.add_reqired_nods(node, None)
+            node_templates.extend(self.add_required_nods(node, None))
+            # node_templates = self.add_required_nods(node, None)
 
         if node_templates:
             node_templates = fix_occurrences(node_templates)
@@ -172,7 +213,8 @@ class BasicPlanner:
         yaml_str = yaml_str.replace('tosca_definitions_version: tosca_simple_yaml_1_0', '')
         yaml_str = yaml_str.replace('description: TOSCA example', '')
         yaml_str = yaml_str.replace('tosca_template', 'topology_template')
-        self.formatted_yaml_str = 'tosca_definitions_version: tosca_simple_yaml_1_0\nrepositories:\n docker_hub: https://hub.docker.com/\n' + yaml_str
+        self.formatted_yaml_str = 'tosca_definitions_version: tosca_simple_yaml_1_0\nrepositories:\n docker_hub: ' \
+                                  'https://hub.docker.com/\n' + yaml_str
         logging.info('TOSCA template: \n' + self.formatted_yaml_str)
 
     def get_plan(self):
@@ -225,7 +267,7 @@ class BasicPlanner:
                 for candidate_node_name in candidate_nodes:
                     if candidate_child_node['derived_from'] == candidate_node_name:
                         candidate_child_nodes[tosca_node_type] = self.all_nodes[tosca_node_type]
-                        candidate_child_nodes[tosca_node_type] = self.copy_capabilities_with_one_occurrences(
+                        candidate_child_nodes[tosca_node_type] = copy_capabilities_with_one_occurrences(
                             candidate_nodes[candidate_node_name]['capabilities'], candidate_child_node)
 
         candidate_nodes.update(candidate_child_nodes)
@@ -238,42 +280,7 @@ class BasicPlanner:
                 capable_nodes[candidate_node_name] = candidate_nodes[candidate_node_name]
         return capable_nodes
 
-    def copy_capabilities_with_one_occurrences(self, parent_capabilities, candidate_child_node):
-        inherited_capabilities = []
-        if not 'capabilities' in candidate_child_node.keys():
-            candidate_child_node['capabilities'] = {}
-
-        for capability in parent_capabilities:
-            inherited_capability = parent_capabilities[capability]
-            if self.has_capability_max_one_occurrence(inherited_capability):
-                inherited_capabilities.append(parent_capabilities)
-                for key in parent_capabilities:
-                    candidate_child_node['capabilities'][key] = parent_capabilities[key]
-        return candidate_child_node
-
-    def has_capability_max_one_occurrence(self, capability):
-        if 'occurrences' in capability and capability['occurrences'][1] == 1:
-            return True
-        else:
-            return False
-
-    def get_optimal_num_of_occurrences(self, node_type, min_max_occurrences):
-        max_occurrences = -1
-        min_occurrences = -1
-        if min_max_occurrences:
-            if isinstance(min_max_occurrences[1], int):
-                max_occurrences = int(min_max_occurrences[1])
-            if isinstance(min_max_occurrences[0], int):
-                min_occurrences = int(min_max_occurrences[0])
-            if max_occurrences and max_occurrences > -1:
-                return max_occurrences
-            if max_occurrences and max_occurrences <= -1 and min_max_occurrences[
-                1] == 'UNBOUNDED' and node_type == 'tosca.nodes.ARTICONF.VM.Compute':
-                return 1
-        else:
-            return 1
-
-    def add_reqired_nods(self, node, node_templates):
+    def add_required_nods(self, node, node_templates):
         if not node_templates:
             node_templates = []
         missing_requirements = self.get_missing_requirements(node)
@@ -293,13 +300,13 @@ class BasicPlanner:
                 else:
                     logging.error('Did not find node with reuired capability: ' + str(req[key]['capability']))
 
-            occurrences = self.get_optimal_num_of_occurrences(capable_node_type, min_max_occurrences)
+            occurrences = get_optimal_num_of_occurrences(capable_node_type, min_max_occurrences)
             if not contains_node_type(node_templates, capable_node_type) and occurrences == 1:
                 capable_node_template = node_type_2_node_template(capable_node)
                 capable_node_name = capable_node_template.name
                 node_templates.append(capable_node_template)
                 # recursively fulfill all requirements
-                self.add_reqired_nods(capable_node_template, node_templates)
+                self.add_required_nods(capable_node_template, node_templates)
             elif occurrences > 1:
                 logging.info('Creating: ' + str(occurrences) + ' occurrences of ' + capable_node_type)
                 for x in range(0, occurrences):
@@ -308,11 +315,12 @@ class BasicPlanner:
                     logging.info('Adding : ' + str(capable_node_template.name))
                     node_templates.append(capable_node_template)
                 # recursively fulfill all requirements
-                self.add_reqired_nods(capable_node_template, node_templates)
+                self.add_required_nods(capable_node_template, node_templates)
 
             for x in range(0, occurrences):
                 req[next(iter(req))]['node'] = capable_node_name
                 node.requirements.append(req)
+                logging.info('Adding: ' + str(capable_node_name) + ' to node: ' + node.name)
 
             if not contains_node_type(node_templates, node):
                 node_templates.append(node)

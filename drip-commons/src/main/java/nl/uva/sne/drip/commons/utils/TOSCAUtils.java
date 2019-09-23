@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
@@ -121,16 +122,6 @@ public class TOSCAUtils {
 
     public static List<Map<String, Object>> tosca2KubernetesDeployment(Map<String, Object> toscaPlan) {
         List<Map.Entry> dockerContainers = getDockerContainers(toscaPlan);
-//        String containerName = "mysql";
-//        String appName = containerName;
-
-//        String image1 = "mysql:5.7";
-//        String imageName1 = "mysql";
-//        Map<String, Object> envMap1 = new HashMap();
-//        envMap1.put("MYSQL_DATABASE", "wordpress");
-//        envMap1.put("MYSQL_PASSWORD", "wordpress");
-//        envMap1.put("MYSQL_ROOT_PASSWORD", "somewordpress");
-//        envMap1.put("MYSQL_USER", "wordpress");
         List<Map<String, Object>> deployments = new ArrayList<>();
 
         Iterator<Map.Entry> dicIt = dockerContainers.iterator();
@@ -154,8 +145,15 @@ public class TOSCAUtils {
 
             Map<String, Object> properties = (Map<String, Object>) dockerValues.get("properties");
             Map<String, Object> envMap = (Map<String, Object>) properties.get("environment");
-            Map<String, Object> imageEnv = new HashMap();
-            imageEnv.put("env", envMap);
+            List<Map<String, Object>> imageEnv = new ArrayList<>();
+            Set<String> keys = envMap.keySet();
+
+            for (String key : keys) {
+                Map<String, Object> kubernetesEnvMap = new HashMap();
+                kubernetesEnvMap.put("name", key);
+                kubernetesEnvMap.put("value", envMap.get(key));
+                imageEnv.add(kubernetesEnvMap);
+            }
 
             Map<String, Object> image = (Map<String, Object>) ((Map<String, Object>) dockerValues.get("artifacts")).get("image");
             String imageFile = (String) image.get("file");
@@ -166,26 +164,19 @@ public class TOSCAUtils {
 
             List<String> toscaPortsList = (List<String>) properties.get("ports");
             if (toscaPortsList != null) {
-                Map<String, Object> ports = new HashMap();
-                System.err.println(toscaPortsList);
                 for (String portEntry : toscaPortsList) {
                     String[] portsArray = portEntry.split(":");
                     Map<String, Object> portMap = new HashMap();
                     portMap.put("containerPort", portsArray[0]);
-                    List<Map<String, Object>> kubernetesPortsList = new ArrayList<>();
-                    kubernetesPortsList.add(portMap);
+                    container.put("ports", portMap);
                 }
             }
 
-//            ports.put("ports", portsList);
             List<Map<String, Object>> containersList = new ArrayList<>();
             containersList.add(container);
-            Map<String, Object> containers = new HashMap();
-            containers.put("containers", containersList);
 
             Map<String, Object> spec1 = new HashMap();
-            spec1.put("containers", containers);
-//            spec1.put("ports", ports);
+            spec1.put("containers", containersList);
             topSpec.put("spec", spec1);
 
             Map<String, Object> deployment = new HashMap();
@@ -193,16 +184,65 @@ public class TOSCAUtils {
             deployment.put("metadata", metadata);
             deployment.put("kind", "Deployment");
             deployment.put("apiVersion", "extensions/v1beta1");
-
-            try {
-                System.err.println(Converter.map2YmlString(deployment));
-            } catch (JSONException ex) {
-                Logger.getLogger(TOSCAUtils.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//
+//            try {
+//                System.err.println(Converter.map2YmlString(deployment));
+//                System.err.println("----------------------------------");
+//            } catch (JSONException ex) {
+//                Logger.getLogger(TOSCAUtils.class.getName()).log(Level.SEVERE, null, ex);
+//            }
 
             deployments.add(deployment);
         }
 
         return deployments;
+    }
+
+    public static List<Map<String, Object>> tosca2KubernetesService(Map<String, Object> toscaPlan) {
+        List<Map.Entry> dockerContainers = getDockerContainers(toscaPlan);
+        List<Map<String, Object>> services = new ArrayList<>();
+        Iterator<Map.Entry> dicIt = dockerContainers.iterator();
+        while (dicIt.hasNext()) {
+            Map.Entry docker = dicIt.next();
+            String name = (String) docker.getKey();
+            Map<String, Object> dockerValues = (Map<String, Object>) docker.getValue();
+
+            Map<String, Object> spec = new HashMap();
+
+            Map<String, Object> properties = (Map<String, Object>) dockerValues.get("properties");
+            List<String> toscaPortsList = (List<String>) properties.get("ports");
+            if (toscaPortsList != null) {
+                for (String portEntry : toscaPortsList) {
+                    String[] portsArray = portEntry.split(":");
+                    Map<String, Object> portMap = new HashMap();
+                    portMap.put("port", portsArray[1]);
+                    spec.put("ports", portMap);
+                }
+            }
+
+            Map<String, Object> selector = new HashMap();
+            selector.put("app", name);
+            spec.put("selector", selector);
+
+            Map<String, Object> labels = new HashMap();
+            labels.put("app", name);
+            Map<String, Object> metadata = new HashMap();
+            metadata.put("labels", labels);
+            metadata.put("name", name);
+
+            Map<String, Object> service = new HashMap();
+            service.put("spec", spec);
+            service.put("metadata", metadata);
+            service.put("kind", "Service");
+            service.put("apiVersion", "v1");
+
+            try {
+                System.err.println(Converter.map2YmlString(service));
+                System.err.println("----------------------------------");
+            } catch (JSONException ex) {
+                Logger.getLogger(TOSCAUtils.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return services;
     }
 }
