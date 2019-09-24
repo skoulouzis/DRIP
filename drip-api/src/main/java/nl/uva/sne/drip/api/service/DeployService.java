@@ -213,11 +213,24 @@ public class DeployService {
 
         MessageParameter managerTypeParameter = createManagerTypeParameter("kubernetes");
         parameters.add(managerTypeParameter);
-        
-        List<Map<String, Object>> deployments = TOSCAUtils.tosca2KubernetesDeployment(toscaProvisonMap);
-//        String deploymentEncoded = new String(Base64.getDecoder().decode(Converter.map2YmlString(deployments)));
-//        MessageParameter confParam = createConfigurationParameter(deploymentEncoded, "kubernetes");
-//        parameters.add(confParam);
+
+        List<Map<String, Object>> k8sFiles = TOSCAUtils.tosca2KubernetesDeployment(toscaProvisonMap);
+        int count = 0;
+        for (Map<String, Object> map : k8sFiles) {
+            String deploymentEncoded = new String(Base64.getEncoder().encode(Converter.map2YmlString(map).getBytes()));
+            MessageParameter confParam = createConfigurationParameter(deploymentEncoded, "k8s_deploymet" + count);
+            parameters.add(confParam);
+            count++;
+        }
+
+        k8sFiles = TOSCAUtils.tosca2KubernetesService(toscaProvisonMap);
+        count = 0;
+        for (Map<String, Object> map : k8sFiles) {
+            String deploymentEncoded = new String(Base64.getEncoder().encode(Converter.map2YmlString(map).getBytes()));
+            MessageParameter confParam = createConfigurationParameter(deploymentEncoded, "k8s_service" + count);
+            parameters.add(confParam);
+            count++;
+        }
 
         Message deployInvokationMessage = new Message();
         deployInvokationMessage.setParameters(parameters);

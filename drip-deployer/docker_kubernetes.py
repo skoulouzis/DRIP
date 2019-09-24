@@ -95,7 +95,7 @@ def install_manager(vm):
 def install_worker(join_cmd, vm):
     try:
         logger.info("Starting kubernetes slave installation on: " + (vm.ip))
-        logger.info("User: " + (vm.user) + " key file: " + vm.key)
+        logger.info("User: " + vm.user + " key file: " + vm.key)
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(vm.ip, username=vm.user, key_filename=vm.key, timeout=30)

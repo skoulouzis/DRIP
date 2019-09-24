@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="slolved cap error">
-      <change beforePath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/commons/utils/TOSCAUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/commons/utils/TOSCAUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/planner/basic_planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/basic_planner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/easy-install.pth" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/prettytable.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/pyparsing.py" beforeDir="false" />

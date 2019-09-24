@@ -156,6 +156,9 @@ public class TOSCAUtils {
             }
 
             Map<String, Object> image = (Map<String, Object>) ((Map<String, Object>) dockerValues.get("artifacts")).get("image");
+            if (image == null) {
+                image = (Map<String, Object>) ((Map<String, Object>) dockerValues.get("artifacts")).get("my_image");
+            }
             String imageFile = (String) image.get("file");
             Map<String, Object> container = new HashMap();
             container.put("image", imageFile);
@@ -184,13 +187,6 @@ public class TOSCAUtils {
             deployment.put("metadata", metadata);
             deployment.put("kind", "Deployment");
             deployment.put("apiVersion", "extensions/v1beta1");
-//
-//            try {
-//                System.err.println(Converter.map2YmlString(deployment));
-//                System.err.println("----------------------------------");
-//            } catch (JSONException ex) {
-//                Logger.getLogger(TOSCAUtils.class.getName()).log(Level.SEVERE, null, ex);
-//            }
 
             deployments.add(deployment);
         }
@@ -235,7 +231,7 @@ public class TOSCAUtils {
             service.put("metadata", metadata);
             service.put("kind", "Service");
             service.put("apiVersion", "v1");
-
+            services.add(service);
             try {
                 System.err.println(Converter.map2YmlString(service));
                 System.err.println("----------------------------------");

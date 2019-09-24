@@ -12,7 +12,7 @@ from time import sleep
 
 import pika
 
-import ansible_playbook
+# import ansible_playbook
 import docker_check
 import docker_compose
 import docker_engine
@@ -49,7 +49,7 @@ def threaded_function(args):
         sleep(5)
 
 
-def handleDelivery(message):
+def handle_delivery(message):
     parsed_json = json.loads(message)
     owner = parsed_json['owner']
     params = parsed_json["parameters"]
@@ -76,7 +76,7 @@ def handleDelivery(message):
             user = param["attributes"]["user"]
             role = param["attributes"]["role"]
             node_num += 1
-            key = path + "%d.txt" % (node_num)
+            key = path + "%d.txt" % node_num
 
             fo = open(key, "w")
             fo.write(value)
@@ -87,10 +87,14 @@ def handleDelivery(message):
 
             vm = VmInfo(ip, user, key, role)
             vm_list.add(vm)
-        elif name == "deployment":
+        elif name.startswith('k8s_'):
             value = param["value"]
             value = base64.b64decode(value)
-            deployment_file = path + "deployment.yml"
+            k8s_folder = path + "/k8s/"
+            if not os.path.exists(k8s_folder):
+                os.makedirs(k8s_folder)
+
+            deployment_file = k8s_folder + name+".yml"
             fo = open(deployment_file, "w")
             fo.write(value)
             fo.close()
@@ -103,7 +107,7 @@ def handleDelivery(message):
         elif name == "composer":
             value = param["value"]
             compose_file = path + "docker-compose.yml"
-            if not param["attributes"] == None and not param["attributes"]["name"] == None:
+            if not param["attributes"] is None and not param["attributes"]["name"] is None:
                 compose_name = param["attributes"]["name"]
                 docker_login = {}
                 if 'docker_login' in param["attributes"]:
@@ -126,7 +130,7 @@ def handleDelivery(message):
 
     if manager_type == "kubernetes":
         ret = docker_kubernetes.run(vm_list, rabbitmq_host, owner)
-        docker_kubernetes.deploy(vm_list, deployment_file)
+        # docker_kubernetes.deploy(vm_list, deployment_file)
         return ret
     elif manager_type == "swarm":
         ret = docker_engine.run(vm_list, rabbitmq_host, owner)
@@ -151,7 +155,7 @@ def handleDelivery(message):
 
 
 def on_request(ch, method, props, body):
-    ret = handleDelivery(body)
+    ret = handle_delivery(body)
 
     parsed_json = json.loads(body)
     params = parsed_json["parameters"]
