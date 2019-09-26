@@ -134,59 +134,30 @@ public class TOSCAUtils {
             Map<String, Object> metadata = new HashMap();
             metadata.put("labels", labels);
             metadata.put("name", name);
+
+            Map<String, Object> selector = new HashMap();
+            selector.put("matchLabels", labels);
             Map<String, Object> template = new HashMap();
             template.put("metadata", metadata);
 
-            Map<String, Object> topSpec = new HashMap();
-            topSpec.put("replicas", 1);
-            topSpec.put("template", template);
-
             Map<String, Object> dockerValues = (Map<String, Object>) docker.getValue();
 
-            Map<String, Object> properties = (Map<String, Object>) dockerValues.get("properties");
-            Map<String, Object> envMap = (Map<String, Object>) properties.get("environment");
-            List<Map<String, Object>> imageEnv = new ArrayList<>();
-            Set<String> keys = envMap.keySet();
-
-            for (String key : keys) {
-                Map<String, Object> kubernetesEnvMap = new HashMap();
-                kubernetesEnvMap.put("name", key);
-                kubernetesEnvMap.put("value", envMap.get(key));
-                imageEnv.add(kubernetesEnvMap);
-            }
-
-            Map<String, Object> image = (Map<String, Object>) ((Map<String, Object>) dockerValues.get("artifacts")).get("image");
-            if (image == null) {
-                image = (Map<String, Object>) ((Map<String, Object>) dockerValues.get("artifacts")).get("my_image");
-            }
-            String imageFile = (String) image.get("file");
-            Map<String, Object> container = new HashMap();
-            container.put("image", imageFile);
-            container.put("name", name);
-            container.put("env", imageEnv);
-
-            List<String> toscaPortsList = (List<String>) properties.get("ports");
-            if (toscaPortsList != null) {
-                for (String portEntry : toscaPortsList) {
-                    String[] portsArray = portEntry.split(":");
-                    Map<String, Object> portMap = new HashMap();
-                    portMap.put("containerPort", portsArray[0]);
-                    container.put("ports", portMap);
-                }
-            }
-
-            List<Map<String, Object>> containersList = new ArrayList<>();
-            containersList.add(container);
+            List<Map<String, Object>> containersList = createContainerList(dockerValues, name);
 
             Map<String, Object> spec1 = new HashMap();
             spec1.put("containers", containersList);
-            topSpec.put("spec", spec1);
+            template.put("spec", spec1);
+
+            Map<String, Object> topSpec = new HashMap();
+            topSpec.put("selector", selector);
+            topSpec.put("replicas", 1);
+            topSpec.put("template", template);
 
             Map<String, Object> deployment = new HashMap();
             deployment.put("spec", topSpec);
             deployment.put("metadata", metadata);
             deployment.put("kind", "Deployment");
-            deployment.put("apiVersion", "extensions/v1beta1");
+            deployment.put("apiVersion", "apps/v1");
 
             deployments.add(deployment);
         }
@@ -232,13 +203,56 @@ public class TOSCAUtils {
             service.put("kind", "Service");
             service.put("apiVersion", "v1");
             services.add(service);
-            try {
-                System.err.println(Converter.map2YmlString(service));
-                System.err.println("----------------------------------");
-            } catch (JSONException ex) {
-                Logger.getLogger(TOSCAUtils.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
         return services;
+    }
+
+    private static List<Map<String, Object>> getImageEnvirmoent(Map<String, Object> properties) {
+        Map<String, Object> envMap = (Map<String, Object>) properties.get("environment");
+
+        List<Map<String, Object>> imageEnv = new ArrayList<>();
+        Set<String> keys = envMap.keySet();
+
+        for (String key : keys) {
+            Map<String, Object> kubernetesEnvMap = new HashMap();
+            kubernetesEnvMap.put("name", key);
+            kubernetesEnvMap.put("value", envMap.get(key));
+            imageEnv.add(kubernetesEnvMap);
+        }
+        return imageEnv;
+    }
+
+    private static String getImageFile(Map<String, Object> dockerValues) {
+        Map<String, Object> image = (Map<String, Object>) ((Map<String, Object>) dockerValues.get("artifacts")).get("image");
+        if (image == null) {
+            image = (Map<String, Object>) ((Map<String, Object>) dockerValues.get("artifacts")).get("my_image");
+        }
+        String imageFile = (String) image.get("file");
+        return imageFile;
+    }
+
+    private static List<Map<String, Object>> createContainerList(Map<String, Object> dockerValues, String name) {
+        Map<String, Object> properties = (Map<String, Object>) dockerValues.get("properties");
+        List<Map<String, Object>> imageEnv = getImageEnvirmoent(properties);
+
+        String imageFile = getImageFile(dockerValues);
+
+        Map<String, Object> container = new HashMap();
+        container.put("image", imageFile);
+        container.put("name", name);
+        container.put("env", imageEnv);
+
+        List<String> toscaPortsList = (List<String>) properties.get("ports");
+        if (toscaPortsList != null) {
+            for (String portEntry : toscaPortsList) {
+                String[] portsArray = portEntry.split(":");
+                Map<String, Object> portMap = new HashMap();
+                portMap.put("containerPort", portsArray[0]);
+                container.put("ports", portMap);
+            }
+        }
+        List<Map<String, Object>> containersList = new ArrayList<>();
+        containersList.add(container);
+        return containersList;
     }
 }
