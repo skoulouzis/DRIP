@@ -23,6 +23,8 @@ import sys
 import logging
 
 # from drip_logging.drip_logging_handler import *
+from os import listdir
+from os.path import isfile, join
 
 
 logger = logging.getLogger(__name__)
@@ -64,14 +66,16 @@ def install_manager(vm):
         sftp.put(install_script, "kubernetes_setup.sh")
         # stdin, stdout, stderr = ssh.exec_command("sudo hostname ip-%s" % (vm.ip.replace('.','-')))
         # stdout.read()
-        stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/kubernetes_setup.sh")
+        stdin, stdout, stderr = ssh.exec_command("sudo sh /tmp/kubernetes_setup.sh > log 2>&1")
         out = stdout.read()
         out = stderr.read()
-        stdin, stdout, stderr = ssh.exec_command("sudo kubeadm kubernetes-xenialreset --force")
+        # stdin, stdout, stderr = ssh.exec_command("sudo kubeadm kubernetes-xenialreset --force")
+        # stdout.read()
+        stdin, stdout, stderr = ssh.exec_command("sudo kubeadm reset --force >> log 2>&1")
         stdout.read()
 
         # stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init --apiserver-advertise-address=%s" % (vm.ip))
-        stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init")
+        stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init >> log 2>&1")
         retstr = stdout.readlines()
 
         stdin, stdout, stderr = ssh.exec_command("sudo cp /etc/kubernetes/admin.conf /tmp/")
@@ -126,9 +130,45 @@ def install_worker(join_cmd, vm):
     return "SUCCESS"
 
 
+def deploy_on_master(deployment_file, vm):
+    try:
+        k8s_files = [f for f in listdir(deployment_file) if isfile(join(deployment_file, f))]
+        logger.info("Starting deployment on: " + (vm.ip))
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(vm.ip, username=vm.user, key_filename=vm.key, timeout=30)
+
+        parentDir = os.path.dirname(os.path.abspath(vm.key))
+        os.chmod(parentDir, 0o700)
+        os.chmod(vm.key, 0o600)
+
+        stdin, stdout, stderr = ssh.exec_command("mkdir /tmp/k8s")
+        stdout.read()
+        sftp = ssh.open_sftp()
+        sftp.chdir('/tmp/k8s')
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        for f in k8s_files:
+            k8s_file = deployment_file + "/" + f
+            sftp.put(k8s_file, f)
+
+        stdin, stdout, stderr = ssh.exec_command("kubectl create -f /tmp/k8s/ --kubeconfig /tmp/admin.conf >> log 2>&1")
+        s_out = stdout.read()
+        e_out = stderr.read()
+
+        print s_out
+        print e_out
+    except Exception as e:
+        # print '%s: %s' % (vm.ip, e)
+        logger.error(vm.ip + " " + str(e))
+        return "ERROR:" + vm.ip + " " + str(e)
+    ssh.close()
+    return "SUCCESS"
+
+
 def deploy(vm_list, deployment_file):
     for i in vm_list:
         if i.role == "master":
+            deploy_on_master(deployment_file, i)
             return None
 
 

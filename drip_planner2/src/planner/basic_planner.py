@@ -24,7 +24,7 @@ def get_cpu_frequency():
 
 
 def get_num_cpus():
-    return 1
+    return 2
 
 
 def get_cloud_domain():

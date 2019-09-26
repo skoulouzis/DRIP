@@ -39,6 +39,8 @@ topology_template:
     mysql:
         type: tosca.nodes.ARTICONF.Container.Application.Docker
         properties:
+            ports: 
+            - "3306:3306"   
             volumes:
                 - db_data:/var/lib/mysql
             environment:

@@ -129,8 +129,8 @@ def handle_delivery(message):
             compose_name = param["attributes"]["name"]
 
     if manager_type == "kubernetes":
-        ret = docker_kubernetes.run(vm_list, rabbitmq_host, owner)
-        # docker_kubernetes.deploy(vm_list, deployment_file)
+        # ret = docker_kubernetes.run(vm_list, rabbitmq_host, owner)
+        docker_kubernetes.deploy(vm_list, k8s_folder)
         return ret
     elif manager_type == "swarm":
         ret = docker_engine.run(vm_list, rabbitmq_host, owner)

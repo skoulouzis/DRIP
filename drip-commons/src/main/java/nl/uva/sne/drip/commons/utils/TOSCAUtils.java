@@ -175,16 +175,19 @@ public class TOSCAUtils {
             Map<String, Object> dockerValues = (Map<String, Object>) docker.getValue();
 
             Map<String, Object> spec = new HashMap();
+            spec.put("type", "NodePort");
 
             Map<String, Object> properties = (Map<String, Object>) dockerValues.get("properties");
             List<String> toscaPortsList = (List<String>) properties.get("ports");
+            List< Map<String, Object>> portList = new ArrayList<>();
             if (toscaPortsList != null) {
                 for (String portEntry : toscaPortsList) {
                     String[] portsArray = portEntry.split(":");
                     Map<String, Object> portMap = new HashMap();
-                    portMap.put("port", portsArray[1]);
-                    spec.put("ports", portMap);
+                    portMap.put("port", Integer.valueOf(portsArray[1]));
+                    portList.add(portMap);
                 }
+                spec.put("ports", portList);
             }
 
             Map<String, Object> selector = new HashMap();
@@ -247,7 +250,7 @@ public class TOSCAUtils {
             for (String portEntry : toscaPortsList) {
                 String[] portsArray = portEntry.split(":");
                 Map<String, Object> portMap = new HashMap();
-                portMap.put("containerPort", portsArray[0]);
+                portMap.put("containerPort", Integer.valueOf(portsArray[0]));
                 container.put("ports", portMap);
             }
         }
