@@ -16,7 +16,7 @@ import yaml
 from utils.TOSCA_parser import *
 import logging
 
-from src.utils.TOSCA_parser import TOSCAParser
+# from src.utils.TOSCA_parser import TOSCAParser
 
 
 def get_cpu_frequency():

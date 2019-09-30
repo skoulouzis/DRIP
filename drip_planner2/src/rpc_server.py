@@ -59,6 +59,7 @@ def on_request(ch, method, props, body):
 
 
 def handle_delivery(message):
+    logger.info("Got: "+str(message))
     parsed_json_message = json.loads(message)
     params = parsed_json_message["parameters"]
     owner = parsed_json_message['owner']
