@@ -129,8 +129,8 @@ def handle_delivery(message):
             compose_name = param["attributes"]["name"]
 
     if manager_type == "kubernetes":
-        # ret = docker_kubernetes.run(vm_list, rabbitmq_host, owner)
-        docker_kubernetes.deploy(vm_list, k8s_folder)
+        ret = docker_kubernetes.run(vm_list, rabbitmq_host, owner)
+        ret = docker_kubernetes.deploy(vm_list, k8s_folder)
         return ret
     elif manager_type == "swarm":
         ret = docker_engine.run(vm_list, rabbitmq_host, owner)
@@ -166,7 +166,7 @@ def on_request(ch, method, props, body):
             manager_type = param["value"]
             break
 
-    if "ERROR" in ret:
+    if not ret and "ERROR" in ret:
         res_name = "error"
     elif manager_type == "ansible":
         res_name = "ansible_output"
@@ -174,6 +174,8 @@ def on_request(ch, method, props, body):
         res_name = "scale_status"
     elif manager_type == "swarm_info":
         res_name = "swarm_info"
+    elif manager_type == "kubernetes":
+        res_name = "kubectl_get"
     else:
         res_name = "credential"
 
@@ -186,7 +188,7 @@ def on_request(ch, method, props, body):
     par["url"] = "null"
     par["encoding"] = "UTF-8"
     par["name"] = res_name
-    par["value"] = ret
+    par["value"] = base64.b64encode(ret)
     par["attributes"] = "null"
     response["parameters"].append(par)
 

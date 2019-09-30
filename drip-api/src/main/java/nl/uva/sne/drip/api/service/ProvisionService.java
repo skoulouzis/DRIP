@@ -15,10 +15,6 @@
  */
 package nl.uva.sne.drip.api.service;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,8 +22,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +36,6 @@ import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.v1.rest.ProvisionController;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
-import nl.uva.sne.drip.drip.commons.data.v1.external.DeployParameter;
 import nl.uva.sne.drip.drip.commons.data.internal.Message;
 import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
@@ -61,8 +54,6 @@ import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
 import nl.uva.sne.drip.commons.utils.TOSCAUtils;
 import static nl.uva.sne.drip.commons.utils.TOSCAUtils.getVMsFromTopology;
 import static nl.uva.sne.drip.commons.utils.TOSCAUtils.getVMsNodeNamesFromTopology;
-import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
-import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
 import org.apache.commons.codec.binary.Base64;
 

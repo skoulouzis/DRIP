@@ -247,12 +247,14 @@ public class TOSCAUtils {
 
         List<String> toscaPortsList = (List<String>) properties.get("ports");
         if (toscaPortsList != null) {
+            List< Map<String, Object>> portList = new ArrayList<>();
             for (String portEntry : toscaPortsList) {
                 String[] portsArray = portEntry.split(":");
                 Map<String, Object> portMap = new HashMap();
                 portMap.put("containerPort", Integer.valueOf(portsArray[0]));
-                container.put("ports", portMap);
+                portList.add(portMap);
             }
+            container.put("ports", portList);
         }
         List<Map<String, Object>> containersList = new ArrayList<>();
         containersList.add(container);

@@ -21,11 +21,11 @@ from vm_info import VmInfo
 import linecache
 import sys
 import logging
+import time
 
 # from drip_logging.drip_logging_handler import *
 from os import listdir
 from os.path import isfile, join
-
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
@@ -75,16 +75,34 @@ def install_manager(vm):
         stdout.read()
 
         # stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init --apiserver-advertise-address=%s" % (vm.ip))
-        stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init >> log 2>&1")
+        stdin, stdout, stderr = ssh.exec_command("sudo kubeadm init")
         retstr = stdout.readlines()
 
-        stdin, stdout, stderr = ssh.exec_command("sudo cp /etc/kubernetes/admin.conf /tmp/")
+        stdin, stdout, stderr = ssh.exec_command("mkdir -p $HOME/.kube")
         stdout.read()
+
+        stdin, stdout, stderr = ssh.exec_command("sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config")
+        stdout.read()
+
+        stdin, stdout, stderr = ssh.exec_command("sudo chown $(id -u):$(id -g) $HOME/.kube/config")
+        stdout.read()
+
+        stdin, stdout, stderr = ssh.exec_command("sudo sysctl net.bridge.bridge-nf-call-iptables=1")
+        retstr = stdout.readlines()
+
+        stdin, stdout, stderr = ssh.exec_command(
+            "kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')\"")
+        retstr = stdout.readlines()
+
+        stdin, stdout, stderr = ssh.exec_command(
+            "kubectl taint nodes --all node-role.kubernetes.io/master-")
+        retstr = stdout.readlines()
+
         stdin, stdout, stderr = ssh.exec_command("sudo chown %s /tmp/admin.conf" % (vm.user))
         stdout.read()
         stdin, stdout, stderr = ssh.exec_command("sudo chgrp %s /tmp/admin.conf" % (vm.user))
         stdout.read()
-        sftp.get("/tmp/admin.conf", file_path + "/admin.conf")
+        # sftp.get("/tmp/admin.conf", file_path + "/admin.conf")
         logger.info("Finished kubernetes master installation on: " + (vm.ip))
     except Exception as e:
         global retry
@@ -151,25 +169,32 @@ def deploy_on_master(deployment_file, vm):
             k8s_file = deployment_file + "/" + f
             sftp.put(k8s_file, f)
 
-        stdin, stdout, stderr = ssh.exec_command("kubectl create -f /tmp/k8s/ --kubeconfig /tmp/admin.conf >> log 2>&1")
+        stdin, stdout, stderr = ssh.exec_command("kubectl create -f /tmp/k8s/ >> log 2>&1")
         s_out = stdout.read()
         e_out = stderr.read()
 
-        print s_out
-        print e_out
+        time.sleep(2)
+        # cmd = 'kubectl get svc --all-namespaces -o go-template=\'{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\\n"}}{{end}}{{end}}{{end}}\''
+        cmd = 'kubectl get svc --output json'
+        stdin, stdout, stderr = ssh.exec_command(cmd)
+        e_out = stderr.read()
+        json_output = stdout.read().splitlines()
+        # exposed_ports_str = ''
+        # for port in exposed_ports:
+        #     exposed_ports_str += port + ','
+        # exposed_ports_str = exposed_ports_str[:-1]
     except Exception as e:
         # print '%s: %s' % (vm.ip, e)
         logger.error(vm.ip + " " + str(e))
         return "ERROR:" + vm.ip + " " + str(e)
     ssh.close()
-    return "SUCCESS"
+    return json_output
 
 
 def deploy(vm_list, deployment_file):
     for i in vm_list:
         if i.role == "master":
-            deploy_on_master(deployment_file, i)
-            return None
+            return deploy_on_master(deployment_file, i)
 
 
 def run(vm_list, rabbitmq_host, owner):

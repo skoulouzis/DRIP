@@ -24,6 +24,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -372,84 +373,31 @@ public class DeployService {
                 return deployResponse;
             }
             if (name.equals("ansible_output")) {
-                String value = p.getValue();
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-                value = parseValue(value);
-
-                List<AnsibleOutput> outputList = mapper.readValue(value, new TypeReference<List<AnsibleOutput>>() {
-                });
-
-                List<String> outputListIds = new ArrayList<>();
-                Map<String, String> nodeTypeCache = new HashMap<>();
-                Map<String, String> domainCache = new HashMap<>();
-                Map<String, String> osTypeCache = new HashMap<>();
-                Map<String, String> cloudProviderCache = new HashMap<>();
-
-                for (AnsibleOutput ansOut : outputList) {
-                    Map<String, Object> map = provisionService.findOne(deployInfo.getProvisionID()).getKeyValue();
-                    String nodeType = nodeTypeCache.get(ansOut.getHost());
-                    String domain = domainCache.get(ansOut.getHost());
-                    String os = osTypeCache.get(ansOut.getHost());
-                    if (nodeType == null) {
-                        List<Map<String, Object>> components = null;
-                        List<Map<String, Object>> topologies = null;
-                        if (map.containsKey("components")) {
-                            components = (List<Map<String, Object>>) map.get("components");
-//                            topologies = (List<Map<String, Object>>) map.get("topologies");
-                        } else {
-                            for (String key : map.keySet()) {
-                                Map<String, Object> subMap = (Map<String, Object>) map.get(key);
-                                if (subMap.containsKey("components") && components == null) {
-                                    components = (List<Map<String, Object>>) subMap.get("components");
-                                }
-                                if (subMap.containsKey("topologies") && topologies == null) {
-                                    topologies = (List<Map<String, Object>>) subMap.get("topologies");
-                                }
-                                if (components != null && topologies != null) {
-                                    break;
-                                }
-                            }
-                        }
-
-                        for (Map<String, Object> component : components) {
-                            String publicAddress = null;
-                            for (String addressName : PUBLIC_ADRESS_NAMES) {
-                                if (component.containsKey(addressName)) {
-                                    publicAddress = (String) component.get(addressName);
-                                    break;
-                                }
-                            }
-                            if (publicAddress != null && publicAddress.equals(ansOut.getHost())) {
-                                nodeType = (String) component.get("nodeType");
-                                for (String siteName : CLOUD_SITE_NAMES) {
-                                    if (component.containsKey(siteName)) {
-                                        domain = (String) component.get(siteName);
-                                        break;
-                                    }
-                                }
-                                os = (String) component.get("OStype");
-
-                                nodeTypeCache.put(ansOut.getHost(), nodeType);
-                                domainCache.put(ansOut.getHost(), domain);
-                                osTypeCache.put(ansOut.getHost(), os);
-                                break;
-                            }
-                        }
-                    }
-                    ansOut.setVmType(nodeType);
-                    ansOut.setCloudDeploymentDomain(domain);
-                    ansOut.setProvisionID(deployInfo.getProvisionID());
-//                    ansOut.setCloudProvider(provider); 
-
-                    ansOut = ansibleOutputService.save(ansOut);
-                    BenchmarkResult benchmarkResult = parseSaveBenchmarkResult(ansOut);
-
-                    outputListIds.add(ansOut.getId());
-                }
-//                deployResponse.setAnsibleOutputList(outputListIds);
+                setAnsibleOutput(p, deployInfo);
             }
+            if (name.equals("kubectl_get")) {
+                String decoded = new String(Base64.getDecoder().decode(p.getValue().getBytes()));
+                Map<String, Object> kubectlGetOutput = Converter.jsonString2Map(decoded);
+
+                Map<String, Object> outputs = new HashMap<>();
+                List<Map<String, Object>> items = (List<Map<String, Object>>) kubectlGetOutput.get("items");
+                for (Map<String, Object> entry : items) {
+                    String serviceName = (String) ((Map<String, Object>) entry.get("metadata")).get("name");
+                    List<Map<String, Object>> ports = (List<Map<String, Object>>) ((Map<String, Object>) entry.get("spec")).get("ports");
+                    for (Map<String, Object> port : ports) {
+                        Set<String> keys = port.keySet();
+                        for (String key : keys) {
+                            outputs = TOSCAUtils.buildTOSCAOutput(outputs, serviceName, (String) port.get(key), key, false);
+                        }
+
+                    }
+                }
+                Map<String, Object> tosca = provisionService.findOne(deployInfo.getProvisionID()).getKeyValue();
+                Map<String, Object> topologyTemplate = (Map<String, Object>) ((Map<String, Object>) tosca.get("topology_template"));
+                topologyTemplate.put("outputs", outputs);
+                deployResponse.setKvMap(tosca);
+            }
+
         }
         return deployResponse;
     }
@@ -568,20 +516,19 @@ public class DeployService {
         return resp;
     }
 
-    private Map<String, String> getDockerLogin(ProvisionResponse pro) {
-        String planID = pro.getPlanID();
-        PlanResponse plan = plannerService.findOne(planID);
-        String toscaID = plan.getToscaID();
-        if (toscaID != null) {
-            ToscaRepresentation tosca = toscaService.findOne(plan.getToscaID());
-            Map<String, Object> map = tosca.getKeyValue();
-            map.get("repositories");
-            HashMap dockerLogin = new HashMap();
-            return dockerLogin;
-        }
-        return null;
-    }
-
+//    private Map<String, String> getDockerLogin(ProvisionResponse pro) {
+//        String planID = pro.getPlanID();
+//        PlanResponse plan = plannerService.findOne(planID);
+//        String toscaID = plan.getToscaID();
+//        if (toscaID != null) {
+//            ToscaRepresentation tosca = toscaService.findOne(plan.getToscaID());
+//            Map<String, Object> map = tosca.getKeyValue();
+//            map.get("repositories");
+//            HashMap dockerLogin = new HashMap();
+//            return dockerLogin;
+//        }
+//        return null;
+//    }
     public String get(String id, String format) throws JSONException, IOException, TimeoutException, InterruptedException {
         DeployResponse deploy = findOne(id);
         Map<String, Object> map = deploy.getKeyValue();
@@ -599,6 +546,87 @@ public class DeployService {
         ymlStr = ymlStr.replaceAll("\\uff0E", ".");
         return ymlStr;
 
+    }
+
+    private void setAnsibleOutput(MessageParameter p, DeployRequest deployInfo) throws JSONException, IOException {
+        String value = p.getValue();
+        value = p.getValue();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        value = parseValue(value);
+
+        List<AnsibleOutput> outputList = mapper.readValue(value, new TypeReference<List<AnsibleOutput>>() {
+        });
+
+        List<String> outputListIds = new ArrayList<>();
+        Map<String, String> nodeTypeCache = new HashMap<>();
+        Map<String, String> domainCache = new HashMap<>();
+        Map<String, String> osTypeCache = new HashMap<>();
+        Map<String, String> cloudProviderCache = new HashMap<>();
+
+        for (AnsibleOutput ansOut : outputList) {
+            Map<String, Object> map = provisionService.findOne(deployInfo.getProvisionID()).getKeyValue();
+            String nodeType = nodeTypeCache.get(ansOut.getHost());
+            String domain = domainCache.get(ansOut.getHost());
+            String os = osTypeCache.get(ansOut.getHost());
+            if (nodeType == null) {
+                List<Map<String, Object>> components = null;
+                List<Map<String, Object>> topologies = null;
+                if (map.containsKey("components")) {
+                    components = (List<Map<String, Object>>) map.get("components");
+//                            topologies = (List<Map<String, Object>>) map.get("topologies");
+                } else {
+                    for (String key : map.keySet()) {
+                        Map<String, Object> subMap = (Map<String, Object>) map.get(key);
+                        if (subMap.containsKey("components") && components == null) {
+                            components = (List<Map<String, Object>>) subMap.get("components");
+                        }
+                        if (subMap.containsKey("topologies") && topologies == null) {
+                            topologies = (List<Map<String, Object>>) subMap.get("topologies");
+                        }
+                        if (components != null && topologies != null) {
+                            break;
+                        }
+                    }
+                }
+
+                for (Map<String, Object> component : components) {
+                    String publicAddress = null;
+                    for (String addressName : PUBLIC_ADRESS_NAMES) {
+                        if (component.containsKey(addressName)) {
+                            publicAddress = (String) component.get(addressName);
+                            break;
+                        }
+                    }
+                    if (publicAddress != null && publicAddress.equals(ansOut.getHost())) {
+                        nodeType = (String) component.get("nodeType");
+                        for (String siteName : CLOUD_SITE_NAMES) {
+                            if (component.containsKey(siteName)) {
+                                domain = (String) component.get(siteName);
+                                break;
+                            }
+                        }
+                        os = (String) component.get("OStype");
+
+                        nodeTypeCache.put(ansOut.getHost(), nodeType);
+                        domainCache.put(ansOut.getHost(), domain);
+                        osTypeCache.put(ansOut.getHost(), os);
+                        break;
+                    }
+                }
+            }
+            ansOut.setVmType(nodeType);
+            ansOut.setCloudDeploymentDomain(domain);
+            ansOut.setProvisionID(deployInfo.getProvisionID());
+//                    ansOut.setCloudProvider(provider); 
+
+            ansOut = ansibleOutputService.save(ansOut);
+            BenchmarkResult benchmarkResult = parseSaveBenchmarkResult(ansOut);
+
+            outputListIds.add(ansOut.getId());
+        }
+//                deployResponse.setAnsibleOutputList(outputListIds);
     }
 
 }
