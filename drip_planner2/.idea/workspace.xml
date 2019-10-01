@@ -5,7 +5,6 @@
       <change beforePath="$PROJECT_DIR$/../build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../build.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../drip-api/hs_err_pid26067.log" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/planner/basic_planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/basic_planner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/rpc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rpc_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/easy-install.pth" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/prettytable.py" beforeDir="false" />
@@ -134,7 +133,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568902303586</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="debug">
+      <created>1569887951720</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1569887951720</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -155,7 +161,8 @@
     <MESSAGE value="produces valid TOSCA" />
     <MESSAGE value="format TOSCA output" />
     <MESSAGE value="changed to ubunut 17.10" />
-    <option name="LAST_COMMIT_MESSAGE" value="changed to ubunut 17.10" />
+    <MESSAGE value="debug" />
+    <option name="LAST_COMMIT_MESSAGE" value="debug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

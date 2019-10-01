@@ -60,6 +60,10 @@ def on_request(ch, method, props, body):
 
 def handle_delivery(message):
     logger.info("Got: "+str(message))
+    try:
+        message = message.decode()
+    except (UnicodeDecodeError, AttributeError):
+        pass
     parsed_json_message = json.loads(message)
     params = parsed_json_message["parameters"]
     owner = parsed_json_message['owner']
