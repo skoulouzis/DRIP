@@ -14,7 +14,7 @@ tar -czvf drip-deployer.tar.gz drip-deployer
 mv drip-deployer.tar.gz build
 
 
-tar -czvf drip-planner.tar.gz drip-planner
+tar -czvf drip-planner.tar.gz drip_planner2
 mv drip-planner.tar.gz build
 
 
