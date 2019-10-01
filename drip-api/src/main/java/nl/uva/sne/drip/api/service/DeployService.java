@@ -387,7 +387,7 @@ public class DeployService {
                     for (Map<String, Object> port : ports) {
                         Set<String> keys = port.keySet();
                         for (String key : keys) {
-                            outputs = TOSCAUtils.buildTOSCAOutput(outputs, serviceName, (String) port.get(key), key, false);
+                            outputs = TOSCAUtils.buildTOSCAOutput(outputs, serviceName, String.valueOf((Integer) port.get(key)), key, false);
                         }
 
                     }
@@ -563,7 +563,7 @@ public class DeployService {
         Map<String, String> nodeTypeCache = new HashMap<>();
         Map<String, String> domainCache = new HashMap<>();
         Map<String, String> osTypeCache = new HashMap<>();
-        Map<String, String> cloudProviderCache = new HashMap<>();
+        
 
         for (AnsibleOutput ansOut : outputList) {
             Map<String, Object> map = provisionService.findOne(deployInfo.getProvisionID()).getKeyValue();
