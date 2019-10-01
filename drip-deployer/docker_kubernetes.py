@@ -178,7 +178,8 @@ def deploy_on_master(deployment_file, vm):
         cmd = 'kubectl get svc --output json'
         stdin, stdout, stderr = ssh.exec_command(cmd)
         e_out = stderr.read()
-        json_output = stdout.read().splitlines()
+        json_output = stdout.read()
+
         # exposed_ports_str = ''
         # for port in exposed_ports:
         #     exposed_ports_str += port + ','
