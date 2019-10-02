@@ -34,6 +34,10 @@ node_types:
           capability: tosca.capabilities.ARTICONF.Orchestrator
           node: tosca.nodes.ARTICONF.Orchestrator
           relationship: tosca.relationships.HostedOn
+      - useless:
+          capability: tosca.capabilities.ARTICONF.Useless
+          node: tosca.nodes.ARTICONF.Orchestrator
+          relationship: tosca.relationships.HostedOn          
           
   tosca.nodes.ARTICONF.Orchestrator:
     #derived_from: tosca.nodes.SoftwareComponent
