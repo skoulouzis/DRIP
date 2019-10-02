@@ -61,6 +61,18 @@ node_types:
       Standard:
         create: interfaces/playbooks/kubernetes_install.yaml
         
+  tosca.nodes.ARTICONF.Orchestrator.Swarm:
+    derived_from: tosca.nodes.ARTICONF.Orchestrator
+    description: swarm orchestrator
+    requirements:
+      - host:
+          capability: tosca.capabilities.Scalable
+          node: tosca.nodes.ARTICONF.Infrastructure
+          relationship: tosca.relationships.HostedOn
+    interfaces:
+      Standard:
+        create: interfaces/playbooks/docker_swarm_install.yaml        
+        
         
   tosca.nodes.ARTICONF.Infrastructure:
     description: Base infrastructure node
