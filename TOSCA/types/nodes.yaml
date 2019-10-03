@@ -34,6 +34,10 @@ node_types:
           capability: tosca.capabilities.ARTICONF.Orchestrator
           node: tosca.nodes.ARTICONF.Orchestrator
           relationship: tosca.relationships.HostedOn
+      - useless:
+          capability: tosca.capabilities.ARTICONF.Useless
+          node: tosca.nodes.ARTICONF.Orchestrator
+          relationship: tosca.relationships.HostedOn          
           
   tosca.nodes.ARTICONF.Orchestrator:
     #derived_from: tosca.nodes.SoftwareComponent
@@ -61,6 +65,21 @@ node_types:
       Standard:
         create: interfaces/playbooks/kubernetes_install.yaml
         
+  tosca.nodes.ARTICONF.Orchestrator.Swarm:
+    derived_from: tosca.nodes.ARTICONF.Orchestrator
+    description: swarm orchestrator
+    requirements:
+      - host:
+          capability: tosca.capabilities.Scalable
+          node: tosca.nodes.ARTICONF.Infrastructure
+          relationship: tosca.relationships.HostedOn
+    capabilities:
+      useless:
+        type: tosca.capabilities.ARTICONF.Useless    
+    interfaces:
+      Standard:
+        create: interfaces/playbooks/docker_swarm_install.yaml        
+        
         
   tosca.nodes.ARTICONF.Infrastructure:
     description: Base infrastructure node
@@ -79,10 +98,12 @@ node_types:
     properties:
       user_name:
         type: string
-        required: true        
+        required: true
+        default: "vm_user"
       host_name:
         type: string
         required: true
+        default: "vm"
       num_cpus:
         type: integer
         required: true
@@ -92,20 +113,21 @@ node_types:
         type: scalar-unit.frequency
         required: true
         constraints:
-          - greater_or_equal: 0.1 GHz
+          - greater_or_equal: 0.5 GHz
       disk_size:
         type: scalar-unit.size
         required: true
         constraints:
-          - greater_or_equal: 0 MB
+          - greater_or_equal: 15000 MB
       mem_size:
         type: scalar-unit.size
         required: true
         constraints:
-          - greater_or_equal: 0 MB 
+          - greater_or_equal: 500 MB
       os:
         type: string
-        required: true          
+        required: true       
+        default: "ubuntu 15"
     interfaces:
       Standard:
         create: dumy.yaml

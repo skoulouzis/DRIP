@@ -23,8 +23,12 @@ capability_types:
         type: string
         required: no        
 
-        
-        
+  tosca.capabilities.ARTICONF.Useless:
+    properties:
+      some_properties:
+        type: string
+        required: no 
+     
         
   tosca.capabilities.Compute:
     derived_from: tosca.capabilities.Container
