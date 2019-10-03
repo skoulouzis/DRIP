@@ -109,25 +109,21 @@ node_types:
         required: true
         constraints:
           - greater_or_equal: 1
-        default: 1
       cpu_frequency:
         type: scalar-unit.frequency
         required: true
         constraints:
           - greater_or_equal: 0.5 GHz
-        default: 1.2 GHz
       disk_size:
         type: scalar-unit.size
         required: true
         constraints:
-          - greater_or_equal: 0 MB
-          default: 25000 MB
+          - greater_or_equal: 15000 MB
       mem_size:
         type: scalar-unit.size
         required: true
         constraints:
-          - greater_or_equal: 0 MB
-        default: 2000 MB
+          - greater_or_equal: 500 MB
       os:
         type: string
         required: true       
