@@ -99,10 +99,11 @@ node_types:
       user_name:
         type: string
         required: true
-        default: vm_user
+        default: "vm_user"
       host_name:
         type: string
         required: true
+        default: "vm"
       num_cpus:
         type: integer
         required: true
