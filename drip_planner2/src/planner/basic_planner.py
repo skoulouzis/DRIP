@@ -13,8 +13,8 @@ import sys
 import pdb
 import names
 import yaml
-from utils.TOSCA_parser import *
 import logging
+
 
 # from src.utils.TOSCA_parser import TOSCAParser
 

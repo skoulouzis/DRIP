@@ -8,6 +8,7 @@ import os
 import os.path
 from builtins import print
 from planner.basic_planner import *
+from planner.planner import *
 import pika
 import sys
 import tempfile
@@ -16,13 +17,13 @@ import logging
 import base64
 
 logger = logging.getLogger(__name__)
-if not getattr(logger, 'handler_set', None):
-    logger.setLevel(logging.INFO)
-    h = logging.StreamHandler()
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    h.setFormatter(formatter)
-    logger.addHandler(h)
-    logger.handler_set = True
+# if not getattr(logger, 'handler_set', None):
+    # logger.setLevel(logging.INFO)
+    # h = logging.StreamHandler()
+    # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # h.setFormatter(formatter)
+    # logger.addHandler(h)
+    # logger.handler_set = True
 
 
 def init_chanel(args):
@@ -124,8 +125,12 @@ if __name__ == "__main__":
         #        servicetemplate_id = "wordpress_w1-wip1"
         #        planner = WineryPlanner(tosca_reposetory_api_base_url,namespace,servicetemplate_id)
         tosca_file_path = "../../TOSCA/application_example.yaml"
-        planner = BasicPlanner(tosca_file_path)
-        print(planner.get_plan())
+        # planner = BasicPlanner(tosca_file_path)
+        planner = Planner(tosca_file_path)
+        planner.resolve_requirements()
+        planner.set_infrastructure_specifications()
+        template = planner.get_tosca_template()
+        # logger.info("template ----: \n" + template)
     else:
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         channel = init_chanel(sys.argv)
