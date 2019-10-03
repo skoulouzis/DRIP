@@ -115,7 +115,7 @@ node_types:
         required: true
         constraints:
           - greater_or_equal: 0.5 GHz
-          default: 1.2 GHz
+        default: 1.2 GHz
       disk_size:
         type: scalar-unit.size
         required: true
