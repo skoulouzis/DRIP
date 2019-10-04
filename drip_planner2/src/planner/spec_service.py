@@ -1,8 +1,7 @@
-
 class SpecService:
 
-    def __init__(self, props):
-        self.properties = props
+    def __init__(self, conf):
+        self.configuration = conf
 
-    def get_vm_username(self):
-        return "vm_user"
+    def get_property(self, prop_key):
+        return None

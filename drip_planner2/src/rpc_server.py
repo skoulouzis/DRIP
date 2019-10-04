@@ -15,6 +15,7 @@ import tempfile
 import time
 import logging
 import base64
+from utils import tosca as tosca_util
 
 logger = logging.getLogger(__name__)
 # if not getattr(logger, 'handler_set', None):
@@ -127,10 +128,11 @@ if __name__ == "__main__":
         tosca_file_path = "../../TOSCA/application_example.yaml"
         # planner = BasicPlanner(tosca_file_path)
         planner = Planner(tosca_file_path)
-        planner.resolve_requirements()
-        planner.set_infrastructure_specifications()
-        template = planner.get_tosca_template()
-        # logger.info("template ----: \n" + template)
+        required_nodes = planner.resolve_requirements()
+        required_nodes = planner.set_infrastructure_specifications(required_nodes)
+        planner.add_required_nodes_to_template(required_nodes)
+        template = tosca_util.get_tosca_template_as_yml(planner.template)
+        logger.info("template ----: \n" + template)
     else:
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         channel = init_chanel(sys.argv)

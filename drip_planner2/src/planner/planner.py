@@ -2,13 +2,14 @@ import logging
 from toscaparser.nodetemplate import NodeTemplate
 from toscaparser.tosca_template import ToscaTemplate
 import networkx as nx
-from src.utils.TOSCA_parser import TOSCAParser
 import operator
 from planner.spec_service import *
+from utils.tosca import *
+
+from utils import tosca as tosca_util
 
 
 class Planner:
-    node_type_key_names_to_remove = ['capabilities', 'requirements', 'derived_from']
 
     def __init__(self, path):
         self.template = ToscaTemplate(path)
@@ -18,65 +19,76 @@ class Planner:
         self.all_nodes.update(self.tosca_node_types.items())
         self.all_nodes.update(self.all_custom_def.items())
         self.required_nodes = []
-        props = {}
-        props['kb_url'] = "https://host"
+        props = {'kb_url': "https://host"}
         self.spec_service = SpecService(props)
 
         # graph = self.build_graph(template.nodetemplates)
 
-    def set_infrastructure_specifications(self):
-        self.set_vm_specifications()
+    def add_required_nodes_to_template(self, required_nodes):
+        for req_node in required_nodes:
+            node_template = tosca_util.node_type_2_node_template(req_node)
+            self.template.nodetemplates.append(node_template)
+        return self.template
 
-    def set_vm_specifications(self):
-        for node in self.template.nodetemplates:
-            if node.type == 'tosca.nodes.ARTICONF.VM.Compute':
-                props = {}
-                username_prop = node.get_property_value('user_name')
-                vm_username_val = self.spec_service.get_vm_username()
+    def set_infrastructure_specifications(self, required_nodes):
+        required_nodes = self.set_vm_specifications(required_nodes)
+        required_nodes = self.set_topology_specifications(required_nodes)
+        return required_nodes
 
-                props['properties'] = self.set_prop(prop_key,prop_value)
-                if vm_username_val:
-                    props['properties'] = {'user_name': vm_username_val}
-                else:
-                    if username_prop['required'] == 'true' and username_prop['default']:
-                        vm_username_val = username_prop['default']
-                        props['properties'] = {'user_name': vm_username_val}
+    def set_vm_specifications(self, required_nodes):
+        for node in required_nodes:
+            node_type_name = tosca_util.get_node_type_name(node)
+            if node_type_name == 'tosca.nodes.ARTICONF.VM.Compute':
+                node_template_props = {'properties': {}}
+                node_properties = tosca_util.get_node_properties(node)
+                for node_type_prop_key in node_properties:
+                    node_template_prop = self.get_node_template_property(node_type_prop_key,
+                                                                         node_properties[node_type_prop_key])
+                    node_template_props['properties'][node_type_prop_key] = node_template_prop
+                node = tosca_util.set_node_properties(node, node_template_props)
+                logging.info('node: ' + node_type_name + ' properties: ' + str(node_template_props))
+        return required_nodes
 
-                node._properties = props
-                logging.info(str(node._properties))
-                # for prop in node.get_properties_objects():
-                #     logging.info(prop.name + ' : ' + str(prop.value))
+    def get_node_template_property(self, prop_key, node_prop_dict):
+        prop_value = self.spec_service.get_property(prop_key)
+        if prop_value:
+            return {prop_key: node_prop_dict}
+        else:
+            if 'required' in node_prop_dict and 'default' in node_prop_dict:
+                return node_prop_dict['default']
+            if 'constraints' in node_prop_dict:
+                constraints = node_prop_dict['constraints']
+                for constraint in constraints:
 
-    def set_prop(self,prop_key,prop_value):
+                    if next(iter(constraint)) == 'greater_or_equal':
+                        return constraint[next(iter(constraint))]
+            return None
 
     # Resolve requirements. Go over all nodes and recursively resolve requirements till node has no requirements
     # e.g. docker -> k8s -> cluster -> vm
     def resolve_requirements(self):
         for node in self.template.nodetemplates:
             self.add_required_nodes(node)
-        self.template.nodetemplates.extend(self.required_nodes)
-
-    def get_tosca_template(self):
-        tp = TOSCAParser()
-        yaml_str = tp.tosca_template2_yaml(self.template)
-        return yaml_str
+        return self.required_nodes
 
     def add_required_nodes(self, node):
+        node_type = tosca_util.get_node_type_name(node)
         missing_requirements = self.get_missing_requirements(node)
         if not missing_requirements:
-            logging.debug('Node: ' + node.type + ' has no requirements')
+            logging.debug('Node: ' + node_type + ' has no requirements')
             return
         matching_node = self.find_best_node(missing_requirements)
 
         # Only add node that is not in node_templates
         matching_node_type_name = next(iter(matching_node))
-        capable_node_template = self.node_type_2_node_template(matching_node)
-        if not self.contains_node_type(self.required_nodes, matching_node_type_name):
-            node = self.add_missing_requirements(node, missing_requirements, capable_node_template.name)
-            logging.info('Adding: ' + str(capable_node_template.type))
-            self.required_nodes.append(capable_node_template)
+        # capable_node_template = self.node_type_2_node_template(matching_node)
+        if not tosca_util.contains_node_type(self.required_nodes, matching_node_type_name):
+            matching_node_type_name = next(iter(matching_node))
+            node = self.add_missing_requirements(node, missing_requirements, matching_node_type_name)
+            logging.info('Adding: ' + str(matching_node_type_name))
+            self.required_nodes.append(matching_node)
         # Find matching nodes for the new node's requirements
-        self.add_required_nodes(capable_node_template)
+        self.add_required_nodes(matching_node)
 
     def build_graph(self, nodetemplates):
         graph = nx.Graph()
@@ -99,33 +111,39 @@ class Planner:
         return graph
 
     def get_missing_requirements(self, node):
-        logging.debug('Looking for requirements for node: ' + node.type)
-        def_type = self.all_nodes[node.type]
+        node_type_name = tosca_util.get_node_type_name(node)
+        node_requirements = tosca_util.get_node_requirements(node)
+        parent_type_requirements = tosca_util.get_parent_type_requirements(node, self.all_nodes)
+
+        logging.debug('Looking for requirements for node: ' + node_type_name)
+        def_type = self.all_nodes[node_type_name]
         def_requirements = []
+
         if 'requirements' in def_type.keys():
             def_requirements = def_type['requirements']
-            logging.debug('Found requirements: ' + str(def_requirements) + ' for node: ' + node.type)
+            logging.debug('Found requirements: ' + str(def_requirements) + ' for node: ' + node_type_name)
 
         missing_requirements = []
-        if not node.requirements:
+
+        if not node_requirements:
             missing_requirements = def_requirements
         elif def_requirements:
             for def_requirement in def_requirements:
                 for key in def_requirement:
-                    for node_req in node.requirements:
+                    for node_req in node_requirements:
                         if key not in node_req:
                             req_name = next(iter(def_requirement))
                             def_requirement[req_name]['node'] = None
                             missing_requirements.append(def_requirement)
 
         # Make sure we have the definition. Otherwise we get an error in the recursion
-        if 'derived_from' in def_type.keys() and not def_type['derived_from'] in node.custom_def.keys():
-            node.custom_def[def_type['derived_from']] = self.all_custom_def[def_type['derived_from']]
-
-        if node.parent_type and node.parent_type.requirements:
+        # if 'derived_from' in def_type.keys() and not def_type['derived_from'] in custom_def.keys():
+        #     node.custom_def[def_type['derived_from']] = custom_def['derived_from']
+        parent_type = tosca_util.get_node_type_name(node)
+        if parent_type and parent_type_requirements:
             logging.debug(
-                ' Adding to : ' + str(node.name) + '  parent requirements from: ' + str(node.parent_type.type))
-            missing_requirements = missing_requirements + node.parent_type.requirements
+                ' Adding to : ' + str(node_type_name) + '  parent requirements from: ' + str(parent_type))
+            missing_requirements = missing_requirements + parent_type_requirements
             logging.debug('  missing_requirements: ' + str(missing_requirements))
         return missing_requirements
 
@@ -148,38 +166,10 @@ class Planner:
         candidate_nodes.update(candidate_child_nodes)
         capable_nodes = {}
         # Only return the nodes that have interfaces. This means that they are not "abstract"
-        nodes_type_names_with_interface = self.get_node_types_with_interface(candidate_nodes)
+        nodes_type_names_with_interface = tosca_util.get_node_types_with_interface(candidate_nodes)
         for type_name in nodes_type_names_with_interface:
             capable_nodes[type_name] = candidate_nodes[type_name]
         return capable_nodes
-
-    def contains_node_type(self, node_types_list, node_type_name):
-        if node_types_list is None:
-            return False
-        for node_type in node_types_list:
-            if isinstance(node_type, NodeTemplate):
-                type_name = node_type.type
-            elif isinstance(node_type, dict):
-                type_name = next(iter(node_type))
-            if type_name == node_type_name:
-                return True
-        return False
-
-    def node_type_2_node_template(self, node_type):
-        nodetemplate_dict = {}
-        type_name = next(iter(node_type))
-        node_type_array = type_name.split(".")
-        name = node_type_array[len(node_type_array) - 1].lower()
-        nodetemplate_dict[name] = node_type[next(iter(node_type))].copy()
-        nodetemplate_dict[name]['type'] = type_name
-
-        for name_to_remove in self.node_type_key_names_to_remove:
-            if name_to_remove in nodetemplate_dict[name]:
-                nodetemplate_dict[name].pop(name_to_remove)
-
-        if 'type' in node_type[next(iter(node_type))]:
-            node_type[next(iter(node_type))].pop('type')
-        return NodeTemplate(name, nodetemplate_dict, node_type)
 
     def find_best_node(self, missing_requirements):
         matching_nodes = {}
@@ -226,15 +216,25 @@ class Planner:
                     child_nodes[tosca_node_type] = self.all_nodes[tosca_node_type]
         return child_nodes
 
-    def get_node_types_with_interface(self, nodes):
-        node_types_with_interface = []
-        for node_name in nodes:
-            if 'interfaces' in nodes[node_name].keys() and 'tosca.nodes.Root' != node_name:
-                node_types_with_interface.append(node_name)
-        return node_types_with_interface
-
     def add_missing_requirements(self, node, missing_requirements, capable_node_name):
         for req in missing_requirements:
             req[next(iter(req))]['node'] = capable_node_name
-            node.requirements.append(req)
+            if isinstance(node, NodeTemplate):
+                contains_requirement = False
+                for node_requirement in node.requirements:
+                    if node_requirement == req:
+                        contains_requirement = True
+                        break
+                if not contains_requirement:
+                    node.requirements.append(req)
+            elif isinstance(node, dict):
+                type_name = next(iter(node))
+                node_requirements = node[type_name]['requirements']
+                contains_requirement = False
+                for node_requirement in node_requirements:
+                    if node_requirement == req:
+                        contains_requirement = True
+                        break
+                if not contains_requirement:
+                    node[type_name]['requirements'].append(req)
         return node
