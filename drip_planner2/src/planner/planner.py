@@ -31,8 +31,12 @@ class Planner:
         return self.template
 
     def set_infrastructure_specifications(self, required_nodes):
-        required_nodes = self.set_vm_specifications(required_nodes)
-        required_nodes = self.set_topology_specifications(required_nodes)
+        # Start bottom up and (node without requirements leaf) and find the root of the graph.
+        # Get root performance, version requirements and set specs to required node
+
+        # required_nodes = self.set_vm_specifications(required_nodes)
+        # required_nodes = self.set_topology_specifications(required_nodes)
+
         return required_nodes
 
     def set_vm_specifications(self, required_nodes):

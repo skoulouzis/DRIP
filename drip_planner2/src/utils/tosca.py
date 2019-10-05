@@ -2,7 +2,7 @@ from toscaparser.nodetemplate import NodeTemplate
 
 from utils.TOSCA_parser import TOSCAParser
 
-node_type_key_names_to_remove = ['capabilities', 'requirements', 'derived_from']
+node_type_key_names_to_remove = ['capabilities', 'derived_from']
 
 
 def get_node_type_name(node):
