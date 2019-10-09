@@ -58,9 +58,6 @@ public class ToscaController {
     @Autowired
     private ToscaService toscaService;
 
-    @Autowired
-    private ConfigurationService configurationService;
-
     @RequestMapping(value = "/post", method = RequestMethod.POST)
     @RolesAllowed({UserService.USER, UserService.ADMIN})
     public @ResponseBody
@@ -142,26 +139,6 @@ public class ToscaController {
             ids.add(tr.getId());
         }
         return ids;
-    }
-
-    /**
-     * Transforms the TOSCA description to docker compose
-     *
-     * @param id the ID TOSCA description.
-     * @param type. Transform it to a specific type e.g. "docker_compose"
-     * @return the docker-compose ID.
-     */
-    @RequestMapping(value = "/transform/{id}", method = RequestMethod.GET, params = {"type"})
-    @RolesAllowed({UserService.USER, UserService.ADMIN})
-    public @ResponseBody
-    String transform(@PathVariable("id") String id, @RequestParam(value = "type") String type) {
-        try {
-            String ymlContents = toscaService.transform(id, type);
-            return configurationService.saveStringContents(ymlContents);
-        } catch (JSONException | IOException | TimeoutException | InterruptedException ex) {
-            Logger.getLogger(ToscaController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
     }
 
     /**

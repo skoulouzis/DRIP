@@ -31,3 +31,5 @@
 /tosca_service/nbproject/private/
 /tosca_service/src/winery/__pycache__/
 /drip-deployer/venv/
+/drip/target/
+/drip-manager/target/
