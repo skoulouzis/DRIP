@@ -116,6 +116,189 @@ paths:
       - drip_auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"
+  /planner/plan/{id}:
+    get:
+      summary: "plan tosca template"
+      description: "Returns the ID of the planed topolog template"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template to plan"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ToscaTemplate not found"
+        405:
+          description: "Invalid input"          
+      security:
+      - drip_auth:
+        - "write:ToscaTemplate"
+        - "read:ToscaTemplate"    
+  /planner/{id}:
+    get:
+      summary: "get the plan tosca template"
+      description: "Returns the plan topolog template"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template plan"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ToscaTemplate not found"
+        405:
+          description: "Invalid input"          
+      security:
+      - drip_auth:
+        - "write:ToscaTemplate"
+        - "read:ToscaTemplate"        
+  /provisioner/provision/{id}:
+    get:
+      summary: "provision tosca template"
+      description: "Returns the provision ID"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template to plan"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ToscaTemplate not found"
+        405:
+          description: "Invalid input"          
+      security:
+      - drip_auth:
+        - "write:ToscaTemplate"
+        - "read:ToscaTemplate"     
+  /provisioner/{id}:
+    get:
+      summary: "the provisioned tosca template"
+      description: "Returns the provisioned tosca template"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template to plan"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ToscaTemplate not found"
+        405:
+          description: "Invalid input"          
+      security:
+      - drip_auth:
+        - "write:ToscaTemplate"
+        - "read:ToscaTemplate"  
+  /deployer/deploy/{id}:
+    get:
+      summary: "deploy the software tosca template"
+      description: "Returns the deployment ID"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template to deploy"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ToscaTemplate not found"
+        405:
+          description: "Invalid input"          
+      security:
+      - drip_auth:
+        - "write:ToscaTemplate"
+        - "read:ToscaTemplate"      
+  /deployer/{id}:
+    get:
+      summary: "get the deployment topolog template"
+      description: "Returns the deployment topolog template"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template to deploy"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ToscaTemplate not found"
+        405:
+          description: "Invalid input"          
+      security:
+      - drip_auth:
+        - "write:ToscaTemplate"
+        - "read:ToscaTemplate" 
+  /credential:
+    post:
+      summary: "Create credentials"
+      description: "Creates credentials"
+      produces:
+      - "application/json"
+      consumes:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created user object"
+        required: true
+        schema:
+          $ref: "#/definitions/Credentials"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ToscaTemplate not found"
+        405:
+          description: "Invalid input"     
+      security:
+      - drip_auth:
+        - "admin:User"        
   /user:
     post:
       summary: "Create user"
@@ -400,7 +583,7 @@ definitions:
       name:
         type: "string"
       type:
-        type: "string"      
+        type: "string"
       requirements:
         type: "array"
         items:
@@ -427,7 +610,23 @@ definitions:
         type: object
         additionalProperties:
           type: string             
-        
+  Credentials:
+    type: "object"
+    properties:
+      protocol:
+        type: "string"   
+      token_type:
+        type: "string"        
+      token:
+        type: "string"        
+      keys:
+        type: object
+        additionalProperties:
+          type: string    
+      user:
+        type: "string"   
+      cloud_provider_name:
+        type: "string"
 externalDocs:
   description: "Find out more about DRIP"
   url: "https://github.com/QCAPI-DRIP/DRIP-integration/wiki"
