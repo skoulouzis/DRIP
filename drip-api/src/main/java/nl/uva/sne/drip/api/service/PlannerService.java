@@ -21,10 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,10 +36,7 @@ import nl.uva.sne.drip.drip.commons.data.internal.MessageParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.commons.utils.Converter;
-import nl.uva.sne.drip.drip.commons.data.v1.external.CloudCredentials;
 import nl.uva.sne.drip.drip.commons.data.v1.external.User;
-import nl.uva.sne.drip.drip.converter.P2PConverter;
-import nl.uva.sne.drip.drip.converter.SimplePlanContainer;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,9 +57,6 @@ public class PlannerService {
 
     @Autowired
     private ToscaService toscaService;
-
-    @Autowired
-    private CloudCredentialsService credentialService;
 
     @Autowired
     private PlanDao planDao;
@@ -95,7 +87,7 @@ public class PlannerService {
             for (MessageParameter mp : messageParams) {
                 String value = mp.getValue();
                 toscaPlan = new String(Base64.getDecoder().decode(value));
-                logger.log(Level.INFO, "TOSCA Plann: " + toscaPlan);
+                logger.log(Level.INFO, "TOSCA Plann: {0}", toscaPlan);
 
             }
             Map<String, Object> toscaPlanMap = Converter.ymlString2Map(toscaPlan);

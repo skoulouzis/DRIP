@@ -39,7 +39,6 @@ import nl.uva.sne.drip.api.exception.NotFoundException;
 import nl.uva.sne.drip.api.exception.NullCloudProviderException;
 import nl.uva.sne.drip.api.exception.NullKeyException;
 import nl.uva.sne.drip.api.service.CloudCredentialsService;
-import nl.uva.sne.drip.api.service.KeyPairService;
 import nl.uva.sne.drip.api.service.UserService;
 import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
@@ -67,8 +66,6 @@ public class CloudCredentialsController {
 
     @Autowired
     private CloudCredentialsService cloudCredentialsService;
-    @Autowired
-    private KeyPairService keyService;
 
     /**
      * Post the cloud credentials.
@@ -140,13 +137,10 @@ public class CloudCredentialsController {
                 key.setAttributes(attributes);
                 KeyPair pair = new KeyPair();
                 pair.setPrivateKey(key);
-                pair = keyService.save(pair);
-//                loginKeyIDs.add(pair.getId());
             }
             if (cloudCredentials.getCloudProviderName().toLowerCase().equals("egi")) {
                 cloudCredentials.setSecretKey(new String(bytes, "UTF-8"));
             }
-//            cloudCredentials.setKeyIDs(loginKeyIDs);
             cloudCredentials = cloudCredentialsService.save(cloudCredentials);
             return cloudCredentials.getId();
         } catch (IOException | KeyException ex) {

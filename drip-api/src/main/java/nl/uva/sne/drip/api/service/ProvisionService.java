@@ -74,12 +74,6 @@ public class ProvisionService {
     @Autowired
     private SimplePlannerService simplePlanService;
 
-    @Autowired
-    private ScriptService userScriptService;
-
-    @Autowired
-    private KeyPairService keyPairService;
-
     @Value("${message.broker.host}")
     private String messageBrokerHost;
     private final Logger logger;

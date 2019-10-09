@@ -34,7 +34,6 @@ import nl.uva.sne.drip.api.rpc.DRIPCaller;
 import nl.uva.sne.drip.api.rpc.DeployerCaller;
 import nl.uva.sne.drip.api.v1.rest.DeployController;
 import nl.uva.sne.drip.drip.commons.data.v1.external.DeployRequest;
-import nl.uva.sne.drip.drip.commons.data.v1.external.DeployParameter;
 import nl.uva.sne.drip.drip.commons.data.v1.external.DeployResponse;
 import nl.uva.sne.drip.drip.commons.data.v1.external.Key;
 import nl.uva.sne.drip.drip.commons.data.internal.Message;
@@ -50,16 +49,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.api.dao.KeyPairDao;
-import nl.uva.sne.drip.api.exception.BadRequestException;
 import nl.uva.sne.drip.api.exception.KeyException;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.DRIPLogHandler;
 import nl.uva.sne.drip.commons.utils.TOSCAUtils;
-import nl.uva.sne.drip.drip.commons.data.v1.external.ConfigurationRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.KeyPair;
-import nl.uva.sne.drip.drip.commons.data.v1.external.PlanResponse;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ScaleRequest;
-import nl.uva.sne.drip.drip.commons.data.v1.external.ToscaRepresentation;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.AnsibleOutput;
 import nl.uva.sne.drip.drip.commons.data.v1.external.ansible.BenchmarkResult;
 import org.json.JSONArray;
@@ -85,22 +80,8 @@ public class DeployService {
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
-//    @Autowired
-//    private CloudCredentialsService cloudCredentialsService;
     @Autowired
     private ProvisionService provisionService;
-
-    @Autowired
-    private ConfigurationService configurationService;
-
-    @Autowired
-    private BenchmarkResultService benchmarkResultService;
-
-    @Autowired
-    private ToscaService toscaService;
-
-    @Autowired
-    private PlannerService plannerService;
 
     private static final String[] CLOUD_SITE_NAMES = new String[]{"domain", "VMResourceID"};
     private static final String[] PUBLIC_ADRESS_NAMES = new String[]{"public_address", "publicAddress"};
