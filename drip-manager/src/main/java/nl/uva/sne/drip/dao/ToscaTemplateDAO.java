@@ -5,6 +5,7 @@
  */
 package nl.uva.sne.drip.dao;
 
+import nl.uva.sne.drip.model.ToscaTemplate;
 import nl.uva.sne.drip.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,6 @@ import org.springframework.stereotype.Repository;
  * @author S. Koulouzis
  */
 @Repository
-public interface TopologTemplateDAO extends MongoRepository<User, String> {
+public interface ToscaTemplateDAO extends MongoRepository<ToscaTemplate, String> {
 
 }

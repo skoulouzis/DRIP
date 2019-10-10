@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 
-@javax.annotation.Generated(value = "nl.uva.sne.drip.codegen.languages.SpringCodegen", date = "2019-10-09T14:00:37.436Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
 public class ApiOriginFilter implements javax.servlet.Filter {
     @Override

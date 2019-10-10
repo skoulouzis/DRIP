@@ -21,39 +21,59 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
-@javax.annotation.Generated(value = "nl.uva.sne.drip.codegen.languages.SpringCodegen", date = "2019-10-09T14:00:37.436Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
 @Api(value = "user", description = "the user API")
 public interface UserApi {
 
-    @ApiOperation(value = "Create user", nickname = "createUser", notes = "This can only be done by the logged in user.", authorizations = {
+    @ApiOperation(value = "Create user", nickname = "createUser", notes = "This can only be done by admin.", response = String.class, authorizations = {
         @Authorization(value = "drip_auth", scopes = {
             @AuthorizationScope(scope = "admin:User", description = "Grants access to admin operations")
             })
     }, tags={  })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation") })
+        @ApiResponse(code = 200, message = "successful operation", response = String.class),
+        @ApiResponse(code = 409, message = "already exists") })
     @RequestMapping(value = "/user",
         produces = { "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Void> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody User body);
+    ResponseEntity<String> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody User body);
 
 
-    @ApiOperation(value = "Delete user", nickname = "deleteUser", notes = "This can only be done by the logged in user.", authorizations = {
+    @ApiOperation(value = "Logs user into the system", nickname = "userLoginGet", notes = "", response = String.class, tags={ "user", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "successful operation", response = String.class),
+        @ApiResponse(code = 400, message = "Invalid username/password supplied") })
+    @RequestMapping(value = "/user/login",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<String> userLoginGet(@NotNull @ApiParam(value = "The user name for login", required = true) @Valid @RequestParam(value = "username", required = true) String username,@NotNull @ApiParam(value = "The password for login in clear text", required = true) @Valid @RequestParam(value = "password", required = true) String password);
+
+
+    @ApiOperation(value = "Logs out current logged in user session", nickname = "userLogoutGet", notes = "", tags={  })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "successful operation") })
+    @RequestMapping(value = "/user/logout",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<Void> userLogoutGet();
+
+
+    @ApiOperation(value = "Delete user", nickname = "userUsernameDelete", notes = "This can only be done by the logged in user.", authorizations = {
         @Authorization(value = "drip_auth", scopes = {
             @AuthorizationScope(scope = "admin:User", description = "Grants access to admin operations")
             })
-    }, tags={ "user", })
+    }, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 400, message = "Invalid username supplied"),
         @ApiResponse(code = 404, message = "User not found") })
     @RequestMapping(value = "/user/{username}",
         produces = { "application/json" }, 
         method = RequestMethod.DELETE)
-    ResponseEntity<Void> deleteUser(@ApiParam(value = "The name that needs to be deleted",required=true) @PathVariable("username") String username);
+    ResponseEntity<Void> userUsernameDelete(@ApiParam(value = "The name that needs to be deleted",required=true) @PathVariable("username") String username);
 
 
-    @ApiOperation(value = "Get user by user name", nickname = "getUserByName", notes = "", response = User.class, authorizations = {
+    @ApiOperation(value = "Get user by user name", nickname = "userUsernameGet", notes = "", response = User.class, authorizations = {
         @Authorization(value = "drip_auth", scopes = {
             @AuthorizationScope(scope = "admin:User", description = "Grants access to admin operations")
             })
@@ -65,29 +85,10 @@ public interface UserApi {
     @RequestMapping(value = "/user/{username}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<User> getUserByName(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing. ",required=true) @PathVariable("username") String username);
+    ResponseEntity<User> userUsernameGet(@ApiParam(value = "The name that needs to be fetched. Use user1 for testing. ",required=true) @PathVariable("username") String username);
 
 
-    @ApiOperation(value = "Logs user into the system", nickname = "loginUser", notes = "", response = String.class, tags={ "user", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation", response = String.class),
-        @ApiResponse(code = 400, message = "Invalid username/password supplied") })
-    @RequestMapping(value = "/user/login",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<String> loginUser(@NotNull @ApiParam(value = "The user name for login", required = true) @Valid @RequestParam(value = "username", required = true) String username,@NotNull @ApiParam(value = "The password for login in clear text", required = true) @Valid @RequestParam(value = "password", required = true) String password);
-
-
-    @ApiOperation(value = "Logs out current logged in user session", nickname = "logoutUser", notes = "", tags={ "user", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/user/logout",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<Void> logoutUser();
-
-
-    @ApiOperation(value = "Updated user", nickname = "updateUser", notes = "This can only be done by the logged in user.", authorizations = {
+    @ApiOperation(value = "Updated user", nickname = "userUsernamePut", notes = "This can only be done by the logged in user.", authorizations = {
         @Authorization(value = "drip_auth", scopes = {
             @AuthorizationScope(scope = "admin:User", description = "Grants access to admin operations")
             })
@@ -98,6 +99,6 @@ public interface UserApi {
     @RequestMapping(value = "/user/{username}",
         produces = { "application/json" }, 
         method = RequestMethod.PUT)
-    ResponseEntity<Void> updateUser(@ApiParam(value = "name that need to be updated",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody User body);
+    ResponseEntity<Void> userUsernamePut(@ApiParam(value = "name that need to be updated",required=true) @PathVariable("username") String username,@ApiParam(value = "Updated user object" ,required=true )  @Valid @RequestBody User body);
 
 }

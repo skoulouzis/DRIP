@@ -17,6 +17,7 @@ paths:
     post:
       summary: "upload a tosca template description file"
       description: ""
+      operationId: "uploadToscaTemplate"
       consumes:
       - "multipart/form-data"
       parameters:
@@ -26,17 +27,21 @@ paths:
         description: "tosca Template description"
         required: true
       responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
         405:
           description: "Invalid input"
       security:
       - drip_auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"
-  /topolog_template/{id}:
+  /tosca_template/{id}:
     get:
       summary: "Find topolog template by ID"
       description: "Returns a single topolog template"
-      operationId: "getToscaTemplateById"
+      operationId: "getToscaTemplateByID"
       produces:
       - "text/plain"
       parameters:
@@ -44,11 +49,12 @@ paths:
         in: "path"
         description: "ID of topolog template to return"
         required: true
-        type: "integer"
-        format: "int64"
+        type: "string"
       responses:
         200:
           description: "successful operation"
+          schema:
+            type: "string"
         400:
           description: "Invalid ID supplied"
         404:
@@ -59,14 +65,14 @@ paths:
       - drip_auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"
-    post:
-      summary: "Updates exisintg topolog template in the store"
+    put:
+      summary: "Updates exisintg topolog template"
       description: ""
-      operationId: "updateToscaTemplate"
+      operationId: "updateToscaTemplateByID"
       consumes:
       - "multipart/form-data"
       produces:
-      - "application/json"
+      - "text/plain"
       parameters:
       - in: "formData"
         name: "file"
@@ -76,11 +82,12 @@ paths:
         in: "path"
         description: "ID of topolog template to return"
         required: true
-        type: "integer"
-        format: "int64"        
+        type: "string"       
       responses:
         200:
           description: "successful operation"
+          schema:
+            type: "string"
         400:
           description: "Invalid ID supplied"
         404:
@@ -94,20 +101,18 @@ paths:
     delete:
       summary: "Deletes a tosca topolog template"
       description: ""
+      operationId: "deleteToscaTemplateByID"
       parameters:
-      - name: "api_key"
-        in: "header"
-        required: false
-        type: "string"
       - name: "id"
         in: "path"
         description: "ID of topolog template to return"
         required: true
-        type: "integer"
-        format: "int64"
+        type: "string"
       responses:
         200:
-          description: "successful operation"      
+          description: "successful operation"
+          schema:
+            type: "string"
         400:
           description: "Invalid ID supplied"
         404:
@@ -120,6 +125,7 @@ paths:
     get:
       summary: "plan tosca template"
       description: "Returns the ID of the planed topolog template"
+      operationId: "planToscaTemplateByID"
       produces:
       - "text/plain"
       parameters:
@@ -127,11 +133,12 @@ paths:
         in: "path"
         description: "ID of topolog template to plan"
         required: true
-        type: "integer"
-        format: "int64"
+        type: "string"
       responses:
         200:
           description: "successful operation"
+          schema:
+            type: "string"
         400:
           description: "Invalid ID supplied"
         404:
@@ -146,6 +153,7 @@ paths:
     get:
       summary: "get the plan tosca template"
       description: "Returns the plan topolog template"
+      operationId: "getPlanToscaTemplateByID"
       produces:
       - "text/plain"
       parameters:
@@ -153,11 +161,12 @@ paths:
         in: "path"
         description: "ID of topolog template plan"
         required: true
-        type: "integer"
-        format: "int64"
+        type: "string"
       responses:
         200:
           description: "successful operation"
+          schema:
+            type: "string"
         400:
           description: "Invalid ID supplied"
         404:
@@ -171,7 +180,8 @@ paths:
   /provisioner/provision/{id}:
     get:
       summary: "provision tosca template"
-      description: "Returns the provision ID"
+      description: "provosions the operationId: Plan Tosca Template Returns the provision ID"
+      operationId: "provisionPlanToscaTemplateByID"
       produces:
       - "text/plain"
       parameters:
@@ -179,11 +189,12 @@ paths:
         in: "path"
         description: "ID of topolog template to plan"
         required: true
-        type: "integer"
-        format: "int64"
+        type: "string"
       responses:
         200:
           description: "successful operation"
+          schema:
+            type: "string"
         400:
           description: "Invalid ID supplied"
         404:
@@ -198,6 +209,7 @@ paths:
     get:
       summary: "the provisioned tosca template"
       description: "Returns the provisioned tosca template"
+      operationId: "getProvisionToscaTemplateByID"
       produces:
       - "text/plain"
       parameters:
@@ -205,11 +217,12 @@ paths:
         in: "path"
         description: "ID of topolog template to plan"
         required: true
-        type: "integer"
-        format: "int64"
+        type: "string"
       responses:
         200:
           description: "successful operation"
+          schema:
+            type: "string"
         400:
           description: "Invalid ID supplied"
         404:
@@ -224,6 +237,7 @@ paths:
     get:
       summary: "deploy the software tosca template"
       description: "Returns the deployment ID"
+      operationId: "deployProvisionToscaTemplateByID"
       produces:
       - "text/plain"
       parameters:
@@ -231,11 +245,12 @@ paths:
         in: "path"
         description: "ID of topolog template to deploy"
         required: true
-        type: "integer"
-        format: "int64"
+        type: "string"
       responses:
         200:
           description: "successful operation"
+          schema:
+            type: "string"
         400:
           description: "Invalid ID supplied"
         404:
@@ -250,6 +265,7 @@ paths:
     get:
       summary: "get the deployment topolog template"
       description: "Returns the deployment topolog template"
+      operationId: "getDeployToscaTemplateByID"
       produces:
       - "text/plain"
       parameters:
@@ -257,11 +273,12 @@ paths:
         in: "path"
         description: "ID of topolog template to deploy"
         required: true
-        type: "integer"
-        format: "int64"
+        type: "string"
       responses:
         200:
           description: "successful operation"
+          schema:
+            type: "string"
         400:
           description: "Invalid ID supplied"
         404:
@@ -276,6 +293,7 @@ paths:
     post:
       summary: "Create credentials"
       description: "Creates credentials"
+      operationId: "createCredentials"
       produces:
       - "application/json"
       consumes:
@@ -290,6 +308,8 @@ paths:
       responses:
         200:
           description: "successful operation"
+          schema:
+            type: "string"
         400:
           description: "Invalid ID supplied"
         404:
@@ -298,11 +318,12 @@ paths:
           description: "Invalid input"     
       security:
       - drip_auth:
-        - "admin:User"        
+        - "write:Credentials"
+        - "read:Credentials"        
   /user:
     post:
       summary: "Create user"
-      description: "This can only be done by the logged in user."
+      description: "This can only be done by admin."
       operationId: "createUser"
       produces:
       - "application/json"
@@ -314,8 +335,12 @@ paths:
         schema:
           $ref: "#/definitions/User"
       responses:
-        default:
+        200:
           description: "successful operation"
+          schema:
+            type: "string"
+        409:
+          description: "already exists"
       security:
       - drip_auth:
         - "admin:User"
@@ -325,7 +350,6 @@ paths:
       - "user"
       summary: "Logs user into the system"
       description: ""
-      operationId: "loginUser"
       produces:
       - "application/json"
       parameters:
@@ -359,7 +383,6 @@ paths:
     get:
       summary: "Logs out current logged in user session"
       description: ""
-      operationId: "logoutUser"
       produces:
       - "application/json"
       parameters: []
@@ -370,7 +393,6 @@ paths:
     get:
       summary: "Get user by user name"
       description: ""
-      operationId: "getUserByName"
       produces:
       - "application/json"
       parameters:
@@ -396,7 +418,6 @@ paths:
       - "user"
       summary: "Updated user"
       description: "This can only be done by the logged in user."
-      operationId: "updateUser"
       produces:
       - "application/json"
       parameters:
@@ -418,11 +439,10 @@ paths:
           description: "User not found"
       security:
       - drip_auth:
-        - "admin:User"          
+        - "admin:User"    
     delete:
       summary: "Delete user"
       description: "This can only be done by the logged in user."
-      operationId: "deleteUser"
       produces:
       - "application/json"
       parameters:
@@ -448,10 +468,8 @@ securityDefinitions:
       write:ToscaTemplate: "modify topolog template in your account"
       read:ToscaTemplate: "read your topolog template"
       admin:User: "Grants access to admin operations"
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
+      write:Credentials: "modify cloud credentials in your account"
+      read:Credentials: "read your cloud credentials"
 definitions:
   User:
     type: "object"
@@ -489,11 +507,9 @@ definitions:
           additionalProperties:
             type: string
       repositories:
-        type: "array"
-        items:
-          type: object
-          additionalProperties:
-            type: string    
+        type: object
+        additionalProperties:
+          type: string     
       dsl_definitions:
         type: object
         additionalProperties:
@@ -501,33 +517,33 @@ definitions:
       node_types:
         type: object
         additionalProperties:
-          type: string     
+          type: object     
       topology_template:
         $ref: "#/definitions/TopologyTemplate" 
       relationship_types:
         type: object
         additionalProperties:
-          type: string    
+          type: object    
       relationship_templates:
         type: object
         additionalProperties:
-          type: string      
+          type: object      
       capability_types:
         type: object
         additionalProperties:
-          type: string      
+          type: object      
       artifact_types:
         type: object
         additionalProperties:
-          type: string        
+          type: object        
       data_types:
         type: object
         additionalProperties:
-          type: string 
+          type: object 
       interface_types:
         type: object
         additionalProperties:
-          type: string     
+          type: object     
       policy_types:
         type: object
         additionalProperties:
@@ -535,7 +551,7 @@ definitions:
       group_types:
         type: object
         additionalProperties:
-          type: string   
+          type: object   
       description:
         type: "string"
       template_author:
@@ -550,66 +566,68 @@ definitions:
         items:
           type: object
           additionalProperties:
-            type: string
+            type: object
       policies:
         type: "array"
         items:
           type: object
           additionalProperties:
-            type: string            
+            type: object            
       outputs:
         type: "array"
         items:
           type: object
           additionalProperties:
-            type: string       
+            type: object       
       node_templates:
-        $ref: "#/definitions/NodeTemplate"
+        type: object
+        additionalProperties:
+          type: object     
       relationship_templates:
         type: object
         additionalProperties:
-          type: string        
+          type: object        
       groups:
         type: object
         additionalProperties:
-          type: string    
+          type: object    
       substitution_mappings:
         type: object
         additionalProperties:
-          type: string    
+          type: object    
   NodeTemplate:
     type: "object"
     properties:
       name:
         type: "string"
       type:
-        type: "string"
+        type: "string"      
       requirements:
         type: "array"
         items:
           type: object
           additionalProperties:
-            type: string
+            type: object
       artifacts:
         type: object
         additionalProperties:
-          type: string      
+          type: object      
       properties:
         type: object
         additionalProperties:
-          type: string   
+          type: object   
       interfaces:
         type: object
         additionalProperties:
-          type: string     
+          type: object     
       capabilities:
         type: object
         additionalProperties:
-          type: string    
+          type: object    
       workflows:
         type: object
         additionalProperties:
-          type: string             
+          type: object             
   Credentials:
     type: "object"
     properties:

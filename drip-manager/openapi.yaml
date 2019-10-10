@@ -1,0 +1,724 @@
+openapi: 3.0.1
+info:
+  title: DRIP
+  description: The Dynamic Real-time infrastructure planner (DRIP) allows application
+    developers to seamlessly plan a customized virtual infrastructure based on application
+    level constraints on QoS and resource budgets, provisioning the virtual infrastructure,
+    deploy application components onto the virtual infrastructure, and start execution
+    on demand using TOSCA.
+  contact:
+    email: z.zhao@uva.nl
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 3.0.0
+externalDocs:
+  description: Find out more about DRIP
+  url: https://github.com/QCAPI-DRIP/DRIP-integration/wiki
+servers:
+- url: ///drip-api
+paths:
+  /tosca_template:
+    post:
+      summary: upload a tosca template description file
+      operationId: uploadToscaTemplate
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - file
+              properties:
+                file:
+                  type: string
+                  description: tosca Template description
+                  format: binary
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain::
+              schema:
+                type: string
+        405:
+          description: Invalid input
+          content: {}
+      security:
+      - drip_auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /tosca_template/{id}:
+    get:
+      summary: Find topolog template by ID
+      description: Returns a single topolog template
+      operationId: getToscaTemplateByID
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template to return
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain::
+              schema:
+                type: string
+        400:
+          description: Invalid ID supplied
+          content: {}
+        404:
+          description: ToscaTemplate not found
+          content: {}
+        405:
+          description: Invalid input
+          content: {}
+      security:
+      - drip_auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+    put:
+      summary: Updates exisintg topolog template in the store
+      operationId: updateToscaTemplateByID
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template to return
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                file:
+                  type: string
+                  description: tosca Template description
+                  format: binary
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        400:
+          description: Invalid ID supplied
+          content: {}
+        404:
+          description: ToscaTemplate not found
+          content: {}
+        405:
+          description: Invalid input
+          content: {}
+      security:
+      - drip_auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+    delete:
+      summary: Deletes a tosca topolog template
+      operationId: deleteToscaTemplateByID
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template to return
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        400:
+          description: Invalid ID supplied
+          content: {}
+        404:
+          description: ToscaTemplate not found
+          content: {}
+      security:
+      - drip_auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /planner/plan/{id}:
+    get:
+      summary: plan tosca template
+      description: Returns the ID of the planed topolog template
+      operationId: planToscaTemplateByID
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template to plan
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain::
+              schema:
+                type: string
+        400:
+          description: Invalid ID supplied
+          content: {}
+        404:
+          description: ToscaTemplate not found
+          content: {}
+        405:
+          description: Invalid input
+          content: {}
+      security:
+      - drip_auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /planner/{id}:
+    get:
+      summary: get the plan tosca template
+      description: Returns the plan topolog template
+      operationId: getPlanToscaTemplateByID
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template plan
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain::
+              schema:
+                type: string
+        400:
+          description: Invalid ID supplied
+          content: {}
+        404:
+          description: ToscaTemplate not found
+          content: {}
+        405:
+          description: Invalid input
+          content: {}
+      security:
+      - drip_auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /provisioner/provision/{id}:
+    get:
+      summary: provision tosca template
+      description: 'provosions the operationId: Plan Tosca Template Returns the provision
+        ID'
+      operationId: provisionPlanToscaTemplateByID
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template to plan
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain::
+              schema:
+                type: string
+        400:
+          description: Invalid ID supplied
+          content: {}
+        404:
+          description: ToscaTemplate not found
+          content: {}
+        405:
+          description: Invalid input
+          content: {}
+      security:
+      - drip_auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /provisioner/{id}:
+    get:
+      summary: the provisioned tosca template
+      description: Returns the provisioned tosca template
+      operationId: getProvisionToscaTemplateByID
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template to plan
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain::
+              schema:
+                type: string
+        400:
+          description: Invalid ID supplied
+          content: {}
+        404:
+          description: ToscaTemplate not found
+          content: {}
+        405:
+          description: Invalid input
+          content: {}
+      security:
+      - drip_auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /deployer/deploy/{id}:
+    get:
+      summary: deploy the software tosca template
+      description: Returns the deployment ID
+      operationId: deployProvisionToscaTemplateByID
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template to deploy
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain::
+              schema:
+                type: string
+        400:
+          description: Invalid ID supplied
+          content: {}
+        404:
+          description: ToscaTemplate not found
+          content: {}
+        405:
+          description: Invalid input
+          content: {}
+      security:
+      - drip_auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /deployer/{id}:
+    get:
+      summary: get the deployment topolog template
+      description: Returns the deployment topolog template
+      operationId: getDeployToscaTemplateByID
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template to deploy
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain::
+              schema:
+                type: string
+        400:
+          description: Invalid ID supplied
+          content: {}
+        404:
+          description: ToscaTemplate not found
+          content: {}
+        405:
+          description: Invalid input
+          content: {}
+      security:
+      - drip_auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /credential:
+    post:
+      summary: Create credentials
+      description: Creates credentials
+      operationId: createCredentials
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            text/plain::
+              schema:
+                type: string
+        400:
+          description: Invalid ID supplied
+          content: {}
+        404:
+          description: ToscaTemplate not found
+          content: {}
+        405:
+          description: Invalid input
+          content: {}
+      security:
+      - drip_auth:
+        - write:Credentials
+        - read:Credentials
+  /user:
+    post:
+      summary: Create user
+      description: This can only be done by admin.
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        default:
+          description: successful operation
+          content: {}
+      security:
+      - drip_auth:
+        - admin:User
+  /user/login:
+    get:
+      tags:
+      - user
+      summary: Logs user into the system
+      parameters:
+      - name: username
+        in: query
+        description: The user name for login
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: The password for login in clear text
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: string
+        400:
+          description: Invalid username/password supplied
+          content: {}
+  /user/logout:
+    get:
+      summary: Logs out current logged in user session
+      responses:
+        default:
+          description: successful operation
+          content: {}
+  /user/{username}:
+    get:
+      summary: Get user by user name
+      parameters:
+      - name: username
+        in: path
+        description: 'The name that needs to be fetched. Use user1 for testing. '
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Invalid username supplied
+          content: {}
+        404:
+          description: User not found
+          content: {}
+      security:
+      - drip_auth:
+        - admin:User
+    put:
+      tags:
+      - user
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      parameters:
+      - name: username
+        in: path
+        description: name that need to be updated
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Updated user object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        400:
+          description: Invalid user supplied
+          content: {}
+        404:
+          description: User not found
+          content: {}
+      security:
+      - drip_auth:
+        - admin:User
+    delete:
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      parameters:
+      - name: username
+        in: path
+        description: The name that needs to be deleted
+        required: true
+        schema:
+          type: string
+      responses:
+        400:
+          description: Invalid username supplied
+          content: {}
+        404:
+          description: User not found
+          content: {}
+      security:
+      - drip_auth:
+        - admin:User
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        userStatus:
+          type: integer
+          description: User Status
+          format: int32
+    ToscaTemplate:
+      type: object
+      properties:
+        tosca_definitions_version:
+          type: string
+        tosca_default_namespace:
+          type: string
+        template_name:
+          type: string
+        imports:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        repositories:
+          type: object
+          additionalProperties:
+            type: string
+        dsl_definitions:
+          type: object
+          additionalProperties:
+            type: string
+        node_types:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        topology_template:
+          $ref: '#/components/schemas/TopologyTemplate'
+        relationship_types:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        relationship_templates:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        capability_types:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        artifact_types:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        data_types:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        interface_types:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        policy_types:
+          type: object
+          additionalProperties:
+            type: string
+        group_types:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        description:
+          type: string
+        template_author:
+          type: string
+    TopologyTemplate:
+      type: object
+      properties:
+        description:
+          type: string
+        inputs:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: object
+              properties: {}
+        policies:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: object
+              properties: {}
+        outputs:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: object
+              properties: {}
+        node_templates:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        relationship_templates:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        groups:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        substitution_mappings:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+    NodeTemplate:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        requirements:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        artifacts:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        interfaces:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        capabilities:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+        workflows:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+    Credentials:
+      type: object
+      properties:
+        protocol:
+          type: string
+        token_type:
+          type: string
+        token:
+          type: string
+        keys:
+          type: object
+          additionalProperties:
+            type: string
+        user:
+          type: string
+        cloud_provider_name:
+          type: string
+  securitySchemes:
+    drip_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://localhost/oauth/dialog
+          scopes:
+            write:ToscaTemplate: modify topolog template in your account
+            read:ToscaTemplate: read your topolog template
+            admin:User: Grants access to admin operations
+            write:Credentials: modify cloud credentials in your account
+            read:Credentials: read your cloud credentials

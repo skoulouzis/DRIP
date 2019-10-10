@@ -1,6 +1,6 @@
 package nl.uva.sne.drip;
 
-import nl.uva.sne.drip.dao.TopologTemplateDAO;
+import nl.uva.sne.drip.dao.ToscaTemplateDAO;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
-@EnableMongoRepositories(basePackageClasses = {TopologTemplateDAO.class})
+@EnableMongoRepositories(basePackageClasses = {ToscaTemplateDAO.class})
 @ComponentScan(basePackages = {"nl.uva.sne.drip", "nl.uva.sne.drip.api", "nl.uva.sne.drip.configuration", "nl.uva.sne.drip.dao", "nl.uva.sne.drip.model", "nl.uva.sne.drip.service"})
 public class Swagger2SpringBoot implements CommandLineRunner {
 
@@ -28,7 +28,6 @@ public class Swagger2SpringBoot implements CommandLineRunner {
     }
 
     class ExitException extends RuntimeException implements ExitCodeGenerator {
-
         private static final long serialVersionUID = 1L;
 
         @Override

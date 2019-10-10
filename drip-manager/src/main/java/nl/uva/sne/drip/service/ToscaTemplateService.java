@@ -1,0 +1,91 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package nl.uva.sne.drip.service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
+import nl.uva.sne.drip.api.ApiException;
+import nl.uva.sne.drip.dao.ToscaTemplateDAO;
+import nl.uva.sne.drip.model.ToscaTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import nl.uva.sne.drip.commons.utils.Converter;
+import org.springframework.data.domain.Example;
+
+/**
+ *
+ * @author S. Koulouzis
+ */
+@Service
+public class ToscaTemplateService {
+
+    private final ObjectMapper objectMapper;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public ToscaTemplateService() {
+        this.objectMapper = new ObjectMapper(new YAMLFactory().disable(Feature.WRITE_DOC_START_MARKER));
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
+
+    @Autowired
+    private ToscaTemplateDAO dao;
+
+    public String save(ToscaTemplate tt) {
+        dao.save(tt);
+        return tt.getId();
+    }
+
+    public String saveFile(MultipartFile file) throws IOException, ApiException {
+
+        String originalFileName = file.getOriginalFilename();
+        String name = System.currentTimeMillis() + "_" + originalFileName;
+        byte[] bytes = file.getBytes();
+        String ymlStr = new String(bytes, "UTF-8");
+        ToscaTemplate tt = objectMapper.readValue(ymlStr, ToscaTemplate.class);
+        Example<ToscaTemplate> templateExample = Example.of(tt);
+        Optional<ToscaTemplate> result = dao.findOne(templateExample);
+        if (result.equals(tt)) {
+            throw new ApiException(409, "Tosca Template already exists");
+        }
+        save(tt);
+        return tt.getId();
+    }
+
+    public String updateToscaTemplateByID(String id, MultipartFile file) throws IOException {
+        ToscaTemplate tt = dao.findById(id).get();
+        if (tt == null) {
+            throw new NullPointerException();
+        }
+        byte[] bytes = file.getBytes();
+        String ymlStr = new String(bytes, "UTF-8");
+        tt = objectMapper.readValue(ymlStr, ToscaTemplate.class);
+        tt.setID(id);
+        return save(tt);
+    }
+
+    public String updateToscaTemplateByID(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public String findByID(String id) throws JsonProcessingException {
+        ToscaTemplate tt = dao.findById(id).get();
+
+        return objectMapper.writeValueAsString(tt);
+    }
+
+    public void deleteByID(String id) {
+        dao.deleteById(id);
+    }
+}
