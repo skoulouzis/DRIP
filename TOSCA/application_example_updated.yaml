@@ -1,0 +1,84 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+imports:
+  - nodes: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/nodes.yaml
+  - capabilities: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/capabilities.yaml
+  - policies: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/policies.yaml
+  
+repositories:
+  docker_hub: https://hub.docker.com/  
+
+description: >
+  TOSCA example
+
+topology_template:
+
+  node_templates:
+    wordpress:
+      type: tosca.nodes.ARTICONF.Container.Application.Docker
+      requirements:
+        - service:
+            node: mysql
+            relationship:
+                #type: tosca.relationships.ConnectsTo
+                type: tosca.relationships.DependsOn
+      artifacts:
+        image:
+          file: wordpress:latest
+          type: tosca.artifacts.Deployment.Image.Container.Docker
+          repository: docker_hub
+      properties:
+        ports: 
+          - "8000:80"
+        environment:
+          WORDPRESS_DB_HOST: mysql:3306
+          WORDPRESS_DB_USER: wordpress
+          WORDPRESS_DB_PASSWORD: wordpress
+          WORDPRESS_DB_NAME: wordpress
+        
+    mysql:
+        type: tosca.nodes.ARTICONF.Container.Application.Docker
+        properties:
+            ports: 
+            - "3306:3306"   
+            volumes:
+                - db_data:/var/lib/mysql
+            environment:
+                MYSQL_ROOT_PASSWORD: somewordpress
+                MYSQL_DATABASE: wordpress
+                MYSQL_USER: wordpress
+                MYSQL_PASSWORD: wordpress
+        artifacts:
+            image:
+                type: tosca.artifacts.Deployment.Image.Container.Docker
+                file: mysql:5.7
+                repository: docker_hub    
+                
+        
+    logspout:
+        type: tosca.nodes.ARTICONF.Container.Application.Docker
+        properties:
+            ports: 
+            - "8000:80"   
+            volumes:
+                - /etc/hostname:/etc/host_hostname:ro
+                - /var/run/docker.sock:/var/run/docker.sock
+            environment:
+                publish: "127.0.0.1:8000:80"
+        artifacts:
+            image:
+                type: tosca.artifacts.Deployment.Image.Container.Docker
+                file: gliderlabs/logspout:latest
+                repository: docker_hub                    
+                
+  policies:
+    - scalability:
+        type: tosca.policies.ARTICONF.Performance
+        targets: [ wordpress ]
+            
+        
+        
+          
+          
+          
+          

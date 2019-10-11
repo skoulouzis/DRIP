@@ -150,25 +150,16 @@ public class ToscaTemplateServiceTest {
      * Test of updateToscaTemplateByID method, of class ToscaTemplateService.
      */
     @Test
-    public void testUpdateToscaTemplateByID_Exception_MultipartFile() {
+    public void testUpdateToscaTemplateByID_Exception_MultipartFile() throws FileNotFoundException, IOException {
         FileInputStream in = null;
+
+        in = new FileInputStream(testUpdatedApplicationExampleToscaFilePath);
+        MultipartFile file = new MockMultipartFile("file", in);
         try {
-            in = new FileInputStream(testUpdatedApplicationExampleToscaFilePath);
-            MultipartFile file = new MockMultipartFile("file", in);
             String result = instance.updateToscaTemplateByID("0", file);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException | ApiException ex) {
+        } catch (Exception ex) {
             if (!(ex instanceof NoSuchElementException)) {
                 fail(ex.getMessage());
-                Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            try {
-                in.close();
-            } catch (IOException ex) {
-                fail(ex.getMessage());
-                Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
