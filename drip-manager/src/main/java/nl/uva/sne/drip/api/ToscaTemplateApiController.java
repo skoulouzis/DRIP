@@ -25,8 +25,6 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
 
     private static final Logger log = LoggerFactory.getLogger(ToscaTemplateApiController.class);
 
-    private final ObjectMapper objectMapper;
-
     private final HttpServletRequest request;
 
     @Autowired
@@ -34,7 +32,6 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
 
     @org.springframework.beans.factory.annotation.Autowired
     public ToscaTemplateApiController(ObjectMapper objectMapper, HttpServletRequest request) {
-        this.objectMapper = objectMapper;
         this.request = request;
     }
 

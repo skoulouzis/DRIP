@@ -1,5 +1,6 @@
 package nl.uva.sne.drip.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.Objects;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
+import org.springframework.data.annotation.Id;
 
 /**
  * Credentials
@@ -16,6 +18,10 @@ import javax.validation.Valid;
 @Validated
 @JsonInclude(Include.NON_NULL)
 public class Credentials {
+
+    @Id
+    @JsonIgnore
+    private String id;
 
     @JsonProperty("protocol")
     private String protocol = null;
@@ -41,11 +47,20 @@ public class Credentials {
         return this;
     }
 
+    @JsonIgnore
+    public String getId() {
+        return id;
+    }
+
+    public void setID(String id) {
+        this.id = id;
+    }
+
     /**
      * Get protocol
      *
      * @return protocol
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -66,7 +81,7 @@ public class Credentials {
      * Get tokenType
      *
      * @return tokenType
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -87,7 +102,7 @@ public class Credentials {
      * Get token
      *
      * @return token
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -116,7 +131,7 @@ public class Credentials {
      * Get keys
      *
      * @return keys
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -137,7 +152,7 @@ public class Credentials {
      * Get user
      *
      * @return user
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -158,7 +173,7 @@ public class Credentials {
      * Get cloudProviderName
      *
      * @return cloudProviderName
-  *
+     *
      */
     @ApiModelProperty(value = "")
 

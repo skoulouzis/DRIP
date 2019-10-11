@@ -16,6 +16,7 @@
 package nl.uva.sne.drip.configuration;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
@@ -27,6 +28,9 @@ import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 @Configuration
 @ComponentScan(basePackages = {"nl.uva.sne.drip", "nl.uva.sne.drip.api", "nl.uva.sne.drip.configuration", "nl.uva.sne.drip.dao", "nl.uva.sne.drip.model", "nl.uva.sne.drip.service"})
 public class MongoConfig extends AbstractMongoConfiguration {
+
+    public static int MONGO_TEST_PORT = 12345;
+    public static String MONGO_TEST_HOST = "localhost";
 
     @Override
     protected String getDatabaseName() {
@@ -40,9 +44,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
     @Override
     public MongoClient mongoClient() {
-
-        String bindIp = "localhost";
-        int port = 12345;
-        return new MongoClient(bindIp, port);
+        return new MongoClient(MONGO_TEST_HOST, MONGO_TEST_PORT);
     }
 }

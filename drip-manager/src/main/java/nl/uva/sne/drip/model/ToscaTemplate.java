@@ -170,7 +170,7 @@ public class ToscaTemplate {
 
     public ToscaTemplate addImportsItem(Map<String, String> importsItem) {
         if (this.imports == null) {
-            this.imports = new ArrayList<Map<String, String>>();
+            this.imports = new ArrayList<>();
         }
         this.imports.add(importsItem);
         return this;
@@ -201,7 +201,7 @@ public class ToscaTemplate {
 
     public ToscaTemplate putRepositoriesItem(String key, String repositoriesItem) {
         if (this.repositories == null) {
-            this.repositories = new HashMap<String, String>();
+            this.repositories = new HashMap<>();
         }
         this.repositories.put(key, repositoriesItem);
         return this;
@@ -230,7 +230,7 @@ public class ToscaTemplate {
 
     public ToscaTemplate putDslDefinitionsItem(String key, String dslDefinitionsItem) {
         if (this.dslDefinitions == null) {
-            this.dslDefinitions = new HashMap<String, String>();
+            this.dslDefinitions = new HashMap<>();
         }
         this.dslDefinitions.put(key, dslDefinitionsItem);
         return this;
@@ -259,7 +259,7 @@ public class ToscaTemplate {
 
     public ToscaTemplate putNodeTypesItem(String key, Object nodeTypesItem) {
         if (this.nodeTypes == null) {
-            this.nodeTypes = new HashMap<String, Object>();
+            this.nodeTypes = new HashMap<>();
         }
         this.nodeTypes.put(key, nodeTypesItem);
         return this;
@@ -311,7 +311,7 @@ public class ToscaTemplate {
 
     public ToscaTemplate putRelationshipTypesItem(String key, Object relationshipTypesItem) {
         if (this.relationshipTypes == null) {
-            this.relationshipTypes = new HashMap<String, Object>();
+            this.relationshipTypes = new HashMap<>();
         }
         this.relationshipTypes.put(key, relationshipTypesItem);
         return this;
@@ -340,7 +340,7 @@ public class ToscaTemplate {
 
     public ToscaTemplate putRelationshipTemplatesItem(String key, Object relationshipTemplatesItem) {
         if (this.relationshipTemplates == null) {
-            this.relationshipTemplates = new HashMap<String, Object>();
+            this.relationshipTemplates = new HashMap<>();
         }
         this.relationshipTemplates.put(key, relationshipTemplatesItem);
         return this;
@@ -369,7 +369,7 @@ public class ToscaTemplate {
 
     public ToscaTemplate putCapabilityTypesItem(String key, Object capabilityTypesItem) {
         if (this.capabilityTypes == null) {
-            this.capabilityTypes = new HashMap<String, Object>();
+            this.capabilityTypes = new HashMap<>();
         }
         this.capabilityTypes.put(key, capabilityTypesItem);
         return this;
@@ -398,7 +398,7 @@ public class ToscaTemplate {
 
     public ToscaTemplate putArtifactTypesItem(String key, Object artifactTypesItem) {
         if (this.artifactTypes == null) {
-            this.artifactTypes = new HashMap<String, Object>();
+            this.artifactTypes = new HashMap<>();
         }
         this.artifactTypes.put(key, artifactTypesItem);
         return this;
@@ -427,7 +427,7 @@ public class ToscaTemplate {
 
     public ToscaTemplate putDataTypesItem(String key, Object dataTypesItem) {
         if (this.dataTypes == null) {
-            this.dataTypes = new HashMap<String, Object>();
+            this.dataTypes = new HashMap<>();
         }
         this.dataTypes.put(key, dataTypesItem);
         return this;
@@ -456,7 +456,7 @@ public class ToscaTemplate {
 
     public ToscaTemplate putInterfaceTypesItem(String key, Object interfaceTypesItem) {
         if (this.interfaceTypes == null) {
-            this.interfaceTypes = new HashMap<String, Object>();
+            this.interfaceTypes = new HashMap<>();
         }
         this.interfaceTypes.put(key, interfaceTypesItem);
         return this;
@@ -485,7 +485,7 @@ public class ToscaTemplate {
 
     public ToscaTemplate putPolicyTypesItem(String key, String policyTypesItem) {
         if (this.policyTypes == null) {
-            this.policyTypes = new HashMap<String, String>();
+            this.policyTypes = new HashMap<>();
         }
         this.policyTypes.put(key, policyTypesItem);
         return this;
@@ -514,7 +514,7 @@ public class ToscaTemplate {
 
     public ToscaTemplate putGroupTypesItem(String key, Object groupTypesItem) {
         if (this.groupTypes == null) {
-            this.groupTypes = new HashMap<String, Object>();
+            this.groupTypes = new HashMap<>();
         }
         this.groupTypes.put(key, groupTypesItem);
         return this;
