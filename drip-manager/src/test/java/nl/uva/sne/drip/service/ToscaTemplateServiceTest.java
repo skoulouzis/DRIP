@@ -5,6 +5,7 @@
  */
 package nl.uva.sne.drip.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +27,26 @@ import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.Swagger2SpringBoot;
+import nl.uva.sne.drip.api.ApiException;
+import nl.uva.sne.drip.model.ToscaTemplate;
+import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -42,7 +54,7 @@ import org.springframework.web.context.WebApplicationContext;
 public class ToscaTemplateServiceTest {
 
     @Autowired
-    ToscaTemplateService ml;
+    ToscaTemplateService instance;
 
     @Autowired
     private WebApplicationContext wac;
@@ -51,6 +63,8 @@ public class ToscaTemplateServiceTest {
     private static final MongodStarter starter = MongodStarter.getDefaultInstance();
     private static MongodExecutable _mongodExe;
     private static MongodProcess _mongod;
+    private static final String testApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example.yaml";
+    private static final String testUpdatedApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
 
     @BeforeClass
     public static void setUpClass() {
@@ -72,6 +86,8 @@ public class ToscaTemplateServiceTest {
         _mongodExe.stop();
 
     }
+    private String toscaTemplateID;
+    private String testApplicationExampleToscaContents;
 
     @Before
     public void setUp() {
@@ -83,14 +99,127 @@ public class ToscaTemplateServiceTest {
     public void tearDown() {
     }
 
+    /**
+     * Test of saveFile method, of class ToscaTemplateService.
+     */
     @Test
-    public void test_ml_always_return_true() {
+    public void testSaveFile() throws Exception {
+        Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.INFO, "saveFile");
+        FileInputStream in = new FileInputStream(testApplicationExampleToscaFilePath);
+        MultipartFile file = new MockMultipartFile("file", in);
+        toscaTemplateID = instance.saveFile(file);
+        Assert.assertNotNull(toscaTemplateID);
+        testApplicationExampleToscaContents = instance.findByID(toscaTemplateID);
+        Assert.assertNotNull(testApplicationExampleToscaContents);
+    }
 
-        //assert correct type/impl
-        assertThat(ml, instanceOf(ToscaTemplateService.class));
+    /**
+     * Test of updateToscaTemplateByID method, of class ToscaTemplateService.
+     */
+    @Test
+    public void testUpdateToscaTemplateByID_String_MultipartFile() {
+        FileInputStream in = null;
+        try {
+            Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.INFO, "updateToscaTemplateByID");
+            if (toscaTemplateID == null) {
+                testSaveFile();
+            }
+            in = new FileInputStream(testUpdatedApplicationExampleToscaFilePath);
+            MultipartFile file = new MockMultipartFile("file", in);
+            String expResult = toscaTemplateID;
+            String result = instance.updateToscaTemplateByID(toscaTemplateID, file);
+            assertEquals(expResult, result);
+            String updatedTemplate = instance.findByID(result);
+            Assert.assertNotNull(updatedTemplate);
+            Assert.assertNotEquals(result, testApplicationExampleToscaContents);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                in.close();
+            } catch (IOException ex) {
+                fail(ex.getMessage());
+                Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 
-        //assert true
-        assertThat(true, is(true));
+    /**
+     * Test of updateToscaTemplateByID method, of class ToscaTemplateService.
+     */
+    @Test
+    public void testUpdateToscaTemplateByID_Exception_MultipartFile() {
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(testUpdatedApplicationExampleToscaFilePath);
+            MultipartFile file = new MockMultipartFile("file", in);
+            String result = instance.updateToscaTemplateByID("0", file);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | ApiException ex) {
+            if (!(ex instanceof NoSuchElementException)) {
+                fail(ex.getMessage());
+                Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            try {
+                in.close();
+            } catch (IOException ex) {
+                fail(ex.getMessage());
+                Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 
+    /**
+     * Test of findByID method, of class ToscaTemplateService.
+     */
+    @Test
+    public void testFindByID() {
+        try {
+            Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.INFO, "findByID");
+            if (toscaTemplateID == null) {
+                testSaveFile();
+            }
+            String result = instance.findByID(toscaTemplateID);
+            Assert.assertNotNull(result);
+            assertEquals(testApplicationExampleToscaContents, result);
+        } catch (JsonProcessingException ex) {
+            fail(ex.getMessage());
+            Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            fail(ex.getMessage());
+            Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Test of deleteByID method, of class ToscaTemplateService.
+     */
+    @Test
+    public void testDeleteByID() {
+        try {
+            Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.INFO, "deleteByID");
+            if (toscaTemplateID == null) {
+                testSaveFile();
+            }
+            instance.deleteByID(toscaTemplateID);
+            String id = instance.findByID(toscaTemplateID);
+        } catch (Exception ex) {
+            if (!(ex instanceof NoSuchElementException)) {
+                fail(ex.getMessage());
+                Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } finally {
+            try {
+                testSaveFile();
+            } catch (Exception ex) {
+                fail(ex.getMessage());
+                Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }

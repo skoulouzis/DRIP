@@ -54,19 +54,14 @@ public class ToscaTemplateService {
         byte[] bytes = file.getBytes();
         String ymlStr = new String(bytes, "UTF-8");
         ToscaTemplate tt = objectMapper.readValue(ymlStr, ToscaTemplate.class);
-        Example<ToscaTemplate> templateExample = Example.of(tt);
-        Optional<ToscaTemplate> result = dao.findOne(templateExample);
-        if (result.equals(tt)) {
-            throw new ApiException(409, "Tosca Template already exists");
-        }
         save(tt);
         return tt.getId();
     }
 
-    public String updateToscaTemplateByID(String id, MultipartFile file) throws IOException {
+    public String updateToscaTemplateByID(String id, MultipartFile file) throws IOException, ApiException {
         ToscaTemplate tt = dao.findById(id).get();
         if (tt == null) {
-            throw new NullPointerException();
+            throw new ApiException(404, "Tosca Template with id :" + id + " not found");
         }
         byte[] bytes = file.getBytes();
         String ymlStr = new String(bytes, "UTF-8");
@@ -75,14 +70,10 @@ public class ToscaTemplateService {
         return save(tt);
     }
 
-    public String updateToscaTemplateByID(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public String findByID(String id) throws JsonProcessingException {
         ToscaTemplate tt = dao.findById(id).get();
-
-        return objectMapper.writeValueAsString(tt);
+        String ymlStr = objectMapper.writeValueAsString(tt);
+        return ymlStr;
     }
 
     public void deleteByID(String id) {

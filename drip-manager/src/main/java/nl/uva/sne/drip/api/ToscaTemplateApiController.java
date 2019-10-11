@@ -68,7 +68,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
         if (accept != null && accept.contains("text/plain")) {
             try {
                 String ymlStr = toscaTemplateService.findByID(id);
-                return new ResponseEntity<>(objectMapper.readValue(ymlStr, String.class), HttpStatus.OK);
+                return new ResponseEntity<>(ymlStr, HttpStatus.OK);
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type ", e);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -79,32 +79,38 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
     }
 
     @Override
-    public ResponseEntity<String> updateToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id, @ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<String> updateToscaTemplateByID(@ApiParam(
+            value = "ID of topolog template to return", required = true)
+            @PathVariable("id") String id, @ApiParam(value = "file detail")
+            @Valid @RequestPart("file") MultipartFile file) {
         String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("")) {
+        if (accept != null && accept.contains("text/plain")) {
             try {
-                id = toscaTemplateService.updateToscaTemplateByID(id);
-                return new ResponseEntity<>(objectMapper.readValue(String.valueOf(id), String.class), HttpStatus.OK);
+                id = toscaTemplateService.updateToscaTemplateByID(id, file);
+                return new ResponseEntity<>(id, HttpStatus.OK);
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type ", e);
-                return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            } catch (ApiException ex) {
+                return ApiException.handleExceptions(ex);
             }
         }
 
-        return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @Override
     public ResponseEntity<String> uploadToscaTemplate(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("*/*")) {
             try {
                 String id = toscaTemplateService.saveFile(file);
-                return new ResponseEntity<>(String.valueOf(id), HttpStatus.OK);
+                return new ResponseEntity<>(id, HttpStatus.OK);
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (ApiException ex) {
-                return new ResponseEntity<String>(HttpStatus.CONFLICT);
+                return ApiException.handleExceptions(ex);
             }
         }
 
