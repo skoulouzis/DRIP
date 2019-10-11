@@ -16,44 +16,21 @@
 package nl.uva.sne.drip.configuration;
 
 import com.mongodb.MongoClient;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 /**
  *
  * @author S. Koulouzis
  */
 @Configuration
-@EnableMongoRepositories(basePackages = "nl.uva.sne.drip.api")
-@PropertySources({
-    @PropertySource(value = "classpath:application.properties", ignoreResourceNotFound = true)
-    ,
-    @PropertySource(value = "file:etc/application.properties", ignoreResourceNotFound = true)
-})
 @ComponentScan(basePackages = {"nl.uva.sne.drip", "nl.uva.sne.drip.api", "nl.uva.sne.drip.configuration", "nl.uva.sne.drip.dao", "nl.uva.sne.drip.model", "nl.uva.sne.drip.service"})
 public class MongoConfig extends AbstractMongoConfiguration {
 
-    @Value("${db.name}")
-    private String dbName;
-    @Value("${db.host}")
-    private String dbHost;
-    @Value("${db.username}")
-    private String dbUsername;
-    @Value("${db.password}")
-    private String dbPass;
-
-//    @Autowired
-//    private MongoDbFactory mongoFactory;
-//    @Autowired
-//    private MongoMappingContext mongoMappingContext;
     @Override
     protected String getDatabaseName() {
-        return dbName;
+        return "test-db";
     }
 
     @Override
@@ -63,6 +40,9 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
     @Override
     public MongoClient mongoClient() {
-        return new MongoClient(dbHost, 27017);
+
+        String bindIp = "localhost";
+        int port = 12345;
+        return new MongoClient(bindIp, port);
     }
 }
