@@ -7,20 +7,11 @@ package nl.uva.sne.drip.api;
 
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
-import javax.validation.constraints.*;
 import java.util.List;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-11T15:01:46.565Z")
 
 @Api(value = "provisioner", description = "the provisioner API")
 public interface ProvisionerApi {
@@ -40,6 +31,23 @@ public interface ProvisionerApi {
         produces = { "text/plain" }, 
         method = RequestMethod.GET)
     ResponseEntity<String> getProvisionToscaTemplateByID(@ApiParam(value = "ID of topolog template to plan",required=true) @PathVariable("id") String id);
+
+
+    @ApiOperation(value = "Get all topolog template IDs", nickname = "getProvisionedToscaTemplateIDs", notes = "Returns all IDss ", response = String.class, responseContainer = "List", authorizations = {
+        @Authorization(value = "drip_auth", scopes = {
+            @AuthorizationScope(scope = "read:ToscaTemplate", description = "read your topolog template"),
+            @AuthorizationScope(scope = "write:ToscaTemplate", description = "modify topolog template in your account")
+            })
+    }, tags={  })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "successful operation", response = String.class, responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Invalid ID supplied"),
+        @ApiResponse(code = 404, message = "ToscaTemplate not found"),
+        @ApiResponse(code = 405, message = "Invalid input") })
+    @RequestMapping(value = "/provisioner/ids",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<List<String>> getProvisionedToscaTemplateIDs();
 
 
     @ApiOperation(value = "provision tosca template", nickname = "provisionPlanToscaTemplateByID", notes = "provosions the operationId: Plan Tosca Template Returns the provision ID", response = String.class, authorizations = {

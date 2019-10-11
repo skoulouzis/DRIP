@@ -20,6 +20,7 @@ import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
 @Controller
@@ -37,7 +38,7 @@ public class CredentialApiController implements CredentialApi {
         this.request = request;
     }
 
-    public ResponseEntity<String> createCredentials(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody Credentials body) {
+    public ResponseEntity<String> createCredentials(@ApiParam(value = "Created user object", required = true) @Valid @RequestBody Credentials body) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
@@ -49,6 +50,11 @@ public class CredentialApiController implements CredentialApi {
         }
 
         return new ResponseEntity<String>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public ResponseEntity<List<String>> getCredentialIDs() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

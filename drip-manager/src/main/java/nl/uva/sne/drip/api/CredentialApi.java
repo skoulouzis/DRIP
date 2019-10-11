@@ -5,23 +5,16 @@
  */
 package nl.uva.sne.drip.api;
 
-import nl.uva.sne.drip.model.Credentials;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 import java.util.List;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
+import nl.uva.sne.drip.model.Credentials;
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-11T15:01:46.565Z")
 
 @Api(value = "credential", description = "the credential API")
 public interface CredentialApi {
@@ -42,5 +35,22 @@ public interface CredentialApi {
         consumes = { "application/json" },
         method = RequestMethod.POST)
     ResponseEntity<String> createCredentials(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody Credentials body);
+
+
+    @ApiOperation(value = "Get all credential IDs", nickname = "getCredentialIDs", notes = "Returns all IDss ", response = String.class, responseContainer = "List", authorizations = {
+        @Authorization(value = "drip_auth", scopes = {
+            @AuthorizationScope(scope = "read:ToscaTemplate", description = "read your topolog template"),
+            @AuthorizationScope(scope = "write:ToscaTemplate", description = "modify topolog template in your account")
+            })
+    }, tags={  })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "successful operation", response = String.class, responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Invalid ID supplied"),
+        @ApiResponse(code = 404, message = "ToscaTemplate not found"),
+        @ApiResponse(code = 405, message = "Invalid input") })
+    @RequestMapping(value = "/credential/ids",
+        produces = { "application/json" }, 
+        method = RequestMethod.GET)
+    ResponseEntity<List<String>> getCredentialIDs();
 
 }

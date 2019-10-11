@@ -173,6 +173,30 @@ paths:
       - drip_auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"    
+  /planner/ids:
+    get:
+      summary: "Get all topolog template IDs"
+      description: "Returns all IDss "
+      operationId: "getPlanToscaTemplateIDs"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: string
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ToscaTemplate not found"
+        405:
+          description: "Invalid input"          
+      security:
+      - drip_auth:
+        - "write:ToscaTemplate"
+        - "read:ToscaTemplate"          
   /planner/{id}:
     get:
       summary: "get the plan tosca template"
@@ -257,6 +281,30 @@ paths:
       - drip_auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"  
+  /provisioner/ids:
+    get:
+      summary: "Get all topolog template IDs"
+      description: "Returns all IDss "
+      operationId: "getProvisionedToscaTemplateIDs"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: string
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ToscaTemplate not found"
+        405:
+          description: "Invalid input"          
+      security:
+      - drip_auth:
+        - "write:ToscaTemplate"
+        - "read:ToscaTemplate"         
   /deployer/deploy/{id}:
     get:
       summary: "deploy the software tosca template"
@@ -313,6 +361,30 @@ paths:
       - drip_auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate" 
+  /deployer/ids:
+    get:
+      summary: "Get all topolog template IDs"
+      description: "Returns all IDss "
+      operationId: "getDeployedToscaTemplateIDs"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: string
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ToscaTemplate not found"
+        405:
+          description: "Invalid input"          
+      security:
+      - drip_auth:
+        - "write:ToscaTemplate"
+        - "read:ToscaTemplate"         
   /credential:
     post:
       summary: "Create credentials"
@@ -343,7 +415,31 @@ paths:
       security:
       - drip_auth:
         - "write:Credentials"
-        - "read:Credentials"        
+        - "read:Credentials"   
+  /credential/ids:
+    get:
+      summary: "Get all credential IDs"
+      description: "Returns all IDss "
+      operationId: "getCredentialIDs"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: string
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ToscaTemplate not found"
+        405:
+          description: "Invalid input"          
+      security:
+      - drip_auth:
+        - "write:ToscaTemplate"
+        - "read:ToscaTemplate"            
   /user:
     post:
       summary: "Create user"

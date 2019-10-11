@@ -1,6 +1,5 @@
 package nl.uva.sne.drip.api;
 
-import org.springframework.core.io.Resource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -9,20 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.*;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import nl.uva.sne.drip.dao.ToscaTemplateDAO;
-import nl.uva.sne.drip.model.ToscaTemplate;
 import nl.uva.sne.drip.service.ToscaTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -117,6 +109,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @Override
     public ResponseEntity<List<String>> getToscaTemplateIDs() {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
