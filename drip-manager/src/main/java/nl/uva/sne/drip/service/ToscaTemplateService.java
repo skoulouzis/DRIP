@@ -85,9 +85,15 @@ public class ToscaTemplateService {
     public List<String> getAllIds() {
         List<String> allIds = new ArrayList<>();
         List<ToscaTemplate> all = dao.findAll();
-        for(ToscaTemplate tt : all){
+        for (ToscaTemplate tt : all) {
             allIds.add(tt.getId());
         }
         return allIds;
     }
+
+    void deleteAll() {
+        dao.deleteAll();
+    }
+    
+    
 }

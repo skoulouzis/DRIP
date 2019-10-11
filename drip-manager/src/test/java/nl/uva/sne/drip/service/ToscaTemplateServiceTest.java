@@ -12,9 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -31,11 +28,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.Swagger2SpringBoot;
-import nl.uva.sne.drip.api.ApiException;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
@@ -212,5 +209,27 @@ public class ToscaTemplateServiceTest {
                 Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    /**
+     * Test of getAllIds method, of class ToscaTemplateService.
+     */
+    @Test
+    public void testGetAllIds() throws Exception {
+        Logger.getLogger(ToscaTemplateServiceTest.class.getName()).log(Level.INFO, "getAllIds");
+        testDeleteAll();
+        int numOfINst = 3;
+        for (int i = 1; i <= numOfINst; i++) {
+            testSaveFile();
+        }
+        List<String> result = instance.getAllIds();
+        assertEquals(numOfINst, result.size());
+    }
+
+    @Test
+    public void testDeleteAll() {
+        instance.deleteAll();
+        int size = instance.getAllIds().size();
+        assertEquals(0, size);
     }
 }
