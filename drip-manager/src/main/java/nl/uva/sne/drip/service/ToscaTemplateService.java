@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import nl.uva.sne.drip.api.ApiException;
@@ -78,5 +80,14 @@ public class ToscaTemplateService {
 
     public void deleteByID(String id) {
         dao.deleteById(id);
+    }
+
+    public List<String> getAllIds() {
+        List<String> allIds = new ArrayList<>();
+        List<ToscaTemplate> all = dao.findAll();
+        for(ToscaTemplate tt : all){
+            allIds.add(tt.getId());
+        }
+        return allIds;
     }
 }

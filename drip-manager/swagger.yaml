@@ -37,6 +37,30 @@ paths:
       - drip_auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"
+  /tosca_template/ids:
+    get:
+      summary: "Get all topolog template IDs"
+      description: "Returns all IDss "
+      operationId: "getToscaTemplateIDs"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: string
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ToscaTemplate not found"
+        405:
+          description: "Invalid input"          
+      security:
+      - drip_auth:
+        - "write:ToscaTemplate"
+        - "read:ToscaTemplate"        
   /tosca_template/{id}:
     get:
       summary: "Find topolog template by ID"

@@ -117,4 +117,14 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    public ResponseEntity<List<String>> getToscaTemplateIDs() {
+        String accept = request.getHeader("Accept");
+        if (accept != null && accept.contains("application/json")) {
+            List<String> ids = toscaTemplateService.getAllIds();
+            return new ResponseEntity<>(ids, HttpStatus.NOT_IMPLEMENTED);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
 }

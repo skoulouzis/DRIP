@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
+
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
 @Api(value = "tosca_template", description = "the tosca_template API")
@@ -28,66 +29,96 @@ public interface ToscaTemplateApi {
 
     @ApiOperation(value = "Deletes a tosca topolog template", nickname = "deleteToscaTemplateByID", notes = "", response = String.class, authorizations = {
         @Authorization(value = "drip_auth", scopes = {
-            @AuthorizationScope(scope = "read:ToscaTemplate", description = "read your topolog template"),
+            @AuthorizationScope(scope = "read:ToscaTemplate", description = "read your topolog template")
+            ,
             @AuthorizationScope(scope = "write:ToscaTemplate", description = "modify topolog template in your account")
-            })
-    }, tags={  })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation", response = String.class),
-        @ApiResponse(code = 400, message = "Invalid ID supplied"),
-        @ApiResponse(code = 404, message = "ToscaTemplate not found") })
+        })
+    }, tags = {})
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "successful operation", response = String.class)
+        ,
+        @ApiResponse(code = 400, message = "Invalid ID supplied")
+        ,
+        @ApiResponse(code = 404, message = "ToscaTemplate not found")})
     @RequestMapping(value = "/tosca_template/{id}",
-        method = RequestMethod.DELETE)
-    ResponseEntity<String> deleteToscaTemplateByID(@ApiParam(value = "ID of topolog template to return",required=true) @PathVariable("id") String id);
-
+            method = RequestMethod.DELETE)
+    ResponseEntity<String> deleteToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id);
 
     @ApiOperation(value = "Find topolog template by ID", nickname = "getToscaTemplateByID", notes = "Returns a single topolog template", response = String.class, authorizations = {
         @Authorization(value = "drip_auth", scopes = {
-            @AuthorizationScope(scope = "read:ToscaTemplate", description = "read your topolog template"),
+            @AuthorizationScope(scope = "read:ToscaTemplate", description = "read your topolog template")
+            ,
             @AuthorizationScope(scope = "write:ToscaTemplate", description = "modify topolog template in your account")
-            })
-    }, tags={  })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation", response = String.class),
-        @ApiResponse(code = 400, message = "Invalid ID supplied"),
-        @ApiResponse(code = 404, message = "ToscaTemplate not found"),
-        @ApiResponse(code = 405, message = "Invalid input") })
+        })
+    }, tags = {})
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "successful operation", response = String.class)
+        ,
+        @ApiResponse(code = 400, message = "Invalid ID supplied")
+        ,
+        @ApiResponse(code = 404, message = "ToscaTemplate not found")
+        ,
+        @ApiResponse(code = 405, message = "Invalid input")})
     @RequestMapping(value = "/tosca_template/{id}",
-        produces = { "text/plain" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return",required=true) @PathVariable("id") String id);
-
+            produces = {"text/plain"},
+            method = RequestMethod.GET)
+    ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id);
 
     @ApiOperation(value = "Updates exisintg topolog template", nickname = "updateToscaTemplateByID", notes = "", response = String.class, authorizations = {
         @Authorization(value = "drip_auth", scopes = {
-            @AuthorizationScope(scope = "read:ToscaTemplate", description = "read your topolog template"),
+            @AuthorizationScope(scope = "read:ToscaTemplate", description = "read your topolog template")
+            ,
             @AuthorizationScope(scope = "write:ToscaTemplate", description = "modify topolog template in your account")
-            })
-    }, tags={  })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation", response = String.class),
-        @ApiResponse(code = 400, message = "Invalid ID supplied"),
-        @ApiResponse(code = 404, message = "ToscaTemplate not found"),
-        @ApiResponse(code = 405, message = "Invalid input") })
+        })
+    }, tags = {})
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "successful operation", response = String.class)
+        ,
+        @ApiResponse(code = 400, message = "Invalid ID supplied")
+        ,
+        @ApiResponse(code = 404, message = "ToscaTemplate not found")
+        ,
+        @ApiResponse(code = 405, message = "Invalid input")})
     @RequestMapping(value = "/tosca_template/{id}",
-        produces = { "text/plain" }, 
-        consumes = { "multipart/form-data" },
-        method = RequestMethod.PUT)
-    ResponseEntity<String> updateToscaTemplateByID(@ApiParam(value = "ID of topolog template to return",required=true) @PathVariable("id") String id,@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file);
-
+            produces = {"text/plain"},
+            consumes = {"multipart/form-data"},
+            method = RequestMethod.PUT)
+    ResponseEntity<String> updateToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id, @ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file);
 
     @ApiOperation(value = "upload a tosca template description file", nickname = "uploadToscaTemplate", notes = "", response = String.class, authorizations = {
         @Authorization(value = "drip_auth", scopes = {
-            @AuthorizationScope(scope = "read:ToscaTemplate", description = "read your topolog template"),
+            @AuthorizationScope(scope = "read:ToscaTemplate", description = "read your topolog template")
+            ,
             @AuthorizationScope(scope = "write:ToscaTemplate", description = "modify topolog template in your account")
-            })
-    }, tags={  })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "successful operation", response = String.class),
-        @ApiResponse(code = 405, message = "Invalid input") })
+        })
+    }, tags = {})
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "successful operation", response = String.class)
+        ,
+        @ApiResponse(code = 405, message = "Invalid input")})
     @RequestMapping(value = "/tosca_template",
-        consumes = { "multipart/form-data" },
-        method = RequestMethod.POST)
+            consumes = {"multipart/form-data"},
+            method = RequestMethod.POST)
     ResponseEntity<String> uploadToscaTemplate(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file);
+
+    @ApiOperation(value = "Get all topolog template IDs", nickname = "getToscaTemplateIDs", notes = "Returns all IDss ", response = String.class, responseContainer = "List", authorizations = {
+        @Authorization(value = "drip_auth", scopes = {
+            @AuthorizationScope(scope = "read:ToscaTemplate", description = "read your topolog template")
+            ,
+            @AuthorizationScope(scope = "write:ToscaTemplate", description = "modify topolog template in your account")
+        })
+    }, tags = {})
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "successful operation", response = String.class, responseContainer = "List")
+        ,
+        @ApiResponse(code = 400, message = "Invalid ID supplied")
+        ,
+        @ApiResponse(code = 404, message = "ToscaTemplate not found")
+        ,
+        @ApiResponse(code = 405, message = "Invalid input")})
+    @RequestMapping(value = "/tosca_template/ids",
+            produces = {"application/json"},
+            method = RequestMethod.GET)
+    ResponseEntity<List<String>> getToscaTemplateIDs();
 
 }

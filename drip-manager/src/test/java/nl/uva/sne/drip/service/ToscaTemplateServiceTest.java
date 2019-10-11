@@ -148,12 +148,12 @@ public class ToscaTemplateServiceTest {
 
     /**
      * Test of updateToscaTemplateByID method, of class ToscaTemplateService.
+     *
+     * @throws java.io.FileNotFoundException
      */
     @Test
     public void testUpdateToscaTemplateByID_Exception_MultipartFile() throws FileNotFoundException, IOException {
-        FileInputStream in = null;
-
-        in = new FileInputStream(testUpdatedApplicationExampleToscaFilePath);
+        FileInputStream in = new FileInputStream(testUpdatedApplicationExampleToscaFilePath);
         MultipartFile file = new MockMultipartFile("file", in);
         try {
             String result = instance.updateToscaTemplateByID("0", file);
