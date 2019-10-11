@@ -42,13 +42,8 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
     public ResponseEntity<String> deleteToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("*/*")) {
-            try {
-                toscaTemplateService.deleteByID(id);
-                return new ResponseEntity<>(objectMapper.readValue("\"\"", String.class), HttpStatus.OK);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            toscaTemplateService.deleteByID(id);
+            return new ResponseEntity<>("", HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
