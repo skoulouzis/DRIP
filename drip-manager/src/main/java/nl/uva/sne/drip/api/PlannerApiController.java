@@ -9,12 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.List;
 import nl.uva.sne.drip.service.PlannerService;
-import nl.uva.sne.drip.service.ToscaTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
+
 
 @Controller
 public class PlannerApiController implements PlannerApi {
@@ -29,9 +26,6 @@ public class PlannerApiController implements PlannerApi {
     @Autowired
     private PlannerService plannerService;
     
-    
-    @Autowired
-    private ToscaTemplateService toscaTemplateService;
 
     @org.springframework.beans.factory.annotation.Autowired
     public PlannerApiController(ObjectMapper objectMapper, HttpServletRequest request) {
@@ -41,18 +35,16 @@ public class PlannerApiController implements PlannerApi {
 
     
 
-    public ResponseEntity<String> planToscaTemplateByID(@ApiParam(value = "ID of topolog template to plan",required=true) @PathVariable("id") String id) {
+    @Override
+    public ResponseEntity<String> planToscaTemplateByID(@ApiParam(
+            value = "ID of topolog template to plan",required=true) 
+    @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("")) {
-            try {
-                return new ResponseEntity<String>(objectMapper.readValue("", String.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type ", e);
-                return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        if (accept != null && accept.contains("text/plain")) {
+            String planedYemplateId = plannerService.plan(id);
+            return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
         }
-
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

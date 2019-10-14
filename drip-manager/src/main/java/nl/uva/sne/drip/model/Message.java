@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.drip.commons.data.internal;
+package nl.uva.sne.drip.model;
 
 import java.io.Serializable;
 import java.util.List;
@@ -31,6 +31,8 @@ public class Message implements Serializable {
     private Long creationDate;
 
     private List<MessageParameter> parameters;
+
+    private ToscaTemplate toscaTemplate;
 
     public Long getCreationDate() {
         return this.creationDate;
@@ -60,6 +62,20 @@ public class Message implements Serializable {
      */
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    /**
+     * @return the toscaTemplate
+     */
+    public ToscaTemplate getToscaTemplate() {
+        return toscaTemplate;
+    }
+
+    /**
+     * @param toscaTemplate the toscaTemplate to set
+     */
+    public void setToscaTemplate(ToscaTemplate toscaTemplate) {
+        this.toscaTemplate = toscaTemplate;
     }
 
 }

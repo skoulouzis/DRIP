@@ -19,6 +19,7 @@ import org.springframework.data.annotation.Id;
  */
 @Validated
 @JsonInclude(Include.NON_NULL)
+
 public class ToscaTemplate {
 
     @Id

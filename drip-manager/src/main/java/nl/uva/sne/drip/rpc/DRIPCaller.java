@@ -1,4 +1,4 @@
-package nl.uva.sne.drip.api.rpc;
+package nl.uva.sne.drip.rpc;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,9 +15,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.drip.commons.data.internal.Message;
-import nl.uva.sne.drip.commons.utils.Converter;
-import org.json.JSONException;
+import nl.uva.sne.drip.model.Message;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /*
  * Copyright 2017 S. Koulouzis, Wang Junchao, Huan Zhou, Yang Hu 
@@ -46,13 +46,12 @@ public abstract class DRIPCaller implements AutoCloseable {
     private final String requestQeueName;
     private final ObjectMapper mapper;
 
-    public DRIPCaller(String messageBrokerHost, String requestQeueName) throws IOException, TimeoutException {
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(messageBrokerHost);
-        factory.setPort(AMQP.PROTOCOL.PORT);
-        //factory.setUsername("guest");
-        //factory.setPassword("pass");
+    public DRIPCaller(String requestQeueName, ConnectionFactory factory) throws IOException, TimeoutException {
 
+//        factory.setHost(messageBrokerHost);
+//        factory.setPort(AMQP.PROTOCOL.PORT);
+//        factory.setUsername(username);
+//        factory.setPassword(password);
         connection = factory.newConnection();
         channel = connection.createChannel();
         // create a single callback queue per client not per requests. 
@@ -93,7 +92,7 @@ public abstract class DRIPCaller implements AutoCloseable {
         }
     }
 
-    public Message call(Message r) throws IOException, TimeoutException, InterruptedException, JSONException {
+    public Message call(Message r) throws IOException, TimeoutException, InterruptedException {
 
         String jsonInString = mapper.writeValueAsString(r);
 
@@ -117,18 +116,8 @@ public abstract class DRIPCaller implements AutoCloseable {
             }
         });
         String resp = response.take();
-        String clean = resp;
-        if (resp.contains("'null'")) {
-            clean = resp.replaceAll("'null'", "null").replaceAll("\'", "\"").replaceAll(" ", "");
-        }
-        if (clean.contains("\"value\":{\"")) {
-            return Converter.string2Message(clean);
-        }
-        if (clean.contains("\"null\"")) {
-            clean = clean.replaceAll("\"null\"", "null");
-        }
-        Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", clean);
+        Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", resp);
 
-        return mapper.readValue(clean, Message.class);
+        return mapper.readValue(resp, Message.class);
     }
 }

@@ -44,7 +44,6 @@ public class ToscaTemplateService {
     }
 
     public String saveFile(MultipartFile file) throws IOException, ApiException {
-
         String originalFileName = file.getOriginalFilename();
         String name = System.currentTimeMillis() + "_" + originalFileName;
         byte[] bytes = file.getBytes();
@@ -88,6 +87,9 @@ public class ToscaTemplateService {
     void deleteAll() {
         dao.deleteAll();
     }
-    
-    
+
+    public ToscaTemplate getYaml2ToscaTemplate(String ymlStr) throws IOException {
+        return objectMapper.readValue(ymlStr, ToscaTemplate.class);
+    }
+
 }

@@ -1,20 +1,35 @@
 package nl.uva.sne.drip;
 
 import nl.uva.sne.drip.dao.ToscaTemplateDAO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
+@PropertySources({
+    @PropertySource(value = "classpath:application.properties", ignoreResourceNotFound = true)
+})
 @EnableMongoRepositories(basePackageClasses = {ToscaTemplateDAO.class})
-@ComponentScan(basePackages = {"nl.uva.sne.drip", "nl.uva.sne.drip.api", "nl.uva.sne.drip.configuration", "nl.uva.sne.drip.dao", "nl.uva.sne.drip.model", "nl.uva.sne.drip.service"})
+@ComponentScan(basePackages = {"nl.uva.sne.drip", "nl.uva.sne.drip.api",
+    "nl.uva.sne.drip.configuration", "nl.uva.sne.drip.dao", "nl.uva.sne.drip.model",
+    "nl.uva.sne.drip.service"})
 public class Swagger2SpringBoot implements CommandLineRunner {
+
+    @Value("${message.broker.host}")
+    private String messageBrokerHost;
+    @Value("${message.broker.username}")
+    private String messageBrokerUsername;
+    @Value("${message.broker.password}")
+    private String messageBrokerPassword;
 
     @Override
     public void run(String... arg0) throws Exception {
@@ -28,6 +43,7 @@ public class Swagger2SpringBoot implements CommandLineRunner {
     }
 
     class ExitException extends RuntimeException implements ExitCodeGenerator {
+
         private static final long serialVersionUID = 1L;
 
         @Override

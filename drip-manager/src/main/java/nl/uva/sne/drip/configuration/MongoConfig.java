@@ -32,8 +32,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(basePackages = "nl.uva.sne.drip.api")
 @PropertySources({
     @PropertySource(value = "classpath:application.properties", ignoreResourceNotFound = true)
-    ,
-    @PropertySource(value = "file:etc/application.properties", ignoreResourceNotFound = true)
 })
 @ComponentScan(basePackages = {"nl.uva.sne.drip", "nl.uva.sne.drip.api", "nl.uva.sne.drip.configuration", "nl.uva.sne.drip.dao", "nl.uva.sne.drip.model", "nl.uva.sne.drip.service"})
 public class MongoConfig extends AbstractMongoConfiguration {
