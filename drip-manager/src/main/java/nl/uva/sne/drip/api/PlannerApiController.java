@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import nl.uva.sne.drip.service.PlannerService;
+import nl.uva.sne.drip.service.ToscaTemplateService;
+import org.springframework.beans.factory.annotation.Autowired;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
 @Controller
@@ -21,6 +24,14 @@ public class PlannerApiController implements PlannerApi {
     private final ObjectMapper objectMapper;
 
     private final HttpServletRequest request;
+    
+    
+    @Autowired
+    private PlannerService plannerService;
+    
+    
+    @Autowired
+    private ToscaTemplateService toscaTemplateService;
 
     @org.springframework.beans.factory.annotation.Autowired
     public PlannerApiController(ObjectMapper objectMapper, HttpServletRequest request) {
@@ -28,19 +39,7 @@ public class PlannerApiController implements PlannerApi {
         this.request = request;
     }
 
-    public ResponseEntity<String> getPlanToscaTemplateByID(@ApiParam(value = "ID of topolog template plan",required=true) @PathVariable("id") String id) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("")) {
-            try {
-                return new ResponseEntity<String>(objectMapper.readValue("", String.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type ", e);
-                return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        return new ResponseEntity<String>(HttpStatus.NOT_IMPLEMENTED);
-    }
+    
 
     public ResponseEntity<String> planToscaTemplateByID(@ApiParam(value = "ID of topolog template to plan",required=true) @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
@@ -53,12 +52,7 @@ public class PlannerApiController implements PlannerApi {
             }
         }
 
-        return new ResponseEntity<String>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    @Override
-    public ResponseEntity<List<String>> getPlanToscaTemplateIDs() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 }

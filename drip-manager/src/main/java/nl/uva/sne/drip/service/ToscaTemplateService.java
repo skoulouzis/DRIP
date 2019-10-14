@@ -7,24 +7,18 @@ package nl.uva.sne.drip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import nl.uva.sne.drip.api.ApiException;
 import nl.uva.sne.drip.dao.ToscaTemplateDAO;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import nl.uva.sne.drip.commons.utils.Converter;
-import org.springframework.data.domain.Example;
 
 /**
  *
