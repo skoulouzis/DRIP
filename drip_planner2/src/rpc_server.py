@@ -2,22 +2,17 @@
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
 
-import json
-import logging
 import os
 import os.path
-from builtins import print
-
-import yaml
-from planner.basic_planner import *
-from planner.planner import *
-import pika
-import sys
 import tempfile
 import time
-import logging
-import base64
-from utils import tosca as tosca_util
+
+import pika
+
+from src.planner.basic_planner import *
+from src.planner.planner import *
+from src.planner.spec_service import SpecService
+from src.utils import tosca as tosca_util
 
 logger = logging.getLogger(__name__)
 
@@ -114,14 +109,15 @@ def handle_delivery(message):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     if sys.argv[1] == "test_local":
-        tosca_file_path = "../../TOSCA/application_example.yaml"
-        # planner = BasicPlanner(tosca_file_path)
-        test_planner = Planner(tosca_file_path)
+        tosca_file_path = "../../TOSCA/application_example_updated.yaml"
+        conf = {'url': "http://host"}
+        spec_service = SpecService(conf)
+        test_planner = Planner(tosca_file_path, spec_service)
         test_planner_required_nodes = test_planner.resolve_requirements()
         test_planner_required_nodes = test_planner.set_infrastructure_specifications(test_planner_required_nodes)
         test_planner.add_required_nodes_to_template(test_planner_required_nodes)
-        template = tosca_util.get_tosca_template_as_yml(test_planner.template)
-        logger.info("template ----: \n" + template)
+        template = tosca_util.get_tosca_template_2_topology_template(test_planner.tosca_template)
+        # logger.info("template ----: \n" + template)
     else:
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         channel = init_chanel(sys.argv)

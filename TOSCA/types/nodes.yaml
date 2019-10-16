@@ -51,6 +51,18 @@ node_types:
       host:
         type: tosca.capabilities.ARTICONF.Orchestrator
         occurrences: [1, 1]  
+    properties:
+        masters_num:
+            type: integer
+            required: true
+            constraints:
+            - greater_or_equal: 1
+        workers_num:
+            type: integer
+            required: true
+            constraints:
+            - greater_or_equal: 1    
+        
     
     
   tosca.nodes.ARTICONF.Orchestrator.Kubernetes:

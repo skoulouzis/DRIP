@@ -9,49 +9,33 @@ imports:
 
 topology_template:
   node_templates:
-    beverly_topology:
-      interfaces:
-        Standard:
-          create: dumy.yaml
-      properties:
-        domain: UvA (Amsterdam, The Netherlands) XO Rack
-        name: name
-        provider: ExoGeni
+    wordpress:
+      type: tosca.nodes.ARTICONF.Container.Application.Docker
       requirements:
-      - vm:
-          capability: tosca.capabilities.ARTICONF.VM
-          node: nancy_compute
-          relationship: tosca.relationships.DependsOn
-      - vm:
-          capability: tosca.capabilities.ARTICONF.VM
-          node: charles_compute
-          relationship: tosca.relationships.DependsOn
-      type: tosca.nodes.ARTICONF.VM.topology
-    charles_compute:
-      interfaces:
-        Standard:
-          create: dumy.yaml
+        - service:
+            node: mysql
+            relationship:
+                #type: tosca.relationships.ConnectsTo
+                type: tosca.relationships.DependsOn
+      artifacts:
+        image:
+          file: wordpress:latest
+          type: tosca.artifacts.Deployment.Image.Container.Docker
+          repository: docker_hub
       properties:
-        cpu_frequency: 2.9 GHz
-        disk_size: 25000 MB
-        host_name: vm
-        mem_size: 3000 MB
-        num_cpus: 1
-      type: tosca.nodes.ARTICONF.VM.Compute
-    heidi_kubernetes:
-      interfaces:
-        Standard:
-          create: interfaces/playbooks/kubernetes_install.yaml
+        ports: 
+          - "8000:80"
+        environment:
+          WORDPRESS_DB_HOST: mysql:3306
+          WORDPRESS_DB_USER: wordpress
+          WORDPRESS_DB_PASSWORD: wordpress
+          WORDPRESS_DB_NAME: wordpress
       requirements:
       - host:
-          capability: tosca.capabilities.Scalable
-          node: beverly_topology
-          relationship: tosca.relationships.HostedOn
-      - host:
-          capability: tosca.capabilities.Compute
-          node: beverly_topology
-          relationship: tosca.relationships.HostedOn
-      type: tosca.nodes.ARTICONF.Orchestrator.Kubernetes
+          capability: tosca.capabilities.ARTICONF.Orchestrator
+          node: heidi_kubernetes
+          relationship: tosca.relationships.HostedOn          
+          
     mysql:
       artifacts:
         image:
@@ -71,7 +55,38 @@ topology_template:
           capability: tosca.capabilities.ARTICONF.Orchestrator
           node: heidi_kubernetes
           relationship: tosca.relationships.HostedOn
-      type: tosca.nodes.ARTICONF.Container.Application.Docker
+      type: tosca.nodes.ARTICONF.Container.Application.Docker        
+      
+    heidi_kubernetes:
+      interfaces:
+        Standard:
+          create: interfaces/playbooks/kubernetes_install.yaml
+      requirements:
+      - host:
+          capability: tosca.capabilities.Scalable
+          node: beverly_topology
+          relationship: tosca.relationships.HostedOn
+      - host:
+          capability: tosca.capabilities.Compute
+          node: beverly_topology
+          relationship: tosca.relationships.HostedOn
+      type: tosca.nodes.ARTICONF.Orchestrator.Kubernetes      
+      
+    beverly_topology:
+      interfaces:
+        Standard:
+          create: dumy.yaml
+      properties:
+        domain: UvA (Amsterdam, The Netherlands) XO Rack
+        name: name
+        provider: ExoGeni
+      requirements:
+      - vm:
+          capability: tosca.capabilities.ARTICONF.VM
+          node: nancy_compute
+          relationship: tosca.relationships.DependsOn
+      type: tosca.nodes.ARTICONF.VM.topology
+      
     nancy_compute:
       interfaces:
         Standard:

@@ -2,22 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="slolved cap error">
-      <change afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/model/Message.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/model/MessageParameter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/rpc/DRIPCaller.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/rpc/PlannerCaller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-api/src/main/java/nl/uva/sne/drip/api/rpc/DRIPCaller.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-api/src/main/java/nl/uva/sne/drip/api/rpc/DRIPCaller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/drip/commons/data/internal/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/drip/commons/data/internal/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/Swagger2SpringBoot.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/Swagger2SpringBoot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/api/PlannerApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/api/PlannerApiController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/configuration/MongoConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/configuration/MongoConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/service/CredentialService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/service/CredentialService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/service/PlannerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/service/PlannerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/service/ToscaTemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/service/ToscaTemplateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/planner/specification_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_output.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_output.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/planner/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/planner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/rpc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rpc_server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/tosca.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/tosca.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +98,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/rpc_server.py" />
-      <option name="PARAMETERS" value="localhost planner_queue" />
+      <option name="PARAMETERS" value="test_local" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -221,9 +216,9 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/rpc_server.py</url>
-          <line>95</line>
-          <option name="timeStamp" value="11" />
+          <url>file://$PROJECT_DIR$/src/utils/tosca.py</url>
+          <line>32</line>
+          <option name="timeStamp" value="51" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

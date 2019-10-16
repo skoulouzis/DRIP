@@ -1,56 +1,42 @@
 import logging
 from toscaparser.nodetemplate import NodeTemplate
 from toscaparser.tosca_template import ToscaTemplate
-import networkx as nx
-import operator
-from planner.spec_service import *
-from utils.tosca import *
+from toscaparser.topology_template import TopologyTemplate
 
-from utils import tosca as tosca_util
+import operator
+
+from src.planner.simple_spec_alayzer import SimpleAnalyzer
+from src.planner.spec_service import *
+from src.utils.tosca import *
+from src.planner.specification_analyzer import *
+from src.utils import tosca as tosca_util
+import matplotlib.pyplot as plt
 
 
 class Planner:
 
-    def __init__(self, path):
-        self.template = ToscaTemplate(path)
-        self.tosca_node_types = self.template.nodetemplates[0].type_definition.TOSCA_DEF
-        self.all_custom_def = self.template.nodetemplates[0].custom_def
-        self.all_nodes = {}
-        self.all_nodes.update(self.tosca_node_types.items())
-        self.all_nodes.update(self.all_custom_def.items())
+    def __init__(self, path, spec_service):
+        self.tosca_template = ToscaTemplate(path)
+        self.tosca_node_types = self.tosca_template.nodetemplates[0].type_definition.TOSCA_DEF
+        self.all_custom_def = self.tosca_template.nodetemplates[0].custom_def
+        self.all_node_types = {}
+        self.all_node_types.update(self.tosca_node_types.items())
+        self.all_node_types.update(self.all_custom_def.items())
         self.required_nodes = []
-        props = {'kb_url': "https://host"}
-        self.spec_service = SpecService(props)
 
-        # graph = self.build_graph(template.nodetemplates)
+        self.spec_service = spec_service
 
     def add_required_nodes_to_template(self, required_nodes):
         for req_node in required_nodes:
             node_template = tosca_util.node_type_2_node_template(req_node)
-            self.template.nodetemplates.append(node_template)
-        return self.template
+            self.tosca_template.nodetemplates.append(node_template)
+        return self.tosca_template
 
     def set_infrastructure_specifications(self, required_nodes):
         # Start bottom up and (node without requirements leaf) and find the root of the graph.
         # Get root performance, version requirements and set specs to required node
-
-        # required_nodes = self.set_vm_specifications(required_nodes)
-        # required_nodes = self.set_topology_specifications(required_nodes)
-
-        return required_nodes
-
-    def set_vm_specifications(self, required_nodes):
-        for node in required_nodes:
-            node_type_name = tosca_util.get_node_type_name(node)
-            if node_type_name == 'tosca.nodes.ARTICONF.VM.Compute':
-                node_template_props = {'properties': {}}
-                node_properties = tosca_util.get_node_properties(node)
-                for node_type_prop_key in node_properties:
-                    node_template_prop = self.get_node_template_property(node_type_prop_key,
-                                                                         node_properties[node_type_prop_key])
-                    node_template_props['properties'][node_type_prop_key] = node_template_prop
-                node = tosca_util.set_node_properties(node, node_template_props)
-                logging.info('node: ' + node_type_name + ' properties: ' + str(node_template_props))
+        specification_analyzer = SimpleAnalyzer(required_nodes, self.tosca_template)
+        required_nodes = specification_analyzer.set_node_specifications()
         return required_nodes
 
     def get_node_template_property(self, prop_key, node_prop_dict):
@@ -71,7 +57,8 @@ class Planner:
     # Resolve requirements. Go over all nodes and recursively resolve requirements till node has no requirements
     # e.g. docker -> k8s -> cluster -> vm
     def resolve_requirements(self):
-        for node in self.template.nodetemplates:
+        for node in self.tosca_template.nodetemplates:
+            logging.info('Resolving requirements for: ' + node.name)
             self.add_required_nodes(node)
         return self.required_nodes
 
@@ -85,42 +72,22 @@ class Planner:
 
         # Only add node that is not in node_templates
         matching_node_type_name = next(iter(matching_node))
-        # capable_node_template = self.node_type_2_node_template(matching_node)
+        matching_node_type_name = next(iter(matching_node))
+        matching_node_template = tosca_util.node_type_2_node_template(matching_node)
+        node = self.add_missing_requirements(node, missing_requirements, matching_node_template.name)
         if not tosca_util.contains_node_type(self.required_nodes, matching_node_type_name):
-            matching_node_type_name = next(iter(matching_node))
-            node = self.add_missing_requirements(node, missing_requirements, matching_node_type_name)
-            logging.info('Adding: ' + str(matching_node_type_name))
+            logging.info('  Adding: ' + str(matching_node_template.name))
             self.required_nodes.append(matching_node)
         # Find matching nodes for the new node's requirements
         self.add_required_nodes(matching_node)
 
-    def build_graph(self, nodetemplates):
-        graph = nx.Graph()
-        for node in nodetemplates:
-            graph.add_node(node.name)
-            for req in node.requirements:
-                req_name = next(iter(req))
-                trg_node_name = req[req_name]['node']
-                for key in req[req_name]:
-                    if key != 'node':
-                        dict_req = req[req_name][key]
-                        if isinstance(dict_req, dict):
-                            graph.add_edge(node.name, trg_node_name, key=key, attr_dict=dict_req)
-                        elif isinstance(dict_req, str):
-                            graph.add_edge(node.name, trg_node_name, key=key, attr_dict={'type': dict_req})
-        print("Nodes: " + str(graph.nodes()))
-        print("Edges: " + str(graph.edges()))
-        print("Edges: " + str(graph.edges(data=True)))
-
-        return graph
-
     def get_missing_requirements(self, node):
         node_type_name = tosca_util.get_node_type_name(node)
         node_requirements = tosca_util.get_node_requirements(node)
-        parent_type_requirements = tosca_util.get_parent_type_requirements(node, self.all_nodes)
+        parent_type_requirements = tosca_util.get_parent_type_requirements(node, self.all_node_types)
 
         logging.debug('Looking for requirements for node: ' + node_type_name)
-        def_type = self.all_nodes[node_type_name]
+        def_type = self.all_node_types[node_type_name]
         def_requirements = []
 
         if 'requirements' in def_type.keys():
@@ -153,14 +120,14 @@ class Planner:
 
     def get_node_types_by_capability(self, cap):
         candidate_nodes = {}
-        for tosca_node_type in self.all_nodes:
-            if tosca_node_type.startswith('tosca.nodes') and 'capabilities' in self.all_nodes[tosca_node_type]:
+        for tosca_node_type in self.all_node_types:
+            if tosca_node_type.startswith('tosca.nodes') and 'capabilities' in self.all_node_types[tosca_node_type]:
                 logging.debug('      Node: ' + str(tosca_node_type))
-                for caps in self.all_nodes[tosca_node_type]['capabilities']:
+                for caps in self.all_node_types[tosca_node_type]['capabilities']:
                     logging.debug('          ' + str(
-                        self.all_nodes[tosca_node_type]['capabilities'][caps]['type']) + ' == ' + cap)
-                    if self.all_nodes[tosca_node_type]['capabilities'][caps]['type'] == cap:
-                        candidate_nodes[tosca_node_type] = self.all_nodes[tosca_node_type]
+                        self.all_node_types[tosca_node_type]['capabilities'][caps]['type']) + ' == ' + cap)
+                    if self.all_node_types[tosca_node_type]['capabilities'][caps]['type'] == cap:
+                        candidate_nodes[tosca_node_type] = self.all_node_types[tosca_node_type]
                         logging.debug('          candidate_node: ' + str(tosca_node_type))
 
         candidate_child_nodes = {}
@@ -182,7 +149,7 @@ class Planner:
         for req in missing_requirements:
             for key in req:
                 capability = req[key]['capability']
-                logging.info('Looking for nodes with capability: ' + capability)
+                logging.info('  Looking for nodes with capability: ' + capability)
                 # Find all nodes in the definitions that have the capability: capability
                 capable_nodes = self.get_node_types_by_capability(capability)
                 if capable_nodes:
@@ -197,7 +164,7 @@ class Planner:
                             matching_requirement_count += 1
 
                         number_of_matching_requirement[node_type] = matching_requirement_count
-                        logging.info('  Found: ' + str(node_type))
+                        logging.info('      Found: ' + str(node_type))
                     matching_nodes.update(capable_nodes)
                 else:
                     logging.error('Did not find node with required capability: ' + str(req[key]['capability']))
@@ -214,10 +181,10 @@ class Planner:
 
     def get_child_nodes(self, parent_node_type_name):
         child_nodes = {}
-        for tosca_node_type in self.all_nodes:
-            if tosca_node_type.startswith('tosca.nodes') and 'derived_from' in self.all_nodes[tosca_node_type]:
-                if parent_node_type_name == self.all_nodes[tosca_node_type]['derived_from']:
-                    child_nodes[tosca_node_type] = self.all_nodes[tosca_node_type]
+        for tosca_node_type in self.all_node_types:
+            if tosca_node_type.startswith('tosca.nodes') and 'derived_from' in self.all_node_types[tosca_node_type]:
+                if parent_node_type_name == self.all_node_types[tosca_node_type]['derived_from']:
+                    child_nodes[tosca_node_type] = self.all_node_types[tosca_node_type]
         return child_nodes
 
     def add_missing_requirements(self, node, missing_requirements, capable_node_name):

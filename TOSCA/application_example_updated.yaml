@@ -20,7 +20,7 @@ topology_template:
         - service:
             node: mysql
             relationship:
-                #type: tosca.relationships.ConnectsTo
+                type: tosca.relationships.ConnectsTo
                 type: tosca.relationships.DependsOn
       artifacts:
         image:
@@ -75,6 +75,15 @@ topology_template:
     - scalability:
         type: tosca.policies.ARTICONF.Performance
         targets: [ wordpress ]
+        properties:
+            constraint_name: cpu_load
+            max_value: 90
+    - faultTolerance:
+        type: tosca.policies.ARTICONF.FaultTolerance
+        targets: [ mysql ]     
+        properties:
+            level: 1
+              
             
         
         

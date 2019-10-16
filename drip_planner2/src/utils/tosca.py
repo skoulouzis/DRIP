@@ -1,6 +1,8 @@
 from toscaparser.nodetemplate import NodeTemplate
 
 from utils.TOSCA_parser import TOSCAParser
+import yaml
+import logging
 
 node_type_key_names_to_remove = ['capabilities', 'derived_from']
 
@@ -28,7 +30,7 @@ def get_parent_type(node):
     if isinstance(node, NodeTemplate):
         parent_type = node.parent_type
     elif isinstance(node, dict):
-        parent_type = node[node_type_name]['derived_from']
+        parent_type = node[next(iter(node))]['derived_from']
     return parent_type
 
 
@@ -77,10 +79,20 @@ def node_type_2_node_template(node_type):
     return NodeTemplate(name, nodetemplate_dict, node_type)
 
 
-def get_tosca_template_as_yml(template):
+def get_tosca_template_2_topology_template(template):
     tp = TOSCAParser()
     yaml_str = tp.tosca_template2_yaml(template)
-    return yaml_str
+    tosca_template_dict = yaml.load(yaml_str, Loader=yaml.FullLoader)
+    tosca_template = tosca_template_dict['tosca_template']
+    tosca_template_dict.pop('tosca_template')
+    tosca_template_dict['topology_template'] = tosca_template
+
+    if template.policies and 'policies' not in tosca_template_dict['topology_template']:
+        policies_list = []
+        for policy in template.policies:
+            policies_list.append(policy.entity_tpl)
+        tosca_template_dict['topology_template']['policies'] = policies_list
+    return yaml.dump(tosca_template_dict)
 
 
 def contains_node_type(node_types_list, node_type_name):
@@ -97,11 +109,18 @@ def contains_node_type(node_types_list, node_type_name):
 
 
 def get_node_properties(node):
-    node_type_name =  get_node_type_name(node)
+    node_type_name = get_node_type_name(node)
     return node[node_type_name]['properties']
 
 
-def set_node_properties(node,properties):
+def set_node_properties(node, properties):
     node_type_name = get_node_type_name(node)
     node[node_type_name]['properties'] = properties
     return node
+
+
+def get_all_ancestors_types(child_node):
+    logging.info('child_node: ' + str(child_node.type))
+    parent_type = get_parent_type(child_node)
+    # logging.info('child_node.parent_type: ' + str(parent_type))
+    return None
