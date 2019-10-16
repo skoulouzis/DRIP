@@ -18,3 +18,12 @@ policy_types:
         type: integer
         required: false
         description: the maximum acceptable value
+
+  tosca.policies.ARTICONF.FaultTolerance:
+    derived_from: tosca.policies.Root
+    description: the level of acceptable faults
+    properties:
+      level:
+        type: integer
+        required: false
+        description: the minimum acceptable value
