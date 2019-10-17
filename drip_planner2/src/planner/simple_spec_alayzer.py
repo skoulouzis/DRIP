@@ -10,37 +10,37 @@ class SimpleAnalyzer(SpecificationAnalyzer):
         super(SimpleAnalyzer, self).__init__(tosca_template, required_nodes)
 
     def set_node_specifications(self):
-        nodes_to_implement_policy = self.get_nodes_to_implement_policy()
+        nodes_to_implement_policies = self.get_nodes_to_implement_policy()
 
-        for node_name in nodes_to_implement_policy:
-            policy = nodes_to_implement_policy[node_name]
-            affected_node = self.set_specs(node_name, policy, self.nodes_in_template)
+        for node_name in nodes_to_implement_policies:
+            policies = nodes_to_implement_policies[node_name]
+            affected_node = self.set_specs(node_name, policies, self.nodes_in_template)
 
         return self.required_nodes
 
     def get_nodes_to_implement_policy(self):
-        nodes_to_implement_policy = {}
+        nodes_to_implement_policies = {}
 
         for policy in self.tosca_template.policies:
             for target in policy.targets:
                 for leaf in self.leaf_nodes:
                     logging.info('From: ' + target + '  to: ' + str(leaf))
                     for affected_node_name in (nx.shortest_path(self.g, source=target, target=leaf)):
-                        if affected_node_name not in nodes_to_implement_policy:
+                        if affected_node_name not in nodes_to_implement_policies:
                             policy_list = []
-                            nodes_to_implement_policy[affected_node_name] = policy_list
-                        policy_list = nodes_to_implement_policy[affected_node_name]
-                        policy_list.append(policy)
-                        nodes_to_implement_policy[affected_node_name] = policy_list
-        return nodes_to_implement_policy
+                            nodes_to_implement_policies[affected_node_name] = policy_list
+                        policy_list = nodes_to_implement_policies[affected_node_name]
+                        policy_list.append(policy.type)
+                        nodes_to_implement_policies[affected_node_name] = policy_list
+        return nodes_to_implement_policies
 
-    def set_node_properties_for_policy(self, affected_node, policy):
-        logging.info('Seeting properties for: ' + str(affected_node.type))
+    def set_node_properties_for_policy(self, affected_node, policies):
+        logging.info('Setting properties for: ' + str(affected_node.type))
 
-        ancestors_types = tosca_util.get_all_ancestors_types(affected_node)
-
-        if affected_node.type == 'tosca.nodes.ARTICONF.Orchestrator':
-            if policy.type == 'tosca.policies.ARTICONF.Performance.CPU':
+        ancestors_types = tosca_util.get_all_ancestors_types(affected_node, self.all_node_types)
+        if 'tosca.nodes.ARTICONF.Orchestrator' in ancestors_types:
+            logging.info('Do Something')
+            if 'tosca.policies.ARTICONF.Performance.CPU' in policies:
                 logging.info('Do placement')
         return affected_node
 

@@ -75,6 +75,10 @@ class Planner:
         matching_node_type_name = next(iter(matching_node))
         matching_node_type_name = next(iter(matching_node))
         matching_node_template = tosca_util.node_type_2_node_template(matching_node)
+        # For some reason the definitions of swarm are missing. We add them manually here
+        if len(matching_node_template.custom_def) < len(self.all_custom_def):
+            matching_node_template.custom_def.update(self.all_custom_def)
+
         node = self.add_missing_requirements(node, missing_requirements, matching_node_template.name)
         if not tosca_util.contains_node_type(self.required_nodes, matching_node_type_name):
             logging.info('  Adding: ' + str(matching_node_template.name))

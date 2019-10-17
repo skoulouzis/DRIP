@@ -49,8 +49,8 @@ class SpecificationAnalyzer(metaclass=ABCMeta):
                     relationship_type = req[req_name]['relationship']
                 graph.add_edge(node.name, req_node_name, relationship=relationship_type)
 
-        # nx.draw(graph, with_labels=True)
-        # plt.savefig("/tmp/graph.png")
+        nx.draw(graph, with_labels=True)
+        plt.savefig("/tmp/graph.png")
         # plt.show()
         return graph
 

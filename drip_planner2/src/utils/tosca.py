@@ -1,3 +1,6 @@
+from itertools import chain
+
+from toscaparser.elements.nodetype import NodeType
 from toscaparser.nodetemplate import NodeTemplate
 
 from utils.TOSCA_parser import TOSCAParser
@@ -9,7 +12,13 @@ node_type_key_names_to_remove = ['capabilities', 'derived_from']
 
 def get_node_type_name(node):
     if isinstance(node, NodeTemplate):
-        node_type = node.type
+        if node.type:
+            if node.type and isinstance(node.type, str):
+                node_type = node.type
+            elif isinstance(node.type, NodeTemplate):
+                node_type = node.type.type
+        else:
+            node_type = None
     elif isinstance(node, dict):
         node_type = next(iter(node))
     return node_type
@@ -28,7 +37,10 @@ def get_node_requirements(node):
 
 def get_parent_type(node):
     if isinstance(node, NodeTemplate):
-        parent_type = node.parent_type
+        if node.parent_type:
+            parent_type = node.parent_type.type
+        else:
+            parent_type = None
     elif isinstance(node, dict):
         parent_type = node[next(iter(node))]['derived_from']
     return parent_type
@@ -63,20 +75,20 @@ def get_node_types_with_interface(nodes):
 
 
 def node_type_2_node_template(node_type):
-    nodetemplate_dict = {}
+    node_template_dict = {}
     type_name = next(iter(node_type))
     node_type_array = type_name.split(".")
     name = node_type_array[len(node_type_array) - 1].lower()
-    nodetemplate_dict[name] = node_type[next(iter(node_type))].copy()
-    nodetemplate_dict[name]['type'] = type_name
+    node_template_dict[name] = node_type[next(iter(node_type))].copy()
+    node_template_dict[name]['type'] = type_name
 
     for name_to_remove in node_type_key_names_to_remove:
-        if name_to_remove in nodetemplate_dict[name]:
-            nodetemplate_dict[name].pop(name_to_remove)
+        if name_to_remove in node_template_dict[name]:
+            node_template_dict[name].pop(name_to_remove)
 
     if 'type' in node_type[next(iter(node_type))]:
         node_type[next(iter(node_type))].pop('type')
-    return NodeTemplate(name, nodetemplate_dict, node_type)
+    return NodeTemplate(name, node_template_dict, node_type)
 
 
 def get_tosca_template_2_topology_template(template):
@@ -119,8 +131,16 @@ def set_node_properties(node, properties):
     return node
 
 
-def get_all_ancestors_types(child_node):
-    logging.info('child_node: ' + str(child_node.type))
+def get_node_by_type(node_type, all_nodes):
+    return all_nodes[node_type]
+
+
+def get_all_ancestors_types(child_node, all_nodes, ancestors_types=None):
+    if not ancestors_types:
+        ancestors_types = [get_node_type_name(child_node)]
     parent_type = get_parent_type(child_node)
-    logging.info('child_node.parent_type: ' + str(parent_type))
-    return None
+    if parent_type:
+        ancestors_types.append(parent_type)
+        parent_type = node_type_2_node_template({'name': all_nodes[parent_type]})
+        get_all_ancestors_types(parent_type, all_nodes, ancestors_types)
+    return ancestors_types

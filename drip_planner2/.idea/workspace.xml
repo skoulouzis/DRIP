@@ -6,7 +6,6 @@
       <change beforePath="$PROJECT_DIR$/src/planner/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/planner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/planner/specification_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/specification_analyzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/setup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/tosca.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/tosca.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/setuptools-40.8.0-py3.6.egg" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/setuptools-40.8.0-py3.6.egg" afterDir="false" />
     </list>
@@ -190,7 +189,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571247029429</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="added libs in setup">
+      <created>1571320780678</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1571320780678</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -216,7 +222,8 @@
     <MESSAGE value="split methods to util and set node properties to default" />
     <MESSAGE value="slolved cap error" />
     <MESSAGE value="try to analyze policies" />
-    <option name="LAST_COMMIT_MESSAGE" value="try to analyze policies" />
+    <MESSAGE value="added libs in setup" />
+    <option name="LAST_COMMIT_MESSAGE" value="added libs in setup" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -227,14 +234,14 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/utils/tosca.py</url>
-          <line>123</line>
-          <option name="timeStamp" value="84" />
+          <url>file://$PROJECT_DIR$/src/planner/simple_spec_alayzer.py</url>
+          <line>39</line>
+          <option name="timeStamp" value="125" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/planner/specification_analyzer.py</url>
-          <line>51</line>
-          <option name="timeStamp" value="88" />
+          <url>file://$PROJECT_DIR$/src/utils/tosca.py</url>
+          <line>18</line>
+          <option name="timeStamp" value="128" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
