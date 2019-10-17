@@ -3,6 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/planner/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/planner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/planner/specification_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/specification_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/tosca.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/tosca.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/setuptools-40.8.0-py3.6.egg" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/setuptools-40.8.0-py3.6.egg" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -177,7 +183,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571246443192</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="try to analyze policies">
+      <created>1571247029429</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1571247029429</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -215,8 +228,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/utils/tosca.py</url>
-          <line>32</line>
-          <option name="timeStamp" value="51" />
+          <line>123</line>
+          <option name="timeStamp" value="84" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/planner/specification_analyzer.py</url>
+          <line>51</line>
+          <option name="timeStamp" value="88" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

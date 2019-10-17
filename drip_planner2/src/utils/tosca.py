@@ -122,5 +122,5 @@ def set_node_properties(node, properties):
 def get_all_ancestors_types(child_node):
     logging.info('child_node: ' + str(child_node.type))
     parent_type = get_parent_type(child_node)
-    # logging.info('child_node.parent_type: ' + str(parent_type))
+    logging.info('child_node.parent_type: ' + str(parent_type))
     return None

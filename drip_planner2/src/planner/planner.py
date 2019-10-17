@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 class Planner:
 
     def __init__(self, path, spec_service):
+        self.path = path
         self.tosca_template = ToscaTemplate(path)
         self.tosca_node_types = self.tosca_template.nodetemplates[0].type_definition.TOSCA_DEF
         self.all_custom_def = self.tosca_template.nodetemplates[0].custom_def
@@ -35,7 +36,7 @@ class Planner:
     def set_infrastructure_specifications(self, required_nodes):
         # Start bottom up and (node without requirements leaf) and find the root of the graph.
         # Get root performance, version requirements and set specs to required node
-        specification_analyzer = SimpleAnalyzer(required_nodes, self.tosca_template)
+        specification_analyzer = SimpleAnalyzer(self.tosca_template, required_nodes)
         required_nodes = specification_analyzer.set_node_specifications()
         return required_nodes
 
