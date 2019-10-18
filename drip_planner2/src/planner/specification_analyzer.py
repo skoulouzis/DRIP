@@ -21,7 +21,7 @@ class SpecificationAnalyzer(metaclass=ABCMeta):
         self.required_nodes = required_nodes
         self.nodes_in_template = []
         for req_node in required_nodes:
-            node_template = tosca_util.node_type_2_node_template(req_node)
+            node_template = tosca_util.node_type_2_node_template(req_node,self.all_custom_def)
             self.nodes_in_template.append(node_template)
 
         self.nodes_in_template += self.tosca_template.nodetemplates

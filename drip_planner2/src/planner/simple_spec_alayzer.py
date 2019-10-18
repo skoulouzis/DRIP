@@ -37,14 +37,19 @@ class SimpleAnalyzer(SpecificationAnalyzer):
     def set_node_properties_for_policy(self, affected_node, policies):
         logging.info('Setting properties for: ' + str(affected_node.type))
 
-        ancestors_types = tosca_util.get_all_ancestors_types(affected_node, self.all_node_types)
+        ancestors_types = tosca_util.get_all_ancestors_types(affected_node, self.all_node_types, self.all_custom_def)
         if 'tosca.nodes.ARTICONF.Orchestrator' in ancestors_types:
             logging.info('Do Something')
-            if 'tosca.policies.ARTICONF.Performance.CPU' in policies:
-                logging.info('Do placement')
+            properties = tosca_util.get_all_ancestors_properties(affected_node, self.all_node_types,
+                                                                 self.all_custom_def)
+            for node_property in properties:
+                property_dict = {}
+                logging.info('property: ' + str(node_property.name) + ' val: ' + str(node_property.value))
+
         return affected_node
 
     def set_specs(self, node_name, policies, nodes_in_template):
+        logging.info('node_name: ' + str(node_name) + ' will implement policies: ' + str(len(policies)))
         for node in nodes_in_template:
             if node.name == node_name:
                 affected_node = node

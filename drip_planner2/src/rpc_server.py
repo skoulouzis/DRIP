@@ -117,7 +117,7 @@ if __name__ == "__main__":
         test_planner_required_nodes = test_planner.set_infrastructure_specifications(test_planner_required_nodes)
         test_planner.add_required_nodes_to_template(test_planner_required_nodes)
         template = tosca_util.get_tosca_template_2_topology_template(test_planner.tosca_template)
-        # logger.info("template ----: \n" + template)
+        logger.info("template ----: \n" + template)
     else:
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         channel = init_chanel(sys.argv)

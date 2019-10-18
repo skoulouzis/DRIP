@@ -29,7 +29,7 @@ class Planner:
 
     def add_required_nodes_to_template(self, required_nodes):
         for req_node in required_nodes:
-            node_template = tosca_util.node_type_2_node_template(req_node)
+            node_template = tosca_util.node_type_2_node_template(req_node, self.all_custom_def)
             self.tosca_template.nodetemplates.append(node_template)
         return self.tosca_template
 
@@ -55,75 +55,67 @@ class Planner:
                         return constraint[next(iter(constraint))]
             return None
 
-    # Resolve requirements. Go over all nodes and recursively resolve requirements till node has no requirements
-    # e.g. docker -> k8s -> cluster -> vm
     def resolve_requirements(self):
+        """ Resolve requirements. Go over all nodes and recursively resolve requirements till node has no
+        requirements  e.g. docker -> k8s -> cluster -> vm """
         for node in self.tosca_template.nodetemplates:
             logging.info('Resolving requirements for: ' + node.name)
             self.add_required_nodes(node)
         return self.required_nodes
 
     def add_required_nodes(self, node):
-        node_type = tosca_util.get_node_type_name(node)
-        missing_requirements = self.get_missing_requirements(node)
-        if not missing_requirements:
-            logging.debug('Node: ' + node_type + ' has no requirements')
+        """Adds the required nodes in self.required_nodes for an input node."""
+
+        # Get all requirements for node.
+        all_requirements = self.get_all_requirements(node)
+        if not all_requirements:
+            logging.debug('Node: ' + tosca_util.get_node_type_name(node) + ' has no requirements')
             return
-        matching_node = self.find_best_node(missing_requirements)
+        matching_node = self.find_best_node_for_requirements(all_requirements)
 
         # Only add node that is not in node_templates
         matching_node_type_name = next(iter(matching_node))
         matching_node_type_name = next(iter(matching_node))
-        matching_node_template = tosca_util.node_type_2_node_template(matching_node)
-        # For some reason the definitions of swarm are missing. We add them manually here
-        if len(matching_node_template.custom_def) < len(self.all_custom_def):
-            matching_node_template.custom_def.update(self.all_custom_def)
+        matching_node_template = tosca_util.node_type_2_node_template(matching_node, self.all_custom_def)
 
-        node = self.add_missing_requirements(node, missing_requirements, matching_node_template.name)
+        # Add the requirements to the node we analyzed. e.g. docker needed host now we added the type and name of host
+        node = self.add_requirements(node, all_requirements, matching_node_template.name)
         if not tosca_util.contains_node_type(self.required_nodes, matching_node_type_name):
             logging.info('  Adding: ' + str(matching_node_template.name))
             self.required_nodes.append(matching_node)
         # Find matching nodes for the new node's requirements
         self.add_required_nodes(matching_node)
 
-    def get_missing_requirements(self, node):
+    def get_all_requirements(self, node):
+        """Returns  all requirements for an input node """
+
         node_type_name = tosca_util.get_node_type_name(node)
-        node_requirements = tosca_util.get_node_requirements(node)
-        parent_type_requirements = tosca_util.get_parent_type_requirements(node, self.all_node_types)
-
-        logging.debug('Looking for requirements for node: ' + node_type_name)
+        logging.info('      Looking for requirements for node: ' + node_type_name)
+        # Get the requirements for this node from its definition e.g. docker: hostedOn k8s
         def_type = self.all_node_types[node_type_name]
-        def_requirements = []
-
+        all_requirements = []
         if 'requirements' in def_type.keys():
-            def_requirements = def_type['requirements']
-            logging.debug('Found requirements: ' + str(def_requirements) + ' for node: ' + node_type_name)
+            all_requirements = def_type['requirements']
+            logging.info('      Found requirements: ' + str(all_requirements) + ' for node: ' + node_type_name)
 
-        missing_requirements = []
+        # Get the requirements for this node from the template. e.g. wordpress: connectsTo mysql
+        # node_requirements =  tosca_util.get_node_requirements(node)
+        # if node_requirements:
+        #     all_requirements += node_requirements
 
-        if not node_requirements:
-            missing_requirements = def_requirements
-        elif def_requirements:
-            for def_requirement in def_requirements:
-                for key in def_requirement:
-                    for node_req in node_requirements:
-                        if key not in node_req:
-                            req_name = next(iter(def_requirement))
-                            def_requirement[req_name]['node'] = None
-                            missing_requirements.append(def_requirement)
-
-        # Make sure we have the definition. Otherwise we get an error in the recursion
-        # if 'derived_from' in def_type.keys() and not def_type['derived_from'] in custom_def.keys():
-        #     node.custom_def[def_type['derived_from']] = custom_def['derived_from']
+        # Put them all together
+        parent_requirements = tosca_util.get_ancestors_requirements(node, self.all_node_types, self.all_custom_def)
         parent_type = tosca_util.get_node_type_name(node)
-        if parent_type and parent_type_requirements:
-            logging.debug(
-                ' Adding to : ' + str(node_type_name) + '  parent requirements from: ' + str(parent_type))
-            missing_requirements = missing_requirements + parent_type_requirements
-            logging.debug('  missing_requirements: ' + str(missing_requirements))
-        return missing_requirements
+        if parent_type and parent_requirements:
+            logging.info(
+                '       Adding to : ' + str(node_type_name) + '  parent requirements from: ' + str(parent_type))
+            missing_requirements = all_requirements + parent_requirements
+            logging.debug('      all_requirements: ' + str(all_requirements))
+        return all_requirements
 
     def get_node_types_by_capability(self, cap):
+        """Returns  all nodes that have the  capability: cap and have interfaces. This way we  distinguish between
+        'abstract' and 'concrete' """
         candidate_nodes = {}
         for tosca_node_type in self.all_node_types:
             if tosca_node_type.startswith('tosca.nodes') and 'capabilities' in self.all_node_types[tosca_node_type]:
@@ -147,13 +139,15 @@ class Planner:
             capable_nodes[type_name] = candidate_nodes[type_name]
         return capable_nodes
 
-    def find_best_node(self, missing_requirements):
+    def find_best_node_for_requirements(self, all_requirements):
+        """Returns  the 'best' node for a set of requirements. Here we count the number of requiremets that the node
+        can cover and return the one which covers the most """
         matching_nodes = {}
         number_of_matching_requirement = {}
         # Loop requirements to find nodes per requirement
-        for req in missing_requirements:
-            for key in req:
-                capability = req[key]['capability']
+        for req in all_requirements:
+            if 'capability' in  req[next(iter(req))]:
+                capability = req[next(iter(req))]['capability']
                 logging.info('  Looking for nodes with capability: ' + capability)
                 # Find all nodes in the definitions that have the capability: capability
                 capable_nodes = self.get_node_types_by_capability(capability)
@@ -192,7 +186,8 @@ class Planner:
                     child_nodes[tosca_node_type] = self.all_node_types[tosca_node_type]
         return child_nodes
 
-    def add_missing_requirements(self, node, missing_requirements, capable_node_name):
+    def add_requirements(self, node, missing_requirements, capable_node_name):
+        """Add the requirements to the node """
         for req in missing_requirements:
             req[next(iter(req))]['node'] = capable_node_name
             if isinstance(node, NodeTemplate):

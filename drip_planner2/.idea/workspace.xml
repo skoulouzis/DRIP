@@ -2,12 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/planner/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/planner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/planner/specification_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/specification_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/rpc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rpc_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/tosca.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/tosca.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/setuptools-40.8.0-py3.6.egg" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/setuptools-40.8.0-py3.6.egg" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -196,7 +198,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571320780678</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="fixed invalid type">
+      <created>1571326903674</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1571326903675</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -223,7 +232,8 @@
     <MESSAGE value="slolved cap error" />
     <MESSAGE value="try to analyze policies" />
     <MESSAGE value="added libs in setup" />
-    <option name="LAST_COMMIT_MESSAGE" value="added libs in setup" />
+    <MESSAGE value="fixed invalid type" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed invalid type" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -234,14 +244,14 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/planner/simple_spec_alayzer.py</url>
-          <line>39</line>
-          <option name="timeStamp" value="125" />
+          <url>file://$PROJECT_DIR$/src/utils/tosca.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="128" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/utils/tosca.py</url>
-          <line>18</line>
-          <option name="timeStamp" value="128" />
+          <url>file://$PROJECT_DIR$/src/planner/planner.py</url>
+          <line>69</line>
+          <option name="timeStamp" value="211" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
