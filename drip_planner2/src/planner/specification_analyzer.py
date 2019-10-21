@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 class SpecificationAnalyzer(metaclass=ABCMeta):
 
-    def __init__(self, tosca_template, required_nodes):
+    def __init__(self, tosca_template):
         self.tosca_template = tosca_template
         self.tosca_node_types = self.tosca_template.nodetemplates[0].type_definition.TOSCA_DEF
         self.all_custom_def = self.tosca_template.nodetemplates[0].custom_def
@@ -18,14 +18,7 @@ class SpecificationAnalyzer(metaclass=ABCMeta):
         self.all_node_types.update(self.all_custom_def.items())
         self.required_nodes = []
 
-        self.required_nodes = required_nodes
-        self.nodes_in_template = []
-        for req_node in required_nodes:
-            node_template = tosca_util.node_type_2_node_template(req_node,self.all_custom_def)
-            self.nodes_in_template.append(node_template)
-
-        self.nodes_in_template += self.tosca_template.nodetemplates
-        self.g = self.build_graph(self.nodes_in_template)
+        self.g = self.build_graph(self.tosca_template.nodetemplates)
 
         self.root_nodes = []
         self.leaf_nodes = []
@@ -56,4 +49,8 @@ class SpecificationAnalyzer(metaclass=ABCMeta):
 
     @abstractmethod
     def set_node_specifications(self):
+        raise NotImplementedError('Must implement upload in subclasses')
+
+    @abstractmethod
+    def set_relationship_occurrences(self):
         raise NotImplementedError('Must implement upload in subclasses')

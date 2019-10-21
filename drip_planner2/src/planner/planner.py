@@ -33,12 +33,17 @@ class Planner:
             self.tosca_template.nodetemplates.append(node_template)
         return self.tosca_template
 
-    def set_infrastructure_specifications(self, required_nodes):
+    def set_infrastructure_specifications(self):
         # Start bottom up and (node without requirements leaf) and find the root of the graph.
         # Get root performance, version requirements and set specs to required node
-        specification_analyzer = SimpleAnalyzer(self.tosca_template, required_nodes)
-        required_nodes = specification_analyzer.set_node_specifications()
-        return required_nodes
+        specification_analyzer = SimpleAnalyzer(self.tosca_template)
+        nodes_with_new_specifications = specification_analyzer.set_node_specifications()
+        for new_spec_node in nodes_with_new_specifications:
+            logging.info('new_spec_node.name : ' + new_spec_node.name)
+            for index, node_in_temple in enumerate(self.tosca_template.nodetemplates):
+                if new_spec_node.name == node_in_temple.name:
+                    self.tosca_template.nodetemplates[index] = new_spec_node
+        nodes_with_new_relationship_occurrences = specification_analyzer.set_relationship_occurrences()
 
     def get_node_template_property(self, prop_key, node_prop_dict):
         prop_value = self.spec_service.get_property(prop_key)
@@ -75,7 +80,6 @@ class Planner:
 
         # Only add node that is not in node_templates
         matching_node_type_name = next(iter(matching_node))
-        matching_node_type_name = next(iter(matching_node))
         matching_node_template = tosca_util.node_type_2_node_template(matching_node, self.all_custom_def)
 
         # Add the requirements to the node we analyzed. e.g. docker needed host now we added the type and name of host
@@ -87,7 +91,7 @@ class Planner:
         self.add_required_nodes(matching_node)
 
     def get_all_requirements(self, node):
-        """Returns  all requirements for an input node """
+        """Returns  all requirements for an input node including all parents requirements"""
 
         node_type_name = tosca_util.get_node_type_name(node)
         logging.info('      Looking for requirements for node: ' + node_type_name)
@@ -166,8 +170,8 @@ class Planner:
                         logging.info('      Found: ' + str(node_type))
                     matching_nodes.update(capable_nodes)
                 else:
-                    logging.error('Did not find node with required capability: ' + str(req[key]['capability']))
-                    return None
+                    logging.error('Did not find any node with required capability: ' + str(capability))
+                    raise Exception('Did not find any node with required capability: ' + str(capability))
         # if we only found 1 return it
         if len(matching_nodes) == 1:
             return matching_nodes

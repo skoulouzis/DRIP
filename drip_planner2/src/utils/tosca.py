@@ -166,7 +166,7 @@ def get_all_ancestors_types(child_node, all_nodes, all_custom_def, ancestors_typ
     if parent_type:
         ancestors_types.append(parent_type)
         parent_type = node_type_2_node_template({'name': all_nodes[parent_type]}, all_custom_def)
-        get_all_ancestors_types(parent_type, all_nodes, all_custom_def,ancestors_types)
+        get_all_ancestors_types(parent_type, all_nodes, all_custom_def, ancestors_types)
     return ancestors_types
 
 
@@ -174,16 +174,19 @@ def get_all_ancestors_properties(node, all_nodes, all_custom_def, ancestors_prop
     if not ancestors_properties:
         ancestors_properties = []
         ancestors_properties_names = []
+        node_prop_names = []
         if node.get_properties_objects():
-            ancestors_properties.extend(node.get_properties_objects())
+            for node_prop in node.get_properties_objects():
+                node_prop_names.append(node_prop.name)
+                ancestors_properties.append(node_prop)
     if not ancestors_types:
-        ancestors_types = get_all_ancestors_types(node, all_nodes,all_custom_def)
+        ancestors_types = get_all_ancestors_types(node, all_nodes, all_custom_def)
 
     for ancestors_type in ancestors_types:
         ancestor = node_type_2_node_template({'name': all_nodes[ancestors_type]}, all_custom_def)
         if ancestor.get_properties_objects():
             for ancestor_prop in ancestor.get_properties_objects():
-                if ancestor_prop.name not in ancestors_properties_names:
+                if ancestor_prop.name not in ancestors_properties_names and ancestor_prop.name not in node_prop_names:
                     ancestors_properties_names.append(ancestor_prop.name)
                     ancestors_properties.append(ancestor_prop)
 
