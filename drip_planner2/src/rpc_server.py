@@ -9,10 +9,10 @@ import time
 
 import pika
 
-from src.planner.basic_planner import *
-from src.planner.planner import *
-from src.planner.spec_service import SpecService
-from src.utils import tosca as tosca_util
+from planner.basic_planner import *
+from planner.planner import *
+from planner.spec_service import SpecService
+from utils import tosca as tosca_util
 
 logger = logging.getLogger(__name__)
 
