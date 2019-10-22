@@ -36,10 +36,13 @@ class SpecificationAnalyzer(metaclass=ABCMeta):
             for req in node.requirements:
                 req_name = next(iter(req))
                 req_node_name = req[req_name]['node']
-                if 'type' in req[req_name]['relationship']:
+                if 'relationship' in req[req_name] and 'type' in req[req_name]['relationship']:
                     relationship_type = req[req_name]['relationship']['type']
                 else:
-                    relationship_type = req[req_name]['relationship']
+                    if 'relationship' not in req[req_name]:
+                        relationship_type = 'tosca.relationships.DependsOn'
+                    else:
+                        relationship_type = req[req_name]['relationship']
                 graph.add_edge(node.name, req_node_name, relationship=relationship_type)
 
         nx.draw(graph, with_labels=True)

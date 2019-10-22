@@ -61,7 +61,6 @@ class Planner:
                 self.tosca_template.nodetemplates.append(new_spec_occurrences)
         return self.tosca_template
 
-
     def get_node_template_property(self, prop_key, node_prop_dict):
         prop_value = self.spec_service.get_property(prop_key)
         if prop_value:
@@ -81,13 +80,15 @@ class Planner:
         """ Resolve requirements. Go over all nodes and recursively resolve requirements till node has no
         requirements  e.g. docker -> k8s -> cluster -> vm """
         for node in self.tosca_template.nodetemplates:
-            logging.info('Resolving requirements for: ' + node.name)
             self.add_required_nodes(node)
         return self.add_required_nodes_to_template(self.required_nodes)
 
     def add_required_nodes(self, node):
         """Adds the required nodes in self.required_nodes for an input node."""
-
+        if isinstance(node, NodeTemplate):
+            logging.info('Resolving requirements for: ' + node.name)
+        elif isinstance(node, dict):
+            logging.info('Resolving requirements for: ' + str(next(iter(node))))
         # Get all requirements for node.
         all_requirements = self.get_all_requirements(node)
         if not all_requirements:
@@ -130,7 +131,16 @@ class Planner:
         if parent_type and parent_requirements:
             logging.info(
                 '       Adding to : ' + str(node_type_name) + '  parent requirements from: ' + str(parent_type))
-            missing_requirements = all_requirements + parent_requirements
+            if not all_requirements:
+                all_requirements += parent_requirements
+            else:
+                for all_requirement in all_requirements:
+                    for parent_requirement in parent_requirements:
+                        all_requirement_key =  next(iter(all_requirement))
+                        parent_requirement_key = next(iter(parent_requirement))
+                        if all_requirement_key != parent_requirement_key and all_requirement[all_requirement_key]['capability'] != parent_requirement[parent_requirement_key]['capability']:
+                            all_requirements.append(parent_requirement)
+
             logging.debug('      all_requirements: ' + str(all_requirements))
         return all_requirements
 
@@ -167,7 +177,7 @@ class Planner:
         number_of_matching_requirement = {}
         # Loop requirements to find nodes per requirement
         for req in all_requirements:
-            if 'capability' in  req[next(iter(req))]:
+            if 'capability' in req[next(iter(req))]:
                 capability = req[next(iter(req))]['capability']
                 logging.info('  Looking for nodes with capability: ' + capability)
                 # Find all nodes in the definitions that have the capability: capability
@@ -221,6 +231,8 @@ class Planner:
                     node.requirements.append(req)
             elif isinstance(node, dict):
                 type_name = next(iter(node))
+                if 'requirements' not in node[type_name]:
+                    node[type_name]['requirements'] = []
                 node_requirements = node[type_name]['requirements']
                 contains_requirement = False
                 for node_requirement in node_requirements:

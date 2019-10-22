@@ -9,6 +9,7 @@ from utils.TOSCA_parser import TOSCAParser
 import yaml
 import logging
 
+
 node_type_key_names_to_remove = ['capabilities', 'derived_from']
 
 
@@ -76,7 +77,7 @@ def get_ancestors_requirements(node, all_nodes, all_custom_def, parent_requireme
     elif isinstance(node, dict):
         node_type_name = get_node_type_name(node)
         node_template = node_type_2_node_template({'name': all_nodes[node_type_name]}, all_custom_def)
-        get_ancestors_requirements(node_template, all_nodes, all_custom_def, parent_requirements)
+        return get_ancestors_requirements(node_template, all_nodes, all_custom_def, parent_requirements)
     return parent_requirements
 
 
@@ -117,7 +118,7 @@ def node_type_2_node_template(node_type, all_custom_def):
     return node_template
 
 
-def get_tosca_template_2_topology_template(template):
+def get_tosca_template_2_topology_template_dictionary(template):
     tp = TOSCAParser()
     yaml_str = tp.tosca_template2_yaml(template)
     tosca_template_dict = yaml.load(yaml_str, Loader=yaml.FullLoader)
@@ -128,9 +129,10 @@ def get_tosca_template_2_topology_template(template):
     if template.policies and 'policies' not in tosca_template_dict['topology_template']:
         policies_list = []
         for policy in template.policies:
-            policies_list.append(policy.entity_tpl)
+            policy_dict = {policy.name: policy.entity_tpl}
+            policies_list.append(policy_dict)
         tosca_template_dict['topology_template']['policies'] = policies_list
-    return yaml.dump(tosca_template_dict)
+    return tosca_template_dict
 
 
 def contains_node_type(node_types_list, node_type_name):

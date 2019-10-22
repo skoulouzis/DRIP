@@ -2,11 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_output.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_output.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/planner/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/planner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/planner/specification_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/specification_analyzer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/rpc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rpc_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/tosca.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/tosca.py" afterDir="false" />
     </list>
@@ -218,7 +220,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571677538860</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="set min number of VMs based on the swarm default workers and masters">
+      <created>1571748060598</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1571748060598</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -248,7 +257,8 @@
     <MESSAGE value="fixed invalid type" />
     <MESSAGE value="added comments" />
     <MESSAGE value="set default properties" />
-    <option name="LAST_COMMIT_MESSAGE" value="set default properties" />
+    <MESSAGE value="set min number of VMs based on the swarm default workers and masters" />
+    <option name="LAST_COMMIT_MESSAGE" value="set min number of VMs based on the swarm default workers and masters" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -260,18 +270,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/utils/tosca.py</url>
-          <line>21</line>
+          <line>22</line>
           <option name="timeStamp" value="128" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/rpc_server.py</url>
-          <line>117</line>
-          <option name="timeStamp" value="255" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/utils/TOSCA_parser.py</url>
-          <line>67</line>
-          <option name="timeStamp" value="256" />
+          <line>134</line>
+          <option name="timeStamp" value="295" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

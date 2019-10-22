@@ -22,9 +22,9 @@ class SimpleAnalyzer(SpecificationAnalyzer):
                                                           self.tosca_template.nodetemplates, self.all_node_types,
                                                           self.all_custom_def)
 
-        min_num_of_vm = orchestrator_nodes[0].get_property_value('masters_num')
-        min_num_of_vm += orchestrator_nodes[0].get_property_value('workers_num')
-
+        masters_num = orchestrator_nodes[0].get_property_value('masters_num')
+        workers_num = orchestrator_nodes[0].get_property_value('workers_num')
+        min_num_of_vm = masters_num + workers_num
         topology_nodes = tosca_util.get_nodes_by_type('tosca.nodes.ARTICONF.VM.topology',
                                                       self.tosca_template.nodetemplates, self.all_node_types,
                                                       self.all_custom_def)
@@ -37,25 +37,45 @@ class SimpleAnalyzer(SpecificationAnalyzer):
         vm_nodes = tosca_util.get_nodes_by_type('tosca.nodes.ARTICONF.VM.Compute',
                                                 self.tosca_template.nodetemplates, self.all_node_types,
                                                 self.all_custom_def)
+        if vm_nodes:
+            for i in range(len(vm_nodes), masters_num):
+                old_vm_name = vm_nodes[0].name
+                new_vm = copy.deepcopy(vm_nodes[0])
+                new_vm_name = new_vm.name + '_' + str(i)
+                new_vm.name = new_vm_name
+                templates = new_vm.templates.pop(old_vm_name)
+                new_vm.templates[new_vm_name] = templates
 
-        for i in range(len(vm_nodes), min_num_of_vm):
-            old_vm_name = vm_nodes[0].name
-            new_vm = copy.deepcopy(vm_nodes[0])
-            new_vm_name = new_vm.name + '_' + str(i)
-            new_vm.name = new_vm_name
-            templates = new_vm.templates.pop(old_vm_name)
-            new_vm.templates[new_vm_name] = templates
+                return_nodes.append(new_vm)
+                for requirement in topology_nodes[0].requirements:
+                    requirement_key = next(iter(requirement))
+                    requirement_value = requirement[requirement_key]
+                    if requirement_value['capability'] == 'tosca.capabilities.ARTICONF.VM':
+                        new_requirement = copy.deepcopy(requirement)
+                        new_requirement[requirement_key]['node'] = new_vm.name
+                        topology_nodes[0].requirements.append(new_requirement)
+                        return_nodes.append(topology_nodes[0])
+                        break
 
-            return_nodes.append(new_vm)
-            for requirement in topology_nodes[0].requirements:
-                requirement_key = next(iter(requirement))
-                requirement_value = requirement[requirement_key]
-                if requirement_value['capability'] == 'tosca.capabilities.ARTICONF.VM':
-                    new_requirement = copy.deepcopy(requirement)
-                    new_requirement[requirement_key]['node'] = new_vm.name
-                    topology_nodes[0].requirements.append(new_requirement)
-                    return_nodes.append(topology_nodes[0])
-                    break
+            for i in range(len(vm_nodes), workers_num + 1):
+                old_vm_name = vm_nodes[0].name
+                new_vm = copy.deepcopy(vm_nodes[0])
+                new_vm_name = new_vm.name + '_' + str(i)
+                new_vm.name = new_vm_name
+                templates = new_vm.templates.pop(old_vm_name)
+                new_vm.templates[new_vm_name] = templates
+                new_vm.templates[next(iter(new_vm.templates))]['properties']['role'] = "worker"
+
+                return_nodes.append(new_vm)
+                for requirement in topology_nodes[0].requirements:
+                    requirement_key = next(iter(requirement))
+                    requirement_value = requirement[requirement_key]
+                    if requirement_value['capability'] == 'tosca.capabilities.ARTICONF.VM':
+                        new_requirement = copy.deepcopy(requirement)
+                        new_requirement[requirement_key]['node'] = new_vm.name
+                        topology_nodes[0].requirements.append(new_requirement)
+                        return_nodes.append(topology_nodes[0])
+                        break
 
         return return_nodes
 
@@ -76,7 +96,6 @@ class SimpleAnalyzer(SpecificationAnalyzer):
         for policy in self.tosca_template.policies:
             for target in policy.targets:
                 for leaf in self.leaf_nodes:
-                    logging.info('From: ' + target + '  to: ' + str(leaf))
                     for affected_node_name in (nx.shortest_path(self.g, source=target, target=leaf)):
                         if affected_node_name not in nodes_to_implement_policies:
                             policy_list = []
@@ -105,16 +124,15 @@ class SimpleAnalyzer(SpecificationAnalyzer):
             for default_property in default_properties:
                 affected_node.get_properties_objects().append(default_property)
 
-            if 'properties' not in affected_node.templates[next(iter(affected_node.templates))]:
-                affected_node.templates[next(iter(affected_node.templates))]['properties'] = default_properties
-            else:
-                for prop_name in affected_node.templates[next(iter(affected_node.templates))]['properties']:
-                    if 'required' in affected_node.templates[next(iter(affected_node.templates))]['properties'][
-                        prop_name] and 'type' in \
-                            affected_node.templates[next(iter(affected_node.templates))]['properties'][prop_name]:
-                        # del affected_node.templates[next(iter(affected_node.templates))]['properties'][prop_name]
-                        affected_node.templates[next(iter(affected_node.templates))]['properties'][prop_name] = None
-                affected_node.templates[next(iter(affected_node.templates))]['properties'].update(default_properties)
+            for prop_name in affected_node.templates[next(iter(affected_node.templates))]['properties']:
+                if 'required' not in affected_node.templates[next(iter(affected_node.templates))]['properties'][
+                    prop_name] and 'type' not in \
+                        affected_node.templates[next(iter(affected_node.templates))]['properties'][prop_name]:
+                    default_properties[prop_name] = \
+                    affected_node.templates[next(iter(affected_node.templates))]['properties'][(prop_name)]
+
+            affected_node.templates[next(iter(affected_node.templates))]['properties'] = default_properties
+
             return affected_node
         else:
             return None
@@ -134,6 +152,7 @@ class SimpleAnalyzer(SpecificationAnalyzer):
     def get_defult_value(self, node_property):
         if isinstance(node_property.value,
                       dict) and 'required' in node_property.value and 'type' in node_property.value:
+            logging.info('node property: ' + str(node_property.value))
             if node_property.value['required']:
                 default_prop = {}
                 if 'default' in node_property.value:
@@ -151,7 +170,6 @@ class SimpleAnalyzer(SpecificationAnalyzer):
                                 else:
                                     default_prop = str(constraint[constraint_key])
                 name = node_property.name
-                node_property = None
                 node_property = {name: default_prop}
                 return node_property
         return None
