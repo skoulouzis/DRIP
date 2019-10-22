@@ -38,12 +38,29 @@ class Planner:
         # Get root performance, version requirements and set specs to required node
         specification_analyzer = SimpleAnalyzer(self.tosca_template)
         nodes_with_new_specifications = specification_analyzer.set_node_specifications()
+
         for new_spec_node in nodes_with_new_specifications:
-            logging.info('new_spec_node.name : ' + new_spec_node.name)
             for index, node_in_temple in enumerate(self.tosca_template.nodetemplates):
                 if new_spec_node.name == node_in_temple.name:
                     self.tosca_template.nodetemplates[index] = new_spec_node
+                    break
+
+        specification_analyzer = SimpleAnalyzer(self.tosca_template)
         nodes_with_new_relationship_occurrences = specification_analyzer.set_relationship_occurrences()
+
+        added_node_names = []
+        for new_spec_occurrences in nodes_with_new_relationship_occurrences:
+            for index, node_in_temple in enumerate(self.tosca_template.nodetemplates):
+                if new_spec_occurrences.name == node_in_temple.name:
+                    added_node_names.append(new_spec_occurrences.name)
+                    self.tosca_template.nodetemplates[index] = new_spec_occurrences
+                    break
+
+        for new_spec_occurrences in nodes_with_new_relationship_occurrences:
+            if new_spec_occurrences.name not in added_node_names:
+                self.tosca_template.nodetemplates.append(new_spec_occurrences)
+        return self.tosca_template
+
 
     def get_node_template_property(self, prop_key, node_prop_dict):
         prop_value = self.spec_service.get_property(prop_key)
@@ -66,7 +83,7 @@ class Planner:
         for node in self.tosca_template.nodetemplates:
             logging.info('Resolving requirements for: ' + node.name)
             self.add_required_nodes(node)
-        return self.required_nodes
+        return self.add_required_nodes_to_template(self.required_nodes)
 
     def add_required_nodes(self, node):
         """Adds the required nodes in self.required_nodes for an input node."""

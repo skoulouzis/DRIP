@@ -7,7 +7,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/planner/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/planner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/planner/specification_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/specification_analyzer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/rpc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rpc_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/tosca.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/tosca.py" afterDir="false" />
     </list>
@@ -212,7 +211,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571415019998</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="set default properties">
+      <created>1571677538860</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1571677538860</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -241,7 +247,8 @@
     <MESSAGE value="added libs in setup" />
     <MESSAGE value="fixed invalid type" />
     <MESSAGE value="added comments" />
-    <option name="LAST_COMMIT_MESSAGE" value="added comments" />
+    <MESSAGE value="set default properties" />
+    <option name="LAST_COMMIT_MESSAGE" value="set default properties" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -253,28 +260,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/utils/tosca.py</url>
-          <line>20</line>
+          <line>21</line>
           <option name="timeStamp" value="128" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/planner/planner.py</url>
-          <line>173</line>
-          <option name="timeStamp" value="218" />
+          <url>file://$PROJECT_DIR$/src/rpc_server.py</url>
+          <line>117</line>
+          <option name="timeStamp" value="255" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/planner/simple_spec_alayzer.py</url>
+          <url>file://$PROJECT_DIR$/src/utils/TOSCA_parser.py</url>
           <line>67</line>
-          <option name="timeStamp" value="293" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/planner/simple_spec_alayzer.py</url>
-          <line>68</line>
-          <option name="timeStamp" value="294" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/planner/simple_spec_alayzer.py</url>
-          <line>88</line>
-          <option name="timeStamp" value="295" />
+          <option name="timeStamp" value="256" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

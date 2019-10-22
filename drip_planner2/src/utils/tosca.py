@@ -1,6 +1,7 @@
 import copy
 from itertools import chain
 
+from toscaparser import tosca_template
 from toscaparser.elements.nodetype import NodeType
 from toscaparser.nodetemplate import NodeTemplate
 
@@ -12,7 +13,7 @@ node_type_key_names_to_remove = ['capabilities', 'derived_from']
 
 
 def get_node_type_name(node):
-    """Returns  the requirements for an input node as described in the template not in the node's definition """
+    """Returns the node's type name as string"""
     if isinstance(node, NodeTemplate):
         if node.type:
             if node.type and isinstance(node.type, str):
@@ -49,6 +50,7 @@ def get_parent_type(node):
 
 
 def get_node_type_requirements(type_name, all_nodes):
+    """Returns  the requirements for an input node as described in the template not in the node's definition """
     def_type = all_nodes[type_name]
     if 'requirements' in def_type.keys():
         return def_type['requirements']
@@ -119,9 +121,9 @@ def get_tosca_template_2_topology_template(template):
     tp = TOSCAParser()
     yaml_str = tp.tosca_template2_yaml(template)
     tosca_template_dict = yaml.load(yaml_str, Loader=yaml.FullLoader)
-    tosca_template = tosca_template_dict['tosca_template']
+    this_tosca_template = tosca_template_dict['tosca_template']
     tosca_template_dict.pop('tosca_template')
-    tosca_template_dict['topology_template'] = tosca_template
+    tosca_template_dict['topology_template'] = this_tosca_template
 
     if template.policies and 'policies' not in tosca_template_dict['topology_template']:
         policies_list = []
@@ -155,18 +157,25 @@ def set_node_properties(node, properties):
     return node
 
 
-def get_node_by_type(node_type, all_nodes):
-    return all_nodes[node_type]
+def get_nodes_by_type(node_type, nodes, all_node_types, all_custom_def):
+    nodes_by_type = []
+    for node in nodes:
+        if node.type == node_type:
+            nodes_by_type.append(node)
+            break
+        elif node_type in get_all_ancestors_types(node, all_node_types, all_custom_def):
+            nodes_by_type.append(node)
+    return nodes_by_type
 
 
-def get_all_ancestors_types(child_node, all_nodes, all_custom_def, ancestors_types=None):
+def get_all_ancestors_types(child_node, all_node_types, all_custom_def, ancestors_types=None):
     if not ancestors_types:
         ancestors_types = [get_node_type_name(child_node)]
     parent_type = get_parent_type(child_node)
     if parent_type:
         ancestors_types.append(parent_type)
-        parent_type = node_type_2_node_template({'name': all_nodes[parent_type]}, all_custom_def)
-        get_all_ancestors_types(parent_type, all_nodes, all_custom_def, ancestors_types)
+        parent_type = node_type_2_node_template({'name': all_node_types[parent_type]}, all_custom_def)
+        get_all_ancestors_types(parent_type, all_node_types, all_custom_def, ancestors_types)
     return ancestors_types
 
 
@@ -191,3 +200,14 @@ def get_all_ancestors_properties(node, all_nodes, all_custom_def, ancestors_prop
                     ancestors_properties.append(ancestor_prop)
 
     return ancestors_properties
+
+
+def get_nodes_with_occurrences_in_requirements(topology_nodes):
+    nodes_with_occurrences_in_requirement = []
+    for node in topology_nodes:
+        for requirement in node.requirements:
+            requirement_dict = requirement[next(iter(requirement))]
+            if 'occurrences' in requirement_dict:
+                nodes_with_occurrences_in_requirement.append(node)
+                break
+    return nodes_with_occurrences_in_requirement

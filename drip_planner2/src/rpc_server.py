@@ -113,10 +113,9 @@ if __name__ == "__main__":
         conf = {'url': "http://host"}
         spec_service = SpecService(conf)
         test_planner = Planner(tosca_file_path, spec_service)
-        test_planner_required_nodes = test_planner.resolve_requirements()
-        test_planner.add_required_nodes_to_template(test_planner_required_nodes)
-        test_planner_required_nodes = test_planner.set_infrastructure_specifications()
-        template = tosca_util.get_tosca_template_2_topology_template(test_planner.tosca_template)
+        tosca_template = test_planner.resolve_requirements()
+        tosca_template = test_planner.set_infrastructure_specifications()
+        template = tosca_util.get_tosca_template_2_topology_template(tosca_template)
         logger.info("template ----: \n" + template)
     else:
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
