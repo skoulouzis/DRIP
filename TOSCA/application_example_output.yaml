@@ -10,12 +10,12 @@ topology_template:
         Standard:
           create: dumy.yaml
       properties:
-        cpu_frequency: 0.5 GHz
-        disk_size: 15000 MB
+        disk_size: 50000 MB
         host_name: vm
-        mem_size: 500 MB
-        num_cpus: 1
-        os: ubuntu 15
+        mem_size: 6000 MB
+        num_cores: 2
+        os: ubuntu 16
+        role: master
         user_name: vm_user
       type: tosca.nodes.ARTICONF.VM.Compute
     compute_1:
@@ -23,15 +23,24 @@ topology_template:
         Standard:
           create: dumy.yaml
       properties:
-        cpu_frequency: 0.5 GHz
-        disk_size: 15000 MB
+        disk_size: 50000 MB
         host_name: vm
-        mem_size: 500 MB
-        num_cpus: 1
-        os: ubuntu 15
+        mem_size: 6000 MB
+        num_cores: 2
+        os: ubuntu 16
         role: worker
         user_name: vm_user
       type: tosca.nodes.ARTICONF.VM.Compute
+    kubernetes:
+      interfaces:
+        Standard:
+          create: interfaces/playbooks/kubernetes_install.yaml
+      requirements:
+      - host:
+          capability: tosca.capabilities.ARTICONF.VM.topology
+          node: topology
+          relationship: tosca.relationships.HostedOn
+      type: tosca.nodes.ARTICONF.Orchestrator.Kubernetes
     mysql:
       artifacts:
         image:
@@ -51,48 +60,24 @@ topology_template:
       requirements:
       - host:
           capability: tosca.capabilities.ARTICONF.Orchestrator
-          node: swarm
-          relationship: tosca.relationships.HostedOn
-      - useless:
-          capability: tosca.capabilities.ARTICONF.Useless
-          node: swarm
+          node: kubernetes
           relationship: tosca.relationships.HostedOn
       type: tosca.nodes.ARTICONF.Container.Application.Docker
-    swarm:
-      interfaces:
-        Standard:
-          create: interfaces/playbooks/docker_swarm_install.yaml
-      properties:
-        masters_num: 1
-        workers_num: 1
-      requirements:
-      - host:
-          capability: tosca.capabilities.Scalable
-          node: topology
-          relationship: tosca.relationships.HostedOn
-      type: tosca.nodes.ARTICONF.Orchestrator.Swarm
     topology:
       interfaces:
         Standard:
           create: dumy.yaml
       properties:
-        domain: {}
-        name: {}
-        provider: {}
+        domain: UvA (Amsterdam, The Netherlands) XO Rack
+        provider: ExoGeni
       requirements:
       - vm:
           capability: tosca.capabilities.ARTICONF.VM
           node: compute
-          occurrences:
-          - 1
-          - UNBOUNDED
           relationship: tosca.relationships.DependsOn
       - vm:
           capability: tosca.capabilities.ARTICONF.VM
           node: compute_1
-          occurrences:
-          - 1
-          - UNBOUNDED
           relationship: tosca.relationships.DependsOn
       type: tosca.nodes.ARTICONF.VM.topology
     wordpress:
@@ -116,11 +101,7 @@ topology_template:
             type: tosca.relationships.DependsOn
       - host:
           capability: tosca.capabilities.ARTICONF.Orchestrator
-          node: swarm
-          relationship: tosca.relationships.HostedOn
-      - useless:
-          capability: tosca.capabilities.ARTICONF.Useless
-          node: swarm
+          node: kubernetes
           relationship: tosca.relationships.HostedOn
       type: tosca.nodes.ARTICONF.Container.Application.Docker
   policies:

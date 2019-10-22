@@ -98,7 +98,7 @@ def handle_delivery(message):
     logger.info("template ----: \n" + yaml.dump(template_dict))
 
     response = {'toscaTemplate': template_dict}
-    output_current_milli_time = lambda: int(round(time.time() * 1000))
+    output_current_milli_time = int(round(time.time() * 1000))
     response["creationDate"] = output_current_milli_time
     response["parameters"] = []
     if queue_name == "planner_queue":
@@ -118,7 +118,7 @@ if __name__ == "__main__":
         test_planner = Planner(input_tosca_file_path, spec_service)
         test_tosca_template = test_planner.resolve_requirements()
         test_tosca_template = test_planner.set_infrastructure_specifications()
-        template = tosca_util.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
+        template_dict = tosca_util.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
         logger.info("template ----: \n" + yaml.dump(template))
 
         try:
@@ -132,9 +132,12 @@ if __name__ == "__main__":
         input_tosca_file_path = tosca_path + '/application_example_output.yaml'
 
         with open(input_tosca_file_path, 'w') as outfile:
-            outfile.write(yaml.dump(template))
+            outfile.write(yaml.dump(template_dict))
 
         ToscaTemplate(input_tosca_file_path)
+
+        test_response = {'toscaTemplate': template_dict}
+        logger.info("Output message:" + json.dumps(test_response))
     else:
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         channel = init_chanel(sys.argv)

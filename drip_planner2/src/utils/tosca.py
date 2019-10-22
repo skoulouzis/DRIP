@@ -5,7 +5,7 @@ from toscaparser import tosca_template
 from toscaparser.elements.nodetype import NodeType
 from toscaparser.nodetemplate import NodeTemplate
 
-from utils.TOSCA_parser import TOSCAParser
+from src.utils.TOSCA_parser import TOSCAParser
 import yaml
 import logging
 

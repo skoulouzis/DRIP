@@ -31,7 +31,6 @@ class SimpleAnalyzer(SpecificationAnalyzer):
             masters_num = orchestrator_nodes[0].get_property_value('masters_num')
             workers_num = orchestrator_nodes[0].get_property_value('workers_num')
 
-
         topology_nodes = tosca_util.get_nodes_by_type('tosca.nodes.ARTICONF.VM.topology',
                                                       self.tosca_template.nodetemplates, self.all_node_types,
                                                       self.all_custom_def)
