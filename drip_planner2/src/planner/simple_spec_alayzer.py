@@ -22,8 +22,9 @@ class SimpleAnalyzer(SpecificationAnalyzer):
                                                           self.tosca_template.nodetemplates, self.all_node_types,
                                                           self.all_custom_def)
 
-        masters_num = orchestrator_nodes[0].get_property_value('masters_num')
-        workers_num = orchestrator_nodes[0].get_property_value('workers_num')
+        masters_num = orchestrator_nodes[0].entity_tpl['properties']['masters_num']
+        workers_num = orchestrator_nodes[0].entity_tpl['properties']['workers_num']
+        # workers_num = orchestrator_nodes[0].get_property_value('workers_num')
         min_num_of_vm = masters_num + workers_num
         topology_nodes = tosca_util.get_nodes_by_type('tosca.nodes.ARTICONF.VM.topology',
                                                       self.tosca_template.nodetemplates, self.all_node_types,
@@ -124,12 +125,13 @@ class SimpleAnalyzer(SpecificationAnalyzer):
             for default_property in default_properties:
                 affected_node.get_properties_objects().append(default_property)
 
-            for prop_name in affected_node.templates[next(iter(affected_node.templates))]['properties']:
-                if 'required' not in affected_node.templates[next(iter(affected_node.templates))]['properties'][
-                    prop_name] and 'type' not in \
-                        affected_node.templates[next(iter(affected_node.templates))]['properties'][prop_name]:
-                    default_properties[prop_name] = \
-                    affected_node.templates[next(iter(affected_node.templates))]['properties'][(prop_name)]
+            if 'properties' in affected_node.templates[next(iter(affected_node.templates))]:
+                for prop_name in affected_node.templates[next(iter(affected_node.templates))]['properties']:
+                    if 'required' not in affected_node.templates[next(iter(affected_node.templates))]['properties'][
+                        prop_name] and 'type' not in \
+                            affected_node.templates[next(iter(affected_node.templates))]['properties'][prop_name]:
+                        default_properties[prop_name] = \
+                            affected_node.templates[next(iter(affected_node.templates))]['properties'][prop_name]
 
             affected_node.templates[next(iter(affected_node.templates))]['properties'] = default_properties
 
@@ -152,7 +154,6 @@ class SimpleAnalyzer(SpecificationAnalyzer):
     def get_defult_value(self, node_property):
         if isinstance(node_property.value,
                       dict) and 'required' in node_property.value and 'type' in node_property.value:
-            logging.info('node property: ' + str(node_property.value))
             if node_property.value['required']:
                 default_prop = {}
                 if 'default' in node_property.value:

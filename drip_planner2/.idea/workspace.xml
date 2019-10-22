@@ -2,12 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test_planner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_output.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_output.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/planner/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/planner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/rpc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rpc_server.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -255,7 +254,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571756795577</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="added test">
+      <created>1571757387680</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1571757387680</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -287,7 +293,8 @@
     <MESSAGE value="set default properties" />
     <MESSAGE value="set min number of VMs based on the swarm default workers and masters" />
     <MESSAGE value="fixed policies error" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed policies error" />
+    <MESSAGE value="added test" />
+    <option name="LAST_COMMIT_MESSAGE" value="added test" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -304,8 +311,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/rpc_server.py</url>
-          <line>134</line>
+          <line>136</line>
           <option name="timeStamp" value="295" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/rpc_server.py</url>
+          <line>106</line>
+          <option name="timeStamp" value="302" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/rpc_server.py</url>
+          <line>99</line>
+          <option name="timeStamp" value="303" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

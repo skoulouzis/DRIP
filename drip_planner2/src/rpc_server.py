@@ -1,13 +1,14 @@
 # To change this license header, choose License Headers in Project Properties.
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
-
+import json
 import os
 import os.path
 import tempfile
 import time
 
 import pika
+import yaml
 
 from planner.basic_planner import *
 from planner.planner import *
@@ -88,13 +89,14 @@ def handle_delivery(message):
     with open(input_tosca_file_path, 'w') as outfile:
         outfile.write(yaml.dump(tosca_template_json))
 
-    planner = Planner(input_tosca_file_path)
-    required_nodes = planner.resolve_requirements()
-    required_nodes = planner.set_infrastructure_specifications(required_nodes)
-    planner.add_required_nodes_to_template(required_nodes)
-    planned_template = tosca_util.get_tosca_template_as_yml(planner.template)
-    logger.info("template ----: \n" + planned_template)
-    template_dict = yaml.load(planned_template)
+    conf = {'url': "http://host"}
+    spec_service = SpecService(conf)
+    test_planner = Planner(input_tosca_file_path, spec_service)
+    tosca_template = test_planner.resolve_requirements()
+    tosca_template = test_planner.set_infrastructure_specifications()
+    template_dict = tosca_util.get_tosca_template_2_topology_template_dictionary(tosca_template)
+    logger.info("template ----: \n" + yaml.dump(template_dict))
+
     response = {'toscaTemplate': template_dict}
     output_current_milli_time = lambda: int(round(time.time() * 1000))
     response["creationDate"] = output_current_milli_time
@@ -110,13 +112,13 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     if sys.argv[1] == "test_local":
         tosca_path = "../../TOSCA/"
-        tosca_file_path = tosca_path+'/application_example_updated.yaml'
+        input_tosca_file_path = tosca_path + '/application_example.yaml'
         conf = {'url': "http://host"}
         spec_service = SpecService(conf)
-        test_planner = Planner(tosca_file_path, spec_service)
-        tosca_template = test_planner.resolve_requirements()
-        tosca_template = test_planner.set_infrastructure_specifications()
-        template = tosca_util.get_tosca_template_2_topology_template_dictionary(tosca_template)
+        test_planner = Planner(input_tosca_file_path, spec_service)
+        test_tosca_template = test_planner.resolve_requirements()
+        test_tosca_template = test_planner.set_infrastructure_specifications()
+        template = tosca_util.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
         logger.info("template ----: \n" + yaml.dump(template))
 
         try:
@@ -127,7 +129,7 @@ if __name__ == "__main__":
             tosca_folder_path = os.path.dirname(os.path.abspath(sys.argv[0])) + os.path.join(tempfile.gettempdir(),
                                                                                              tosca_path)
         tosca_file_name = 'tosca_template'
-        input_tosca_file_path = tosca_path+'/application_example_output.yaml'
+        input_tosca_file_path = tosca_path + '/application_example_output.yaml'
 
         with open(input_tosca_file_path, 'w') as outfile:
             outfile.write(yaml.dump(template))

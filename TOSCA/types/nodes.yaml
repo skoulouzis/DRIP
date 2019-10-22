@@ -2,12 +2,12 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 
 node_types:
 
+  tosca.nodes.ARTICONF.Root:
+    description: root ARTICONF node
+
   tosca.nodes.ARTICONF.Container.Application.Docker:
-    #derived_from: tosca.nodes.Container.Application.Docker
+    derived_from:  tosca.nodes.ARTICONF.Root
     description: description of container
-    capabilities:
-      service:
-        type: tosca.capabilities.Container.Docker
     properties:
       ports:
         description: ports to be forwarded
@@ -33,73 +33,84 @@ node_types:
       - host:
           capability: tosca.capabilities.ARTICONF.Orchestrator
           node: tosca.nodes.ARTICONF.Orchestrator
-          relationship: tosca.relationships.HostedOn
-      - useless:
-          capability: tosca.capabilities.ARTICONF.Useless
-          node: tosca.nodes.ARTICONF.Orchestrator
-          relationship: tosca.relationships.HostedOn          
+          relationship: tosca.relationships.HostedOn         
           
   tosca.nodes.ARTICONF.Orchestrator:
-    #derived_from: tosca.nodes.SoftwareComponent
+    derived_from: tosca.nodes.ARTICONF.Root
     description: a container orchestrator
     requirements:
       - host:
-          capability: tosca.capabilities.Compute
-          node: tosca.nodes.Compute
+          capability: tosca.capabilities.ARTICONF.VM.topology
+          node: tosca.nodes.ARTICONF.VM.topology
           relationship: tosca.relationships.HostedOn
     capabilities:
-      host:
+      orchestrator:
         type: tosca.capabilities.ARTICONF.Orchestrator
-        occurrences: [1, 1]  
+      host:
+        type: tosca.capabilities.Container.Docker
+      container:
+        type: tosca.capabilities.Container        
     properties:
         masters_num:
             type: integer
             required: true
+            default: 1
             constraints:
             - greater_or_equal: 1
         workers_num:
             type: integer
             required: true
+            default: 1
             constraints:
-            - greater_or_equal: 1    
+            - greater_or_equal: 1
         
     
     
   tosca.nodes.ARTICONF.Orchestrator.Kubernetes:
     derived_from: tosca.nodes.ARTICONF.Orchestrator
     description: Kubernetes orchestrator
-    requirements:
-      - host:
-          capability: tosca.capabilities.Scalable
-          node: tosca.nodes.ARTICONF.Infrastructure
-          relationship: tosca.relationships.HostedOn
     interfaces:
       Standard:
         create: interfaces/playbooks/kubernetes_install.yaml
         
-  tosca.nodes.ARTICONF.Orchestrator.Swarm:
-    derived_from: tosca.nodes.ARTICONF.Orchestrator
-    description: swarm orchestrator
+  #tosca.nodes.ARTICONF.Orchestrator.Swarm:
+    #derived_from: tosca.nodes.ARTICONF.Orchestrator
+    #description: swarm orchestrator
+    #interfaces:
+      #Standard:
+        #create: interfaces/playbooks/docker_swarm_install.yaml            
+        
+  tosca.nodes.ARTICONF.VM.topology:
+    derived_from: tosca.nodes.ARTICONF.Infrastructure
+    description: topology of VMs
     requirements:
-      - host:
-          capability: tosca.capabilities.Scalable
+      - vm:
+          capability: tosca.capabilities.ARTICONF.VM
           node: tosca.nodes.ARTICONF.Infrastructure
-          relationship: tosca.relationships.HostedOn
+          relationship: tosca.relationships.DependsOn
     capabilities:
-      useless:
-        type: tosca.capabilities.ARTICONF.Useless    
+      scalable:
+        type: tosca.capabilities.Scalable 
+      topology:
+        type: tosca.capabilities.ARTICONF.VM.topology
+    properties:
+      provider:
+        type: string
+        required: true
+        default: "ExoGeni"
+      name:
+        type: string
+        required: false
+      domain:        
+        type: string
+        required: true
+        default: "UvA (Amsterdam, The Netherlands) XO Rack"
+      credential:
+        type: tosca.datatypes.Credential
+        required: false
     interfaces:
       Standard:
-        create: interfaces/playbooks/docker_swarm_install.yaml        
-        
-        
-  tosca.nodes.ARTICONF.Infrastructure:
-    description: Base infrastructure node
-    capabilities:
-      compute:
-        type: tosca.capabilities.Compute
-      node:
-        type: tosca.capabilities.Node
+        create: dumy.yaml
         
   tosca.nodes.ARTICONF.VM.Compute:
     derived_from: tosca.nodes.ARTICONF.Infrastructure
@@ -116,64 +127,51 @@ node_types:
         type: string
         required: true
         default: "vm"
-      num_cpus:
+      num_cores:
         type: integer
         required: true
+        default: 2
         constraints:
           - greater_or_equal: 1
       cpu_frequency:
         type: scalar-unit.frequency
-        required: true
+        required: false
         constraints:
           - greater_or_equal: 0.5 GHz
       disk_size:
         type: scalar-unit.size
         required: true
+        default: 50000 MB
         constraints:
           - greater_or_equal: 15000 MB
       mem_size:
         type: scalar-unit.size
         required: true
+        default: 6000 MB
         constraints:
           - greater_or_equal: 500 MB
       os:
         type: string
         required: true       
-        default: "ubuntu 15"
+        default: "ubuntu 16"
+      role:
+        type: string
+        required: true       
+        description: the role of the VM in the topology
+        default: "master"
+        constraints:
+            - valid_values: [ "master","worker" ]        
     interfaces:
       Standard:
-        create: dumy.yaml
+        create: dumy.yaml        
+    
+    
         
-  tosca.nodes.ARTICONF.VM.topology:
-    derived_from: tosca.nodes.ARTICONF.Infrastructure
-    description: topology of VMs
-    requirements:
-      - vm:
-          capability: tosca.capabilities.ARTICONF.VM
-          node: tosca.nodes.ARTICONF.Infrastructure
-          relationship: tosca.relationships.DependsOn
-          occurrences: [1,  UNBOUNDED]
+  tosca.nodes.ARTICONF.Infrastructure:
+    derived_from:  tosca.nodes.ARTICONF.Root
+    description: Base infrastructure node
     capabilities:
-      scalable:
-        type: tosca.capabilities.Scalable 
-      topology:
-        type: tosca.capabilities.ARTICONF.VM.topology
-        occurrences: [1, 1]
-    properties:
-      provider:
-        type: string
-        required: true
-      name:
-        type: string
-        required: true
-      domain:        
-        type: string
-        required: true
-      credential:
-        type: tosca.datatypes.Credential
-        required: false
-    interfaces:
-      Standard:
-        create: dumy.yaml
-    
-    
+      compute:
+        type: tosca.capabilities.Compute
+      node:
+        type: tosca.capabilities.Node

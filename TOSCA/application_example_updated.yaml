@@ -73,7 +73,7 @@ topology_template:
                 
   policies:
     - scalability:
-        type: tosca.policies.ARTICONF.Performance
+        type: tosca.policies.ARTICONF.Performance.CPU
         targets: [ wordpress ]
         properties:
             constraint_name: cpu_load
