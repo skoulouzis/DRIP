@@ -5,9 +5,17 @@ interface_types:
     description: Interface for VM topology management with CloudsStorm. More at https://cloudsstorm.github.io/
     derived_from: tosca.interfaces.node.lifecycle.Standard
     inputs:
+      code_type:
+        type: string
+        required: true
+        default: SEQ
+        description: This field indicates the type of this code. Currently, there are only two types, ‘SEQ’ and ‘LOOP’.
+        constraints:
+          - valid_values: ['SEQ' , 'LOOP']     
       object_type:
         type: string
         required: true
+        default: SubTopology
         description: This field indicates the object type of this operation. According to the specific operation, the object can be, 'SubTopology', some entire sub-topologies; VM, some individual VMs; REQ some requests, only used when vscale, hscale or recover.
         constraints:
           - valid_values: ['SubTopology' , 'VM' ,'REQ' ] 
