@@ -2,26 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../drip-api/src/main/java/nl/uva/sne/drip/api/rpc/PlannerCaller.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-api/src/main/java/nl/uva/sne/drip/api/rpc/PlannerCaller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/api/PlannerApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/api/PlannerApiController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/configuration/RPCCallersConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/configuration/RPCCallersConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/rpc/DRIPCaller.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/rpc/DRIPCaller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/rpc/PlannerCaller.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/service/PlannerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/service/DRIPService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-provisioner/nb-configuration.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-provisioner/nbactions.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-provisioner/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-provisioner/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-provisioner/src/main/java/nl/uva/sne/drip/drip/provisioner/RPCServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-provisioner/src/main/java/nl/uva/sne/drip/drip/provisioner/RPCServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-provisioner/src/main/java/nl/uva/sne/drip/drip/provisioner/utils/MessageParsing.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-provisioner/src/main/java/nl/uva/sne/drip/drip/provisioner/utils/PropertyValues.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-provisioner/src/main/java/nl/uva/sne/drip/drip/provisioner/v1/Consumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-provisioner/src/main/java/nl/uva/sne/drip/drip/provisioner/Consumer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-provisioner/src/main/resources/log4j.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-provisioner/src/main/resources/logging.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-provisioner/src/main/resources/provisioner.properies" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-provisioner/src/main/resources/application.properies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-simple_planner/src/main/java/nl/uva/sne/drip/drip/planner/RPCServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-simple_planner/src/main/java/nl/uva/sne/drip/drip/planner/RPCServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/rpc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rpc_server.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
