@@ -31,6 +31,19 @@ interface_types:
         type: map
         required: false
         description: Some options defined for this operation. They are key-value pairs. It depends on the specific operation.
+      count:
+        type: integer
+        required: false
+        description: This is defined as a maximum number of iterations for a loop.
+      duration:
+        type: scalar-unit.time
+        default: 1 s
+        required: false
+        description: This is defined as a maximum number of iterations for a loop
+      deadline:
+        type: timestamp
+        required: false
+        description: This is defined as a certain timing to exit this loop.
     execute:
       description: Execute some command on the objects. The detailed command is specified in the filed Command below. ObjectType currently can only be VM
     put:
