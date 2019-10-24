@@ -1,0 +1,18 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+interface_types:
+
+  tosca.interfaces.ARTICONF.CloudsStorm:
+    description: Interface for VM topology management with CloudsStorm
+    derived_from: tosca.interfaces.node.lifecycle.Standard
+    inputs:
+      object_type:
+        type: string
+        description: This field indicates the object type of this operation. According to the specific operation, the object can be, 'SubTopology', some entire sub-topologies; VM, some individual VMs; REQ some requests, only used when vscale, hscale or recover.
+        constraints:
+          - valid_values: ['SubTopology' , 'VM' ,'REQ' ] 
+      objects:
+        type: list
+        description: It indicates a set of objects, which this operation impacts. If the ObjectType is SubTopology, the name of the object is the sub-topology name; If the ObjectType is VM, the name of the object is the VM full name, containing sub-topology and VM node name, such as, $SubTopology.$Node; If the ObjectType is REQ, the name of the object is previously generated request name.        
+    vscale:
+      description: Execute some command on the objects. The detailed command is specified in the filed Command below. ObjectType currently can only be VM.
+      
