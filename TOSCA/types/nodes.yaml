@@ -111,13 +111,6 @@ node_types:
       credential:
         type: tosca.datatypes.Credential
         required: false
-      status:        
-        type: string
-        required: true
-        default: "fresh"
-        description: The state of this topology 
-        constraints:
-        - valid_values: [ "fresh" , "running" ,"deleted", "failed", "stopped" ]
       subnet:
         type: string
         required: false

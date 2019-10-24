@@ -22,6 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import nl.uva.sne.drip.model.TopologyTemplate;
+import nl.uva.sne.drip.model.ToscaTemplate;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  *
@@ -29,9 +32,10 @@ import java.util.Set;
  */
 public class TOSCAUtils {
 
-    public static List<Map<String, Object>> getVMsFromTopology(Map<String, Object> toscaPlan) {
-        List<String> vmNames = getVMsNodeNamesFromTopology(toscaPlan);
-        Map<String, Object> nodeTemplates = (Map<String, Object>) ((Map<String, Object>) toscaPlan.get("topology_template")).get("node_templates");
+    public static List<Map<String, Object>> getVMsFromTopology(ToscaTemplate toscaTemplate) {
+        List<String> vmNames = getVMsNodeNamesFromTopology(toscaTemplate);
+        TopologyTemplate topologyTemplate = toscaTemplate.getTopologyTemplate();
+        Map<String, Object> nodeTemplates = topologyTemplate.getNodeTemplates();
         List<Map<String, Object>> vmList = new ArrayList<>();
         for (String vmName : vmNames) {
             Map<String, Object> vm = (Map<String, Object>) nodeTemplates.get(vmName);
@@ -41,9 +45,11 @@ public class TOSCAUtils {
         return vmList;
     }
 
-    public static List<String> getVMsNodeNamesFromTopology(Map<String, Object> toscaPlan) {
-        Map<String, Object> topologyTemplate = (Map<String, Object>) toscaPlan.get("topology_template");
-        Map<String, Object> nodeTemplates = (Map<String, Object>) (topologyTemplate).get("node_templates");
+    public static List<String> getVMsNodeNamesFromTopology(ToscaTemplate toscaTemplate) {
+
+        TopologyTemplate topologyTemplate = toscaTemplate.getTopologyTemplate();
+
+        Map<String, Object> nodeTemplates = topologyTemplate.getNodeTemplates();
         Iterator it = nodeTemplates.entrySet().iterator();
         List<String> vmNames = new ArrayList<>();
         while (it.hasNext()) {
@@ -79,21 +85,13 @@ public class TOSCAUtils {
         return outputs;
     }
 
-    public static Map<String, String> getOutputsForNode(Map<String, Object> toscaProvisonMap, String nodeName) {
-        Map<String, Object> topologyTemplate = (Map<String, Object>) ((Map<String, Object>) toscaProvisonMap.get("topology_template"));
-        Map<String, Object> outputs = (Map<String, Object>) topologyTemplate.get("outputs");
-        Map<String, String> matchedOutputs = new HashMap<>();
-        Iterator it = outputs.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry output = (Map.Entry) it.next();
-            List<Map<String, String>> val = (List<Map<String, String>>) output.getValue();
-            for (Map<String, String> map : val) {
-                if (map.containsKey(nodeName)) {
-                    matchedOutputs.put((String) output.getKey(), map.get(nodeName));
-                }
-            }
-        }
-        return matchedOutputs;
+    public static Map<String, String> getOutputsForNode(ToscaTemplate toscaTemplate, String nodeName) {
+        TopologyTemplate topologyTemplate = toscaTemplate.getTopologyTemplate();
+
+        List<Map<String, Object>> outputs = topologyTemplate.getOutputs();
+        List<Map<String, Object>> matchedOutputs = new ArrayList<>();
+        throw new NotImplementedException();
+
     }
 
     public static List<String> getOutputPair(Map<String, Object> outputs, String key) {
@@ -101,9 +99,9 @@ public class TOSCAUtils {
         return outputPair;
     }
 
-    public static List<Map.Entry> getDockerContainers(Map<String, Object> toscaPlan) {
-        Map<String, Object> topologyTemplate = (Map<String, Object>) toscaPlan.get("topology_template");
-        Map<String, Object> nodeTemplates = (Map<String, Object>) (topologyTemplate).get("node_templates");
+    public static List<Map.Entry> getDockerContainers(ToscaTemplate toscaTemplate) {
+        TopologyTemplate topologyTemplate = toscaTemplate.getTopologyTemplate();
+        Map<String, Object> nodeTemplates = topologyTemplate.getNodeTemplates();
         Iterator it = nodeTemplates.entrySet().iterator();
         List<Map.Entry> dockerContainers = new ArrayList<>();
         while (it.hasNext()) {
@@ -117,8 +115,8 @@ public class TOSCAUtils {
         return dockerContainers;
     }
 
-    public static List<Map<String, Object>> tosca2KubernetesDeployment(Map<String, Object> toscaPlan) {
-        List<Map.Entry> dockerContainers = getDockerContainers(toscaPlan);
+    public static List<Map<String, Object>> tosca2KubernetesDeployment(ToscaTemplate toscaTemplate) {
+        List<Map.Entry> dockerContainers = getDockerContainers(toscaTemplate);
         List<Map<String, Object>> deployments = new ArrayList<>();
 
         Iterator<Map.Entry> dicIt = dockerContainers.iterator();
@@ -162,8 +160,8 @@ public class TOSCAUtils {
         return deployments;
     }
 
-    public static List<Map<String, Object>> tosca2KubernetesService(Map<String, Object> toscaPlan) {
-        List<Map.Entry> dockerContainers = getDockerContainers(toscaPlan);
+    public static List<Map<String, Object>> tosca2KubernetesService(ToscaTemplate toscaTemplate) {
+        List<Map.Entry> dockerContainers = getDockerContainers(toscaTemplate);
         List<Map<String, Object>> services = new ArrayList<>();
         Iterator<Map.Entry> dicIt = dockerContainers.iterator();
         while (dicIt.hasNext()) {

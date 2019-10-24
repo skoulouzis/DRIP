@@ -15,6 +15,8 @@
  */
 package nl.uva.sne.drip.drip.provisioner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.model.Message;
 
 /**
  *
@@ -36,16 +39,15 @@ import java.util.logging.Logger;
 public class Consumer extends DefaultConsumer {
 
     private final Channel channel;
-//    Map<String, String> em = new HashMap<>();
     private final Logger logger;
-    private final String messageBrokerHost;
+    private final ObjectMapper objectMapper;
 
-    public Consumer(Channel channel, String messageBrokerHost) throws IOException, TimeoutException {
+    public Consumer(Channel channel) throws IOException, TimeoutException {
         super(channel);
         this.channel = channel;
-        this.messageBrokerHost = messageBrokerHost;
         logger = Logger.getLogger(Consumer.class.getName());
-
+        this.objectMapper = new ObjectMapper();
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     @Override
@@ -56,18 +58,15 @@ public class Consumer extends DefaultConsumer {
                 .correlationId(properties.getCorrelationId())
                 .build();
 
-        String response = "";
-
-        //The queue only moves bytes so we need to convert them to string 
-        String message = new String(body, "UTF-8");
-
+        Message message = objectMapper.readValue(new String(body, "UTF-8"), Message.class);
+        
         String tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
         File tempInputDir = new File(tempInputDirPath);
         if (!(tempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
         }
 
-        response = "response";
+        String response = objectMapper.writeValueAsString(message);
 
         logger.log(Level.INFO, "Sending Response: '{'0'}'{0}", response);
 //            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Sending Response: {0}", response);

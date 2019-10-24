@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import nl.uva.sne.drip.service.DRIPService;
+import nl.uva.sne.drip.service.ProvisionerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -26,10 +28,8 @@ public class ProvisionerApiController implements ProvisionerApi {
 
     private final HttpServletRequest request;
 
-    @Value("${message.broker.queue.provisioner}")
-    private String queueName;
     @Autowired
-    private DRIPService dripService;
+    private ProvisionerService provisionerService;
 
     @org.springframework.beans.factory.annotation.Autowired
     public ProvisionerApiController(ObjectMapper objectMapper, HttpServletRequest request) {
@@ -39,13 +39,16 @@ public class ProvisionerApiController implements ProvisionerApi {
 
     @Override
     public ResponseEntity<String> provisionPlanToscaTemplateByID(
-            @ApiParam(value = "ID of topolog template to plan", required = true)
+            @ApiParam(value = "ID of topolog template to provision", required = true)
             @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("text/plain")) {
-            dripService.setRequestQeueName(queueName);
-            String planedYemplateId = dripService.execute(id);
-            return new ResponseEntity<>(planedYemplateId, HttpStatus.NOT_IMPLEMENTED);
+            try {
+                String planedYemplateId = provisionerService.provision(id);
+                return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
+            } catch (IOException ex) {
+                java.util.logging.Logger.getLogger(ProvisionerApiController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

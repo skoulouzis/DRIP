@@ -70,7 +70,7 @@ public class RPCServer {
             //We define the queue name 
             channel.queueDeclare(prop.getProperty("message.broker.queue.provisioner", "provisioner"), false, false, false, null);
             DefaultConsumer c;
-            c = new nl.uva.sne.drip.drip.provisioner.Consumer(channel, prop.getProperty("message.broker.host"));
+            c = new nl.uva.sne.drip.drip.provisioner.Consumer(channel);
 
             //Start listening for messages 
             channel.basicConsume(prop.getProperty("message.broker.queue.provisioner", "provisioner"), false, c);
