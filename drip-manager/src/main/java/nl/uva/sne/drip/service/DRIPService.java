@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.ToscaTemplate;
-import nl.uva.sne.drip.rpc.PlannerCaller;
+import nl.uva.sne.drip.rpc.DRIPCaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +20,17 @@ import org.springframework.stereotype.Service;
  * @author S. Koulouzis
  */
 @Service
-public class PlannerService {
+public class DRIPService {
 
     @Autowired
     private ToscaTemplateService toscaTemplateService;
 
     @Autowired
-    PlannerCaller plannerCaller;
+    DRIPCaller caller;
 
-    public String plan(String id) {
+    private String requestQeueName;
+
+    public String execute(String id) {
 
         try {
             String ymlToscaTemplate = toscaTemplateService.findByID(id);
@@ -38,19 +40,34 @@ public class PlannerService {
             message.setCreationDate(System.currentTimeMillis());
             message.setToscaTemplate(toscaTemplate);
 
-            Message plannerResponse = plannerCaller.call(message);
+            caller.setRequestQeueName(requestQeueName);
+            Message plannerResponse = caller.call(message);
             ToscaTemplate plannedToscaTemplate = plannerResponse.getToscaTemplate();
             return toscaTemplateService.save(plannedToscaTemplate);
         } catch (IOException | TimeoutException | InterruptedException ex) {
-            Logger.getLogger(PlannerService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DRIPService.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                plannerCaller.close();
+                caller.close();
             } catch (IOException | TimeoutException ex) {
-                Logger.getLogger(PlannerService.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DRIPService.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return null;
+    }
+
+    /**
+     * @return the requestQeueName
+     */
+    public String getRequestQeueName() {
+        return requestQeueName;
+    }
+
+    /**
+     * @param requestQeueName the requestQeueName to set
+     */
+    public void setRequestQeueName(String requestQeueName) {
+        this.requestQeueName = requestQeueName;
     }
 
 }

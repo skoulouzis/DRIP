@@ -98,16 +98,30 @@ node_types:
         type: string
         required: true
         default: "ExoGeni"
+        description: The name of the provider e.g. EC2, ExoGeni etc. 
       name:
         type: string
         required: false
+        description: the name of this topology
       domain:        
         type: string
         required: true
         default: "UvA (Amsterdam, The Netherlands) XO Rack"
+        description: the domain of this topology e.g. California, UvA, etc
       credential:
         type: tosca.datatypes.Credential
         required: false
+      status:        
+        type: string
+        required: true
+        default: "fresh"
+        description: The state of this topology 
+        constraints:
+        - valid_values: [ "fresh" , "running" "deleted" "failed" "stopped" ]
+      subnet:
+        type: string
+        required: false
+        description: The subnet of the VMs this topology e.g. 192.168.10.10/24
     interfaces:
       Standard:
         create: dumy.yaml
@@ -160,7 +174,16 @@ node_types:
         description: the role of the VM in the topology
         default: "master"
         constraints:
-            - valid_values: [ "master","worker" ]        
+            - valid_values: [ "master","worker" ]  
+      private_ip:
+        type: string
+        required: false
+        description: The private IP of the VM e.g. 192.168.10.10
+      node_type:
+        type: string
+        required: false
+        description: the type of VM depending on the provider. e.g. XOSmall, t.medium etc. It has to match the mem_size, num_cores etc.
+        
     interfaces:
       Standard:
         create: dumy.yaml        

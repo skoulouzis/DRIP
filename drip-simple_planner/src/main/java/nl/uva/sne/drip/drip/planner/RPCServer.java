@@ -35,7 +35,7 @@ public class RPCServer {
     /**
      *The name of the queue to send and receive massages  
      */
-    private static final String RPC_QUEUE_NAME = "planner_queue";
+    private static final String RPC_QUEUE_NAME = "planner";
     /**
      * The IP or host name of the RabbitMQ server 
      */

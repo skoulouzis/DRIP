@@ -31,7 +31,7 @@ def init_chanel(args):
     global rabbitmq_host
     if len(args) > 1:
         rabbitmq_host = args[1]
-        queue_name = args[2]  # planner_queue
+        queue_name = args[2]  # planner
     else:
         rabbitmq_host = '127.0.0.1'
 

@@ -18,9 +18,10 @@ import java.util.logging.Logger;
 import nl.uva.sne.drip.model.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /*
- * Copyright 2017 S. Koulouzis, Wang Junchao, Huan Zhou, Yang Hu 
+ * Copyright 2019 S. Koulouzis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,15 +39,16 @@ import org.springframework.stereotype.Component;
  *
  * @author S. Koulouzis
  */
-public abstract class DRIPCaller implements AutoCloseable {
+@Service
+public class DRIPCaller implements AutoCloseable {
 
     private final Connection connection;
     private final Channel channel;
     private final String replyQueueName;
-    private final String requestQeueName;
+    private String requestQeueName;
     private final ObjectMapper mapper;
 
-    public DRIPCaller(String requestQeueName, ConnectionFactory factory) throws IOException, TimeoutException {
+    public DRIPCaller(ConnectionFactory factory) throws IOException, TimeoutException {
 
 //        factory.setHost(messageBrokerHost);
 //        factory.setPort(AMQP.PROTOCOL.PORT);
@@ -56,7 +58,6 @@ public abstract class DRIPCaller implements AutoCloseable {
         channel = connection.createChannel();
         // create a single callback queue per client not per requests. 
         replyQueueName = channel.queueDeclare().getQueue();
-        this.requestQeueName = requestQeueName;
         this.mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
     }
@@ -102,8 +103,8 @@ public abstract class DRIPCaller implements AutoCloseable {
                 .correlationId(corrId)
                 .replyTo(getReplyQueueName())
                 .build();
-        Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Sending: {0} to queue: {1}", new Object[]{jsonInString, requestQeueName});
-        getChannel().basicPublish("", requestQeueName, props, jsonInString.getBytes("UTF-8"));
+        Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Sending: {0} to queue: {1}", new Object[]{jsonInString, getRequestQeueName()});
+        getChannel().basicPublish("", getRequestQeueName(), props, jsonInString.getBytes("UTF-8"));
 
         final BlockingQueue<String> response = new ArrayBlockingQueue(1);
 
@@ -119,5 +120,19 @@ public abstract class DRIPCaller implements AutoCloseable {
         Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", resp);
 
         return mapper.readValue(resp, Message.class);
+    }
+
+    /**
+     * @return the requestQeueName
+     */
+    public String getRequestQeueName() {
+        return requestQeueName;
+    }
+
+    /**
+     * @param requestQeueName the requestQeueName to set
+     */
+    public void setRequestQeueName(String requestQeueName) {
+        this.requestQeueName = requestQeueName;
     }
 }

@@ -1,0 +1,4 @@
+message.broker.host=127.0.0.1
+message.broker.username=guest
+message.broker.password=guest
+message.broker.queue.provisioner=provisioner

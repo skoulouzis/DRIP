@@ -28,16 +28,17 @@ import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.drip.provisioner.utils.PropertyValues;
 
 /**
  *
- * @author H. Zhou
+ * @author S. Koulouzis
  */
 public class RPCServer {
 
+    private static Properties prop;
+
     public static void main(String[] argv) throws MalformedURLException {
-        Properties prop = new Properties();
+        prop = new Properties();
         if (argv.length >= 1) {
             try {
                 prop.load(new FileInputStream(argv[0]));
@@ -45,7 +46,7 @@ public class RPCServer {
                 Logger.getLogger(RPCServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            String resourceName = "provisioner.properies";
+            String resourceName = "application.properies";
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             try (InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
                 prop.load(resourceStream);
@@ -53,38 +54,36 @@ public class RPCServer {
                 Logger.getLogger(RPCServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        PropertyValues.setPropertyValues(prop);
 
         start();
     }
 
     private static void start() {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(PropertyValues.HOST);
-        factory.setPassword("guest");
-        factory.setUsername("guest");
+        factory.setHost(prop.getProperty("message.broker.host"));
+        factory.setPassword(prop.getProperty("message.broker.username"));
+        factory.setUsername(prop.getProperty("message.broker.password"));
         factory.setPort(AMQP.PROTOCOL.PORT);
-        Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, "Connected to: {0}", PropertyValues.HOST);
+        Logger.getLogger(RPCServer.class.getName()).log(Level.INFO, "Connected to: {0}", prop.getProperty("message.broker.host"));
         try (Connection connection = factory.newConnection()) {
             Channel channel = connection.createChannel();
             //We define the queue name 
-            channel.queueDeclare(PropertyValues.RPC_QUEUE_NAME, false, false, false, null);
+            channel.queueDeclare(prop.getProperty("message.broker.queue.provisioner", "provisioner"), false, false, false, null);
             DefaultConsumer c;
-//            if (PropertyValues.RPC_QUEUE_NAME.endsWith("v0")) {
-//                c = new nl.uva.sne.drip.drip.provisioner.v0.Consumer(channel);
-//            } else {
-            c = new nl.uva.sne.drip.drip.provisioner.v1.Consumer(channel, PropertyValues.HOST);
-//            }
+            c = new nl.uva.sne.drip.drip.provisioner.Consumer(channel, prop.getProperty("message.broker.host"));
 
             //Start listening for messages 
-            channel.basicConsume(PropertyValues.RPC_QUEUE_NAME, false, c);
+            channel.basicConsume(prop.getProperty("message.broker.queue.provisioner", "provisioner"), false, c);
 
             //Block so we don't close the channel
             while (true) {
+
                 try {
                     Thread.sleep(100);
-                } catch (InterruptedException _ignore) {
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(RPCServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
             }
 
         } catch (IOException | TimeoutException ex) {
