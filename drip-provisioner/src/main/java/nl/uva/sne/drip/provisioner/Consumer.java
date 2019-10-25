@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.drip.provisioner;
+package nl.uva.sne.drip.provisioner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -28,6 +28,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.model.Message;
+import nl.uva.sne.drip.model.ToscaTemplate;
 
 /**
  *
@@ -65,8 +66,15 @@ public class Consumer extends DefaultConsumer {
         if (!(tempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
         }
-
-        String response = objectMapper.writeValueAsString(message);
+        
+        ProvisionerRPCService service = new ProvisionerRPCService();
+        ToscaTemplate toscaTemplate =  service.execute(message.getToscaTemplate());
+        
+        Message responceMessage = new Message();
+        responceMessage.setCreationDate(System.currentTimeMillis());
+        responceMessage.setToscaTemplate(toscaTemplate);
+        
+        String response = objectMapper.writeValueAsString(responceMessage);
 
         logger.log(Level.INFO, "Sending Response: '{'0'}'{0}", response);
 //            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Sending Response: {0}", response);

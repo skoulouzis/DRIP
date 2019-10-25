@@ -32,40 +32,42 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public class TOSCAUtils {
 
-    public static List<Map<String, Object>> getVMsFromTopology(ToscaTemplate toscaTemplate) {
-        List<String> vmNames = getVMsNodeNamesFromTopology(toscaTemplate);
-        TopologyTemplate topologyTemplate = toscaTemplate.getTopologyTemplate();
-        Map<String, Object> nodeTemplates = topologyTemplate.getNodeTemplates();
-        List<Map<String, Object>> vmList = new ArrayList<>();
-        for (String vmName : vmNames) {
-            Map<String, Object> vm = (Map<String, Object>) nodeTemplates.get(vmName);
-//            Map<String, Object> properties = (Map<String, Object>) vm.get("properties");
-            vmList.add(vm);
+    public static List<Map.Entry> getNodes(ToscaTemplate toscaTemplate, String filterType, String filterValue) {
+        boolean byType = false;
+        boolean byName = false;
+        switch (filterType) {
+            case "type":
+                byType = true;
+                break;
+            case "name":
+                byName = true;
+                break;
         }
-        return vmList;
-    }
-
-    public static List<String> getVMsNodeNamesFromTopology(ToscaTemplate toscaTemplate) {
-
         TopologyTemplate topologyTemplate = toscaTemplate.getTopologyTemplate();
-
         Map<String, Object> nodeTemplates = topologyTemplate.getNodeTemplates();
+        List<Map.Entry> nodeList = new ArrayList<>();
+
         Iterator it = nodeTemplates.entrySet().iterator();
-        List<String> vmNames = new ArrayList<>();
         while (it.hasNext()) {
             Map.Entry node = (Map.Entry) it.next();
             Map<String, Object> nodeValue = (Map<String, Object>) node.getValue();
-            String type = (String) nodeValue.get("type");
-            if (type.equals("tosca.nodes.ARTICONF.VM.topology")) {
-                List<Map<String, Object>> requirements = (List<Map<String, Object>>) nodeValue.get("requirements");
-                for (Map<String, Object> req : requirements) {
-                    Map.Entry<String, Object> requirementEntry = req.entrySet().iterator().next();
-                    String nodeName = (String) ((Map<String, Object>) req.get(requirementEntry.getKey())).get("node");
-                    vmNames.add(nodeName);
+            if (byName && node.getKey().equals(filterValue)) {
+                nodeList.add(node);
+            }
+            if (byType) {
+                String type = (String) nodeValue.get("type");
+                if (type.equals(filterValue)) {
+                    nodeList.add(node);
                 }
             }
+
         }
-        return vmNames;
+        return nodeList;
+
+    }
+
+    public static List<Map.Entry> getNodesByType(ToscaTemplate toscaTemplate, String nodeTypeName) {
+        return getNodes(toscaTemplate, "type", nodeTypeName);
     }
 
     public static Map<String, Object> buildTOSCAOutput(Map<String, Object> outputs, String nodeName, String value, String key, boolean encodeValueToBas64) {
@@ -90,7 +92,7 @@ public class TOSCAUtils {
 
         List<Map<String, Object>> outputs = topologyTemplate.getOutputs();
         List<Map<String, Object>> matchedOutputs = new ArrayList<>();
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
     }
 
@@ -255,4 +257,57 @@ public class TOSCAUtils {
         containersList.add(container);
         return containersList;
     }
+
+    public static List<Map.Entry> getRelatedNodes(Map<String, Object> node, ToscaTemplate toscaTemplate) {
+        String nodeName = node.keySet().iterator().next();
+        Map<String, Object> nodeMap = (Map<String, Object>) node.get(nodeName);
+
+        if (nodeMap.containsKey("requirements")) {
+            List<String> nodeNames = new ArrayList<>();
+            List<Map<String, Object>> requirements = (List<Map<String, Object>>) nodeMap.get("requirements");
+            for (Map<String, Object> requirement : requirements) {
+                String reqName = requirement.keySet().iterator().next();
+                Map<String, Object> requirementMap = (Map<String, Object>) requirement.get(reqName);
+//                String requirementCapability = (String) requirementMap.get("capability");
+                String relatedNode = (String) requirementMap.get("node");
+                nodeNames.add(relatedNode);
+            }
+            List<Map.Entry> retaltedNodes = new ArrayList<>();
+            for (String name : nodeNames) {
+                List<Map.Entry> relatedNode = getNodesByName(toscaTemplate, name);
+                for (Map.Entry rNode : relatedNode) {
+                    retaltedNodes.add(rNode);
+                }
+
+            }
+            return retaltedNodes;
+        }
+        return null;
+
+    }
+
+    private static List<Map.Entry> getNodesByName(ToscaTemplate toscaTemplate, String name) {
+        return getNodes(toscaTemplate, "name", name);
+    }
+
+    public static boolean nodeIsOfType(Map.Entry node, String type) {
+        String nodeName = (String) node.getKey();
+        Map<String, Object> nodeMap = (Map<String, Object>) node.getValue();
+        if (nodeMap.containsKey("type") && nodeMap.get("type").equals(type)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static Object getNodeProperty(Map.Entry node, String propertyName) {
+        Map<String, Object> nodeMap = (Map<String, Object>) node.getValue();
+        if (nodeMap.containsKey("properties") ) {
+            Map<String, Object> properties = (Map<String, Object>) nodeMap.get("properties");
+            return  properties.get(propertyName);
+        }        
+        return null;
+    }
+    
+    
+
 }

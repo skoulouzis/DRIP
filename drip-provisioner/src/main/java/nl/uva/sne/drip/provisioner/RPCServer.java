@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.uva.sne.drip.drip.provisioner;
+package nl.uva.sne.drip.provisioner;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -70,7 +70,7 @@ public class RPCServer {
             //We define the queue name 
             channel.queueDeclare(prop.getProperty("message.broker.queue.provisioner", "provisioner"), false, false, false, null);
             DefaultConsumer c;
-            c = new nl.uva.sne.drip.drip.provisioner.Consumer(channel);
+            c = new nl.uva.sne.drip.provisioner.Consumer(channel);
 
             //Start listening for messages 
             channel.basicConsume(prop.getProperty("message.broker.queue.provisioner", "provisioner"), false, c);

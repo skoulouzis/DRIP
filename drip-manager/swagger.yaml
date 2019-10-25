@@ -463,7 +463,7 @@ definitions:
       tosca_default_namespace:
         type: "string"  
       template_name:
-        type: "string"         
+        type: "string"
       imports:
         type: "array"
         items:
