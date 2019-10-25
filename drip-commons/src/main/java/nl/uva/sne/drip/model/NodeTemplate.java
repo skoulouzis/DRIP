@@ -1,7 +1,5 @@
 package nl.uva.sne.drip.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,7 +14,8 @@ import javax.validation.Valid;
  * NodeTemplate
  */
 @Validated
-@JsonInclude(Include.NON_NULL)
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-25T14:09:25.182Z")
+
 public class NodeTemplate   {
   @JsonProperty("name")
   private String name = null;

@@ -1,7 +1,5 @@
 package nl.uva.sne.drip.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,7 +14,8 @@ import javax.validation.Valid;
  * TopologyTemplate
  */
 @Validated
-@JsonInclude(Include.NON_NULL)
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-25T14:47:27.096Z")
+
 public class TopologyTemplate   {
   @JsonProperty("description")
   private String description = null;
@@ -35,7 +34,7 @@ public class TopologyTemplate   {
 
   @JsonProperty("node_templates")
   @Valid
-  private Map<String, Object> nodeTemplates = null;
+  private Map<String, NodeTemplate> nodeTemplates = null;
 
   @JsonProperty("relationship_templates")
   @Valid
@@ -156,14 +155,14 @@ public class TopologyTemplate   {
     this.outputs = outputs;
   }
 
-  public TopologyTemplate nodeTemplates(Map<String, Object> nodeTemplates) {
+  public TopologyTemplate nodeTemplates(Map<String, NodeTemplate> nodeTemplates) {
     this.nodeTemplates = nodeTemplates;
     return this;
   }
 
-  public TopologyTemplate putNodeTemplatesItem(String key, Object nodeTemplatesItem) {
+  public TopologyTemplate putNodeTemplatesItem(String key, NodeTemplate nodeTemplatesItem) {
     if (this.nodeTemplates == null) {
-      this.nodeTemplates = new HashMap<String, Object>();
+      this.nodeTemplates = new HashMap<String, NodeTemplate>();
     }
     this.nodeTemplates.put(key, nodeTemplatesItem);
     return this;
@@ -175,12 +174,13 @@ public class TopologyTemplate   {
   **/
   @ApiModelProperty(value = "")
 
+  @Valid
 
-  public Map<String, Object> getNodeTemplates() {
+  public Map<String, NodeTemplate> getNodeTemplates() {
     return nodeTemplates;
   }
 
-  public void setNodeTemplates(Map<String, Object> nodeTemplates) {
+  public void setNodeTemplates(Map<String, NodeTemplate> nodeTemplates) {
     this.nodeTemplates = nodeTemplates;
   }
 
