@@ -17,6 +17,7 @@ package nl.uva.sne.drip.provisioner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.jcraft.jsch.JSchException;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
@@ -52,35 +53,39 @@ public class Consumer extends DefaultConsumer {
     }
 
     @Override
-    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-        //Create the reply properties which tells us where to reply, and which id to use.
-        //No need to change anything here 
-        AMQP.BasicProperties replyProps = new AMQP.BasicProperties.Builder()
-                .correlationId(properties.getCorrelationId())
-                .build();
+    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException, FileNotFoundException {
+        try {
+            //Create the reply properties which tells us where to reply, and which id to use.
+            //No need to change anything here
+            AMQP.BasicProperties replyProps = new AMQP.BasicProperties.Builder()
+                    .correlationId(properties.getCorrelationId())
+                    .build();
 
-        Message message = objectMapper.readValue(new String(body, "UTF-8"), Message.class);
-        
-        String tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
-        File tempInputDir = new File(tempInputDirPath);
-        if (!(tempInputDir.mkdirs())) {
-            throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
-        }
-        
-        ProvisionerRPCService service = new ProvisionerRPCService();
-        ToscaTemplate toscaTemplate =  service.execute(message.getToscaTemplate());
-        
-        Message responceMessage = new Message();
-        responceMessage.setCreationDate(System.currentTimeMillis());
-        responceMessage.setToscaTemplate(toscaTemplate);
-        
-        String response = objectMapper.writeValueAsString(responceMessage);
+            Message message = objectMapper.readValue(new String(body, "UTF-8"), Message.class);
 
-        logger.log(Level.INFO, "Sending Response: '{'0'}'{0}", response);
+            String tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
+            File tempInputDir = new File(tempInputDirPath);
+            if (!(tempInputDir.mkdirs())) {
+                throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
+            }
+
+            ProvisionerRPCService service = new ProvisionerRPCService();
+            ToscaTemplate toscaTemplate = service.execute(message.getToscaTemplate());
+
+            Message responceMessage = new Message();
+            responceMessage.setCreationDate(System.currentTimeMillis());
+            responceMessage.setToscaTemplate(toscaTemplate);
+
+            String response = objectMapper.writeValueAsString(responceMessage);
+
+            logger.log(Level.INFO, "Sending Response: '{'0'}'{0}", response);
 //            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Sending Response: {0}", response);
-        //We send the response back. No need to change anything here 
-        channel.basicPublish("", properties.getReplyTo(), replyProps, response.getBytes("UTF-8"));
-        channel.basicAck(envelope.getDeliveryTag(), false);
+//We send the response back. No need to change anything here
+            channel.basicPublish("", properties.getReplyTo(), replyProps, response.getBytes("UTF-8"));
+            channel.basicAck(envelope.getDeliveryTag(), false);
+        } catch (JSchException ex) {
+            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 

@@ -55,6 +55,7 @@ class ProvisionerRPCService {
                 subnetMap.put("name", "subnet" + counter++);
                 subnetMap.put("subnet", subnetValue.split("/")[0]);
                 subnetMap.put("netmask", subnetValue.split("/")[1]);
+                Object members = null;
                 subnetMap.put("members", members);
                 subnets.add(subnetMap);
             }

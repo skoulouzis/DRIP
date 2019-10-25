@@ -38,7 +38,7 @@ public class ProvisionerService  {
         String ymlToscaTemplate = toscaTemplateService.findByID(id);
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
         
-        TOSCAUtils.getNodesByType(toscaTemplate);
+        
         
         return null;
     }
