@@ -6,6 +6,7 @@
 package nl.uva.sne.drip.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -42,7 +43,6 @@ public class ProvisionerService {
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
 
         toscaTemplate = addProvisionInterface(toscaTemplate);
-        
 
         return null;
     }
@@ -54,11 +54,27 @@ public class ProvisionerService {
     protected ToscaTemplate addProvisionInterface(ToscaTemplate toscaTemplate) {
         List<Map<String, NodeTemplate>> vmTopologies = getVmTopologies(toscaTemplate);
         for (Map<String, NodeTemplate> vmTopologyMap : vmTopologies) {
-            NodeTemplate vmTopology = vmTopologyMap.get(vmTopologyMap.keySet().iterator().next());
+            String topologyName = vmTopologyMap.keySet().iterator().next();
+            NodeTemplate vmTopology = vmTopologyMap.get(topologyName);
             Map<String, Object> interfaces = vmTopology.getInterfaces();
+            Map<String, Object> cloudStormInterface = getCloudStormProvisionInterface(topologyName);
+            interfaces.put("cloudStorm", cloudStormInterface);
+
         }
 
         return toscaTemplate;
+    }
+
+    private Map<String, Object> getCloudStormProvisionInterface(String topologyName) {
+        Map<String, Object> csMap = new HashMap<>();
+        Map<String, Object> provisionMap = new HashMap<>();
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put("code_type", "SEQ");
+        inputs.put("object_type", "SubTopology");
+        inputs.put("objects", topologyName);
+        provisionMap.put("inputs", inputs);
+
+        csMap.put("provision", provisionMap);
     }
 
 }

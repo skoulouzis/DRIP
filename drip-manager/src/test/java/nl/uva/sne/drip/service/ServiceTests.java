@@ -35,8 +35,10 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.Swagger2SpringBoot;
+import nl.uva.sne.drip.api.ApiException;
 import nl.uva.sne.drip.configuration.MongoConfig;
 import nl.uva.sne.drip.model.Credentials;
+import nl.uva.sne.drip.model.ToscaTemplate;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -61,7 +63,7 @@ public class ServiceTests {
     private String testApplicationExampleToscaContents;
     private static final String testApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example.yaml";
     private static final String testUpdatedApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
-    private static final String testOutputApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
+    private static final String testOutputApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_output.yaml";
 
     @Autowired
     CredentialService credentialService;
@@ -331,11 +333,12 @@ public class ServiceTests {
     
     
         @Test
-    public void testProvisionerServiceProvision() {
+    public void testProvisionerServiceProvision() throws FileNotFoundException, IOException, ApiException {
         
-        FileInputStream in = new FileInputStream(testApplicationExampleToscaFilePath);
+        FileInputStream in = new FileInputStream(testOutputApplicationExampleToscaFilePath);
         MultipartFile file = new MockMultipartFile("file", in);
         toscaTemplateID = toscaTemplateService.saveFile(file);
+        ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(toscaTemplateService.findByID(toscaTemplateID));
         
         provisionService.addProvisionInterface(toscaTemplate);
     }
