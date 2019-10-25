@@ -56,4 +56,6 @@ interface_types:
       description: Horizontally scale out or in to adapt the computing capability of the infrastructure through changing the number of VMs. ObjectType can be SubTopology, VM or REQ.
     recover:
       description: Recover some failed sub-topologies. ObjectType can be SubTopology or REQ.
+    provision:
+      description: Provision the defined objects (resources). ObjectType can be SubTopology or VM.
   
