@@ -546,7 +546,7 @@ definitions:
       node_templates:
         type: object
         additionalProperties:
-          type: object     
+          $ref: '#/definitions/NodeTemplate' 
       relationship_templates:
         type: object
         additionalProperties:
