@@ -61,10 +61,14 @@ public class ServiceTests {
     private String testApplicationExampleToscaContents;
     private static final String testApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example.yaml";
     private static final String testUpdatedApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
+    private static final String testOutputApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
 
     @Autowired
     CredentialService credentialService;
     private String credentialID;
+    
+    @Autowired
+    ProvisionerService provisionService;
 
     @Autowired
     private WebApplicationContext wac;
@@ -324,4 +328,16 @@ public class ServiceTests {
         int size = credentialService.getAllIds().size();
         assertEquals(0, size);
     }
+    
+    
+        @Test
+    public void testProvisionerServiceProvision() {
+        
+        FileInputStream in = new FileInputStream(testApplicationExampleToscaFilePath);
+        MultipartFile file = new MockMultipartFile("file", in);
+        toscaTemplateID = toscaTemplateService.saveFile(file);
+        
+        provisionService.addProvisionInterface(toscaTemplate);
+    }
+    
 }

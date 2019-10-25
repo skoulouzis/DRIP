@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.utils.TOSCAUtils;
 import nl.uva.sne.drip.model.Message;
+import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,16 +40,25 @@ public class ProvisionerService {
 
         String ymlToscaTemplate = toscaTemplateService.findByID(id);
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
-        List<Map.Entry> vmTopologies = getVmTopologies(toscaTemplate);
-        for(Map.Entry topology: vmTopologies){
-            topology.
-        }
+
+        toscaTemplate = addProvisionInterface(toscaTemplate);
         
-        
+
         return null;
     }
 
-    public List<Map.Entry> getVmTopologies(ToscaTemplate toscaTemplate) {
+    private List<Map<String, NodeTemplate>> getVmTopologies(ToscaTemplate toscaTemplate) {
         return TOSCAUtils.getNodesByType(toscaTemplate, "tosca.nodes.ARTICONF.VM.topology");
     }
+
+    protected ToscaTemplate addProvisionInterface(ToscaTemplate toscaTemplate) {
+        List<Map<String, NodeTemplate>> vmTopologies = getVmTopologies(toscaTemplate);
+        for (Map<String, NodeTemplate> vmTopologyMap : vmTopologies) {
+            NodeTemplate vmTopology = vmTopologyMap.get(vmTopologyMap.keySet().iterator().next());
+            Map<String, Object> interfaces = vmTopology.getInterfaces();
+        }
+
+        return toscaTemplate;
+    }
+
 }

@@ -179,7 +179,7 @@ public class NodeTemplate   {
 
   public NodeTemplate putInterfacesItem(String key, Object interfacesItem) {
     if (this.interfaces == null) {
-      this.interfaces = new HashMap<String, Object>();
+      this.interfaces = new HashMap<>();
     }
     this.interfaces.put(key, interfacesItem);
     return this;

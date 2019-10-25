@@ -31,7 +31,7 @@ import nl.uva.sne.drip.model.ToscaTemplate;
  */
 public class TOSCAUtils {
 
-    public static List<Map<String, NodeTemplate>> getNodes(ToscaTemplate toscaTemplate, String filterType, String filterValue) {
+    private static List<Map<String, NodeTemplate>> getNodes(ToscaTemplate toscaTemplate, String filterType, String filterValue) {
         boolean byType = false;
         boolean byName = false;
         switch (filterType) {
