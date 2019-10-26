@@ -1,34 +1,33 @@
-definitions:
-  NodeTemplate:
+NodeTemplate:
     type: "object"
     properties:
-      name:
+        name:
         type: "string"
-      type:
+        type:
         type: "string"
-      requirements:
+        requirements:
         type: "array"
         items:
-          type: object
-          additionalProperties:
             type: object
-      artifacts:
+            additionalProperties:
+            type: object
+        artifacts:
         type: object
         additionalProperties:
-          type: object      
-      properties:
+            type: object      
+        properties:
         type: object
         additionalProperties:
-          type: object   
-      interfaces:
+            type: object   
+        interfaces:
         type: object
         additionalProperties:
-          type: object     
-      capabilities:
+            type: object     
+        capabilities:
         type: object
         additionalProperties:
-          type: object    
-      workflows:
+            type: object    
+        workflows:
         type: object
         additionalProperties:
-          type: object   
+            type: object   

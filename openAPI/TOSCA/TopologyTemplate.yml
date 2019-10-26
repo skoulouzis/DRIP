@@ -1,40 +1,39 @@
-definitions:
-  TopologyTemplate:
+TopologyTemplate:
     type: "object"
     properties:
-      description:
+        description:
         type: "string"
-      inputs:
+        inputs:
         type: "array"
         items:
-          type: object
-          additionalProperties:
             type: object
-      policies:
+            additionalProperties:
+            type: object
+        policies:
         type: "array"
         items:
-          type: object
-          additionalProperties:
+            type: object
+            additionalProperties:
             type: object            
-      outputs:
+        outputs:
         type: "array"
         items:
-          type: object
-          additionalProperties:
+            type: object
+            additionalProperties:
             type: object       
-      node_templates:
+        node_templates:
         type: object
         additionalProperties:
-          $ref: 'https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate'
-      relationship_templates:
+            $ref: 'https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate'
+        relationship_templates:
         type: object
         additionalProperties:
-          type: object        
-      groups:
+            type: object        
+        groups:
         type: object
         additionalProperties:
-          type: object    
-      substitution_mappings:
+            type: object    
+        substitution_mappings:
         type: object
         additionalProperties:
-          type: object    
+            type: object    
