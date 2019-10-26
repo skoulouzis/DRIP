@@ -1,0 +1,66 @@
+definitions:
+  ToscaTemplate:
+    type: "object"
+    properties:
+      tosca_definitions_version:
+        type: "string"
+      tosca_default_namespace:
+        type: "string"
+      template_name:
+        type: "string"
+      imports:
+        type: "array"
+        items:
+          type: object
+          additionalProperties:
+            type: string
+      repositories:
+        type: object
+        additionalProperties:
+          type: string     
+      dsl_definitions:
+        type: object
+        additionalProperties:
+          type: string      
+      node_types:
+        type: object
+        additionalProperties:
+          type: object     
+      topology_template:
+        $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/openAPI/TOSCA/TopologyTemplate.yml#/TopologyTemplate"
+      relationship_types:
+        type: object
+        additionalProperties:
+          type: object    
+      relationship_templates:
+        type: object
+        additionalProperties:
+          type: object      
+      capability_types:
+        type: object
+        additionalProperties:
+          type: object      
+      artifact_types:
+        type: object
+        additionalProperties:
+          type: object        
+      data_types:
+        type: object
+        additionalProperties:
+          type: object 
+      interface_types:
+        type: object
+        additionalProperties:
+          type: object     
+      policy_types:
+        type: object
+        additionalProperties:
+          type: string  
+      group_types:
+        type: object
+        additionalProperties:
+          type: object   
+      description:
+        type: "string"
+      template_author:
+        type: "string"

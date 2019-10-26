@@ -34,3 +34,5 @@
 /drip/target/
 /drip-manager/target/
 /drip-manager/nbproject/
+/.idea/
+/drip-manager/.idea/
