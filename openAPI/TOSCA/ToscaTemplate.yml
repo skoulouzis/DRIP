@@ -26,7 +26,7 @@ ToscaTemplate:
         additionalProperties:
             type: object     
         topology_template:
-        $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/openAPI/TOSCA/TopologyTemplate.yml#/TopologyTemplate"
+        $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml#/TopologyTemplate"
         relationship_types:
         type: object
         additionalProperties:
