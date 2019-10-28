@@ -1,0 +1,453 @@
+swagger: "2.0"
+info:
+  description: "SURE Simple qUeRy sErvice TOSCA. "
+  version: "1.0.0"
+  title: "SURE TOSCA"
+  contact:
+    email: "S.Koulouzis@uva.nl"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+# basePath: "/sure_tosca"
+schemes:
+- "https"
+- "http"
+paths:
+  /tosca_template:
+    post:
+      summary: "upload a tosca template description file"
+      description: "upload and validate a tosca template description file"
+      operationId: "uploadToscaTemplate"
+      consumes:
+      - "multipart/form-data"
+      parameters:
+      - in: "formData"
+        name: "file"
+        type: file
+        description: "tosca Template description"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+        405:
+          description: "Invalid input"
+      security:
+      - drip_auth:
+        - "write:ToscaTemplate"
+        - "read:ToscaTemplate"
+  /tosca_template/{id}:
+    get:
+      description: ""
+      operationId: "getToscaTemplate"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: ''#/definitions/ToscaTemplate'
+        405:
+          description: "Invalid input"            
+  /tosca_template/{id}/topology_template:
+    get:
+      description: "r"
+      operationId: "getTopologyTemplate"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: ''#/definitions/TopologyTemplate'
+        405:
+          description: "Invalid input"        
+  /tosca_template/{id}/topology_template/node_templates:
+    get:
+      description: "returns nodes templates in topology"
+      operationId: "getNodeTemplates"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: query
+        name: node_name
+        type: string
+        description: filter by node name
+      - in: query
+        name: node_type
+        type: string
+        description: filter by node type     
+      - in: query
+        name: has_interface
+        type: boolean
+        description: filter if node has interface           
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NodeTemplate'
+        405:
+          description: "Invalid input"
+  /tosca_template/{id}/topology_template/node_templates/type_name:
+    get:
+      summary: ""
+      description: ""
+      operationId: "getNodeTypeName"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: false
+        schema:
+          $ref: '#/definitions/NodeTemplate'        
+      - in: query
+        name: node_name
+        type: string
+        description: The node name
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+        405:
+          description: "Invalid input"      
+  /tosca_template/{id}/topology_template/node_templates/requirements:
+    get:
+      description: "Returns  the requirements for an input node as described in the template not in the node's definition "
+      operationId: "getNodeRequirements"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: false
+        schema:
+          $ref: '#/definitions/NodeTemplate'        
+      - in: query
+        name: node_name
+        type: string
+        description: The node name
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: object
+            additionalProperties:
+                type: object 
+        405:
+          description: "Invalid input"       
+          
+  /tosca_template/{id}/topology_template/node_templates/parent_type_name:
+    get:
+      summary: ""
+      description: ""
+      operationId: "getParentTypeName"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: false
+        schema:
+          $ref: '#/definitions/NodeTemplate'        
+      - in: query
+        name: node_name
+        type: string
+        description: The node name
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: string
+        405:
+          description: "Invalid input"      
+  /tosca_template/{id}/topology_template/node_templates/ancestors_requirements:
+    get:
+      summary: ""
+      description: "Recursively get all requirements all the way to the ROOT including the input node's"
+      operationId: "getAncestorsRequirements"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: '#/definitions/NodeTemplate'        
+      - in: query
+        name: node_name
+        type: string
+        description: The node name
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: object
+            additionalProperties:
+                type: object 
+        405:
+          description: "Invalid input"    
+  /tosca_template/{id}/topology_template/node_templates/ancestors_types:
+    get:
+      summary: ""
+      description: "Recursively get all requirements all the way to the ROOT including the input node's"
+      operationId: "getAllAncestorTypes"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: '#/definitions/NodeTemplate'        
+      - in: query
+        name: node_name
+        type: string
+        description: The node name
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: string
+        405:
+          description: "Invalid input"        
+  /tosca_template/{id}/topology_template/node_templates/ancestors_properties:
+    get:
+      summary: ""
+      description: "Recursively get all requirements all the way to the ROOT including the input node's"
+      operationId: "getAllAncestorProperties"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: '#/definitions/NodeTemplate'        
+      - in: query
+        name: node_name
+        type: string
+        description: The node name
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                  type: object 
+        405:
+          description: "Invalid input"   
+  /tosca_template/{id}/topology_template/node_templates/properties:
+    get:
+      summary: ""
+      description: "s"
+      operationId: "getNodeProperties"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: '#/definitions/NodeTemplate'        
+      - in: query
+        name: node_name
+        type: string
+        description: The node name
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+        405:
+          description: "Invalid input"       
+    put:
+      summary: ""
+      description: "s"
+      operationId: "setNodeProperties"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "properties"
+        required: true
+        schema:
+          type: object
+          additionalProperties:
+            type: string      
+      - in: query
+        name: node_name
+        type: string
+        description: The node name
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+        405:
+          description: "Invalid input"   
+  /tosca_template/{id}/topology_template/node_templates/outputs:
+    get:
+      summary: ""
+      description: "s"
+      operationId: "getNodeOutputs"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: '#/definitions/NodeTemplate'        
+      - in: query
+        name: node_name
+        type: string
+        description: The node name
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+        405:
+          description: "Invalid input"       
+          
+  /tosca_template/{id}/topology_template/node_templates/related:
+    get:
+      summary: ""
+      description: "s"
+      operationId: "getRelatedNode"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: '#/definitions/NodeTemplate'        
+      - in: query
+        name: node_name
+        type: string
+        description: The node name
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NodeTemplate'       
+        405:
+          description: "Invalid input"             
+securityDefinitions:
+  drip_auth:
+    type: "oauth2"
+    authorizationUrl: "http://localhost/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:ToscaTemplate: "modify topolog template in your account"
+      read:ToscaTemplate: "read your topolog template"
+      admin:User: "Grants access to admin operations"
+      write:Credentials: "modify cloud credentials in your account"
+      read:Credentials: "read your cloud credentials"
+definitions:
+  User:
+    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/User.yml#/User"
+  Credentials:
+    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/Credentials.yml#/Credentials"
+  NodeTemplate:
+    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
+  TopologyTemplate:
+    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml"
+  ToscaTemplate:
+    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/ToscaTemplate.yml"
+  ArrayOfNodeTemplate:
+    type: "object"
+    items: 
+      $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /skoulouzis/SURE_TOSCA/1.0.0
