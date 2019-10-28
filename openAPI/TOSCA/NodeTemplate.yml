@@ -1,18 +1,45 @@
   NodeTemplate:
       type: "object"
       properties:
+          derived_from:
+              type: "string"     
+          properties:
+              type: object
+              additionalProperties:
+                  type: object     
+          requirements:
+              type: "array"
+              items:
+                  type: object
+                  additionalProperties:
+                    type: object   
+          interfaces:
+              type: object
+              additionalProperties:
+                  type: object       
+          capabilities:
+              type: object
+              additionalProperties:
+                  type: object                      
           type:
               type: "string"
-          derived_from:
-              type: "string"              
           description:
               type: "string"       
-          node:
-              type: "string"                
           directives:
               type: "array"
               items:
-                type: string
+                type: string    
+          attributes:
+              type: object
+              additionalProperties:
+                  type: object   
+          artifacts:
+              type: object
+              additionalProperties:
+                  type: object                   
+          node:
+              type: "string"                
+
           occurrences:
               type: "array"
               items:
@@ -21,25 +48,8 @@
               type: string
               additionalProperties:
                   type: string             
-          requirements:
-              type: "array"
-              items:
-                  type: object
-                  additionalProperties:
-                    type: object
-          artifacts:
-              type: object
-              additionalProperties:
-                  type: object      
-          properties:
-              type: object
-              additionalProperties:
-                  type: object   
-          interfaces:
-              type: object
-              additionalProperties:
-                  type: object     
-          capabilities:
-              type: object
-              additionalProperties:
-                  type: object    
+
+     
+ 
+     
+    
