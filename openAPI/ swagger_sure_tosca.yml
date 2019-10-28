@@ -385,7 +385,6 @@ paths:
               type: object
         405:
           description: "Invalid input"       
-          
   /tosca_template/{id}/topology_template/node_templates/related:
     get:
       summary: ""
