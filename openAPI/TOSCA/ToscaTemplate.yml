@@ -63,3 +63,15 @@
               type: "string"
           template_author:
               type: "string"   
+          policies:
+              type: "array"
+              items:
+                  type: object
+                  additionalProperties:
+                    type: object                
+          inputs:
+              type: "array"
+              items:
+                  type: object
+                  additionalProperties:
+                    type: object                    
