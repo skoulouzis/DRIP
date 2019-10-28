@@ -445,6 +445,6 @@ definitions:
   NodeTemplate:
     $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
   TopologyTemplate:
-    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml"
+    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml#/TopologyTemplate"
   ToscaTemplate:
-    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/ToscaTemplate.yml"
+    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/ToscaTemplate.yml#/ToscaTemplate"
