@@ -493,35 +493,296 @@ definitions:
   ToscaTemplate:
     type: "object"
     properties:
-      items:
+      tosca_definitions_version:
         type: "string"
-      additionalProperties:
+      tosca_default_namespace:
+        type: "string"
+      template_name:
+        type: "string"
+      topology_template:
+        $ref: "#/definitions/TopologyTemplate"
+      template_author:
+        type: "string"
+      template_version:
+        type: "string"
+      description:
+        type: "string"
+      imports:
+        type: "array"
+        items:
+          type: "object"
+          additionalProperties:
+            type: "object"
+            properties: {}
+      dsl_definitions:
         type: "object"
-        properties: {}
+        additionalProperties:
+          type: "object"
+          properties: {}
+      node_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      relationship_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      relationship_templates:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      capability_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      artifact_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      data_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      interface_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      policy_types:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      group_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      repositories:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
     example:
-      additionalProperties: "{}"
-      items: "items"
+      node_types:
+        key: "{}"
+      policy_types:
+        key: "policy_types"
+      topology_template:
+        outputs:
+        - key: "{}"
+        - key: "{}"
+        substitution_mappings:
+          key: "{}"
+        inputs:
+        - key: "{}"
+        - key: "{}"
+        node_templates:
+          key:
+            requirements:
+            - key: "{}"
+            - key: "{}"
+            interfaces:
+              key: "{}"
+            capabilities:
+              key: "{}"
+            directives:
+            - "directives"
+            - "directives"
+            derived_from: "derived_from"
+            description: "description"
+            attributes:
+              key: "{}"
+            type: "type"
+            properties:
+              key: "{}"
+            artifacts:
+              key: "{}"
+        policies:
+        - key: "{}"
+        - key: "{}"
+        description: "description"
+        groups:
+          key: "{}"
+        relationship_templates:
+          key: "{}"
+      template_version: "template_version"
+      imports:
+      - key: "{}"
+      - key: "{}"
+      template_author: "template_author"
+      group_types:
+        key: "{}"
+      description: "description"
+      template_name: "template_name"
+      artifact_types:
+        key: "{}"
+      capability_types:
+        key: "{}"
+      repositories:
+        key: "{}"
+      tosca_definitions_version: "tosca_definitions_version"
+      dsl_definitions:
+        key: "{}"
+      interface_types:
+        key: "{}"
+      relationship_types:
+        key: "{}"
+      tosca_default_namespace: "tosca_default_namespace"
+      relationship_templates:
+        key: "{}"
+      data_types:
+        key: "{}"
   TopologyTemplate:
     type: "object"
     properties:
-      items:
+      description:
+        type: "string"
+      inputs:
+        type: "array"
+        items:
+          type: "object"
+          additionalProperties:
+            type: "object"
+            properties: {}
+      node_templates:
         type: "object"
-        properties: {}
-      additionalProperties:
+        additionalProperties:
+          $ref: "#/definitions/NodeTemplate"
+      relationship_templates:
         type: "object"
-        properties: {}
+        additionalProperties:
+          type: "object"
+          properties: {}
+      outputs:
+        type: "array"
+        items:
+          type: "object"
+          additionalProperties:
+            type: "object"
+            properties: {}
+      groups:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      substitution_mappings:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      policies:
+        type: "array"
+        items:
+          type: "object"
+          additionalProperties:
+            type: "object"
+            properties: {}
     example:
-      additionalProperties: "{}"
-      items: "{}"
+      outputs:
+      - key: "{}"
+      - key: "{}"
+      substitution_mappings:
+        key: "{}"
+      inputs:
+      - key: "{}"
+      - key: "{}"
+      node_templates:
+        key:
+          requirements:
+          - key: "{}"
+          - key: "{}"
+          interfaces:
+            key: "{}"
+          capabilities:
+            key: "{}"
+          directives:
+          - "directives"
+          - "directives"
+          derived_from: "derived_from"
+          description: "description"
+          attributes:
+            key: "{}"
+          type: "type"
+          properties:
+            key: "{}"
+          artifacts:
+            key: "{}"
+      policies:
+      - key: "{}"
+      - key: "{}"
+      description: "description"
+      groups:
+        key: "{}"
+      relationship_templates:
+        key: "{}"
   NodeTemplate:
     type: "object"
     properties:
-      items:
+      derived_from:
+        type: "string"
+      properties:
         type: "object"
-        properties: {}
-      additionalProperties:
+        additionalProperties:
+          type: "object"
+          properties: {}
+      requirements:
+        type: "array"
+        items:
+          type: "object"
+          additionalProperties:
+            type: "object"
+            properties: {}
+      interfaces:
         type: "object"
-        properties: {}
+        additionalProperties:
+          type: "object"
+          properties: {}
+      capabilities:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      type:
+        type: "string"
+      description:
+        type: "string"
+      directives:
+        type: "array"
+        items:
+          type: "string"
+      attributes:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      artifacts:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
     example:
-      additionalProperties: "{}"
-      items: "{}"
+      requirements:
+      - key: "{}"
+      - key: "{}"
+      interfaces:
+        key: "{}"
+      capabilities:
+        key: "{}"
+      directives:
+      - "directives"
+      - "directives"
+      derived_from: "derived_from"
+      description: "description"
+      attributes:
+        key: "{}"
+      type: "type"
+      properties:
+        key: "{}"
+      artifacts:
+        key: "{}"

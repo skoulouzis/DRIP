@@ -6,6 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from sure_tosca.models.base_model_ import Model
+from sure_tosca.models.node_template import NodeTemplate  # noqa: F401,E501
 from sure_tosca import util
 
 
@@ -15,26 +16,56 @@ class TopologyTemplate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, items=None, additional_properties=None):  # noqa: E501
+    def __init__(self, description=None, inputs=None, node_templates=None, relationship_templates=None, outputs=None, groups=None, substitution_mappings=None, policies=None):  # noqa: E501
         """TopologyTemplate - a model defined in Swagger
 
-        :param items: The items of this TopologyTemplate.  # noqa: E501
-        :type items: object
-        :param additional_properties: The additional_properties of this TopologyTemplate.  # noqa: E501
-        :type additional_properties: object
+        :param description: The description of this TopologyTemplate.  # noqa: E501
+        :type description: str
+        :param inputs: The inputs of this TopologyTemplate.  # noqa: E501
+        :type inputs: List[Dict[str, object]]
+        :param node_templates: The node_templates of this TopologyTemplate.  # noqa: E501
+        :type node_templates: Dict[str, NodeTemplate]
+        :param relationship_templates: The relationship_templates of this TopologyTemplate.  # noqa: E501
+        :type relationship_templates: Dict[str, object]
+        :param outputs: The outputs of this TopologyTemplate.  # noqa: E501
+        :type outputs: List[Dict[str, object]]
+        :param groups: The groups of this TopologyTemplate.  # noqa: E501
+        :type groups: Dict[str, object]
+        :param substitution_mappings: The substitution_mappings of this TopologyTemplate.  # noqa: E501
+        :type substitution_mappings: Dict[str, object]
+        :param policies: The policies of this TopologyTemplate.  # noqa: E501
+        :type policies: List[Dict[str, object]]
         """
         self.swagger_types = {
-            'items': object,
-            'additional_properties': object
+            'description': str,
+            'inputs': List[Dict[str, object]],
+            'node_templates': Dict[str, NodeTemplate],
+            'relationship_templates': Dict[str, object],
+            'outputs': List[Dict[str, object]],
+            'groups': Dict[str, object],
+            'substitution_mappings': Dict[str, object],
+            'policies': List[Dict[str, object]]
         }
 
         self.attribute_map = {
-            'items': 'items',
-            'additional_properties': 'additionalProperties'
+            'description': 'description',
+            'inputs': 'inputs',
+            'node_templates': 'node_templates',
+            'relationship_templates': 'relationship_templates',
+            'outputs': 'outputs',
+            'groups': 'groups',
+            'substitution_mappings': 'substitution_mappings',
+            'policies': 'policies'
         }
 
-        self._items = items
-        self._additional_properties = additional_properties
+        self._description = description
+        self._inputs = inputs
+        self._node_templates = node_templates
+        self._relationship_templates = relationship_templates
+        self._outputs = outputs
+        self._groups = groups
+        self._substitution_mappings = substitution_mappings
+        self._policies = policies
 
     @classmethod
     def from_dict(cls, dikt):
@@ -48,43 +79,169 @@ class TopologyTemplate(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def items(self):
-        """Gets the items of this TopologyTemplate.
+    def description(self):
+        """Gets the description of this TopologyTemplate.
 
 
-        :return: The items of this TopologyTemplate.
-        :rtype: object
+        :return: The description of this TopologyTemplate.
+        :rtype: str
         """
-        return self._items
+        return self._description
 
-    @items.setter
-    def items(self, items):
-        """Sets the items of this TopologyTemplate.
+    @description.setter
+    def description(self, description):
+        """Sets the description of this TopologyTemplate.
 
 
-        :param items: The items of this TopologyTemplate.
-        :type items: object
+        :param description: The description of this TopologyTemplate.
+        :type description: str
         """
 
-        self._items = items
+        self._description = description
 
     @property
-    def additional_properties(self):
-        """Gets the additional_properties of this TopologyTemplate.
+    def inputs(self):
+        """Gets the inputs of this TopologyTemplate.
 
 
-        :return: The additional_properties of this TopologyTemplate.
-        :rtype: object
+        :return: The inputs of this TopologyTemplate.
+        :rtype: List[Dict[str, object]]
         """
-        return self._additional_properties
+        return self._inputs
 
-    @additional_properties.setter
-    def additional_properties(self, additional_properties):
-        """Sets the additional_properties of this TopologyTemplate.
+    @inputs.setter
+    def inputs(self, inputs):
+        """Sets the inputs of this TopologyTemplate.
 
 
-        :param additional_properties: The additional_properties of this TopologyTemplate.
-        :type additional_properties: object
+        :param inputs: The inputs of this TopologyTemplate.
+        :type inputs: List[Dict[str, object]]
         """
 
-        self._additional_properties = additional_properties
+        self._inputs = inputs
+
+    @property
+    def node_templates(self):
+        """Gets the node_templates of this TopologyTemplate.
+
+
+        :return: The node_templates of this TopologyTemplate.
+        :rtype: Dict[str, NodeTemplate]
+        """
+        return self._node_templates
+
+    @node_templates.setter
+    def node_templates(self, node_templates):
+        """Sets the node_templates of this TopologyTemplate.
+
+
+        :param node_templates: The node_templates of this TopologyTemplate.
+        :type node_templates: Dict[str, NodeTemplate]
+        """
+
+        self._node_templates = node_templates
+
+    @property
+    def relationship_templates(self):
+        """Gets the relationship_templates of this TopologyTemplate.
+
+
+        :return: The relationship_templates of this TopologyTemplate.
+        :rtype: Dict[str, object]
+        """
+        return self._relationship_templates
+
+    @relationship_templates.setter
+    def relationship_templates(self, relationship_templates):
+        """Sets the relationship_templates of this TopologyTemplate.
+
+
+        :param relationship_templates: The relationship_templates of this TopologyTemplate.
+        :type relationship_templates: Dict[str, object]
+        """
+
+        self._relationship_templates = relationship_templates
+
+    @property
+    def outputs(self):
+        """Gets the outputs of this TopologyTemplate.
+
+
+        :return: The outputs of this TopologyTemplate.
+        :rtype: List[Dict[str, object]]
+        """
+        return self._outputs
+
+    @outputs.setter
+    def outputs(self, outputs):
+        """Sets the outputs of this TopologyTemplate.
+
+
+        :param outputs: The outputs of this TopologyTemplate.
+        :type outputs: List[Dict[str, object]]
+        """
+
+        self._outputs = outputs
+
+    @property
+    def groups(self):
+        """Gets the groups of this TopologyTemplate.
+
+
+        :return: The groups of this TopologyTemplate.
+        :rtype: Dict[str, object]
+        """
+        return self._groups
+
+    @groups.setter
+    def groups(self, groups):
+        """Sets the groups of this TopologyTemplate.
+
+
+        :param groups: The groups of this TopologyTemplate.
+        :type groups: Dict[str, object]
+        """
+
+        self._groups = groups
+
+    @property
+    def substitution_mappings(self):
+        """Gets the substitution_mappings of this TopologyTemplate.
+
+
+        :return: The substitution_mappings of this TopologyTemplate.
+        :rtype: Dict[str, object]
+        """
+        return self._substitution_mappings
+
+    @substitution_mappings.setter
+    def substitution_mappings(self, substitution_mappings):
+        """Sets the substitution_mappings of this TopologyTemplate.
+
+
+        :param substitution_mappings: The substitution_mappings of this TopologyTemplate.
+        :type substitution_mappings: Dict[str, object]
+        """
+
+        self._substitution_mappings = substitution_mappings
+
+    @property
+    def policies(self):
+        """Gets the policies of this TopologyTemplate.
+
+
+        :return: The policies of this TopologyTemplate.
+        :rtype: List[Dict[str, object]]
+        """
+        return self._policies
+
+    @policies.setter
+    def policies(self, policies):
+        """Sets the policies of this TopologyTemplate.
+
+
+        :param policies: The policies of this TopologyTemplate.
+        :type policies: List[Dict[str, object]]
+        """
+
+        self._policies = policies
