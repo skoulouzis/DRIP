@@ -72,7 +72,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: ''#/definitions/TopologyTemplate'
+            $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml#/TopologyTemplate"
         405:
           description: "Invalid input"        
   /tosca_template/{id}/topology_template/node_templates:
