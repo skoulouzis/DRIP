@@ -169,7 +169,6 @@ paths:
                 type: object 
         405:
           description: "Invalid input"       
-          
   /tosca_template/{id}/topology_template/node_templates/parent_type_name:
     get:
       summary: ""
@@ -450,4 +449,6 @@ definitions:
       $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
+# basePath: /sure_tosca/1.0.0
+# Added by API Auto Mocking Plugin
 basePath: /skoulouzis/SURE_TOSCA/1.0.0
