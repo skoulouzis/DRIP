@@ -62,10 +62,13 @@
           description:
               type: "string"
           template_author:
-              type: "string"                  
+              type: "string"      
+          template_version:
+              type: "string"                 
           inputs:
               type: "array"
               items:
                   type: object
                   additionalProperties:
                     type: object                    
+                    
