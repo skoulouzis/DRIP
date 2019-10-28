@@ -1,14 +1,14 @@
 swagger: "2.0"
 info:
-  description: "SURE Simple qUeRy sErvice TOSCA. "
+  description: "TOSCA Simple qUeRy sErvice (SURE). "
   version: "1.0.0"
-  title: "sure-tosca"
+  title: "tosca-sure"
   contact:
     email: "S.Koulouzis@uva.nl"
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-# basePath: "/sure_tosca"
+# basePath: "/tosca-sure"
 schemes:
 - "https"
 - "http"
