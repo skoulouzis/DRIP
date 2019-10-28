@@ -8,7 +8,7 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-# basePath: "/tosca-sure"
+basePath: "/tosca-sure/1.0.0"
 schemes:
 - "https"
 - "http"
@@ -465,7 +465,3 @@ securityDefinitions:
       admin:User: "Grants access to admin operations"
       write:Credentials: "modify cloud credentials in your account"
       read:Credentials: "read your cloud credentials"
-# Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
-# Added by API Auto Mocking Plugin
-basePath: /skoulouzis/SURE_TOSCA/1.0.0
