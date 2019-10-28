@@ -2,32 +2,32 @@ NodeTemplate:
     type: "object"
     properties:
         name:
-        type: "string"
+            type: "string"
         type:
-        type: "string"
+            type: "string"
         requirements:
-        type: "array"
-        items:
+            type: "array"
+            items:
+                type: object
+                additionalProperties:
+                type: object
+        artifacts:
             type: object
             additionalProperties:
-            type: object
-        artifacts:
-        type: object
-        additionalProperties:
-            type: object      
+                type: object      
         properties:
-        type: object
-        additionalProperties:
-            type: object   
+            type: object
+            additionalProperties:
+                type: object   
         interfaces:
-        type: object
-        additionalProperties:
-            type: object     
+            type: object
+            additionalProperties:
+                type: object     
         capabilities:
-        type: object
-        additionalProperties:
-            type: object    
+            type: object
+            additionalProperties:
+                type: object    
         workflows:
-        type: object
-        additionalProperties:
-            type: object   
+            type: object
+            additionalProperties:
+                type: object   
