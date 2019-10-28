@@ -7,68 +7,62 @@
               type: "string"
           template_name:
               type: "string"
+          topology_template:
+              $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml#/TopologyTemplate"              
+          template_author:
+              type: "string"       
+          template_version:
+              type: "string"  
+          description:
+              type: "string"                 
           imports:
               type: "array"
               items:
                   type: object
                   additionalProperties:
                     type: object
-          repositories:
-              type: object
-              additionalProperties:
-                  type: object     
           dsl_definitions:
               type: object
               additionalProperties:
-                  type: object      
+                  type: object  
           node_types:
               type: object
               additionalProperties:
-                  type: object     
-          topology_template:
-              $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml#/TopologyTemplate"
+                  type: object        
           relationship_types:
               type: object
               additionalProperties:
-                  type: object    
+                  type: object        
           relationship_templates:
               type: object
               additionalProperties:
-                  type: object      
+                  type: object     
           capability_types:
               type: object
               additionalProperties:
-                  type: object      
+                  type: object   
           artifact_types:
               type: object
               additionalProperties:
-                  type: object        
+                  type: object      
           data_types:
               type: object
               additionalProperties:
-                  type: object 
+                  type: object     
           interface_types:
               type: object
               additionalProperties:
-                  type: object     
+                  type: object  
           policy_types:
               type: object
               additionalProperties:
-                  type: string  
+                  type: string      
           group_types:
               type: object
               additionalProperties:
-                  type: object   
-          description:
-              type: "string"
-          template_author:
-              type: "string"      
-          template_version:
-              type: "string"                 
-          inputs:
-              type: "array"
-              items:
-                  type: object
-                  additionalProperties:
-                    type: object                    
+                  type: object                  
+          repositories:
+              type: object
+              additionalProperties:
+                  type: object                  
                     
