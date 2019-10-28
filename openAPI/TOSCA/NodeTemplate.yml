@@ -3,6 +3,24 @@
       properties:
           type:
               type: "string"
+          derived_from:
+              type: "string"              
+          description:
+              type: "string"       
+          node:
+              type: "string"                
+          directives:
+              type: "array"
+              items:
+                type: string
+          occurrences:
+              type: "array"
+              items:
+                type: string                
+          metadata:
+              type: string
+              additionalProperties:
+                  type: string             
           requirements:
               type: "array"
               items:
