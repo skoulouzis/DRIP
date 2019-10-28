@@ -33,10 +33,6 @@ paths:
             type: "string"
         405:
           description: "Invalid input"
-      security:
-      - drip_auth:
-        - "write:ToscaTemplate"
-        - "read:ToscaTemplate"
   /tosca_template/{id}:
     get:
       description: ""
@@ -453,15 +449,4 @@ paths:
               additionalProperties:
                   type: object     
         405:
-          description: "Invalid input"             
-securityDefinitions:
-  drip_auth:
-    type: "oauth2"
-    authorizationUrl: "http://localhost/oauth/dialog"
-    flow: "implicit"
-    scopes:
-      write:ToscaTemplate: "modify topolog template in your account"
-      read:ToscaTemplate: "read your topolog template"
-      admin:User: "Grants access to admin operations"
-      write:Credentials: "modify cloud credentials in your account"
-      read:Credentials: "read your cloud credentials"
+          description: "Invalid input"
