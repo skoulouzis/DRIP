@@ -126,7 +126,7 @@ paths:
         description: ""
         required: false
         schema:
-          $ref: '#/definitions/NodeTemplate'        
+          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
         name: node_name
         type: string
@@ -155,7 +155,7 @@ paths:
         description: ""
         required: false
         schema:
-          $ref: '#/definitions/NodeTemplate'        
+          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
         name: node_name
         type: string
@@ -187,7 +187,7 @@ paths:
         description: ""
         required: false
         schema:
-          $ref: '#/definitions/NodeTemplate'        
+          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
         name: node_name
         type: string
@@ -216,7 +216,7 @@ paths:
         name: "body"
         required: false
         schema:
-          $ref: '#/definitions/NodeTemplate'        
+          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
         name: node_name
         type: string
@@ -247,7 +247,7 @@ paths:
         name: "body"
         required: false
         schema:
-          $ref: '#/definitions/NodeTemplate'        
+          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
         name: node_name
         type: string
@@ -278,7 +278,7 @@ paths:
         name: "body"
         required: false
         schema:
-          $ref: '#/definitions/NodeTemplate'        
+          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
         name: node_name
         type: string
@@ -311,7 +311,7 @@ paths:
         name: "body"
         required: false
         schema:
-          $ref: '#/definitions/NodeTemplate'        
+          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
         name: node_name
         type: string
@@ -375,7 +375,7 @@ paths:
         name: "body"
         required: false
         schema:
-          $ref: '#/definitions/NodeTemplate'        
+          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
         name: node_name
         type: string
@@ -407,7 +407,7 @@ paths:
         name: "body"
         required: false
         schema:
-          $ref: '#/definitions/NodeTemplate'        
+          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
         name: node_name
         type: string
@@ -418,7 +418,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/NodeTemplate'       
+              $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
         405:
           description: "Invalid input"     
   /tosca_template/{id}/interface_types:
@@ -438,7 +438,7 @@ paths:
         name: "body"
         required: false
         schema:
-          $ref: '#/definitions/NodeTemplate'        
+          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
         name: interface_type
         type: string
@@ -465,17 +465,6 @@ securityDefinitions:
       admin:User: "Grants access to admin operations"
       write:Credentials: "modify cloud credentials in your account"
       read:Credentials: "read your cloud credentials"
-definitions:
-  User:
-    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/User.yml#/User"
-  Credentials:
-    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/Credentials.yml#/Credentials"
-  NodeTemplate:
-    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
-  TopologyTemplate:
-    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml"
-  ToscaTemplate:
-    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/ToscaTemplate.yml"
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
 # Added by API Auto Mocking Plugin
