@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   description: "SURE Simple qUeRy sErvice TOSCA. "
   version: "1.0.0"
-  title: "SURE TOSCA"
+  title: "sure-tosca"
   contact:
     email: "S.Koulouzis@uva.nl"
   license:
@@ -53,7 +53,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: ''#/definitions/ToscaTemplate'
+            $ref: '$ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/ToscaTemplate.yml"'
         405:
           description: "Invalid input"            
   /tosca_template/{id}/topology_template:
@@ -105,7 +105,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/NodeTemplate'
+              $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
         405:
           description: "Invalid input"
   /tosca_template/{id}/topology_template/node_templates/type_name:
@@ -476,12 +476,7 @@ definitions:
     $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml"
   ToscaTemplate:
     $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/ToscaTemplate.yml"
-  ArrayOfNodeTemplate:
-    type: "object"
-    items: 
-      $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
-# basePath: /sure_tosca/1.0.0
 # Added by API Auto Mocking Plugin
 basePath: /skoulouzis/SURE_TOSCA/1.0.0
