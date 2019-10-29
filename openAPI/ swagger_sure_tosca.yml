@@ -179,7 +179,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         description: ""
         required: false
         schema:
@@ -209,7 +209,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
@@ -240,7 +240,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
@@ -271,7 +271,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
@@ -304,7 +304,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
