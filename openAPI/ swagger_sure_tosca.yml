@@ -147,7 +147,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         description: ""
         required: false
         schema:
@@ -389,7 +389,7 @@ paths:
     get:
       summary: ""
       description: "s"
-      operationId: "getRelatedNode"
+      operationId: "getRelatedNodes"
       produces:
         - "application/json"      
       parameters:
