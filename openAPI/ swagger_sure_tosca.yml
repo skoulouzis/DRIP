@@ -429,14 +429,10 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - in: "body"
-        name: "nodeTemplate"
-        required: false
-        schema:
-          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
         name: interface_type
         type: string
+        required: false
         description: The interface type
       responses:
         200:
