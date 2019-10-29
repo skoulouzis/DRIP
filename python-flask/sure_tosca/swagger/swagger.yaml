@@ -193,7 +193,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         description: ""
         required: false
         schema:
@@ -226,7 +226,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "#/definitions/NodeTemplate"
@@ -261,7 +261,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "#/definitions/NodeTemplate"
@@ -295,7 +295,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "#/definitions/NodeTemplate"
@@ -331,7 +331,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "#/definitions/NodeTemplate"
