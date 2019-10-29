@@ -8,7 +8,7 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-# basePath: "/tosca-sure"
+basePath: "/tosca-sure/1.0.0"
 schemes:
 - "https"
 - "http"
@@ -33,10 +33,6 @@ paths:
             type: "string"
         405:
           description: "Invalid input"
-      security:
-      - drip_auth:
-        - "write:ToscaTemplate"
-        - "read:ToscaTemplate"
   /tosca_template/{id}:
     get:
       description: ""
@@ -53,7 +49,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: '$ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/ToscaTemplate.yml"'
+            $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/ToscaTemplate.yml#/ToscaTemplate"
         405:
           description: "Invalid input"            
   /tosca_template/{id}/topology_template:
@@ -72,7 +68,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: ''#/definitions/TopologyTemplate'
+            $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml#/TopologyTemplate"
         405:
           description: "Invalid input"        
   /tosca_template/{id}/topology_template/node_templates:
@@ -389,7 +385,6 @@ paths:
               type: object
         405:
           description: "Invalid input"       
-          
   /tosca_template/{id}/topology_template/node_templates/related:
     get:
       summary: ""
@@ -453,19 +448,4 @@ paths:
               additionalProperties:
                   type: object     
         405:
-          description: "Invalid input"             
-securityDefinitions:
-  drip_auth:
-    type: "oauth2"
-    authorizationUrl: "http://localhost/oauth/dialog"
-    flow: "implicit"
-    scopes:
-      write:ToscaTemplate: "modify topolog template in your account"
-      read:ToscaTemplate: "read your topolog template"
-      admin:User: "Grants access to admin operations"
-      write:Credentials: "modify cloud credentials in your account"
-      read:Credentials: "read your cloud credentials"
-# Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
-# Added by API Auto Mocking Plugin
-basePath: /skoulouzis/SURE_TOSCA/1.0.0
+          description: "Invalid input"
