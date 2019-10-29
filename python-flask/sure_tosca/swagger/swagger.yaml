@@ -481,6 +481,8 @@ paths:
               additionalProperties:
                 type: "object"
                 properties: {}
+        404:
+          description: "Not found"
         405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
