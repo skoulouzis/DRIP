@@ -456,7 +456,7 @@ paths:
   /tosca_template/{id}/interface_types:
     get:
       summary: ""
-      description: "s"
+      description: "returns the interface types"
       operationId: "get_interface_types"
       produces:
       - "application/json"

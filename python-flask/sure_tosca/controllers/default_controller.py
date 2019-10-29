@@ -67,7 +67,7 @@ def get_ancestors_requirements(id, body=None, node_name=None):  # noqa: E501
 def get_interface_types(id, nodeTemplate=None, interface_type=None):  # noqa: E501
     """
 
-    s # noqa: E501
+    returns the interface types # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
