@@ -50,6 +50,8 @@ paths:
           description: "successful operation"
           schema:
             $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/ToscaTemplate.yml#/ToscaTemplate"
+        404:
+          description: "Not found"               
         405:
           description: "Invalid input"            
   /tosca_template/{id}/topology_template:
@@ -69,6 +71,8 @@ paths:
           description: "successful operation"
           schema:
             $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml#/TopologyTemplate"
+        404:
+          description: "Not found"               
         405:
           description: "Invalid input"        
   /tosca_template/{id}/topology_template/node_templates:
@@ -102,6 +106,8 @@ paths:
             type: array
             items:
               $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
+        404:
+          description: "Not found"                 
         405:
           description: "Invalid input"
   /tosca_template/{id}/topology_template/node_templates/type_name:
@@ -118,8 +124,8 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
-        description: ""
+        name: "nodeTemplate"
+        description: "the NodeTemplate"
         required: false
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
@@ -132,6 +138,8 @@ paths:
           description: "successful operation"
           schema:
             type: "string"
+        404:
+          description: "Not found"               
         405:
           description: "Invalid input"      
   /tosca_template/{id}/topology_template/node_templates/requirements:
@@ -147,7 +155,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         description: ""
         required: false
         schema:
@@ -163,6 +171,8 @@ paths:
             type: object
             additionalProperties:
                 type: object 
+        404:
+          description: "Not found"                   
         405:
           description: "Invalid input"       
   /tosca_template/{id}/topology_template/node_templates/parent_type_name:
@@ -179,7 +189,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         description: ""
         required: false
         schema:
@@ -193,6 +203,8 @@ paths:
           description: "successful operation"
           schema:
             type: string
+        404:
+          description: "Not found"               
         405:
           description: "Invalid input"      
   /tosca_template/{id}/topology_template/node_templates/ancestors_requirements:
@@ -209,7 +221,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
@@ -224,6 +236,8 @@ paths:
             type: object
             additionalProperties:
                 type: object 
+        404:
+          description: "Not found"                   
         405:
           description: "Invalid input"    
   /tosca_template/{id}/topology_template/node_templates/ancestors_types:
@@ -240,7 +254,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
@@ -255,6 +269,8 @@ paths:
             type: array
             items:
               type: string
+        404:
+          description: "Not found"                 
         405:
           description: "Invalid input"        
   /tosca_template/{id}/topology_template/node_templates/ancestors_properties:
@@ -271,7 +287,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
@@ -288,6 +304,8 @@ paths:
               type: object
               additionalProperties:
                   type: object 
+        404:
+          description: "Not found"                     
         405:
           description: "Invalid input"   
   /tosca_template/{id}/topology_template/node_templates/properties:
@@ -304,7 +322,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
@@ -319,6 +337,8 @@ paths:
             type: object
             additionalProperties:
               type: object
+        404:
+          description: "Not found"                 
         405:
           description: "Invalid input"       
     put:
@@ -352,6 +372,8 @@ paths:
             type: object
             additionalProperties:
               type: object
+        404:
+          description: "Not found"                 
         405:
           description: "Invalid input"   
   /tosca_template/{id}/topology_template/node_templates/outputs:
@@ -368,7 +390,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
@@ -383,13 +405,15 @@ paths:
             type: object
             additionalProperties:
               type: object
+        404:
+          description: "Not found"                 
         405:
           description: "Invalid input"       
   /tosca_template/{id}/topology_template/node_templates/related:
     get:
       summary: ""
       description: "s"
-      operationId: "getRelatedNode"
+      operationId: "getRelatedNodes"
       produces:
         - "application/json"      
       parameters:
@@ -399,7 +423,7 @@ paths:
         required: true
         type: "string"
       - in: "body"
-        name: "body"
+        name: "nodeTemplate"
         required: false
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
@@ -414,12 +438,14 @@ paths:
             type: array
             items:
               $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
+        404:
+          description: "Not found"                 
         405:
           description: "Invalid input"     
   /tosca_template/{id}/interface_types:
     get:
       summary: ""
-      description: "s"
+      description: "returns the interface types"
       operationId: "getInterfaceTypes"
       produces:
         - "application/json"      
@@ -429,14 +455,10 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - in: "body"
-        name: "body"
-        required: false
-        schema:
-          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
         name: interface_type
         type: string
+        required: false
         description: The interface type
       responses:
         200:
@@ -447,5 +469,7 @@ paths:
               type: object
               additionalProperties:
                   type: object     
+        404:
+          description: "Not found"                  
         405:
           description: "Invalid input"
