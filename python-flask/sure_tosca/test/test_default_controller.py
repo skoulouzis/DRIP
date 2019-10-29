@@ -112,12 +112,12 @@ class TestDefaultController(BaseTestCase):
 
         
         """
-        body = NodeTemplate()
+        nodeTemplate = NodeTemplate()
         query_string = [('node_name', 'node_name_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/requirements'.format(id='id_example'),
             method='GET',
-            data=json.dumps(body),
+            data=json.dumps(nodeTemplate),
             content_type='application/json',
             query_string=query_string)
         self.assert200(response,
@@ -170,8 +170,8 @@ class TestDefaultController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_get_related_node(self):
-        """Test case for get_related_node
+    def test_get_related_nodes(self):
+        """Test case for get_related_nodes
 
         
         """

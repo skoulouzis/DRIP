@@ -117,22 +117,22 @@ def get_node_properties(id, body=None, node_name=None):  # noqa: E501
     return 'do some magic!'
 
 
-def get_node_requirements(id, body=None, node_name=None):  # noqa: E501
+def get_node_requirements(id, nodeTemplate=None, node_name=None):  # noqa: E501
     """get_node_requirements
 
     Returns  the requirements for an input node as described in the template not in the node&#39;s definition  # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param body: 
-    :type body: dict | bytes
+    :param nodeTemplate: 
+    :type nodeTemplate: dict | bytes
     :param node_name: The node name
     :type node_name: str
 
     :rtype: Dict[str, object]
     """
     if connexion.request.is_json:
-        body = NodeTemplate.from_dict(connexion.request.get_json())  # noqa: E501
+        nodeTemplate = NodeTemplate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -193,7 +193,7 @@ def get_parent_type_name(id, body=None, node_name=None):  # noqa: E501
     return 'do some magic!'
 
 
-def get_related_node(id, nodeTemplate=None, node_name=None):  # noqa: E501
+def get_related_nodes(id, nodeTemplate=None, node_name=None):  # noqa: E501
     """
 
     s # noqa: E501
