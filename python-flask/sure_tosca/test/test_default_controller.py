@@ -67,13 +67,10 @@ class TestDefaultController(BaseTestCase):
 
         
         """
-        nodeTemplate = NodeTemplate()
         query_string = [('interface_type', 'interface_type_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/interface_types'.format(id='id_example'),
             method='GET',
-            data=json.dumps(nodeTemplate),
-            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

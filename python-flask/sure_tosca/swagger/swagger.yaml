@@ -466,11 +466,6 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - in: "body"
-        name: "nodeTemplate"
-        required: false
-        schema:
-          $ref: "#/definitions/NodeTemplate"
       - name: "interface_type"
         in: "query"
         description: "The interface type"
