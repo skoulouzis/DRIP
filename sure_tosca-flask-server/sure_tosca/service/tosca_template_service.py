@@ -73,7 +73,7 @@ def get_tosca_template_dict_by_id(id):
 
 
 def save(file):
-    tosca_template_file_path = os.path.join(db_dir_path, file.filename)
+    # tosca_template_file_path = os.path.join(db_dir_path, file.filename)
     tosca_template_dict = yaml.safe_load(file.stream)
     tosca_template_model = ToscaTemplateModel.from_dict(tosca_template_dict)
     tosca_template = ToscaTemplate(yaml_dict_tpl=tosca_template_dict)

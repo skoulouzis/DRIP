@@ -2,7 +2,7 @@
       type: "object"
       properties:
           derived_from:
-              type: "string"     
+              type: "string"
           properties:
               type: object
               additionalProperties:
@@ -24,7 +24,7 @@
           type:
               type: "string"
           description:
-              type: "string"       
+              type: "string"
           directives:
               type: "array"
               items:

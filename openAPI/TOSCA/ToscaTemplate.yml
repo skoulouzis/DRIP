@@ -10,11 +10,11 @@
           topology_template:
               $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml#/TopologyTemplate"              
           template_author:
-              type: "string"       
+              type: "string"
           template_version:
-              type: "string"  
+              type: "string"
           description:
-              type: "string"                 
+              type: "string"
           imports:
               type: "array"
               items:
