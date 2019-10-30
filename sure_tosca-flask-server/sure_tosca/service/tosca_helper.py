@@ -5,10 +5,26 @@ from toscaparser import tosca_template
 from toscaparser.elements.nodetype import NodeType
 from toscaparser.nodetemplate import NodeTemplate
 
-from src.utils.TOSCA_parser import TOSCAParser
 import yaml
 import logging
 
+# TOSCA template key names
+SECTIONS = (DEFINITION_VERSION, DEFAULT_NAMESPACE, TEMPLATE_NAME,
+            TOPOLOGY_TEMPLATE, TEMPLATE_AUTHOR, TEMPLATE_VERSION,
+            DESCRIPTION, IMPORTS, DSL_DEFINITIONS, NODE_TYPES,
+            RELATIONSHIP_TYPES, RELATIONSHIP_TEMPLATES,
+            CAPABILITY_TYPES, ARTIFACT_TYPES, DATA_TYPES, INTERFACE_TYPES,
+            POLICY_TYPES, GROUP_TYPES, REPOSITORIES, INPUTS, NODE_TEMPLATES,
+            OUTPUTS, GROUPS, SUBSTITUION_MAPPINGS, POLICIES, TYPE, REQUIREMENTS,
+            ARTIFACTS, PROPERTIES, INTERFACES) = \
+    ('tosca_definitions_version', 'tosca_default_namespace',
+     'template_name', 'tosca_template', 'template_author',
+     'template_version', 'description', 'imports', 'dsl_definitions',
+     'node_types', 'relationship_types', 'relationship_templates',
+     'capability_types', 'artifact_types', 'data_types',
+     'interface_types', 'policy_types', 'group_types', 'repositories',
+     'inputs', 'node_templates', 'outputs', 'groups', 'substitution_mappings',
+     'policies', 'type', 'requirements', 'artifacts', 'properties', 'interfaces')
 
 node_type_key_names_to_remove = ['capabilities', 'derived_from']
 
@@ -58,7 +74,7 @@ def get_node_type_requirements(type_name, all_nodes):
     return None
 
 
-def get_ancestors_requirements(node, all_nodes, all_custom_def, parent_requirements=None):
+def get_all_ancestors_requirements(node, all_node_types, all_custom_def, parent_requirements=None):
     """Recursively get all requirements all the way to the ROOT including the input node's"""
     if not parent_requirements:
         parent_requirements = []
@@ -71,13 +87,14 @@ def get_ancestors_requirements(node, all_nodes, all_custom_def, parent_requireme
                 parent_requirements.extend(node.parent_type.requirements)
             # Make parent type to NodeTemplate to continue
             if node.parent_type.type:
-                parent_template = node_type_2_node_template({'name': all_nodes[node.parent_type.type]}, all_custom_def)
+                parent_template = node_type_2_node_template({'name': all_node_types[node.parent_type.type]},
+                                                            all_custom_def)
             if parent_template:
-                get_ancestors_requirements(parent_template, all_nodes, parent_requirements)
+                get_all_ancestors_requirements(parent_template, all_node_types, parent_requirements)
     elif isinstance(node, dict):
         node_type_name = get_node_type_name(node)
-        node_template = node_type_2_node_template({'name': all_nodes[node_type_name]}, all_custom_def)
-        return get_ancestors_requirements(node_template, all_nodes, all_custom_def, parent_requirements)
+        node_template = node_type_2_node_template({'name': all_node_types[node_type_name]}, all_custom_def)
+        return get_all_ancestors_requirements(node_template, all_node_types, all_custom_def, parent_requirements)
     return parent_requirements
 
 
@@ -119,8 +136,7 @@ def node_type_2_node_template(node_type, all_custom_def):
 
 
 def get_tosca_template_2_topology_template_dictionary(template):
-    tp = TOSCAParser()
-    yaml_str = tp.tosca_template2_yaml(template)
+    yaml_str = tosca_template2_yaml(template)
     tosca_template_dict = yaml.load(yaml_str, Loader=yaml.FullLoader)
     this_tosca_template = tosca_template_dict['tosca_template']
     tosca_template_dict.pop('tosca_template')
@@ -181,7 +197,7 @@ def get_all_ancestors_types(child_node, all_node_types, all_custom_def, ancestor
     return ancestors_types
 
 
-def get_all_ancestors_properties(node, all_nodes, all_custom_def, ancestors_properties=None, ancestors_types=None):
+def get_all_ancestors_properties(node, all_nodes_templates, all_custom_def, ancestors_properties=None, ancestors_types=None):
     if not ancestors_properties:
         ancestors_properties = []
         ancestors_properties_names = []
@@ -191,10 +207,10 @@ def get_all_ancestors_properties(node, all_nodes, all_custom_def, ancestors_prop
                 node_prop_names.append(node_prop.name)
                 ancestors_properties.append(node_prop)
     if not ancestors_types:
-        ancestors_types = get_all_ancestors_types(node, all_nodes, all_custom_def)
+        ancestors_types = get_all_ancestors_types(node, all_nodes_templates, all_custom_def)
 
     for ancestors_type in ancestors_types:
-        ancestor = node_type_2_node_template({'name': all_nodes[ancestors_type]}, all_custom_def)
+        ancestor = node_type_2_node_template({'name': all_nodes_templates[ancestors_type]}, all_custom_def)
         if ancestor.get_properties_objects():
             for ancestor_prop in ancestor.get_properties_objects():
                 if ancestor_prop.name not in ancestors_properties_names and ancestor_prop.name not in node_prop_names:
@@ -213,3 +229,41 @@ def get_nodes_with_occurrences_in_requirements(topology_nodes):
                 nodes_with_occurrences_in_requirement.append(node)
                 break
     return nodes_with_occurrences_in_requirement
+
+
+def tosca_template2_yaml(tosca_template):
+    topology_dict = {DEFINITION_VERSION: tosca_template.version, IMPORTS: tosca_template._tpl_imports(),
+                     DESCRIPTION: tosca_template.description, TOPOLOGY_TEMPLATE: {}}
+    topology_dict[TOPOLOGY_TEMPLATE][NODE_TEMPLATES] = {}
+    node_templates = tosca_template.nodetemplates
+    for node_template in node_templates:
+        node_template_dict = get_node_template_dict(node_template)
+        topology_dict[TOPOLOGY_TEMPLATE][NODE_TEMPLATES][node_template.name] = node_template_dict
+
+    # If we don't add this then dump uses references for the same dictionary entries i.e. '&id001'
+    yaml.Dumper.ignore_aliases = lambda *args: True
+    return yaml.dump(topology_dict, default_flow_style=False)
+
+
+def get_node_template_dict(node_template):
+    node_template_dict = {TYPE: node_template.type}
+    #        node_template_dict[REQUIREMENTS] = {}
+    if node_template.requirements:
+        node_template_dict[REQUIREMENTS] = node_template.requirements
+    #        if node_template.interfaces:
+    #            interfaces = {}
+    #            for interface in node_template.interfaces:
+    #                interfaces[interface.type] = {}
+    #                interfaces[interface.type][interface.name] = interface.implementation
+
+    #        print( node_template.templates[node_template.name] )
+    if ARTIFACTS in node_template.templates[node_template.name].keys():
+        node_template_dict[ARTIFACTS] = node_template.templates[node_template.name][ARTIFACTS]
+    if PROPERTIES in node_template.templates[node_template.name].keys():
+        node_template_dict[PROPERTIES] = node_template.templates[node_template.name][PROPERTIES]
+    if INTERFACES in node_template.templates[node_template.name].keys():
+        node_template_dict[INTERFACES] = node_template.templates[node_template.name][INTERFACES]
+    #        print(dir(node_template))
+    #        print(node_template.templates)
+
+    return node_template_dict

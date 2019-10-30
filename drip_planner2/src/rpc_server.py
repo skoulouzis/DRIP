@@ -13,7 +13,6 @@ import yaml
 from planner.basic_planner import *
 from planner.planner import *
 from planner.spec_service import SpecService
-from utils import tosca as tosca_util
 
 logger = logging.getLogger(__name__)
 
@@ -112,14 +111,14 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     if sys.argv[1] == "test_local":
         tosca_path = "../../TOSCA/"
-        input_tosca_file_path = tosca_path + '/application_example.yaml'
+        input_tosca_file_path = tosca_path + '/application_example_2_topologies.yaml'
         conf = {'url': "http://host"}
         spec_service = SpecService(conf)
         test_planner = Planner(input_tosca_file_path, spec_service)
         test_tosca_template = test_planner.resolve_requirements()
         test_tosca_template = test_planner.set_infrastructure_specifications()
         template_dict = tosca_util.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
-        logger.info("template ----: \n" + yaml.dump(template))
+        # logger.info("template ----: \n" + yaml.dump(template))
 
         try:
             tosca_folder_path = os.path.join(tempfile.gettempdir(), tosca_path)

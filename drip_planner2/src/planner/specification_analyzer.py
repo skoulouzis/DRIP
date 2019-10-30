@@ -3,7 +3,7 @@ from abc import abstractmethod, ABCMeta
 from toscaparser.tosca_template import ToscaTemplate
 import networkx as nx
 
-from src.utils import tosca as tosca_util
+from src.utils import tosca_helper as tosca_util
 import matplotlib.pyplot as plt
 
 

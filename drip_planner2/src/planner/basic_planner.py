@@ -208,7 +208,7 @@ class BasicPlanner:
         else:
             logging.info('The TOSCA template in: ' + path + ' has no requirements')
         tp = TOSCAParser()
-        yaml_str = tp.tosca_template2_yaml(self.template)
+        yaml_str = tosca_template2_yaml(self.template)
         yaml_str = fix_duplicate_vm_names(yaml_str)
         yaml_str = yaml_str.replace('tosca_definitions_version: tosca_simple_yaml_1_0', '')
         yaml_str = yaml_str.replace('description: TOSCA example', '')

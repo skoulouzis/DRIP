@@ -7,9 +7,9 @@ import operator
 
 from src.planner.simple_spec_alayzer import SimpleAnalyzer
 from src.planner.spec_service import *
-from src.utils.tosca import *
+from src.utils.tosca_helper import *
 from src.planner.specification_analyzer import *
-from src.utils import tosca as tosca_util
+from src.utils import tosca_helper as tosca_util
 import matplotlib.pyplot as plt
 
 

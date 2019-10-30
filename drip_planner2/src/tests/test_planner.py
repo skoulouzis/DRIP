@@ -8,7 +8,7 @@ import unittest
 
 from src.planner.planner import *
 from src.planner.spec_service import SpecService
-from src.utils import tosca as tosca_util
+from src.utils import tosca_helper as tosca_util
 
 
 class MyTestCase(unittest.TestCase):
