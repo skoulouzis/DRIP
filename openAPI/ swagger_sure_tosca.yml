@@ -261,7 +261,7 @@ paths:
         name: name_key
         type: string
         required: false
-        description: The type        
+        description: the name key       
       - in: query
         name: has_interfaces
         type: boolean
@@ -322,9 +322,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -353,9 +354,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -367,7 +369,7 @@ paths:
           description: "Not found"                   
         405:
           description: "Invalid input"       
-  /tosca_template/{id}/topology_template/node_templates/parent_type_name:
+  /tosca_template/{id}/topology_template/node_templates/derived_from:
     get:
       summary: ""
       description: ""
@@ -387,9 +389,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -418,9 +421,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -451,9 +455,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -484,9 +489,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -519,9 +525,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -587,9 +594,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -620,9 +628,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
