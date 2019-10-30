@@ -54,49 +54,6 @@ paths:
           description: "Not found"               
         405:
           description: "Invalid input"            
-  /tosca_template/{id}/interface_types:
-    get:
-      summary: ""
-      description: "returns the interface types"
-      operationId: "getInterfaceTypes"
-      produces:
-        - "application/json"      
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "ID of topolog template uplodaed"
-        required: true
-        type: "string"
-      - in: query
-        name: interface_type
-        type: string
-        required: false
-        description: The interface type
-      - in: query
-        name: derived_from
-        type: string
-        required: false
-        description: derived from interface
-      - in: query
-        name: operations
-        type: array
-        items:
-          type: string
-        required: false
-        description: the list of operations e.e. create, stop.     
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: array
-            items:
-              type: object
-              additionalProperties:
-                  type: object     
-        404:
-          description: "Not found"                  
-        405:
-          description: "Invalid input"         
   /tosca_template/{id}/imports:
     get:
       summary: ""
@@ -143,6 +100,69 @@ paths:
           type: string
         required: false
         description: the anchors the definition is for 
+      - in: query
+        name: derived_from
+        type: string
+        required: false
+        description: derived from        
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                  type: object     
+        404:
+          description: "Not found"                  
+        405:
+          description: "Invalid input"             
+  /tosca_template/{id}/types:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "getTypes"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: query
+        name: kind_of_type
+        description: the type we are looking for e.g. capability_types, artifact_types. etc.
+        type: string
+        enum: [node_types, relationship_types, capability_types, artifact_types, data_types, interface_types, policy_types, group_types]              
+      - in: query
+        name: has_interfaces
+        type: boolean
+        description: filter if has interfaces           
+      - in: query
+        name: type_name
+        type: string
+        required: false
+        description: The relationship type
+      - in: query
+        name: has_properties
+        type: boolean
+        description: filter if has properties   
+      - in: query
+        name: has_attributes
+        type: boolean
+        description: filter if has attributes           
+      - in: query
+        name: derived_from
+        type: string
+        required: false
+        description: derived from      
+       - in: query
+        name: has_requirements
+        type: boolean
+        description: filter if has requirements         
+ 
       responses:
         200:
           description: "successful operation"
