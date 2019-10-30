@@ -52,7 +52,7 @@ def get_ancestors_requirements(id, node_root_key):  # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_root_key: name of node
+    :param node_root_key: node_root_key
     :type node_root_key: str
 
     :rtype: Dict[str, object]
@@ -128,22 +128,18 @@ def get_node_properties(id, nodeTemplate=None, name_key=None):  # noqa: E501
     return 'do some magic!'
 
 
-def get_node_requirements(id, nodeTemplate=None, name_key=None):  # noqa: E501
+def get_node_requirements(id, node_root_key):  # noqa: E501
     """get_node_requirements
 
     Returns  the requirements for an input node as described in the template not in the node&#39;s definition  # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param nodeTemplate: 
-    :type nodeTemplate: dict | bytes
-    :param name_key: The name_key
-    :type name_key: str
+    :param node_root_key: node_root_key
+    :type node_root_key: str
 
     :rtype: Dict[str, object]
     """
-    if connexion.request.is_json:
-        nodeTemplate = NodeTemplate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -178,41 +174,33 @@ def get_node_templates(id, type_name=None, name_key=None, has_interfaces=None, h
     return 'do some magic!'
 
 
-def get_node_type_name(id, nodeTemplate=None, name_key=None):  # noqa: E501
+def get_node_type_name(id, node_root_key):  # noqa: E501
     """
 
      # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param nodeTemplate: the NodeTemplate
-    :type nodeTemplate: dict | bytes
-    :param name_key: The name_key
-    :type name_key: str
+    :param node_root_key: node_root_key
+    :type node_root_key: str
 
     :rtype: str
     """
-    if connexion.request.is_json:
-        nodeTemplate = NodeTemplate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
-def get_parent_type_name(id, nodeTemplate=None, name_key=None):  # noqa: E501
+def get_parent_type_name(id, node_root_key):  # noqa: E501
     """
 
      # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param nodeTemplate: 
-    :type nodeTemplate: dict | bytes
-    :param name_key: The name_key
-    :type name_key: str
+    :param node_root_key: node_root_key
+    :type node_root_key: str
 
     :rtype: str
     """
-    if connexion.request.is_json:
-        nodeTemplate = NodeTemplate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
