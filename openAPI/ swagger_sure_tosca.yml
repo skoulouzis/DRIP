@@ -54,6 +54,108 @@ paths:
           description: "Not found"               
         405:
           description: "Invalid input"            
+  /tosca_template/{id}/interface_types:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "getInterfaceTypes"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: query
+        name: interface_type
+        type: string
+        required: false
+        description: The interface type
+      - in: query
+        name: derived_from
+        type: string
+        required: false
+        description: derived from interface
+      - in: query
+        name: operations
+        type: array
+        items:
+          type: string
+        required: false
+        description: the list of operations e.e. create, stop.     
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                  type: object     
+        404:
+          description: "Not found"                  
+        405:
+          description: "Invalid input"         
+  /tosca_template/{id}/imports:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "getImports"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                  type: object     
+        404:
+          description: "Not found"                  
+        405:
+          description: "Invalid input"          
+  /tosca_template/{id}/dsl_definitions:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "getDslDefinitions"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: query
+        name: anchors
+        type: array
+        items:
+          type: string
+        required: false
+        description: the anchors the definition is for 
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                  type: object     
+        404:
+          description: "Not found"                  
+        405:
+          description: "Invalid input"              
   /tosca_template/{id}/topology_template:
     get:
       description: "r"
@@ -452,48 +554,5 @@ paths:
               $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
         404:
           description: "Not found"                 
-        405:
-          description: "Invalid input"     
-  /tosca_template/{id}/interface_types:
-    get:
-      summary: ""
-      description: "returns the interface types"
-      operationId: "getInterfaceTypes"
-      produces:
-        - "application/json"      
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "ID of topolog template uplodaed"
-        required: true
-        type: "string"
-      - in: query
-        name: interface_type
-        type: string
-        required: false
-        description: The interface type
-      - in: query
-        name: derived_from
-        type: string
-        required: false
-        description: derived from interface
-      - in: query
-        name: operations
-        type: array
-        items:
-          type: string
-        required: false
-        description: derived from interface        
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: array
-            items:
-              type: object
-              additionalProperties:
-                  type: object     
-        404:
-          description: "Not found"                  
         405:
           description: "Invalid input"
