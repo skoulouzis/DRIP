@@ -7,7 +7,7 @@ from sure_tosca.models.tosca_template import ToscaTemplate  # noqa: E501
 from sure_tosca import util
 
 
-def get_all_ancestor_properties(id, nodeTemplate=None, node_name=None):  # noqa: E501
+def get_all_ancestor_properties(id, nodeTemplate=None, name_key=None):  # noqa: E501
     """
 
     Recursively get all requirements all the way to the ROOT including the input node&#39;s # noqa: E501
@@ -16,8 +16,8 @@ def get_all_ancestor_properties(id, nodeTemplate=None, node_name=None):  # noqa:
     :type id: str
     :param nodeTemplate: 
     :type nodeTemplate: dict | bytes
-    :param node_name: The node name
-    :type node_name: str
+    :param name_key: The name_key
+    :type name_key: str
 
     :rtype: List[Dict[str, object]]
     """
@@ -26,7 +26,7 @@ def get_all_ancestor_properties(id, nodeTemplate=None, node_name=None):  # noqa:
     return 'do some magic!'
 
 
-def get_all_ancestor_types(id, nodeTemplate=None, node_name=None):  # noqa: E501
+def get_all_ancestor_types(id, nodeTemplate=None, name_key=None):  # noqa: E501
     """
 
     Recursively get all requirements all the way to the ROOT including the input node&#39;s # noqa: E501
@@ -35,8 +35,8 @@ def get_all_ancestor_types(id, nodeTemplate=None, node_name=None):  # noqa: E501
     :type id: str
     :param nodeTemplate: 
     :type nodeTemplate: dict | bytes
-    :param node_name: The node name
-    :type node_name: str
+    :param name_key: The name_key
+    :type name_key: str
 
     :rtype: List[str]
     """
@@ -45,7 +45,7 @@ def get_all_ancestor_types(id, nodeTemplate=None, node_name=None):  # noqa: E501
     return 'do some magic!'
 
 
-def get_ancestors_requirements(id, nodeTemplate=None, node_name=None):  # noqa: E501
+def get_ancestors_requirements(id, nodeTemplate=None, name_key=None):  # noqa: E501
     """
 
     Recursively get all requirements all the way to the ROOT including the input node&#39;s # noqa: E501
@@ -54,8 +54,8 @@ def get_ancestors_requirements(id, nodeTemplate=None, node_name=None):  # noqa: 
     :type id: str
     :param nodeTemplate: 
     :type nodeTemplate: dict | bytes
-    :param node_name: The node name
-    :type node_name: str
+    :param name_key: The name_key
+    :type name_key: str
 
     :rtype: Dict[str, object]
     """
@@ -94,7 +94,7 @@ def get_imports(id):  # noqa: E501
     return 'do some magic!'
 
 
-def get_node_outputs(id, nodeTemplate=None, node_name=None):  # noqa: E501
+def get_node_outputs(id, nodeTemplate=None, name_key=None):  # noqa: E501
     """
 
     s # noqa: E501
@@ -103,8 +103,8 @@ def get_node_outputs(id, nodeTemplate=None, node_name=None):  # noqa: E501
     :type id: str
     :param nodeTemplate: 
     :type nodeTemplate: dict | bytes
-    :param node_name: The node name
-    :type node_name: str
+    :param name_key: The name_key
+    :type name_key: str
 
     :rtype: Dict[str, object]
     """
@@ -113,7 +113,7 @@ def get_node_outputs(id, nodeTemplate=None, node_name=None):  # noqa: E501
     return 'do some magic!'
 
 
-def get_node_properties(id, nodeTemplate=None, node_name=None):  # noqa: E501
+def get_node_properties(id, nodeTemplate=None, name_key=None):  # noqa: E501
     """
 
     s # noqa: E501
@@ -122,8 +122,8 @@ def get_node_properties(id, nodeTemplate=None, node_name=None):  # noqa: E501
     :type id: str
     :param nodeTemplate: 
     :type nodeTemplate: dict | bytes
-    :param node_name: The node name
-    :type node_name: str
+    :param name_key: The name_key
+    :type name_key: str
 
     :rtype: Dict[str, object]
     """
@@ -132,7 +132,7 @@ def get_node_properties(id, nodeTemplate=None, node_name=None):  # noqa: E501
     return 'do some magic!'
 
 
-def get_node_requirements(id, nodeTemplate=None, node_name=None):  # noqa: E501
+def get_node_requirements(id, nodeTemplate=None, name_key=None):  # noqa: E501
     """get_node_requirements
 
     Returns  the requirements for an input node as described in the template not in the node&#39;s definition  # noqa: E501
@@ -141,8 +141,8 @@ def get_node_requirements(id, nodeTemplate=None, node_name=None):  # noqa: E501
     :type id: str
     :param nodeTemplate: 
     :type nodeTemplate: dict | bytes
-    :param node_name: The node name
-    :type node_name: str
+    :param name_key: The name_key
+    :type name_key: str
 
     :rtype: Dict[str, object]
     """
@@ -160,7 +160,7 @@ def get_node_templates(id, type_name=None, name_key=None, has_interfaces=None, h
     :type id: str
     :param type_name: The type
     :type type_name: str
-    :param name_key: The type
+    :param name_key: the name key
     :type name_key: str
     :param has_interfaces: filter if has interfaces
     :type has_interfaces: bool
@@ -182,7 +182,7 @@ def get_node_templates(id, type_name=None, name_key=None, has_interfaces=None, h
     return 'do some magic!'
 
 
-def get_node_type_name(id, nodeTemplate=None, node_name=None):  # noqa: E501
+def get_node_type_name(id, nodeTemplate=None, name_key=None):  # noqa: E501
     """
 
      # noqa: E501
@@ -191,8 +191,8 @@ def get_node_type_name(id, nodeTemplate=None, node_name=None):  # noqa: E501
     :type id: str
     :param nodeTemplate: the NodeTemplate
     :type nodeTemplate: dict | bytes
-    :param node_name: The node name
-    :type node_name: str
+    :param name_key: The name_key
+    :type name_key: str
 
     :rtype: str
     """
@@ -201,7 +201,7 @@ def get_node_type_name(id, nodeTemplate=None, node_name=None):  # noqa: E501
     return 'do some magic!'
 
 
-def get_parent_type_name(id, nodeTemplate=None, node_name=None):  # noqa: E501
+def get_parent_type_name(id, nodeTemplate=None, name_key=None):  # noqa: E501
     """
 
      # noqa: E501
@@ -210,8 +210,8 @@ def get_parent_type_name(id, nodeTemplate=None, node_name=None):  # noqa: E501
     :type id: str
     :param nodeTemplate: 
     :type nodeTemplate: dict | bytes
-    :param node_name: The node name
-    :type node_name: str
+    :param name_key: The name_key
+    :type name_key: str
 
     :rtype: str
     """
@@ -220,7 +220,7 @@ def get_parent_type_name(id, nodeTemplate=None, node_name=None):  # noqa: E501
     return 'do some magic!'
 
 
-def get_related_nodes(id, nodeTemplate=None, node_name=None):  # noqa: E501
+def get_related_nodes(id, nodeTemplate=None, name_key=None):  # noqa: E501
     """
 
     s # noqa: E501
@@ -229,8 +229,8 @@ def get_related_nodes(id, nodeTemplate=None, node_name=None):  # noqa: E501
     :type id: str
     :param nodeTemplate: 
     :type nodeTemplate: dict | bytes
-    :param node_name: The node name
-    :type node_name: str
+    :param name_key: The name_key
+    :type name_key: str
 
     :rtype: List[NodeTemplate]
     """

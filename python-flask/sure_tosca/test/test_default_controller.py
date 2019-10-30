@@ -20,7 +20,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         nodeTemplate = NodeTemplate()
-        query_string = [('node_name', 'node_name_example')]
+        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/ancestors_properties'.format(id='id_example'),
             method='GET',
@@ -36,7 +36,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         nodeTemplate = NodeTemplate()
-        query_string = [('node_name', 'node_name_example')]
+        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/ancestors_types'.format(id='id_example'),
             method='GET',
@@ -52,7 +52,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         nodeTemplate = NodeTemplate()
-        query_string = [('node_name', 'node_name_example')]
+        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/ancestors_requirements'.format(id='id_example'),
             method='GET',
@@ -93,7 +93,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         nodeTemplate = NodeTemplate()
-        query_string = [('node_name', 'node_name_example')]
+        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/outputs'.format(id='id_example'),
             method='GET',
@@ -109,7 +109,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         nodeTemplate = NodeTemplate()
-        query_string = [('node_name', 'node_name_example')]
+        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/properties'.format(id='id_example'),
             method='GET',
@@ -125,7 +125,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         nodeTemplate = NodeTemplate()
-        query_string = [('node_name', 'node_name_example')]
+        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/requirements'.format(id='id_example'),
             method='GET',
@@ -162,7 +162,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         nodeTemplate = NodeTemplate()
-        query_string = [('node_name', 'node_name_example')]
+        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/type_name'.format(id='id_example'),
             method='GET',
@@ -178,9 +178,9 @@ class TestDefaultController(BaseTestCase):
         
         """
         nodeTemplate = NodeTemplate()
-        query_string = [('node_name', 'node_name_example')]
+        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/parent_type_name'.format(id='id_example'),
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/derived_from'.format(id='id_example'),
             method='GET',
             data=json.dumps(nodeTemplate),
             content_type='application/json',
@@ -194,7 +194,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         nodeTemplate = NodeTemplate()
-        query_string = [('node_name', 'node_name_example')]
+        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/related'.format(id='id_example'),
             method='GET',
