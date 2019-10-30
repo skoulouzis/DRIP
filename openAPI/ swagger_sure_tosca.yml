@@ -54,6 +54,171 @@ paths:
           description: "Not found"               
         405:
           description: "Invalid input"            
+  /tosca_template/{id}/imports:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "getImports"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                  type: object     
+        404:
+          description: "Not found"                  
+        405:
+          description: "Invalid input"          
+  /tosca_template/{id}/dsl_definitions:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "getDslDefinitions"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: query
+        name: anchors
+        type: array
+        items:
+          type: string
+        required: false
+        description: the anchors the definition is for 
+      - in: query
+        name: derived_from
+        type: string
+        required: false
+        description: derived from        
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                  type: object     
+        404:
+          description: "Not found"                  
+        405:
+          description: "Invalid input"             
+  /tosca_template/{id}/types:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "getTypes"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: query
+        name: kind_of_type
+        description: the type we are looking for e.g. capability_types, artifact_types. etc.
+        type: string
+        enum: [node_types, relationship_types, capability_types, artifact_types, data_types, interface_types, policy_types, group_types]              
+      - in: query
+        name: has_interfaces
+        type: boolean
+        description: filter if has interfaces           
+      - in: query
+        name: type_name
+        type: string
+        required: false
+        description: The relationship type
+      - in: query
+        name: has_properties
+        type: boolean
+        description: filter if has properties   
+      - in: query
+        name: has_attributes
+        type: boolean
+        description: filter if has attributes           
+      - in: query
+        name: has_requirements
+        type: boolean
+        description: filter if has requirements           
+      - in: query
+        name: has_capabilities
+        type: boolean
+        description: filter if has capabilities         
+      - in: query
+        name: has_artifacts
+        type: boolean
+        description: filter if has artifacts           
+      - in: query
+        name: derived_from
+        type: string
+        required: false
+        description: derived from 
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                  type: object     
+        404:
+          description: "Not found"                  
+        405:
+          description: "Invalid input"     
+  /tosca_template/{id}/relationship_templates:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "getRrelationshipTemplates"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: query
+        name: type_name
+        type: string
+        required: false
+        description: The relationship type
+      - in: query
+        name: derived_from
+        type: string
+        required: false
+        description: derived from 
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                  type: object     
+        404:
+          description: "Not found"                  
+        405:
+          description: "Invalid input"              
   /tosca_template/{id}/topology_template:
     get:
       description: "r"
@@ -88,17 +253,44 @@ paths:
         required: true
         type: "string"
       - in: query
-        name: node_name
+        name: type_name
         type: string
-        description: filter by node name
+        required: false
+        description: The type
       - in: query
-        name: node_type
+        name: name_key
         type: string
-        description: filter by node type     
+        required: false
+        description: the name key       
       - in: query
-        name: has_interface
+        name: has_interfaces
         type: boolean
-        description: filter if node has interface           
+        description: filter if has interfaces           
+      - in: query
+        name: has_properties
+        type: boolean
+        description: filter if has properties   
+      - in: query
+        name: has_attributes
+        type: boolean
+        description: filter if has attributes           
+      - in: query
+        name: has_requirements
+        type: boolean
+        description: filter if has requirements           
+      - in: query
+        name: has_capabilities
+        type: boolean
+        description: filter if has capabilities         
+      - in: query
+        name: has_artifacts
+        type: boolean
+        description: filter if has artifacts           
+      - in: query
+        name: derived_from
+        type: string
+        required: false
+        description: derived from          
       responses:
         200:
           description: "successful operation"
@@ -130,9 +322,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -161,9 +354,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -175,7 +369,7 @@ paths:
           description: "Not found"                   
         405:
           description: "Invalid input"       
-  /tosca_template/{id}/topology_template/node_templates/parent_type_name:
+  /tosca_template/{id}/topology_template/node_templates/derived_from:
     get:
       summary: ""
       description: ""
@@ -195,9 +389,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -226,9 +421,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -259,9 +455,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -292,9 +489,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -327,9 +525,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -395,9 +594,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -428,9 +628,10 @@ paths:
         schema:
           $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
       - in: query
-        name: node_name
+        name: name_key
         type: string
-        description: The node name
+        required: false
+        description: The name_key   
       responses:
         200:
           description: "successful operation"
@@ -440,36 +641,5 @@ paths:
               $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
         404:
           description: "Not found"                 
-        405:
-          description: "Invalid input"     
-  /tosca_template/{id}/interface_types:
-    get:
-      summary: ""
-      description: "returns the interface types"
-      operationId: "getInterfaceTypes"
-      produces:
-        - "application/json"      
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "ID of topolog template uplodaed"
-        required: true
-        type: "string"
-      - in: query
-        name: interface_type
-        type: string
-        required: false
-        description: The interface type
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: array
-            items:
-              type: object
-              additionalProperties:
-                  type: object     
-        404:
-          description: "Not found"                  
         405:
           description: "Invalid input"
