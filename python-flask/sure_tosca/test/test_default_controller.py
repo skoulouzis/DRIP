@@ -67,7 +67,9 @@ class TestDefaultController(BaseTestCase):
 
         
         """
-        query_string = [('interface_type', 'interface_type_example')]
+        query_string = [('interface_type', 'interface_type_example'),
+                        ('derived_from', 'derived_from_example'),
+                        ('operations', 'operations_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/interface_types'.format(id='id_example'),
             method='GET',

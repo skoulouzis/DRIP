@@ -497,6 +497,19 @@ paths:
         description: "The interface type"
         required: false
         type: "string"
+      - name: "derived_from"
+        in: "query"
+        description: "derived from interface"
+        required: false
+        type: "string"
+      - name: "operations"
+        in: "query"
+        description: "derived from interface"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
       responses:
         200:
           description: "successful operation"

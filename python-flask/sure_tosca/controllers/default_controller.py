@@ -64,7 +64,7 @@ def get_ancestors_requirements(id, nodeTemplate=None, node_name=None):  # noqa: 
     return 'do some magic!'
 
 
-def get_interface_types(id, interface_type=None):  # noqa: E501
+def get_interface_types(id, interface_type=None, derived_from=None, operations=None):  # noqa: E501
     """
 
     returns the interface types # noqa: E501
@@ -73,6 +73,10 @@ def get_interface_types(id, interface_type=None):  # noqa: E501
     :type id: str
     :param interface_type: The interface type
     :type interface_type: str
+    :param derived_from: derived from interface
+    :type derived_from: str
+    :param operations: derived from interface
+    :type operations: List[str]
 
     :rtype: List[Dict[str, object]]
     """
