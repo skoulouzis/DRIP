@@ -64,6 +64,34 @@ def get_ancestors_requirements(id, nodeTemplate=None, node_name=None):  # noqa: 
     return 'do some magic!'
 
 
+def get_dsl_definitions(id, anchors=None):  # noqa: E501
+    """
+
+    returns the interface types # noqa: E501
+
+    :param id: ID of topolog template uplodaed
+    :type id: str
+    :param anchors: the anchors the definition is for
+    :type anchors: List[str]
+
+    :rtype: List[Dict[str, object]]
+    """
+    return 'do some magic!'
+
+
+def get_imports(id):  # noqa: E501
+    """
+
+    returns the interface types # noqa: E501
+
+    :param id: ID of topolog template uplodaed
+    :type id: str
+
+    :rtype: List[Dict[str, object]]
+    """
+    return 'do some magic!'
+
+
 def get_interface_types(id, interface_type=None, derived_from=None, operations=None):  # noqa: E501
     """
 
@@ -75,7 +103,7 @@ def get_interface_types(id, interface_type=None, derived_from=None, operations=N
     :type interface_type: str
     :param derived_from: derived from interface
     :type derived_from: str
-    :param operations: derived from interface
+    :param operations: the list of operations e.e. create, stop.
     :type operations: List[str]
 
     :rtype: List[Dict[str, object]]

@@ -62,6 +62,30 @@ class TestDefaultController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_get_dsl_definitions(self):
+        """Test case for get_dsl_definitions
+
+        
+        """
+        query_string = [('anchors', 'anchors_example')]
+        response = self.client.open(
+            '/tosca-sure/1.0.0/tosca_template/{id}/dsl_definitions'.format(id='id_example'),
+            method='GET',
+            query_string=query_string)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_get_imports(self):
+        """Test case for get_imports
+
+        
+        """
+        response = self.client.open(
+            '/tosca-sure/1.0.0/tosca_template/{id}/imports'.format(id='id_example'),
+            method='GET')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_get_interface_types(self):
         """Test case for get_interface_types
 
