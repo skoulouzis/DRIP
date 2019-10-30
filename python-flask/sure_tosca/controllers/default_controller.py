@@ -7,41 +7,33 @@ from sure_tosca.models.tosca_template import ToscaTemplate  # noqa: E501
 from sure_tosca import util
 
 
-def get_all_ancestor_properties(id, nodeTemplate=None, name_key=None):  # noqa: E501
+def get_all_ancestor_properties(id, node_root_key):  # noqa: E501
     """
 
     Recursively get all requirements all the way to the ROOT including the input node&#39;s # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param nodeTemplate: 
-    :type nodeTemplate: dict | bytes
-    :param name_key: The name_key
-    :type name_key: str
+    :param node_root_key: node_root_key
+    :type node_root_key: str
 
     :rtype: List[Dict[str, object]]
     """
-    if connexion.request.is_json:
-        nodeTemplate = NodeTemplate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
-def get_all_ancestor_types(id, nodeTemplate=None, name_key=None):  # noqa: E501
+def get_all_ancestor_types(id, node_root_key):  # noqa: E501
     """
 
     Recursively get all requirements all the way to the ROOT including the input node&#39;s # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param nodeTemplate: 
-    :type nodeTemplate: dict | bytes
-    :param name_key: The name_key
-    :type name_key: str
+    :param node_root_key: node_root_key
+    :type node_root_key: str
 
     :rtype: List[str]
     """
-    if connexion.request.is_json:
-        nodeTemplate = NodeTemplate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -90,41 +82,33 @@ def get_imports(id):  # noqa: E501
     return 'do some magic!'
 
 
-def get_node_outputs(id, nodeTemplate=None, name_key=None):  # noqa: E501
+def get_node_outputs(id, node_root_key):  # noqa: E501
     """
 
     s # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param nodeTemplate: 
-    :type nodeTemplate: dict | bytes
-    :param name_key: The name_key
-    :type name_key: str
+    :param node_root_key: node_root_key
+    :type node_root_key: str
 
     :rtype: Dict[str, object]
     """
-    if connexion.request.is_json:
-        nodeTemplate = NodeTemplate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
-def get_node_properties(id, nodeTemplate=None, name_key=None):  # noqa: E501
+def get_node_properties(id, node_root_key):  # noqa: E501
     """
 
     s # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param nodeTemplate: 
-    :type nodeTemplate: dict | bytes
-    :param name_key: The name_key
-    :type name_key: str
+    :param node_root_key: node_root_key
+    :type node_root_key: str
 
     :rtype: Dict[str, object]
     """
-    if connexion.request.is_json:
-        nodeTemplate = NodeTemplate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -204,22 +188,18 @@ def get_parent_type_name(id, node_root_key):  # noqa: E501
     return 'do some magic!'
 
 
-def get_related_nodes(id, nodeTemplate=None, name_key=None):  # noqa: E501
+def get_related_nodes(id, node_root_key):  # noqa: E501
     """
 
     s # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param nodeTemplate: 
-    :type nodeTemplate: dict | bytes
-    :param name_key: The name_key
-    :type name_key: str
+    :param node_root_key: node_root_key
+    :type node_root_key: str
 
     :rtype: List[NodeTemplate]
     """
-    if connexion.request.is_json:
-        nodeTemplate = NodeTemplate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -297,7 +277,7 @@ def get_types(id, kind_of_type=None, has_interfaces=None, type_name=None, has_pr
     return 'do some magic!'
 
 
-def set_node_properties(id, properties, node_name):  # noqa: E501
+def set_node_properties(id, properties, node_root_key):  # noqa: E501
     """
 
     s # noqa: E501
@@ -306,8 +286,8 @@ def set_node_properties(id, properties, node_name):  # noqa: E501
     :type id: str
     :param properties: 
     :type properties: 
-    :param node_name: The node name
-    :type node_name: str
+    :param node_root_key: node_root_key
+    :type node_root_key: str
 
     :rtype: Dict[str, object]
     """

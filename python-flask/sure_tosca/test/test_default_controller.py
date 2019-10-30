@@ -19,14 +19,9 @@ class TestDefaultController(BaseTestCase):
 
         
         """
-        nodeTemplate = NodeTemplate()
-        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/ancestors_properties'.format(id='id_example'),
-            method='GET',
-            data=json.dumps(nodeTemplate),
-            content_type='application/json',
-            query_string=query_string)
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/ancestors_properties'.format(id='id_example', node_root_key='node_root_key_example'),
+            method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -35,14 +30,9 @@ class TestDefaultController(BaseTestCase):
 
         
         """
-        nodeTemplate = NodeTemplate()
-        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/ancestors_types'.format(id='id_example'),
-            method='GET',
-            data=json.dumps(nodeTemplate),
-            content_type='application/json',
-            query_string=query_string)
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/ancestors_types'.format(id='id_example', node_root_key='node_root_key_example'),
+            method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -87,14 +77,9 @@ class TestDefaultController(BaseTestCase):
 
         
         """
-        nodeTemplate = NodeTemplate()
-        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/outputs'.format(id='id_example'),
-            method='GET',
-            data=json.dumps(nodeTemplate),
-            content_type='application/json',
-            query_string=query_string)
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/outputs'.format(id='id_example', node_root_key='node_root_key_example'),
+            method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -103,14 +88,9 @@ class TestDefaultController(BaseTestCase):
 
         
         """
-        nodeTemplate = NodeTemplate()
-        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/properties'.format(id='id_example'),
-            method='GET',
-            data=json.dumps(nodeTemplate),
-            content_type='application/json',
-            query_string=query_string)
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/properties'.format(id='id_example', node_root_key='node_root_key_example'),
+            method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -173,14 +153,9 @@ class TestDefaultController(BaseTestCase):
 
         
         """
-        nodeTemplate = NodeTemplate()
-        query_string = [('name_key', 'name_key_example')]
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/related'.format(id='id_example'),
-            method='GET',
-            data=json.dumps(nodeTemplate),
-            content_type='application/json',
-            query_string=query_string)
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/related'.format(id='id_example', node_root_key='node_root_key_example'),
+            method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -247,13 +222,11 @@ class TestDefaultController(BaseTestCase):
         
         """
         properties = None
-        query_string = [('node_name', 'node_name_example')]
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/properties'.format(id='id_example'),
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/properties'.format(id='id_example', node_root_key='node_root_key_example'),
             method='PUT',
             data=json.dumps(properties),
-            content_type='application/json',
-            query_string=query_string)
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
