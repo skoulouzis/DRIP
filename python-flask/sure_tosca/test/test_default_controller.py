@@ -67,7 +67,8 @@ class TestDefaultController(BaseTestCase):
 
         
         """
-        query_string = [('anchors', 'anchors_example')]
+        query_string = [('anchors', 'anchors_example'),
+                        ('derived_from', 'derived_from_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/dsl_definitions'.format(id='id_example'),
             method='GET',
@@ -83,21 +84,6 @@ class TestDefaultController(BaseTestCase):
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/imports'.format(id='id_example'),
             method='GET')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-    def test_get_interface_types(self):
-        """Test case for get_interface_types
-
-        
-        """
-        query_string = [('interface_type', 'interface_type_example'),
-                        ('derived_from', 'derived_from_example'),
-                        ('operations', 'operations_example')]
-        response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/interface_types'.format(id='id_example'),
-            method='GET',
-            query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -154,12 +140,15 @@ class TestDefaultController(BaseTestCase):
 
         
         """
-        query_string = [('node_name', 'node_name_example'),
-                        ('node_type', 'node_type_example'),
-                        ('has_interface', true),
+        query_string = [('type_name', 'type_name_example'),
+                        ('name_key', 'name_key_example'),
+                        ('has_interfaces', true),
+                        ('has_properties', true),
+                        ('has_attributes', true),
                         ('has_requirements', true),
+                        ('has_capabilities', true),
                         ('has_artifacts', true),
-                        ('has_properties', true)]
+                        ('derived_from', 'derived_from_example')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates'.format(id='id_example'),
             method='GET',
@@ -215,6 +204,20 @@ class TestDefaultController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_get_rrelationship_templates(self):
+        """Test case for get_rrelationship_templates
+
+        
+        """
+        query_string = [('type_name', 'type_name_example'),
+                        ('derived_from', 'derived_from_example')]
+        response = self.client.open(
+            '/tosca-sure/1.0.0/tosca_template/{id}/relationship_templates'.format(id='id_example'),
+            method='GET',
+            query_string=query_string)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_get_topology_template(self):
         """Test case for get_topology_template
 
@@ -234,6 +237,27 @@ class TestDefaultController(BaseTestCase):
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}'.format(id='id_example'),
             method='GET')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_get_types(self):
+        """Test case for get_types
+
+        
+        """
+        query_string = [('kind_of_type', 'kind_of_type_example'),
+                        ('has_interfaces', true),
+                        ('type_name', 'type_name_example'),
+                        ('has_properties', true),
+                        ('has_attributes', true),
+                        ('has_requirements', true),
+                        ('has_capabilities', true),
+                        ('has_artifacts', true),
+                        ('derived_from', 'derived_from_example')]
+        response = self.client.open(
+            '/tosca-sure/1.0.0/tosca_template/{id}/types'.format(id='id_example'),
+            method='GET',
+            query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

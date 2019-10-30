@@ -57,52 +57,6 @@ paths:
         405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/interface_types:
-    get:
-      summary: ""
-      description: "returns the interface types"
-      operationId: "get_interface_types"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "ID of topolog template uplodaed"
-        required: true
-        type: "string"
-      - name: "interface_type"
-        in: "query"
-        description: "The interface type"
-        required: false
-        type: "string"
-      - name: "derived_from"
-        in: "query"
-        description: "derived from interface"
-        required: false
-        type: "string"
-      - name: "operations"
-        in: "query"
-        description: "the list of operations e.e. create, stop."
-        required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              type: "object"
-              additionalProperties:
-                type: "object"
-                properties: {}
-        404:
-          description: "Not found"
-        405:
-          description: "Invalid input"
-      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/imports:
     get:
       summary: ""
@@ -152,6 +106,132 @@ paths:
         items:
           type: "string"
         collectionFormat: "multi"
+      - name: "derived_from"
+        in: "query"
+        description: "derived from"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              additionalProperties:
+                type: "object"
+                properties: {}
+        404:
+          description: "Not found"
+        405:
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/types:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "get_types"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "kind_of_type"
+        in: "query"
+        description: "the type we are looking for e.g. capability_types, artifact_types.\
+          \ etc."
+        required: false
+        type: "string"
+        enum:
+        - "node_types"
+        - "relationship_types"
+        - "capability_types"
+        - "artifact_types"
+        - "data_types"
+        - "interface_types"
+        - "policy_types"
+        - "group_types"
+      - name: "has_interfaces"
+        in: "query"
+        description: "filter if has interfaces"
+        required: false
+        type: "boolean"
+      - name: "type_name"
+        in: "query"
+        description: "The relationship type"
+        required: false
+        type: "string"
+      - name: "has_properties"
+        in: "query"
+        description: "filter if has properties"
+        required: false
+        type: "boolean"
+      - name: "has_attributes"
+        in: "query"
+        description: "filter if has attributes"
+        required: false
+        type: "boolean"
+      - name: "has_requirements"
+        in: "query"
+        description: "filter if has requirements"
+        required: false
+        type: "boolean"
+      - name: "has_capabilities"
+        in: "query"
+        description: "filter if has capabilities"
+        required: false
+        type: "boolean"
+      - name: "has_artifacts"
+        in: "query"
+        description: "filter if has artifacts"
+        required: false
+        type: "boolean"
+      - name: "derived_from"
+        in: "query"
+        description: "derived from"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              additionalProperties:
+                type: "object"
+                properties: {}
+        404:
+          description: "Not found"
+        405:
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/relationship_templates:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "get_rrelationship_templates"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "type_name"
+        in: "query"
+        description: "The relationship type"
+        required: false
+        type: "string"
+      - name: "derived_from"
+        in: "query"
+        description: "derived from"
+        required: false
+        type: "string"
       responses:
         200:
           description: "successful operation"
@@ -201,36 +281,51 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - name: "node_name"
+      - name: "type_name"
         in: "query"
-        description: "filter by node name"
+        description: "The type"
         required: false
         type: "string"
-      - name: "node_type"
+      - name: "name_key"
         in: "query"
-        description: "filter by node type"
+        description: "The type"
         required: false
         type: "string"
-      - name: "has_interface"
+      - name: "has_interfaces"
         in: "query"
-        description: "filter if node has interface"
-        required: false
-        type: "boolean"
-      - name: "has_requirements"
-        in: "query"
-        description: "filter if node has requirements"
-        required: false
-        type: "boolean"
-      - name: "has_artifacts"
-        in: "query"
-        description: "filter if node has artifacts"
+        description: "filter if has interfaces"
         required: false
         type: "boolean"
       - name: "has_properties"
         in: "query"
-        description: "filter if node has properties"
+        description: "filter if has properties"
         required: false
         type: "boolean"
+      - name: "has_attributes"
+        in: "query"
+        description: "filter if has attributes"
+        required: false
+        type: "boolean"
+      - name: "has_requirements"
+        in: "query"
+        description: "filter if has requirements"
+        required: false
+        type: "boolean"
+      - name: "has_capabilities"
+        in: "query"
+        description: "filter if has capabilities"
+        required: false
+        type: "boolean"
+      - name: "has_artifacts"
+        in: "query"
+        description: "filter if has artifacts"
+        required: false
+        type: "boolean"
+      - name: "derived_from"
+        in: "query"
+        description: "derived from"
+        required: false
+        type: "string"
       responses:
         200:
           description: "successful operation"
