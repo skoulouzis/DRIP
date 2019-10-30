@@ -106,6 +106,21 @@ paths:
         description: "filter if node has interface"
         required: false
         type: "boolean"
+      - name: "has_requirements"
+        in: "query"
+        description: "filter if node has requirements"
+        required: false
+        type: "boolean"
+      - name: "has_artifacts"
+        in: "query"
+        description: "filter if node has artifacts"
+        required: false
+        type: "boolean"
+      - name: "has_properties"
+        in: "query"
+        description: "filter if node has properties"
+        required: false
+        type: "boolean"
       responses:
         200:
           description: "successful operation"

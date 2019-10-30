@@ -132,7 +132,10 @@ class TestDefaultController(BaseTestCase):
         """
         query_string = [('node_name', 'node_name_example'),
                         ('node_type', 'node_type_example'),
-                        ('has_interface', true)]
+                        ('has_interface', true),
+                        ('has_requirements', true),
+                        ('has_artifacts', true),
+                        ('has_properties', true)]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates'.format(id='id_example'),
             method='GET',

@@ -140,7 +140,7 @@ def get_node_requirements(id, nodeTemplate=None, node_name=None):  # noqa: E501
     return 'do some magic!'
 
 
-def get_node_templates(id, node_name=None, node_type=None, has_interface=None):  # noqa: E501
+def get_node_templates(id, node_name=None, node_type=None, has_interface=None, has_requirements=None, has_artifacts=None, has_properties=None):  # noqa: E501
     """get_node_templates
 
     returns nodes templates in topology # noqa: E501
@@ -153,6 +153,12 @@ def get_node_templates(id, node_name=None, node_type=None, has_interface=None): 
     :type node_type: str
     :param has_interface: filter if node has interface
     :type has_interface: bool
+    :param has_requirements: filter if node has requirements
+    :type has_requirements: bool
+    :param has_artifacts: filter if node has artifacts
+    :type has_artifacts: bool
+    :param has_properties: filter if node has properties
+    :type has_properties: bool
 
     :rtype: List[NodeTemplate]
     """
