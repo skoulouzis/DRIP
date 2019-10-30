@@ -154,15 +154,58 @@ paths:
         type: boolean
         description: filter if has attributes           
       - in: query
+        name: has_requirements
+        type: boolean
+        description: filter if has requirements           
+      - in: query
+        name: has_capabilities
+        type: boolean
+        description: filter if has capabilities         
+      - in: query
+        name: has_artifacts
+        type: boolean
+        description: filter if has artifacts           
+      - in: query
         name: derived_from
         type: string
         required: false
-        description: derived from      
-       - in: query
-        name: has_requirements
-        type: boolean
-        description: filter if has requirements         
- 
+        description: derived from 
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                  type: object     
+        404:
+          description: "Not found"                  
+        405:
+          description: "Invalid input"     
+  /tosca_template/{id}/relationship_templates:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "getRrelationshipTemplates"
+      produces:
+        - "application/json"      
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: query
+        name: type_name
+        type: string
+        required: false
+        description: The relationship type
+      - in: query
+        name: derived_from
+        type: string
+        required: false
+        description: derived from 
       responses:
         200:
           description: "successful operation"
@@ -210,29 +253,44 @@ paths:
         required: true
         type: "string"
       - in: query
-        name: node_name
+        name: type_name
         type: string
-        description: filter by node name
+        required: false
+        description: The type
       - in: query
-        name: node_type
+        name: name_key
         type: string
-        description: filter by node type     
+        required: false
+        description: The type        
       - in: query
-        name: has_interface
+        name: has_interfaces
         type: boolean
-        description: filter if node has interface           
-      - in: query
-        name: has_requirements
-        type: boolean
-        description: filter if node has requirements              
-      - in: query
-        name: has_artifacts
-        type: boolean
-        description: filter if node has artifacts          
+        description: filter if has interfaces           
       - in: query
         name: has_properties
         type: boolean
-        description: filter if node has properties            
+        description: filter if has properties   
+      - in: query
+        name: has_attributes
+        type: boolean
+        description: filter if has attributes           
+      - in: query
+        name: has_requirements
+        type: boolean
+        description: filter if has requirements           
+      - in: query
+        name: has_capabilities
+        type: boolean
+        description: filter if has capabilities         
+      - in: query
+        name: has_artifacts
+        type: boolean
+        description: filter if has artifacts           
+      - in: query
+        name: derived_from
+        type: string
+        required: false
+        description: derived from          
       responses:
         200:
           description: "successful operation"
