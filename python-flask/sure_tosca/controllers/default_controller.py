@@ -45,22 +45,18 @@ def get_all_ancestor_types(id, nodeTemplate=None, name_key=None):  # noqa: E501
     return 'do some magic!'
 
 
-def get_ancestors_requirements(id, nodeTemplate=None, name_key=None):  # noqa: E501
+def get_ancestors_requirements(id, node_root_key):  # noqa: E501
     """
 
     Recursively get all requirements all the way to the ROOT including the input node&#39;s # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param nodeTemplate: 
-    :type nodeTemplate: dict | bytes
-    :param name_key: The name_key
-    :type name_key: str
+    :param node_root_key: name of node
+    :type node_root_key: str
 
     :rtype: Dict[str, object]
     """
-    if connexion.request.is_json:
-        nodeTemplate = NodeTemplate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -239,7 +235,7 @@ def get_related_nodes(id, nodeTemplate=None, name_key=None):  # noqa: E501
     return 'do some magic!'
 
 
-def get_rrelationship_templates(id, type_name=None, derived_from=None):  # noqa: E501
+def get_relationship_templates(id, type_name=None, derived_from=None):  # noqa: E501
     """
 
     returns the interface types # noqa: E501
