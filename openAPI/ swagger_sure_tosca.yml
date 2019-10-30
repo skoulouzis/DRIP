@@ -460,6 +460,18 @@ paths:
         type: string
         required: false
         description: The interface type
+      - in: query
+        name: derived_from
+        type: string
+        required: false
+        description: derived from interface
+      - in: query
+        name: operations
+        type: array
+        items:
+          type: string
+        required: false
+        description: derived from interface        
       responses:
         200:
           description: "successful operation"
