@@ -99,6 +99,18 @@ paths:
         name: has_interface
         type: boolean
         description: filter if node has interface           
+      - in: query
+        name: has_requirements
+        type: boolean
+        description: filter if node has requirements              
+      - in: query
+        name: has_artifacts
+        type: boolean
+        description: filter if node has artifacts          
+      - in: query
+        name: has_properties
+        type: boolean
+        description: filter if node has properties            
       responses:
         200:
           description: "successful operation"
