@@ -50,7 +50,7 @@ node_types:
         type: tosca.capabilities.Container.Docker
       container:
         type: tosca.capabilities.Container        
-    properties:
+    attributes:
         masters_num:
             type: integer
             required: true
@@ -94,27 +94,28 @@ node_types:
       topology:
         type: tosca.capabilities.ARTICONF.VM.topology
     properties:
-      provider:
-        type: string
-        required: true
-        default: "ExoGeni"
-        description: The name of the provider e.g. EC2, ExoGeni etc. 
       name:
         type: string
         required: false
         description: the name of this topology
-      domain:        
-        type: string
-        required: true
-        default: "UvA (Amsterdam, The Netherlands) XO Rack"
-        description: the domain of this topology e.g. California, UvA, etc
-      credential:
-        type: tosca.datatypes.Credential
-        required: false
       subnet:
         type: string
         required: false
         description: The subnet of the VMs this topology e.g. 192.168.10.10/24
+    attributes:
+      domain:        
+        type: string
+        required: true
+        default: "UvA (Amsterdam, The Netherlands) XO Rack"
+        description: the domain of this topology e.g. California, UvA, etc   
+      credential:
+        type: tosca.datatypes.Credential
+        required: false        
+      provider:
+        type: string
+        required: true
+        default: "ExoGeni"
+        description: The name of the provider e.g. EC2, ExoGeni etc.         
     interfaces:
       Standard:
         create: dumy.yaml
@@ -126,14 +127,6 @@ node_types:
       compute:
         type: tosca.capabilities.ARTICONF.VM
     properties:
-      user_name:
-        type: string
-        required: true
-        default: "vm_user"
-      host_name:
-        type: string
-        required: true
-        default: "vm"
       num_cores:
         type: integer
         required: true
@@ -161,22 +154,35 @@ node_types:
         type: string
         required: true       
         default: "ubuntu 16"
+    # outputs for this node
+    attributes:
+      private_ip:
+        type: string
+        required: false
+        description: The private IP of the VM e.g. 192.168.10.10    
+      public_ip:
+        type: string
+        required: false
+        description: The public IP
       role:
         type: string
         required: true       
         description: the role of the VM in the topology
         default: "master"
         constraints:
-            - valid_values: [ "master","worker" ]  
-      private_ip:
-        type: string
-        required: false
-        description: The private IP of the VM e.g. 192.168.10.10
+            - valid_values: [ "master","worker" ]         
       node_type:
         type: string
         required: false
-        description: the type of VM depending on the provider. e.g. XOSmall, t.medium etc. It has to match the mem_size, num_cores etc.
-        
+        description: the type of VM depending on the provider. e.g. XOSmall, t.medium etc. It has to match the mem_size, num_cores etc.                  
+      user_name:
+        type: string
+        required: true
+        default: "vm_user"
+      host_name:
+        type: string
+        required: true
+        default: "vm"
     interfaces:
       Standard:
         create: dumy.yaml        

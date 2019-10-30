@@ -64,12 +64,3 @@ class Model(object):
     def __ne__(self, other):
         """Returns true if both objects are not equal"""
         return not self == other
-
-    # def __hash__(self):
-    #     return hash(self.__dict__.keys())
-
-    def __key(self):
-        return tuple(sorted(self.to_dict()))
-
-    def __hash__(self):
-        return hash(self.__key())

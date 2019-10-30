@@ -2,28 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_output.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_output.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/controllers/default_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/controllers/default_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/base_model_.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/base_model_.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/node_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/node_template.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/topology_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/topology_template.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/tosca_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/tosca_template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/service/tosca_template_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/service/tosca_template_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/swagger/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/swagger/swagger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/chardetect" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/chardetect" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/connexion" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/connexion" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/flask" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/flask" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/jsonschema" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/jsonschema" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/openapi-spec-validator" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/openapi-spec-validator" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/pbr" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/pbr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/pybabel" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/pybabel" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/tosca-parser" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/bin/tosca-parser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/lib/python3.6/site-packages/attr/converters.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/lib/python3.6/site-packages/attr/converters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/lib/python3.6/site-packages/attr/filters.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/lib/python3.6/site-packages/attr/filters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/lib/python3.6/site-packages/pbr/find_package.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/lib/python3.6/site-packages/pbr/find_package.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/lib/python3.6/site-packages/pbr/pbr_json.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/lib/python3.6/site-packages/pbr/pbr_json.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/lib/python3.6/site-packages/pbr/tests/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/lib/python3.6/site-packages/pbr/tests/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/lib/python3.6/site-packages/pbr/tests/testpackage/pbr_testpackage/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/venv/lib/python3.6/site-packages/pbr/tests/testpackage/pbr_testpackage/wsgi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/test/test_default_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/test/test_default_controller.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -113,7 +103,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/rpc_server.py" />
-      <option name="PARAMETERS" value="localhost planner" />
+      <option name="PARAMETERS" value="test_local" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -302,7 +292,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571760668434</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="we have a bug with setting default properties">
+      <created>1572451502431</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1572451502431</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -336,7 +333,8 @@
     <MESSAGE value="fixed policies error" />
     <MESSAGE value="added test" />
     <MESSAGE value="check if topology node has properties" />
-    <option name="LAST_COMMIT_MESSAGE" value="check if topology node has properties" />
+    <MESSAGE value="we have a bug with setting default properties" />
+    <option name="LAST_COMMIT_MESSAGE" value="we have a bug with setting default properties" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -348,13 +346,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/rpc_server.py</url>
-          <line>106</line>
+          <line>105</line>
           <option name="timeStamp" value="302" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/rpc_server.py</url>
-          <line>138</line>
-          <option name="timeStamp" value="305" />
+          <url>file://$PROJECT_DIR$/venv/lib/python3.6/site-packages/toscaparser/elements/scalarunit.py</url>
+          <line>71</line>
+          <option name="timeStamp" value="311" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

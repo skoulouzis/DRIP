@@ -57,6 +57,196 @@ paths:
         405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/imports:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "get_imports"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              additionalProperties:
+                type: "object"
+                properties: {}
+        404:
+          description: "Not found"
+        405:
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/dsl_definitions:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "get_dsl_definitions"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "anchors"
+        in: "query"
+        description: "the anchors the definition is for"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+      - name: "derived_from"
+        in: "query"
+        description: "derived from"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              additionalProperties:
+                type: "object"
+                properties: {}
+        404:
+          description: "Not found"
+        405:
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/types:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "get_types"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "kind_of_type"
+        in: "query"
+        description: "the type we are looking for e.g. capability_types, artifact_types.\
+          \ etc."
+        required: false
+        type: "string"
+        enum:
+        - "node_types"
+        - "relationship_types"
+        - "capability_types"
+        - "artifact_types"
+        - "data_types"
+        - "interface_types"
+        - "policy_types"
+        - "group_types"
+      - name: "has_interfaces"
+        in: "query"
+        description: "filter if has interfaces"
+        required: false
+        type: "boolean"
+      - name: "type_name"
+        in: "query"
+        description: "The relationship type"
+        required: false
+        type: "string"
+      - name: "has_properties"
+        in: "query"
+        description: "filter if has properties"
+        required: false
+        type: "boolean"
+      - name: "has_attributes"
+        in: "query"
+        description: "filter if has attributes"
+        required: false
+        type: "boolean"
+      - name: "has_requirements"
+        in: "query"
+        description: "filter if has requirements"
+        required: false
+        type: "boolean"
+      - name: "has_capabilities"
+        in: "query"
+        description: "filter if has capabilities"
+        required: false
+        type: "boolean"
+      - name: "has_artifacts"
+        in: "query"
+        description: "filter if has artifacts"
+        required: false
+        type: "boolean"
+      - name: "derived_from"
+        in: "query"
+        description: "derived from"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              additionalProperties:
+                type: "object"
+                properties: {}
+        404:
+          description: "Not found"
+        405:
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/relationship_templates:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "get_relationship_templates"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "type_name"
+        in: "query"
+        description: "The relationship type"
+        required: false
+        type: "string"
+      - name: "derived_from"
+        in: "query"
+        description: "derived from"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              additionalProperties:
+                type: "object"
+                properties: {}
+        404:
+          description: "Not found"
+        405:
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/topology_template:
     get:
       description: "r"
@@ -91,21 +281,51 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - name: "node_name"
+      - name: "type_name"
         in: "query"
-        description: "filter by node name"
+        description: "The type"
         required: false
         type: "string"
-      - name: "node_type"
+      - name: "name_key"
         in: "query"
-        description: "filter by node type"
+        description: "the name key"
         required: false
         type: "string"
-      - name: "has_interface"
+      - name: "has_interfaces"
         in: "query"
-        description: "filter if node has interface"
+        description: "filter if has interfaces"
         required: false
         type: "boolean"
+      - name: "has_properties"
+        in: "query"
+        description: "filter if has properties"
+        required: false
+        type: "boolean"
+      - name: "has_attributes"
+        in: "query"
+        description: "filter if has attributes"
+        required: false
+        type: "boolean"
+      - name: "has_requirements"
+        in: "query"
+        description: "filter if has requirements"
+        required: false
+        type: "boolean"
+      - name: "has_capabilities"
+        in: "query"
+        description: "filter if has capabilities"
+        required: false
+        type: "boolean"
+      - name: "has_artifacts"
+        in: "query"
+        description: "filter if has artifacts"
+        required: false
+        type: "boolean"
+      - name: "derived_from"
+        in: "query"
+        description: "derived from"
+        required: false
+        type: "string"
       responses:
         200:
           description: "successful operation"
@@ -118,7 +338,7 @@ paths:
         405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/topology_template/node_templates/type_name:
+  /tosca_template/{id}/topology_template/node_templates/{node_root_key}/type_name:
     get:
       summary: ""
       description: ""
@@ -131,16 +351,10 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - in: "body"
-        name: "nodeTemplate"
-        description: "the NodeTemplate"
-        required: false
-        schema:
-          $ref: "#/definitions/NodeTemplate"
-      - name: "node_name"
-        in: "query"
-        description: "The node name"
-        required: false
+      - name: "node_root_key"
+        in: "path"
+        description: "node_root_key"
+        required: true
         type: "string"
       responses:
         200:
@@ -152,7 +366,7 @@ paths:
         405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/topology_template/node_templates/requirements:
+  /tosca_template/{id}/topology_template/node_templates/{node_root_key}/requirements:
     get:
       description: "Returns  the requirements for an input node as described in the\
         \ template not in the node's definition "
@@ -165,16 +379,10 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - in: "body"
-        name: "nodeTemplate"
-        description: ""
-        required: false
-        schema:
-          $ref: "#/definitions/NodeTemplate"
-      - name: "node_name"
-        in: "query"
-        description: "The node name"
-        required: false
+      - name: "node_root_key"
+        in: "path"
+        description: "node_root_key"
+        required: true
         type: "string"
       responses:
         200:
@@ -189,7 +397,7 @@ paths:
         405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/topology_template/node_templates/parent_type_name:
+  /tosca_template/{id}/topology_template/node_templates/{node_root_key}/derived_from:
     get:
       summary: ""
       description: ""
@@ -202,16 +410,10 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - in: "body"
-        name: "nodeTemplate"
-        description: ""
-        required: false
-        schema:
-          $ref: "#/definitions/NodeTemplate"
-      - name: "node_name"
-        in: "query"
-        description: "The node name"
-        required: false
+      - name: "node_root_key"
+        in: "path"
+        description: "node_root_key"
+        required: true
         type: "string"
       responses:
         200:
@@ -223,7 +425,7 @@ paths:
         405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/topology_template/node_templates/ancestors_requirements:
+  /tosca_template/{id}/topology_template/node_templates/{node_root_key}/ancestors_requirements:
     get:
       summary: ""
       description: "Recursively get all requirements all the way to the ROOT including\
@@ -237,15 +439,10 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - in: "body"
-        name: "nodeTemplate"
-        required: false
-        schema:
-          $ref: "#/definitions/NodeTemplate"
-      - name: "node_name"
-        in: "query"
-        description: "The node name"
-        required: false
+      - name: "node_root_key"
+        in: "path"
+        description: "node_root_key"
+        required: true
         type: "string"
       responses:
         200:
@@ -260,7 +457,7 @@ paths:
         405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/topology_template/node_templates/ancestors_types:
+  /tosca_template/{id}/topology_template/node_templates/{node_root_key}/ancestors_types:
     get:
       summary: ""
       description: "Recursively get all requirements all the way to the ROOT including\
@@ -274,15 +471,10 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - in: "body"
-        name: "nodeTemplate"
-        required: false
-        schema:
-          $ref: "#/definitions/NodeTemplate"
-      - name: "node_name"
-        in: "query"
-        description: "The node name"
-        required: false
+      - name: "node_root_key"
+        in: "path"
+        description: "node_root_key"
+        required: true
         type: "string"
       responses:
         200:
@@ -296,7 +488,7 @@ paths:
         405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/topology_template/node_templates/ancestors_properties:
+  /tosca_template/{id}/topology_template/node_templates/{node_root_key}/ancestors_properties:
     get:
       summary: ""
       description: "Recursively get all requirements all the way to the ROOT including\
@@ -310,15 +502,10 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - in: "body"
-        name: "nodeTemplate"
-        required: false
-        schema:
-          $ref: "#/definitions/NodeTemplate"
-      - name: "node_name"
-        in: "query"
-        description: "The node name"
-        required: false
+      - name: "node_root_key"
+        in: "path"
+        description: "node_root_key"
+        required: true
         type: "string"
       responses:
         200:
@@ -335,7 +522,7 @@ paths:
         405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/topology_template/node_templates/properties:
+  /tosca_template/{id}/topology_template/node_templates/{node_root_key}/properties:
     get:
       summary: ""
       description: "s"
@@ -348,15 +535,10 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - in: "body"
-        name: "nodeTemplate"
-        required: false
-        schema:
-          $ref: "#/definitions/NodeTemplate"
-      - name: "node_name"
-        in: "query"
-        description: "The node name"
-        required: false
+      - name: "node_root_key"
+        in: "path"
+        description: "node_root_key"
+        required: true
         type: "string"
       responses:
         200:
@@ -390,9 +572,9 @@ paths:
           type: "object"
           additionalProperties:
             type: "string"
-      - name: "node_name"
-        in: "query"
-        description: "The node name"
+      - name: "node_root_key"
+        in: "path"
+        description: "node_root_key"
         required: true
         type: "string"
       responses:
@@ -408,7 +590,7 @@ paths:
         405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/topology_template/node_templates/outputs:
+  /tosca_template/{id}/topology_template/node_templates/{node_root_key}/outputs:
     get:
       summary: ""
       description: "s"
@@ -421,15 +603,10 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - in: "body"
-        name: "nodeTemplate"
-        required: false
-        schema:
-          $ref: "#/definitions/NodeTemplate"
-      - name: "node_name"
-        in: "query"
-        description: "The node name"
-        required: false
+      - name: "node_root_key"
+        in: "path"
+        description: "node_root_key"
+        required: true
         type: "string"
       responses:
         200:
@@ -444,7 +621,7 @@ paths:
         405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/topology_template/node_templates/related:
+  /tosca_template/{id}/topology_template/node_templates/{node_root_key}/related:
     get:
       summary: ""
       description: "s"
@@ -457,15 +634,10 @@ paths:
         description: "ID of topolog template uplodaed"
         required: true
         type: "string"
-      - in: "body"
-        name: "nodeTemplate"
-        required: false
-        schema:
-          $ref: "#/definitions/NodeTemplate"
-      - name: "node_name"
-        in: "query"
-        description: "The node name"
-        required: false
+      - name: "node_root_key"
+        in: "path"
+        description: "node_root_key"
+        required: true
         type: "string"
       responses:
         200:
@@ -474,39 +646,6 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/NodeTemplate"
-        404:
-          description: "Not found"
-        405:
-          description: "Invalid input"
-      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/interface_types:
-    get:
-      summary: ""
-      description: "returns the interface types"
-      operationId: "get_interface_types"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "ID of topolog template uplodaed"
-        required: true
-        type: "string"
-      - name: "interface_type"
-        in: "query"
-        description: "The interface type"
-        required: false
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              type: "object"
-              additionalProperties:
-                type: "object"
-                properties: {}
         404:
           description: "Not found"
         405:

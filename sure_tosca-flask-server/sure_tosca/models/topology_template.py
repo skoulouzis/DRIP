@@ -245,8 +245,3 @@ class TopologyTemplate(Model):
         """
 
         self._policies = policies
-
-    def __eq__(self, other):
-        if isinstance(other, TopologyTemplate):
-            return self.__key() == other.__key()
-        return NotImplemented

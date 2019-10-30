@@ -11,6 +11,15 @@ repositories:
 
 description: >
   TOSCA example
+  
+interface_types:
+    tosca.interfaces.TEST.test:
+        description: test 
+        derived_from: tosca.interfaces.node.lifecycle.Standard
+        create:
+            description: creates
+        configure:
+            description: configures  
 
 topology_template:
 
