@@ -1,6 +1,8 @@
+import json
 import os
 import sys
 import uuid
+from collections import defaultdict
 
 import yaml
 from tinydb.database import Document
@@ -60,9 +62,11 @@ def query_db(queries, db=None):
 
 def get_tosca_template_model_by_id(id):
     tosca_template_dict = get_tosca_template_dict_by_id(id)
+    tosca_template_model = ToscaTemplateModel.from_dict(tosca_template_dict)
+    tosca_template_dict = deTOSCAfy_topology_template(tosca_template_dict)
     if tosca_template_dict:
         get_tosca_template(tosca_template_dict)
-        return ToscaTemplateModel.from_dict(tosca_template_dict)
+        return tosca_template_model
     return 'Not Found', 404
 
 
@@ -79,7 +83,7 @@ def get_tosca_template_dict_by_id(id):
             if id_name in tosca_template_dict:
                 tosca_template_dict.pop(id_name)
                 break
-        return tosca_template_dict
+        return deTOSCAfy_topology_template(tosca_template_dict)
     return 'Not Found', 404
 
 
@@ -87,12 +91,19 @@ def deTOSCAfy_topology_template(dictionary):
     # outputs out of nowhere is  instantiated  as GetAttribute
     if 'outputs' in dictionary['topology_template']:
         outputs = dictionary['topology_template']['outputs']
-        for output_name in outputs:
-            output = outputs[output_name]
-            if isinstance(output['value'], GetAttribute):
-                args = output['value'].args
-                assert isinstance(args, list)
-                output['value'] = {'get_attribute': args}
+        if isinstance(outputs,str):
+            json_acceptable_string = outputs.replace("'", "\"")
+            d = json.loads(json_acceptable_string)
+            outputs = d
+        elif not isinstance(outputs,dict):
+            for output_name in outputs:
+                output = outputs[output_name]
+                if isinstance(output['value'], GetAttribute):
+                    args = output['value'].args
+                    assert isinstance(args, list)
+                    output['value'] = {'get_attribute': args}
+        dictionary['topology_template']['outputs'] = outputs
+
     return dictionary
 
 
@@ -300,8 +311,8 @@ def get_node_outputs(id, node_nme):
         if node_nme == output.value.node_template_name:
             matching_output_names.append(output.name)
 
-    tosca_template_model = ToscaTemplateModel.from_dict(deTOSCAfy_topology_template(tosca_template_dict))
-
+    tosca_template_dict = deTOSCAfy_topology_template(tosca_template_dict)
+    tosca_template_model = ToscaTemplateModel.from_dict(tosca_template_dict)
     for matching_output_name in matching_output_names:
         matching_outputs[matching_output_name] = tosca_template_model.topology_template.outputs[matching_output_name]
 
