@@ -381,7 +381,7 @@ paths:
         type: "string"
       - name: "node_name"
         in: "path"
-        description: "node_root_key"
+        description: "node_name"
         required: true
         type: "string"
       responses:
@@ -412,7 +412,7 @@ paths:
         type: "string"
       - name: "node_name"
         in: "path"
-        description: "node_root_key"
+        description: "node_name"
         required: true
         type: "string"
       responses:
@@ -441,7 +441,7 @@ paths:
         type: "string"
       - name: "node_name"
         in: "path"
-        description: "node_root_key"
+        description: "node_name"
         required: true
         type: "string"
       responses:
@@ -473,7 +473,7 @@ paths:
         type: "string"
       - name: "node_name"
         in: "path"
-        description: "node_root_key"
+        description: "node_name"
         required: true
         type: "string"
       responses:
@@ -504,7 +504,7 @@ paths:
         type: "string"
       - name: "node_name"
         in: "path"
-        description: "node_root_key"
+        description: "node_name"
         required: true
         type: "string"
       responses:
@@ -602,7 +602,7 @@ paths:
         type: "string"
       - name: "node_name"
         in: "path"
-        description: "node_root_key"
+        description: "node_name"
         required: true
         type: "string"
       responses:

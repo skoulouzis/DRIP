@@ -14,7 +14,7 @@ def get_all_ancestor_properties(id, node_name):  # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_name: node_root_key
+    :param node_name: node_name
     :type node_name: str
 
     :rtype: List[Dict[str, object]]
@@ -29,7 +29,7 @@ def get_all_ancestor_types(id, node_name):  # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_name: node_root_key
+    :param node_name: node_name
     :type node_name: str
 
     :rtype: List[str]
@@ -44,7 +44,7 @@ def get_ancestors_requirements(id, node_name):  # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_name: node_root_key
+    :param node_name: node_name
     :type node_name: str
 
     :rtype: Dict[str, object]
@@ -89,7 +89,7 @@ def get_node_outputs(id, node_name):  # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_name: node_root_key
+    :param node_name: node_name
     :type node_name: str
 
     :rtype: Dict[str, object]
@@ -119,7 +119,7 @@ def get_node_requirements(id, node_name):  # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_name: node_root_key
+    :param node_name: node_name
     :type node_name: str
 
     :rtype: Dict[str, object]
@@ -180,7 +180,7 @@ def get_parent_type_name(id, node_name):  # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_name: node_root_key
+    :param node_name: node_name
     :type node_name: str
 
     :rtype: str
