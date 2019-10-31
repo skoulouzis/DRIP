@@ -571,7 +571,8 @@ paths:
         schema:
           type: "object"
           additionalProperties:
-            type: "string"
+            type: "object"
+            properties: {}
       - name: "node_name"
         in: "path"
         description: "node_name"
