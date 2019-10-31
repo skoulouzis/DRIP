@@ -20,7 +20,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/ancestors_properties'.format(id='id_example', node_root_key='node_root_key_example'),
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_properties'.format(id='id_example', node_name='node_name_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -31,7 +31,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/ancestors_types'.format(id='id_example', node_root_key='node_root_key_example'),
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_types'.format(id='id_example', node_name='node_name_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -42,7 +42,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/ancestors_requirements'.format(id='id_example', node_root_key='node_root_key_example'),
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_requirements'.format(id='id_example', node_name='node_name_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -78,7 +78,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/outputs'.format(id='id_example', node_root_key='node_root_key_example'),
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/outputs'.format(id='id_example', node_name='node_name_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -89,7 +89,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/properties'.format(id='id_example', node_root_key='node_root_key_example'),
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/properties'.format(id='id_example', node_name='node_name_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -100,7 +100,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/requirements'.format(id='id_example', node_root_key='node_root_key_example'),
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/requirements'.format(id='id_example', node_name='node_name_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -111,7 +111,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         query_string = [('type_name', 'type_name_example'),
-                        ('name_key', 'name_key_example'),
+                        ('node_name', 'node_name_example'),
                         ('has_interfaces', true),
                         ('has_properties', true),
                         ('has_attributes', true),
@@ -132,7 +132,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/type_name'.format(id='id_example', node_root_key='node_root_key_example'),
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/type_name'.format(id='id_example', node_name='node_name_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -143,7 +143,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/derived_from'.format(id='id_example', node_root_key='node_root_key_example'),
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/derived_from'.format(id='id_example', node_name='node_name_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -154,7 +154,7 @@ class TestDefaultController(BaseTestCase):
         
         """
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/related'.format(id='id_example', node_root_key='node_root_key_example'),
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/related'.format(id='id_example', node_name='node_name_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -223,7 +223,7 @@ class TestDefaultController(BaseTestCase):
         """
         properties = None
         response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_root_key}/properties'.format(id='id_example', node_root_key='node_root_key_example'),
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/properties'.format(id='id_example', node_name='node_name_example'),
             method='PUT',
             data=json.dumps(properties),
             content_type='application/json')
