@@ -32,7 +32,7 @@ paths:
           description: "successful operation"
           schema:
             type: "string"
-        400:
+        405:
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}:
@@ -736,8 +736,7 @@ definitions:
       policy_types:
         key: "policy_types"
       topology_template:
-        outputs:
-          key: "{}"
+        outputs: "outputs"
         substitution_mappings:
           key: "{}"
         inputs:
@@ -821,10 +820,7 @@ definitions:
           type: "object"
           properties: {}
       outputs:
-        type: "object"
-        additionalProperties:
-          type: "object"
-          properties: {}
+        type: "string"
       groups:
         type: "object"
         additionalProperties:
@@ -843,8 +839,7 @@ definitions:
             type: "object"
             properties: {}
     example:
-      outputs:
-        key: "{}"
+      outputs: "outputs"
       substitution_mappings:
         key: "{}"
       inputs:
