@@ -2,18 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_output.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_output.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/controllers/default_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/controllers/default_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/base_model_.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/base_model_.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/node_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/node_template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_2_topologies.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_2_topologies.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../openAPI/TOSCA/TopologyTemplate.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../openAPI/TOSCA/TopologyTemplate.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/topology_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/topology_template.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/tosca_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/tosca_template.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/service/tosca_template_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/service/tosca_template_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/swagger/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/swagger/swagger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/test/test_default_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/test/test_default_controller.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

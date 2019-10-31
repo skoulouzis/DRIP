@@ -12,13 +12,13 @@
           node_templates:
               type: object
               additionalProperties:
-                  $ref: 'https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate'                    
+                  $ref: 'https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate'
           relationship_templates:
               type: object
               additionalProperties:
                   type: object      
           outputs:
-              type: object
+              type: string
               additionalProperties:
                   type: object  
           groups:

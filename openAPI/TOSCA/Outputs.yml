@@ -1,0 +1,11 @@
+  Outputs:
+      type: "object"
+      properties:                 
+          <parameter_name>:
+              type: "array"
+              items:
+                $ref: 'https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/ParameterDefinition.yml#/ParameterDefinition'
+
+                
+                
+

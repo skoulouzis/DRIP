@@ -1,0 +1,230 @@
+{
+  "definitions": {
+    "docsoasisopenorgtoscans201112:maxInstances": {
+      "type": "string"
+    },
+    "docsoasisopenorgtoscans201112:upperBound": {
+      "type": "string"
+    },
+    "docsoasisopenorgtoscans201112:tBoolean": {
+      "enum": [
+        "yes",
+        "no"
+      ],
+      "type": "string"
+    },
+    "docsoasisopenorgtoscans201112:tTags": {
+      "required": [
+        "Tag"
+      ],
+      "type": "object",
+      "properties": {
+        "Tag": {
+          "type": "array",
+          "items": {
+            "type": "docsoasisopenorgtoscans201112:tTag"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "docsoasisopenorgtoscans201112:tBoundaryDefinitions": {
+      "type": "object",
+      "properties": {
+        "Properties": {
+          "type": "docsoasisopenorgtoscans201112:Properties"
+        },
+        "PropertyConstraints": {
+          "$ref": "#/definitions/docsoasisopenorgtoscans201112:PropertyConstraints"
+        },
+        "Requirements": {
+          "$ref": "#/definitions/docsoasisopenorgtoscans201112:Requirements"
+        },
+        "Capabilities": {
+          "$ref": "#/definitions/docsoasisopenorgtoscans201112:Capabilities"
+        },
+        "Policies": {
+          "$ref": "#/definitions/docsoasisopenorgtoscans201112:Policies"
+        },
+        "Interfaces": {
+          "$ref": "#/definitions/docsoasisopenorgtoscans201112:Interfaces"
+        }
+      }
+    },
+    "docsoasisopenorgtoscans201112:tDeploymentArtifacts": {
+      "required": [
+        "DeploymentArtifact"
+      ],
+      "type": "object",
+      "properties": {
+        "DeploymentArtifact": {
+          "type": "array",
+          "items": {
+            "type": "docsoasisopenorgtoscans201112:tDeploymentArtifact"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "docsoasisopenorgtoscans201112:tImplementationArtifacts": {
+      "required": [
+        "ImplementationArtifact"
+      ],
+      "type": "object",
+      "properties": {
+        "ImplementationArtifact": {
+          "type": "array",
+          "items": {
+            "type": "docsoasisopenorgtoscans201112:ImplementationArtifact"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "docsoasisopenorgtoscans201112:tAppliesTo": {
+      "required": [
+        "NodeTypeReference"
+      ],
+      "type": "object",
+      "properties": {
+        "NodeTypeReference": {
+          "type": "array",
+          "items": {
+            "type": "docsoasisopenorgtoscans201112:NodeTypeReference"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "docsoasisopenorgtoscans201112:tTopologyElementInstanceStates": {
+      "required": [
+        "InstanceState"
+      ],
+      "type": "object",
+      "properties": {
+        "InstanceState": {
+          "type": "array",
+          "items": {
+            "type": "docsoasisopenorgtoscans201112:InstanceState"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "docsoasisopenorgtoscans201112:tRequiredContainerFeatures": {
+      "required": [
+        "RequiredContainerFeature"
+      ],
+      "type": "object",
+      "properties": {
+        "RequiredContainerFeature": {
+          "type": "array",
+          "items": {
+            "type": "docsoasisopenorgtoscans201112:tRequiredContainerFeature"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "docsoasisopenorgtoscans201112:Extensions": {
+      "required": [
+        "Extension"
+      ],
+      "type": "object",
+      "properties": {
+        "Extension": {
+          "type": "array",
+          "items": {
+            "type": "docsoasisopenorgtoscans201112:tExtension"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "docsoasisopenorgtoscans201112:PropertyConstraints": {
+      "required": [
+        "PropertyConstraint"
+      ],
+      "type": "object",
+      "properties": {
+        "PropertyConstraint": {
+          "type": "array",
+          "items": {
+            "type": "docsoasisopenorgtoscans201112:tPropertyConstraint"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "docsoasisopenorgtoscans201112:Requirements": {
+      "required": [
+        "Requirement"
+      ],
+      "type": "object",
+      "properties": {
+        "Requirement": {
+          "type": "array",
+          "items": {
+            "type": "docsoasisopenorgtoscans201112:tRequirementRef"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "docsoasisopenorgtoscans201112:Capabilities": {
+      "required": [
+        "Capability"
+      ],
+      "type": "object",
+      "properties": {
+        "Capability": {
+          "type": "array",
+          "items": {
+            "type": "docsoasisopenorgtoscans201112:tCapabilityRef"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "docsoasisopenorgtoscans201112:Policies": {
+      "required": [
+        "Policy"
+      ],
+      "type": "object",
+      "properties": {
+        "Policy": {
+          "type": "array",
+          "items": {
+            "type": "docsoasisopenorgtoscans201112:tPolicy"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "docsoasisopenorgtoscans201112:Interfaces": {
+      "required": [
+        "Interface"
+      ],
+      "type": "object",
+      "properties": {
+        "Interface": {
+          "type": "array",
+          "items": {
+            "type": "docsoasisopenorgtoscans201112:tExportedInterface"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "lang": {
+      "type": "string"
+    },
+    "space": {
+      "enum": [
+        "default",
+        "preserve"
+      ],
+      "type": "string"
+    }
+  }
+}

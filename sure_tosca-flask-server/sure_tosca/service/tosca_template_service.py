@@ -1,4 +1,5 @@
 import os
+import sys
 import uuid
 
 import yaml
@@ -17,6 +18,7 @@ from toscaparser.topology_template import TopologyTemplate
 from tinydb.storages import MemoryStorage
 from functools import reduce
 from sure_tosca.service import tosca_helper
+import logging
 
 # db = TinyDB(storage=CachingMiddleware(MemoryStorage))
 db_dir_path = tempfile.gettempdir()
@@ -73,18 +75,22 @@ def get_tosca_template_dict_by_id(id):
 
 
 def save(file):
-    # tosca_template_file_path = os.path.join(db_dir_path, file.filename)
-    tosca_template_dict = yaml.safe_load(file.stream)
-    tosca_template_model = ToscaTemplateModel.from_dict(tosca_template_dict)
-    tosca_template = ToscaTemplate(yaml_dict_tpl=tosca_template_dict)
+    try:
+        # tosca_template_file_path = os.path.join(db_dir_path, file.filename)
+        tosca_template_dict = yaml.safe_load(file.stream)
+        tosca_template_model = ToscaTemplateModel.from_dict(tosca_template_dict)
+        tosca_template = ToscaTemplate(yaml_dict_tpl=tosca_template_dict)
 
-    doc_id = str(uuid.uuid4())
-    tosca_template_dict_with_id = {model_id_names[0]: doc_id}
+        doc_id = str(uuid.uuid4())
+        tosca_template_dict_with_id = {model_id_names[0]: doc_id}
 
-    tosca_template_dict_with_id.update(tosca_template_model.to_dict())
-    tosca_templates_db.insert(tosca_template_dict_with_id)
-    # tosca_templates_db.close()
-    return doc_id
+        tosca_template_dict_with_id.update(tosca_template_model.to_dict())
+        tosca_templates_db.insert(tosca_template_dict_with_id)
+        # tosca_templates_db.close()
+        return doc_id
+    except Exception as e:
+        logging.error(str(e))
+        return str(e), 400
 
 
 def get_interface_types(id, interface_type=None):
