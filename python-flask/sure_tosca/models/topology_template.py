@@ -6,7 +6,6 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from sure_tosca.models.base_model_ import Model
-from sure_tosca.models.node_template import NodeTemplate  # noqa: F401,E501
 from sure_tosca import util
 
 
@@ -28,7 +27,7 @@ class TopologyTemplate(Model):
         :param relationship_templates: The relationship_templates of this TopologyTemplate.  # noqa: E501
         :type relationship_templates: Dict[str, object]
         :param outputs: The outputs of this TopologyTemplate.  # noqa: E501
-        :type outputs: List[Dict[str, object]]
+        :type outputs: Dict[str, object]
         :param groups: The groups of this TopologyTemplate.  # noqa: E501
         :type groups: Dict[str, object]
         :param substitution_mappings: The substitution_mappings of this TopologyTemplate.  # noqa: E501
@@ -41,7 +40,7 @@ class TopologyTemplate(Model):
             'inputs': List[Dict[str, object]],
             'node_templates': Dict[str, NodeTemplate],
             'relationship_templates': Dict[str, object],
-            'outputs': List[Dict[str, object]],
+            'outputs': Dict[str, object],
             'groups': Dict[str, object],
             'substitution_mappings': Dict[str, object],
             'policies': List[Dict[str, object]]
@@ -168,7 +167,7 @@ class TopologyTemplate(Model):
 
 
         :return: The outputs of this TopologyTemplate.
-        :rtype: List[Dict[str, object]]
+        :rtype: Dict[str, object]
         """
         return self._outputs
 
@@ -178,7 +177,7 @@ class TopologyTemplate(Model):
 
 
         :param outputs: The outputs of this TopologyTemplate.
-        :type outputs: List[Dict[str, object]]
+        :type outputs: Dict[str, object]
         """
 
         self._outputs = outputs

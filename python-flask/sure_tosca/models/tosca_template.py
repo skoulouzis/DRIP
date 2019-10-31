@@ -6,7 +6,6 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from sure_tosca.models.base_model_ import Model
-from sure_tosca.models.topology_template import TopologyTemplate  # noqa: F401,E501
 from sure_tosca import util
 
 
