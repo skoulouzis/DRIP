@@ -3,10 +3,10 @@
 from __future__ import absolute_import
 from datetime import date, datetime  # noqa: F401
 
+from toscaparser.topology_template import TopologyTemplate
 from typing import List, Dict  # noqa: F401
 
 from sure_tosca.models.base_model_ import Model
-from sure_tosca.models.topology_template import TopologyTemplate  # noqa: F401,E501
 from sure_tosca import util
 
 

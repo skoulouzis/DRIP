@@ -8,49 +8,49 @@ from sure_tosca import util
 from sure_tosca.service import tosca_template_service
 
 
-def get_all_ancestor_properties(id, node_root_key):  # noqa: E501
+def get_all_ancestor_properties(id, node_name):  # noqa: E501
     """
 
     Recursively get all requirements all the way to the ROOT including the input node&#39;s # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_root_key: node_root_key
-    :type node_root_key: str
+    :param node_name: node_name
+    :type node_name: str
 
     :rtype: List[Dict[str, object]]
     """
-    return tosca_template_service.get_all_ancestor_properties(id, node_root_key)
+    return tosca_template_service.get_all_ancestor_properties(id, node_name)
 
 
-def get_all_ancestor_types(id, node_root_key):  # noqa: E501
+def get_all_ancestor_types(id, node_name):  # noqa: E501
     """
 
     Recursively get all requirements all the way to the ROOT including the input node&#39;s # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_root_key: node_root_key
-    :type node_root_key: str
+    :param node_name: node_name
+    :type node_name: str
 
     :rtype: List[str]
     """
-    return tosca_template_service.get_all_ancestor_types(id, node_root_key)
+    return tosca_template_service.get_all_ancestor_types(id, node_name)
 
 
-def get_ancestors_requirements(id, node_root_key):  # noqa: E501
+def get_ancestors_requirements(id, node_name):  # noqa: E501
     """
 
     Recursively get all requirements all the way to the ROOT including the input node&#39;s # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_root_key: node_root_key
-    :type node_root_key: str
+    :param node_name: node_name
+    :type node_name: str
 
     :rtype: Dict[str, object]
     """
-    return tosca_template_service.get_all_ancestors_requirements(id, node_root_key)
+    return tosca_template_service.get_all_ancestors_requirements(id, node_name)
 
 
 def get_dsl_definitions(id, anchors=None, derived_from=None):  # noqa: E501
@@ -83,54 +83,52 @@ def get_imports(id):  # noqa: E501
     return tosca_template_service.get_tosca_template_model_by_id(id).imports
 
 
-def get_node_outputs(id, node_root_key):  # noqa: E501
+def get_node_outputs(id, node_name):  # noqa: E501
     """
 
     s # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_root_key: node_root_key
-    :type node_root_key: str
+    :param node_name: node_name
+    :type node_name: str
 
     :rtype: Dict[str, object]
     """
-    return tosca_template_service.get_node_outputs(id, name_key=node_root_key)
+    return tosca_template_service.get_node_outputs(id, node_name)
 
 
-def get_node_properties(id, node_root_key):  # noqa: E501
+def get_node_properties(id, node_name):  # noqa: E501
     """
 
     s # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_root_key: node_root_key
-    :type node_root_key: str
+    :param node_name: node_name
+    :type node_name: str
 
     :rtype: Dict[str, object]
     """
-    return tosca_template_service.get_node_templates(id, name_key=node_root_key)[0].properties
+    return tosca_template_service.get_node_properties(id, node_name)
 
 
-def get_node_requirements(id, node_root_key):  # noqa: E501
+def get_node_requirements(id, node_name):  # noqa: E501
     """get_node_requirements
 
     Returns  the requirements for an input node as described in the template not in the node&#39;s definition  # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_root_key: node_root_key
-    :type node_root_key: str
+    :param node_name: node_name
+    :type node_name: str
 
     :rtype: Dict[str, object]
     """
-    return tosca_template_service.get_node_templates(id, name_key=node_root_key)[0].requirements
+    return tosca_template_service.get_node_requirements(id, node_name)
 
 
-def get_node_templates(id, type_name=None, name_key=None, has_interfaces=None, has_properties=None, has_attributes=None,
-                       has_requirements=None, has_capabilities=None, has_artifacts=None,
-                       derived_from=None):  # noqa: E501
+def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, has_properties=None, has_attributes=None, has_requirements=None, has_capabilities=None, has_artifacts=None, derived_from=None):  # noqa: E501
     """get_node_templates
 
     returns nodes templates in topology # noqa: E501
@@ -139,8 +137,8 @@ def get_node_templates(id, type_name=None, name_key=None, has_interfaces=None, h
     :type id: str
     :param type_name: The type
     :type type_name: str
-    :param name_key: the name key
-    :type name_key: str
+    :param node_name: the name
+    :type node_name: str
     :param has_interfaces: filter if has interfaces
     :type has_interfaces: bool
     :param has_properties: filter if has properties
@@ -158,56 +156,56 @@ def get_node_templates(id, type_name=None, name_key=None, has_interfaces=None, h
 
     :rtype: List[NodeTemplate]
     """
-    return tosca_template_service.get_node_templates(id, type_name=type_name, name_key=name_key,
+    return tosca_template_service.get_node_templates(id, type_name=type_name, node_name=node_name,
                                                      has_interfaces=has_interfaces, has_properties=has_properties,
                                                      has_attributes=has_attributes, has_requirements=has_requirements,
                                                      has_capabilities=has_capabilities, has_artifacts=has_artifacts,
                                                      derived_from=derived_from)
 
 
-def get_node_type_name(id, node_root_key):  # noqa: E501
+def get_node_type_name(id, node_name):  # noqa: E501
     """
 
      # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_root_key: node_root_key
-    :type node_root_key: str
+    :param node_name: node_name
+    :type node_name: str
 
     :rtype: str
     """
-    return tosca_template_service.get_node_type_name(id, node_root_key)
+    return tosca_template_service.get_node_type_name(id, node_name)
 
 
-def get_parent_type_name(id, node_root_key):  # noqa: E501
+def get_parent_type_name(id, node_name):  # noqa: E501
     """
 
      # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_root_key: node_root_key
-    :type node_root_key: str
+    :param node_name: node_name
+    :type node_name: str
 
     :rtype: str
     """
-    return tosca_template_service.get_parent_type_name(id, node_root_key)
+    return tosca_template_service.get_parent_type_name(id, node_name)
 
 
-def get_related_nodes(id, node_root_key):  # noqa: E501
+def get_related_nodes(id, node_name):  # noqa: E501
     """
 
     s # noqa: E501
 
     :param id: ID of topolog template uplodaed
     :type id: str
-    :param node_root_key: node_root_key
-    :type node_root_key: str
+    :param node_name: node_name
+    :type node_name: str
 
     :rtype: List[NodeTemplate]
     """
-    return tosca_template_service.get_related_nodes(id, node_root_key)
+    return tosca_template_service.get_related_nodes(id, node_name)
 
 
 def get_relationship_templates(id, type_name=None, derived_from=None):  # noqa: E501
@@ -253,8 +251,7 @@ def get_tosca_template(id):  # noqa: E501
     return tosca_template_service.get_tosca_template_model_by_id(id)
 
 
-def get_types(id, kind_of_type=None, has_interfaces=None, type_name=None, has_properties=None, has_attributes=None,
-              has_requirements=None, has_capabilities=None, has_artifacts=None, derived_from=None):  # noqa: E501
+def get_types(id, kind_of_type=None, has_interfaces=None, type_name=None, has_properties=None, has_attributes=None, has_requirements=None, has_capabilities=None, has_artifacts=None, derived_from=None):  # noqa: E501
     """
 
     returns the interface types # noqa: E501
@@ -289,7 +286,7 @@ def get_types(id, kind_of_type=None, has_interfaces=None, type_name=None, has_pr
                                             derived_from=derived_from)
 
 
-def set_node_properties(id, properties, node_root_key):  # noqa: E501
+def set_node_properties(id, properties, node_name):  # noqa: E501
     """
 
     s # noqa: E501
@@ -298,12 +295,12 @@ def set_node_properties(id, properties, node_root_key):  # noqa: E501
     :type id: str
     :param properties: 
     :type properties: 
-    :param node_root_key: node_root_key
-    :type node_root_key: str
+    :param node_name: node_name
+    :type node_name: str
 
-    :rtype: Dict[str, object]
+    :rtype: NodeTemplate
     """
-    return tosca_template_service.set_node_properties(id, properties, node_root_key)
+    return tosca_template_service.set_node_properties(id, properties, node_name)
 
 
 def upload_tosca_template(file):  # noqa: E501
