@@ -3,9 +3,9 @@
 from __future__ import absolute_import
 from datetime import date, datetime  # noqa: F401
 
-from toscaparser.nodetemplate import NodeTemplate
 from typing import List, Dict  # noqa: F401
 
+from sure_tosca.models import NodeTemplate
 from sure_tosca.models.base_model_ import Model
 from sure_tosca import util
 
@@ -245,3 +245,8 @@ class TopologyTemplate(Model):
         """
 
         self._policies = policies
+
+    def __eq__(self, other):
+        if isinstance(other, TopologyTemplate):
+            return self.__key() == other.__key()
+        return NotImplemented

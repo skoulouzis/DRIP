@@ -3,9 +3,9 @@
 from __future__ import absolute_import
 from datetime import date, datetime  # noqa: F401
 
-from toscaparser.topology_template import TopologyTemplate
 from typing import List, Dict  # noqa: F401
 
+from sure_tosca.models import TopologyTemplate
 from sure_tosca.models.base_model_ import Model
 from sure_tosca import util
 
@@ -16,7 +16,11 @@ class ToscaTemplate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, tosca_definitions_version=None, tosca_default_namespace=None, template_name=None, topology_template=None, template_author=None, template_version=None, description=None, imports=None, dsl_definitions=None, node_types=None, relationship_types=None, relationship_templates=None, capability_types=None, artifact_types=None, data_types=None, interface_types=None, policy_types=None, group_types=None, repositories=None):  # noqa: E501
+    def __init__(self, tosca_definitions_version=None, tosca_default_namespace=None, template_name=None,
+                 topology_template=None, template_author=None, template_version=None, description=None, imports=None,
+                 dsl_definitions=None, node_types=None, relationship_types=None, relationship_templates=None,
+                 capability_types=None, artifact_types=None, data_types=None, interface_types=None, policy_types=None,
+                 group_types=None, repositories=None):  # noqa: E501
         """ToscaTemplate - a model defined in Swagger
 
         :param tosca_definitions_version: The tosca_definitions_version of this ToscaTemplate.  # noqa: E501
@@ -531,3 +535,8 @@ class ToscaTemplate(Model):
         """
 
         self._repositories = repositories
+
+    def __eq__(self, other):
+        if isinstance(other, ToscaTemplate):
+            return self.__key() == other.__key()
+        return NotImplemented
