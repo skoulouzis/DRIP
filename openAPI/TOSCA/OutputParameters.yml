@@ -1,0 +1,31 @@
+---
+definitions:
+  docsoasisopenorgtoscans201112:OutputParameters:
+    required:
+    - OutputParameter
+    type: object
+    properties:
+      OutputParameter:
+        type: array
+        items:
+          "$ref": "#/definitions/docsoasisopenorgtoscans201112:tParameter"
+          
+  docsoasisopenorgtoscans201112:tParameter:
+    properties:
+      name:
+        type: string
+      type:
+        type: string
+      required:
+        type: boolean
+    required:
+    - name
+    - type
+    type: object
+  lang:
+    type: string
+  space:
+    enum:
+    - default
+    - preserve
+    type: string
