@@ -92,7 +92,7 @@ def get_node_outputs(id, node_name):  # noqa: E501
     :param node_name: node_name
     :type node_name: str
 
-    :rtype: Dict[str, object]
+    :rtype: List[Dict[str, object]]
     """
     return 'do some magic!'
 
