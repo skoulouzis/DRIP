@@ -5,9 +5,9 @@ from __future__ import absolute_import
 from flask import json
 from six import BytesIO
 
-from sure_tosca.models.node_template import NodeTemplate  # noqa: E501
-from sure_tosca.models.topology_template import TopologyTemplate  # noqa: E501
-from sure_tosca.models.tosca_template import ToscaTemplate  # noqa: E501
+from sure_tosca.models.node_template import NodeTemplateModel  # noqa: E501
+from sure_tosca.models.topology_template import TopologyTemplateModel  # noqa: E501
+from sure_tosca.models.tosca_template import ToscaTemplateModel  # noqa: E501
 from sure_tosca.test import BaseTestCase
 
 

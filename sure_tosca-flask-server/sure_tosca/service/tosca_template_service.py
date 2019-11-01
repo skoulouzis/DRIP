@@ -1,30 +1,22 @@
 import json
+import logging
 import os
-import sys
+import tempfile
 import uuid
-from collections import defaultdict
+from functools import reduce
+import copy
 
 import yaml
-from tinydb.database import Document
+from tinydb import TinyDB, Query
 from tinydb.middlewares import CachingMiddleware
+from tinydb.storages import MemoryStorage
 from toscaparser.functions import GetAttribute
-from typing import re
+from toscaparser.tosca_template import ToscaTemplate
 
 from sure_tosca.models.base_model_ import Model
-from sure_tosca.models.node_template import NodeTemplate as NodeTemplateModel
-from sure_tosca.models.topology_template import TopologyTemplate  as TopologyTemplateModel
-from sure_tosca.models.tosca_template import ToscaTemplate  as ToscaTemplateModel
-from sure_tosca import util
-from tinydb import TinyDB, Query
-import tempfile
-from toscaparser.nodetemplate import NodeTemplate
-from toscaparser.tosca_template import ToscaTemplate
-from toscaparser.topology_template import TopologyTemplate
-from toscaparser.parameters import Output
-from tinydb.storages import MemoryStorage
-from functools import reduce
+from sure_tosca.models.node_template import NodeTemplateModel as NodeTemplateModel
+from sure_tosca.models.tosca_template import ToscaTemplateModel  as ToscaTemplateModel
 from sure_tosca.service import tosca_helper
-import logging
 
 # db = TinyDB(storage=CachingMiddleware(MemoryStorage))
 db_dir_path = tempfile.gettempdir()
@@ -37,7 +29,6 @@ dsl_definitions_db = TinyDB(storage=CachingMiddleware(MemoryStorage))
 relationship_template_db = TinyDB(storage=CachingMiddleware(MemoryStorage))
 interface_types_db = TinyDB(storage=CachingMiddleware(MemoryStorage))
 
-model_id_names = ['id']
 root_key = 'root_key'
 
 
@@ -57,54 +48,46 @@ def query_db(queries, db=None):
                 node = res
             updated_results.append(node)
         return updated_results
-    return 'Not Found', 404
+    return None
 
 
 def get_tosca_template_model_by_id(id):
     tosca_template_dict = get_tosca_template_dict_by_id(id)
     tosca_template_model = ToscaTemplateModel.from_dict(tosca_template_dict)
-    tosca_template_dict = deTOSCAfy_topology_template(tosca_template_dict)
+    # tosca_template_dict = deTOSCAfy_topology_template(tosca_template_dict)
     if tosca_template_dict:
         get_tosca_template(tosca_template_dict)
         return tosca_template_model
-    return 'Not Found', 404
+    return None
 
 
 def get_tosca_template(tosca_template_dict):
-    return ToscaTemplate(yaml_dict_tpl=tosca_template_dict)
+    return ToscaTemplate(yaml_dict_tpl=copy.deepcopy(tosca_template_dict))
 
 
 def get_tosca_template_dict_by_id(id):
-    query = Query()
-    tosca_template_list_dict = tosca_templates_db.search(query.id == id)
-    if tosca_template_list_dict:
-        tosca_template_dict = tosca_template_list_dict[0]
-        for id_name in model_id_names:
-            if id_name in tosca_template_dict:
-                tosca_template_dict.pop(id_name)
-                break
-        return deTOSCAfy_topology_template(tosca_template_dict)
-    return 'Not Found', 404
+    tosca_template_dict = tosca_templates_db.get(doc_id=int(id))
+    return tosca_template_dict
 
 
-def deTOSCAfy_topology_template(dictionary):
-    # outputs out of nowhere is  instantiated  as GetAttribute
-    if 'outputs' in dictionary['topology_template']:
-        outputs = dictionary['topology_template']['outputs']
-        if isinstance(outputs,str):
-            json_acceptable_string = outputs.replace("'", "\"")
-            d = json.loads(json_acceptable_string)
-            outputs = d
-        elif not isinstance(outputs,dict):
-            for output_name in outputs:
-                output = outputs[output_name]
-                if isinstance(output['value'], GetAttribute):
-                    args = output['value'].args
-                    assert isinstance(args, list)
-                    output['value'] = {'get_attribute': args}
-        dictionary['topology_template']['outputs'] = outputs
-
-    return dictionary
+# def deTOSCAfy_topology_template(dictionary):
+#     # outputs out of nowhere is  instantiated  as GetAttribute or str
+#     if 'outputs' in dictionary['topology_template']:
+#         outputs = dictionary['topology_template']['outputs']
+#         if isinstance(outputs, str):
+#             json_acceptable_string = outputs.replace("'", "\"")
+#             d = json.loads(json_acceptable_string)
+#             outputs = d
+#         if not isinstance(outputs, dict):
+#             for output_name in outputs:
+#                 output = outputs[output_name]
+#                 if isinstance(output['value'], GetAttribute):
+#                     args = output['value'].args
+#                     assert isinstance(args, list)
+#                     output['value'] = {'get_attribute': args}
+#         dictionary['topology_template']['outputs'] = outputs
+#
+#     return dictionary
 
 
 def save(file):
@@ -112,16 +95,9 @@ def save(file):
         # tosca_template_file_path = os.path.join(db_dir_path, file.filename)
         dictionary = yaml.safe_load(file.stream)
 
-        tosca_template = ToscaTemplate(yaml_dict_tpl=dictionary)
-
-        dictionary = deTOSCAfy_topology_template(dictionary)
-
+        tosca_template = ToscaTemplate(yaml_dict_tpl=copy.deepcopy(dictionary))
         tosca_template_model = ToscaTemplateModel.from_dict(dictionary)
-        doc_id = str(uuid.uuid4())
-        tosca_template_dict_with_id = {model_id_names[0]: doc_id}
-
-        tosca_template_dict_with_id.update(tosca_template_model.to_dict())
-        tosca_templates_db.insert(tosca_template_dict_with_id)
+        doc_id = tosca_templates_db.insert(dictionary)
         # tosca_templates_db.close()
         return doc_id
     except Exception as e:
@@ -147,8 +123,6 @@ def get_interface_types(id, interface_type=None):
 def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, has_properties=None,
                        has_attributes=None,
                        has_requirements=None, has_capabilities=None, has_artifacts=None, derived_from=None):
-    # tmp_db.purge()
-
     if len(node_template_db) <= 1:
         tosca_template_model = get_tosca_template_model_by_id(id)
         object_list = tosca_template_model.topology_template.node_templates
@@ -252,6 +226,8 @@ def get_relationship_templates(id, type_name=None, derived_from=None):
 
 def node_dict_2_node_template(id, node_name):
     tosca_template_dict = get_tosca_template_dict_by_id(id)
+    if tosca_template_dict is None:
+        return None
     tosca_template = get_tosca_template(tosca_template_dict)
     tosca_node_types = tosca_template.nodetemplates[0].type_definition.TOSCA_DEF
     all_custom_def = tosca_template.nodetemplates[0].custom_def
@@ -260,22 +236,29 @@ def node_dict_2_node_template(id, node_name):
     all_node_types.update(all_custom_def.items())
 
     node_template_dict = get_node_templates(id, node_name=node_name)[0]
-    node_template_dict = {node_name: node_template_dict}
+
+    if next(iter(node_template_dict)) != node_name:
+        node_template_dict = {node_name: node_template_dict}
     if isinstance(node_template_dict, dict):
         the_node = tosca_helper.node_dict_2_node_template(node_template_dict, all_node_types)
-
         return the_node, all_node_types, all_custom_def
     return None
 
 
 def get_all_ancestors_requirements(id, node_root_key):
-    the_node, all_node_types, all_custom_def = node_dict_2_node_template(id, node_root_key)
+    try:
+        the_node, all_node_types, all_custom_def = node_dict_2_node_template(id, node_root_key)
+    except Exception as e:
+        return None
     parent_requirements = tosca_helper.get_all_ancestors_requirements(the_node, all_node_types, all_custom_def)
     return parent_requirements
 
 
 def get_all_ancestor_properties(id, node_root_key):
-    the_node, all_node_types, all_custom_def = node_dict_2_node_template(id, node_root_key)
+    try:
+        the_node, all_node_types, all_custom_def = node_dict_2_node_template(id, node_root_key)
+    except Exception as e:
+        return None
     properties = tosca_helper.get_all_ancestors_properties(the_node, all_node_types, all_custom_def)
     properties_list = []
     for prop in properties:
@@ -288,7 +271,7 @@ def get_all_ancestor_types(id, node_root_key):
     try:
         the_node, all_node_types, all_custom_def = node_dict_2_node_template(id, node_root_key)
     except Exception as e:
-        return 'Not Found', 404
+        return None
     all_ancestor_types = tosca_helper.get_all_ancestors_types(the_node, all_node_types, all_custom_def)
     return all_ancestor_types
 
@@ -297,21 +280,21 @@ def get_parent_type_name(id, node_root_key):
     try:
         the_node, all_node_types, all_custom_def = node_dict_2_node_template(id, node_root_key)
     except Exception as e:
-        return 'Not Found', 404
+        return None
     return tosca_helper.get_parent_type(the_node)
 
 
-def get_node_outputs(id, node_nme):
+def get_node_outputs(id, node_name):
     matching_outputs = {}
     matching_output_names = []
     tosca_template_dict = get_tosca_template_dict_by_id(id)
     tosca_template = get_tosca_template(tosca_template_dict)
     outputs = tosca_template.topology_template.outputs
     for output in outputs:
-        if node_nme == output.value.node_template_name:
+        if node_name == output.value.node_template_name:
             matching_output_names.append(output.name)
 
-    tosca_template_dict = deTOSCAfy_topology_template(tosca_template_dict)
+    # tosca_template_dict = deTOSCAfy_topology_template(tosca_template_dict)
     tosca_template_model = ToscaTemplateModel.from_dict(tosca_template_dict)
     for matching_output_name in matching_output_names:
         matching_outputs[matching_output_name] = tosca_template_model.topology_template.outputs[matching_output_name]
@@ -327,7 +310,7 @@ def get_node_properties(id, node_name):
     properties = NodeTemplateModel.from_dict(node_template_dict).properties
     if properties:
         return properties
-    return 'Not Found', 404
+    return None
 
 
 def get_node_requirements(id, node_name):
@@ -338,7 +321,7 @@ def get_node_requirements(id, node_name):
     requirements = NodeTemplateModel.from_dict(node_template_dict).requirements
     if requirements:
         return requirements
-    return 'Not Found', 404
+    return None
 
 
 def get_related_nodes(id, node_name):
@@ -366,7 +349,7 @@ def get_node_type_name(id, node_name):
     type_name = NodeTemplateModel.from_dict(node_template_dict).type
     if type_name:
         return type_name
-    return 'Not Found', 404
+    return None
 
 
 def set_node_properties(id, properties, node_name):

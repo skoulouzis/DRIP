@@ -108,13 +108,13 @@ def get_node_types_with_interface(nodes):
 
 def node_dict_2_node_template(node_dict, all_custom_def):
     node_name = next(iter(node_dict))
-    node_type = node_dict[node_name]['type']
+    # node_type = node_dict[node_name]['type']
 
     # for name_to_remove in node_type_key_names_to_remove:
     #     if name_to_remove in node_dict[node_name][node_name]:
     #         node_dict[node_name].pop(name_to_remove)
 
-    node_template = NodeTemplate(node_name, node_templates=node_dict, custom_def=all_custom_def)
+    node_template = NodeTemplate(node_name, node_templates=copy.deepcopy(node_dict), custom_def=all_custom_def)
     # For some reason the tosca.nodes.ARTICONF.Orchestrator doesn't  have all definitions so we need to add them
     # manually. We get 'toscaparser.common.exception.InvalidTypeError: Type "tosca.nodes.ARTICONF.Orchestrator"
     # is not a valid type.'

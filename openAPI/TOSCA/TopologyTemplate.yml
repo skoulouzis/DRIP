@@ -20,7 +20,7 @@
           outputs:
               type: string
               additionalProperties:
-                  type: object  
+                  type: object 
           groups:
               type: object
               additionalProperties:

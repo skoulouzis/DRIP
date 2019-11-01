@@ -1,9 +1,9 @@
 import connexion
 import six
 
-from sure_tosca.models.node_template import NodeTemplate  # noqa: E501
-from sure_tosca.models.topology_template import TopologyTemplate  # noqa: E501
-from sure_tosca.models.tosca_template import ToscaTemplate  # noqa: E501
+from sure_tosca.models.node_template import NodeTemplateModel  # noqa: E501
+from sure_tosca.models.topology_template import TopologyTemplateModel  # noqa: E501
+from sure_tosca.models.tosca_template import ToscaTemplateModel  # noqa: E501
 from sure_tosca import util
 from sure_tosca.service import tosca_template_service
 
@@ -20,7 +20,10 @@ def get_all_ancestor_properties(id, node_name):  # noqa: E501
 
     :rtype: List[Dict[str, object]]
     """
-    return tosca_template_service.get_all_ancestor_properties(id, node_name)
+    res = tosca_template_service.get_all_ancestor_properties(id, node_name)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_all_ancestor_types(id, node_name):  # noqa: E501
@@ -35,7 +38,10 @@ def get_all_ancestor_types(id, node_name):  # noqa: E501
 
     :rtype: List[str]
     """
-    return tosca_template_service.get_all_ancestor_types(id, node_name)
+    res = tosca_template_service.get_all_ancestor_types(id, node_name)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_ancestors_requirements(id, node_name):  # noqa: E501
@@ -50,7 +56,10 @@ def get_ancestors_requirements(id, node_name):  # noqa: E501
 
     :rtype: Dict[str, object]
     """
-    return tosca_template_service.get_all_ancestors_requirements(id, node_name)
+    res = tosca_template_service.get_all_ancestors_requirements(id, node_name)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_dsl_definitions(id, anchors=None, derived_from=None):  # noqa: E501
@@ -67,7 +76,10 @@ def get_dsl_definitions(id, anchors=None, derived_from=None):  # noqa: E501
 
     :rtype: List[Dict[str, object]]
     """
-    return tosca_template_service.get_tosca_template_model_by_id(id).dsl_definitions
+    res = tosca_template_service.get_tosca_template_model_by_id(id).dsl_definitions
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_imports(id):  # noqa: E501
@@ -80,7 +92,10 @@ def get_imports(id):  # noqa: E501
 
     :rtype: List[Dict[str, object]]
     """
-    return tosca_template_service.get_tosca_template_model_by_id(id).imports
+    res = tosca_template_service.get_tosca_template_model_by_id(id).imports
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_node_outputs(id, node_name):  # noqa: E501
@@ -95,7 +110,10 @@ def get_node_outputs(id, node_name):  # noqa: E501
 
     :rtype: Dict[str, object]
     """
-    return tosca_template_service.get_node_outputs(id, node_name)
+    res = tosca_template_service.get_node_outputs(id, node_name)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_node_properties(id, node_name):  # noqa: E501
@@ -110,7 +128,10 @@ def get_node_properties(id, node_name):  # noqa: E501
 
     :rtype: Dict[str, object]
     """
-    return tosca_template_service.get_node_properties(id, node_name)
+    res = tosca_template_service.get_node_properties(id, node_name)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_node_requirements(id, node_name):  # noqa: E501
@@ -125,10 +146,15 @@ def get_node_requirements(id, node_name):  # noqa: E501
 
     :rtype: Dict[str, object]
     """
-    return tosca_template_service.get_node_requirements(id, node_name)
+    res = tosca_template_service.get_node_requirements(id, node_name)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
-def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, has_properties=None, has_attributes=None, has_requirements=None, has_capabilities=None, has_artifacts=None, derived_from=None):  # noqa: E501
+def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, has_properties=None,
+                       has_attributes=None, has_requirements=None, has_capabilities=None, has_artifacts=None,
+                       derived_from=None):  # noqa: E501
     """get_node_templates
 
     returns nodes templates in topology # noqa: E501
@@ -156,11 +182,14 @@ def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, 
 
     :rtype: List[NodeTemplate]
     """
-    return tosca_template_service.get_node_templates(id, type_name=type_name, node_name=node_name,
-                                                     has_interfaces=has_interfaces, has_properties=has_properties,
-                                                     has_attributes=has_attributes, has_requirements=has_requirements,
-                                                     has_capabilities=has_capabilities, has_artifacts=has_artifacts,
-                                                     derived_from=derived_from)
+    res = tosca_template_service.get_node_templates(id, type_name=type_name, node_name=node_name,
+                                                    has_interfaces=has_interfaces, has_properties=has_properties,
+                                                    has_attributes=has_attributes, has_requirements=has_requirements,
+                                                    has_capabilities=has_capabilities, has_artifacts=has_artifacts,
+                                                    derived_from=derived_from)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_node_type_name(id, node_name):  # noqa: E501
@@ -175,7 +204,10 @@ def get_node_type_name(id, node_name):  # noqa: E501
 
     :rtype: str
     """
-    return tosca_template_service.get_node_type_name(id, node_name)
+    res = tosca_template_service.get_node_type_name(id, node_name)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_parent_type_name(id, node_name):  # noqa: E501
@@ -190,7 +222,10 @@ def get_parent_type_name(id, node_name):  # noqa: E501
 
     :rtype: str
     """
-    return tosca_template_service.get_parent_type_name(id, node_name)
+    res = tosca_template_service.get_parent_type_name(id, node_name)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_related_nodes(id, node_name):  # noqa: E501
@@ -205,7 +240,10 @@ def get_related_nodes(id, node_name):  # noqa: E501
 
     :rtype: List[NodeTemplate]
     """
-    return tosca_template_service.get_related_nodes(id, node_name)
+    res = tosca_template_service.get_related_nodes(id, node_name)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_relationship_templates(id, type_name=None, derived_from=None):  # noqa: E501
@@ -222,7 +260,10 @@ def get_relationship_templates(id, type_name=None, derived_from=None):  # noqa: 
 
     :rtype: List[Dict[str, object]]
     """
-    return tosca_template_service.get_relationship_templates(id, type_name=type_name, derived_from=derived_from)
+    res = tosca_template_service.get_relationship_templates(id, type_name=type_name, derived_from=derived_from)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_topology_template(id):  # noqa: E501
@@ -233,9 +274,12 @@ def get_topology_template(id):  # noqa: E501
     :param id: ID of topolog template uplodaed
     :type id: str
 
-    :rtype: TopologyTemplate
+    :rtype: TopologyTemplateModel
     """
-    return tosca_template_service.get_tosca_template_dict_by_id(id)
+    res = tosca_template_service.get_tosca_template_model_by_id(id).topology_template
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def get_tosca_template(id):  # noqa: E501
@@ -246,12 +290,16 @@ def get_tosca_template(id):  # noqa: E501
     :param id: ID of topolog template uplodaed
     :type id: str
 
-    :rtype: ToscaTemplate
+    :rtype: ToscaTemplateModel
     """
-    return tosca_template_service.get_tosca_template_model_by_id(id)
+    res = tosca_template_service.get_tosca_template_model_by_id(id)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
-def get_types(id, kind_of_type=None, has_interfaces=None, type_name=None, has_properties=None, has_attributes=None, has_requirements=None, has_capabilities=None, has_artifacts=None, derived_from=None):  # noqa: E501
+def get_types(id, kind_of_type=None, has_interfaces=None, type_name=None, has_properties=None, has_attributes=None,
+              has_requirements=None, has_capabilities=None, has_artifacts=None, derived_from=None):  # noqa: E501
     """
 
     returns the interface types # noqa: E501
@@ -279,11 +327,14 @@ def get_types(id, kind_of_type=None, has_interfaces=None, type_name=None, has_pr
 
     :rtype: List[Dict[str, object]]
     """
-    return tosca_template_service.get_types(id, kind_of_type=kind_of_type, has_interfaces=has_interfaces,
-                                            type_name=type_name, has_properties=has_properties,
-                                            has_attributes=has_attributes, has_requirements=has_requirements,
-                                            has_capabilities=has_capabilities, has_artifacts=has_artifacts,
-                                            derived_from=derived_from)
+    res = tosca_template_service.get_types(id, kind_of_type=kind_of_type, has_interfaces=has_interfaces,
+                                           type_name=type_name, has_properties=has_properties,
+                                           has_attributes=has_attributes, has_requirements=has_requirements,
+                                           has_capabilities=has_capabilities, has_artifacts=has_artifacts,
+                                           derived_from=derived_from)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def set_node_properties(id, properties, node_name):  # noqa: E501
@@ -298,9 +349,12 @@ def set_node_properties(id, properties, node_name):  # noqa: E501
     :param node_name: node_name
     :type node_name: str
 
-    :rtype: NodeTemplate
+    :rtype: NodeTemplateModel
     """
-    return tosca_template_service.set_node_properties(id, properties, node_name)
+    res = tosca_template_service.set_node_properties(id, properties, node_name)
+    if res:
+        return res
+    return 'Not Found', 404
 
 
 def upload_tosca_template(file):  # noqa: E501
@@ -313,4 +367,7 @@ def upload_tosca_template(file):  # noqa: E501
 
     :rtype: str
     """
-    return tosca_template_service.save(file)
+    res = tosca_template_service.save(file)
+    if res:
+        return res
+    return 'Bad Request', 400
