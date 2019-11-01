@@ -289,7 +289,7 @@ def set_node_properties(id, properties, node_name):  # noqa: E501
     :param node_name: node_name
     :type node_name: str
 
-    :rtype: NodeTemplate
+    :rtype: str
     """
     return 'do some magic!'
 

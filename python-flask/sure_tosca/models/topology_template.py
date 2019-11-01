@@ -27,7 +27,7 @@ class TopologyTemplate(Model):
         :param relationship_templates: The relationship_templates of this TopologyTemplate.  # noqa: E501
         :type relationship_templates: Dict[str, object]
         :param outputs: The outputs of this TopologyTemplate.  # noqa: E501
-        :type outputs: str
+        :type outputs: List[Dict[str, object]]
         :param groups: The groups of this TopologyTemplate.  # noqa: E501
         :type groups: Dict[str, object]
         :param substitution_mappings: The substitution_mappings of this TopologyTemplate.  # noqa: E501
@@ -40,7 +40,7 @@ class TopologyTemplate(Model):
             'inputs': List[Dict[str, object]],
             'node_templates': Dict[str, NodeTemplate],
             'relationship_templates': Dict[str, object],
-            'outputs': str,
+            'outputs': List[Dict[str, object]],
             'groups': Dict[str, object],
             'substitution_mappings': Dict[str, object],
             'policies': List[Dict[str, object]]
@@ -167,7 +167,7 @@ class TopologyTemplate(Model):
 
 
         :return: The outputs of this TopologyTemplate.
-        :rtype: str
+        :rtype: List[Dict[str, object]]
         """
         return self._outputs
 
@@ -177,7 +177,7 @@ class TopologyTemplate(Model):
 
 
         :param outputs: The outputs of this TopologyTemplate.
-        :type outputs: str
+        :type outputs: List[Dict[str, object]]
         """
 
         self._outputs = outputs

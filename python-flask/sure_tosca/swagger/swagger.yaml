@@ -582,7 +582,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/NodeTemplate"
+            type: "string"
         404:
           description: "Not found"
         405:
@@ -734,7 +734,9 @@ definitions:
       policy_types:
         key: "policy_types"
       topology_template:
-        outputs: "outputs"
+        outputs:
+        - key: "{}"
+        - key: "{}"
         substitution_mappings:
           key: "{}"
         inputs:
@@ -818,7 +820,12 @@ definitions:
           type: "object"
           properties: {}
       outputs:
-        type: "string"
+        type: "array"
+        items:
+          type: "object"
+          additionalProperties:
+            type: "object"
+            properties: {}
       groups:
         type: "object"
         additionalProperties:
@@ -837,7 +844,9 @@ definitions:
             type: "object"
             properties: {}
     example:
-      outputs: "outputs"
+      outputs:
+      - key: "{}"
+      - key: "{}"
       substitution_mappings:
         key: "{}"
       inputs:
