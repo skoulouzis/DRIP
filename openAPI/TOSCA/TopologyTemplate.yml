@@ -18,9 +18,11 @@
               additionalProperties:
                   type: object      
           outputs:
-              type: string
-              additionalProperties:
-                  type: object 
+              type: "array"
+              items:
+                  type: object
+                  additionalProperties:
+                    type: object
           groups:
               type: object
               additionalProperties:

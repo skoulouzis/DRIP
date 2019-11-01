@@ -819,6 +819,9 @@ definitions:
           properties: {}
       outputs:
         type: "string"
+        additionalProperties:
+          type: "object"
+          properties: {}
       groups:
         type: "object"
         additionalProperties:
@@ -837,7 +840,9 @@ definitions:
             type: "object"
             properties: {}
     example:
-      outputs: "outputs"
+      outputs:
+      - key: "{}"
+      - key: "{}"
       substitution_mappings:
         key: "{}"
       inputs:
