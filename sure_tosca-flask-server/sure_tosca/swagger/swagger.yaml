@@ -734,7 +734,9 @@ definitions:
       policy_types:
         key: "policy_types"
       topology_template:
-        outputs: "outputs"
+        outputs:
+        - key: "{}"
+        - key: "{}"
         substitution_mappings:
           key: "{}"
         inputs:
@@ -818,10 +820,12 @@ definitions:
           type: "object"
           properties: {}
       outputs:
-        type: "string"
-        additionalProperties:
+        type: "array"
+        items:
           type: "object"
-          properties: {}
+          additionalProperties:
+            type: "object"
+            properties: {}
       groups:
         type: "object"
         additionalProperties:
