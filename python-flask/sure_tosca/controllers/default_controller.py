@@ -257,7 +257,7 @@ def get_types(id, kind_of_type=None, has_interfaces=None, type_name=None, has_pr
     :type kind_of_type: str
     :param has_interfaces: filter if has interfaces
     :type has_interfaces: bool
-    :param type_name: The relationship type
+    :param type_name: The type_name
     :type type_name: str
     :param has_properties: filter if has properties
     :type has_properties: bool

@@ -161,7 +161,7 @@ paths:
         type: "boolean"
       - name: "type_name"
         in: "query"
-        description: "The relationship type"
+        description: "The type_name"
         required: false
         type: "string"
       - name: "has_properties"
