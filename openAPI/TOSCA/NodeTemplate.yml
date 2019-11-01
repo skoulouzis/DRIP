@@ -6,21 +6,21 @@
           properties:
               type: object
               additionalProperties:
-                  type: string    
+                  type: object    
           requirements:
               type: "array"
               items:
                 type: object
                 additionalProperties:
-                    type: string  
+                    type: object  
           interfaces:
               type: object
               additionalProperties:
-                  type: string       
+                  type: object      
           capabilities:
               type: object
               additionalProperties:
-                  type: string                       
+                  type: object                         
           type:
               type: "string"
           description:
@@ -32,11 +32,11 @@
           attributes:
               type: object
               additionalProperties:
-                  type: string    
+                  type: object     
           artifacts:
               type: object
               additionalProperties:
-                  type: string                              
+                  type: object                               
 
      
  

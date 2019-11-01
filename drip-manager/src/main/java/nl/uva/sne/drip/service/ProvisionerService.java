@@ -5,6 +5,7 @@
  */
 package nl.uva.sne.drip.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.NodeTemplate;
@@ -40,7 +42,7 @@ public class ProvisionerService {
     ToscaHelper toscaHelper;
     private Integer toscaHelperID;
 
-    public String provision(String id) throws IOException {
+    public String provision(String id) throws IOException, JsonProcessingException, ApiException {
 
         String ymlToscaTemplate = toscaTemplateService.findByID(id);
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
@@ -48,7 +50,7 @@ public class ProvisionerService {
 
         toscaTemplate = addProvisionInterface(toscaTemplate);
 
-        return null;
+        return toscaTemplateService.save(toscaTemplate);
     }
 
 //    private List<Map<String, NodeTemplate>> getVmTopologies(ToscaTemplate toscaTemplate) {

@@ -14,22 +14,22 @@
           relationship_templates:
               type: object
               additionalProperties:
-                  type: string    
+                  type: object    
           outputs:
               type: object
               additionalProperties:
-                  type: string  
+                  type: object  
           groups:
               type: object
               additionalProperties:
-                  type: string              
+                  type: object             
           substitution_mappings:
               type: object
               additionalProperties:
-                  type: string               
+                  type: object               
           policies:
               type: "array"
               items:
                 type: object
                 additionalProperties:
-                    type: string                    
+                    type: object                   

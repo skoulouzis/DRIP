@@ -18,10 +18,10 @@ import org.springframework.data.annotation.Id;
  * Credentials
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-11-01T13:58:45.661Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-11-01T14:10:53.529Z")
 
 public class Credentials   {
-    /**
+        /**
      * @return the id
      */
     public String getId() {

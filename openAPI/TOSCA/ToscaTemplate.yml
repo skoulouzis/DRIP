@@ -18,51 +18,51 @@
           imports:
               type: "array"
               items:
-                  type: object
-                  additionalProperties:
-                    type: string
+                type: object
+                additionalProperties:
+                    type: object  
           dsl_definitions:
               type: object
               additionalProperties:
-                  type: string  
+                  type: object  
           node_types:
               type: object
               additionalProperties:
-                  type: string       
+                  type: object        
           relationship_types:
               type: object
               additionalProperties:
-                  type: string      
+                  type: object     
           relationship_templates:
               type: object
               additionalProperties:
-                  type: string       
+                  type: object       
           capability_types:
               type: object
               additionalProperties:
-                  type: string   
+                  type: object   
           artifact_types:
               type: object
               additionalProperties:
-                  type: string      
+                  type: object     
           data_types:
               type: object
               additionalProperties:
-                  type: string      
+                  type: object      
           interface_types:
               type: object
               additionalProperties:
-                  type: string  
+                  type: object  
           policy_types:
               type: object
               additionalProperties:
-                  type: string      
+                  type: object       
           group_types:
               type: object
               additionalProperties:
-                  type: string                
+                  type: object                
           repositories:
               type: object
               additionalProperties:
-                  type: string                
+                  type: object                 
                     
