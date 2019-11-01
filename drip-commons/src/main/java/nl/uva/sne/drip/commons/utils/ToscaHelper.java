@@ -22,10 +22,17 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import nl.uva.sne.drip.commons.sure_tosca.client.ApiClient;
 import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
+import nl.uva.sne.drip.commons.sure_tosca.client.Configuration;
 import nl.uva.sne.drip.commons.sure_tosca.client.DefaultApi;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  *
@@ -46,11 +53,13 @@ public class ToscaHelper {
 
     private final Integer id;
 
-    public ToscaHelper(ToscaTemplate toscaTemplate) throws JsonProcessingException, IOException, ApiException {
-        api = new DefaultApi();
-        id = uploadToscaTemplate(toscaTemplate);
+    public ToscaHelper(ToscaTemplate toscaTemplate, String sureToscaBasePath) throws JsonProcessingException, IOException, ApiException {
+        Configuration.getDefaultApiClient().setBasePath(sureToscaBasePath);
+        api = new DefaultApi(Configuration.getDefaultApiClient());
         this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        id = uploadToscaTemplate(toscaTemplate);
+
     }
 
     private Integer uploadToscaTemplate(ToscaTemplate toscaTemplate) throws JsonProcessingException, IOException, ApiException {
@@ -58,7 +67,19 @@ public class ToscaHelper {
         File toscaTemplateFile = File.createTempFile("temp-toscaTemplate", ".yml");
         FileUtils.writeByteArrayToFile(toscaTemplateFile, ymlStr.getBytes());
         String resp = api.uploadToscaTemplate(toscaTemplateFile);
-        return null;
+        return Integer.valueOf(resp);
+    }
+
+    public List<Map<String, Object>> getProvisionInterfaceDefinitions(List<String> toscaInterfaceTypes) throws ApiException {
+        List<Map<String, Object>> interfaceDefinitions = new ArrayList<>();
+        for (String type : toscaInterfaceTypes) {
+            String derivedFrom = null;
+            List<Map<String, Object>> interfaces = api.getTypes(String.valueOf(id), "interface_types", null, type, null, null, null, null, null, derivedFrom);
+            
+            interfaceDefinitions.addAll(interfaces);
+        }
+
+        return interfaceDefinitions;
     }
 
 }

@@ -7,6 +7,7 @@ package nl.uva.sne.drip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +16,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
+import nl.uva.sne.drip.dao.ProvisionerDAO;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.NodeTemplate;
+import nl.uva.sne.drip.model.Provisioner;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,8 +39,14 @@ public class ProvisionerService {
     @Value("${tosca.types.interface}")
     private String toscaTypesInterface;
 
+    @Value("${sure-tosca.base.path}")
+    private String sureToscaBasePath;
+
     @Autowired
     private ToscaTemplateService toscaTemplateService;
+
+    @Autowired
+    private ProvisionerDAO provisionerDao;
 
     ToscaHelper toscaHelper;
     private Integer toscaHelperID;
@@ -46,7 +55,7 @@ public class ProvisionerService {
 
         String ymlToscaTemplate = toscaTemplateService.findByID(id);
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
-        toscaHelper = new ToscaHelper(toscaTemplate);
+        toscaHelper = new ToscaHelper(toscaTemplate, sureToscaBasePath);
 
         toscaTemplate = addProvisionInterface(toscaTemplate);
 
@@ -56,8 +65,12 @@ public class ProvisionerService {
 //    private List<Map<String, NodeTemplate>> getVmTopologies(ToscaTemplate toscaTemplate) {
 //        return ToscaHelper.getNodesByType(toscaTemplate, "tosca.nodes.ARTICONF.VM.topology");
 //    }
+    protected ToscaTemplate addProvisionInterface(ToscaTemplate toscaTemplate) throws ApiException {
+        Provisioner provisioner = selectBestProvisioner();
+        List<Map<String, Object>> definitions = toscaHelper.getProvisionInterfaceDefinitions(provisioner.getToscaInterfaceTypes());
+        Map<String, Object> def = selectBestInterfaceDefinitions(definitions);
+        Map<String, Object> provisionInterface = createProvisionInterface(def);
 
-    protected ToscaTemplate addProvisionInterface(ToscaTemplate toscaTemplate) {
 //        List<Map<String, NodeTemplate>> vmTopologies = getVmTopologies(toscaTemplate);
 //        for (Map<String, NodeTemplate> vmTopologyMap : vmTopologies) {
 //            String topologyName = vmTopologyMap.keySet().iterator().next();
@@ -66,9 +79,31 @@ public class ProvisionerService {
 //            Map<String, Object> cloudStormInterface = getCloudStormProvisionInterface(topologyName);
 //            interfaces.put("cloudStorm", cloudStormInterface);
 //        }
-
         return toscaTemplate;
     }
 
+    private Provisioner selectBestProvisioner() {
+        if (provisionerDao.count() <= 0) {
+            Provisioner provisioner = new Provisioner();
+            provisioner.setDescription("CloudsStorm is a framework for managing an application-defined infrastructure among public IaaS (Infrastructure-as-a-Service) Clouds. It enables the application to customize its underlying infrastructure at software development phase and dynamically control it at operation phase.");
+            provisioner.setName("CloudsStorm");
+            provisioner.setVersion("1.0.0");
+            List<String> toscaInterfaceTypes = new ArrayList<>();
+            toscaInterfaceTypes.add("tosca.interfaces.ARTICONF.CloudsStorm");
+            provisioner.setToscaInterfaceTypes(toscaInterfaceTypes);
+            provisionerDao.save(provisioner);
+        }
+        List<Provisioner> all = provisionerDao.findAll();
+        return all.get(0);
+    }
+
+    private Map<String, Object> selectBestInterfaceDefinitions(List<Map<String, Object>> definitions) {
+        return definitions.get(0);
+    }
+
+    private Map<String, Object> createProvisionInterface(Map<String, Object> def) {
+        Map<String, Object> inputs = (Map<String, Object>) def.get("inputs");
+        return null;
+    }
 
 }

@@ -1,5 +1,6 @@
 package nl.uva.sne.drip.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
+import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
 import nl.uva.sne.drip.service.DRIPService;
 import nl.uva.sne.drip.service.ProvisionerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +48,7 @@ public class ProvisionerApiController implements ProvisionerApi {
             try {
                 String planedYemplateId = provisionerService.provision(id);
                 return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
-            } catch (IOException ex) {
+            } catch (IOException | ApiException ex) {
                 java.util.logging.Logger.getLogger(ProvisionerApiController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

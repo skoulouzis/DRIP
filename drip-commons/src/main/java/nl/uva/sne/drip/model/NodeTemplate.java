@@ -3,6 +3,7 @@ package nl.uva.sne.drip.model;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
@@ -17,28 +18,26 @@ import javax.validation.constraints.*;
  * NodeTemplate
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-11-01T14:10:53.529Z")
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class NodeTemplate   {
-    
   @JsonProperty("derived_from")
   private String derivedFrom = null;
 
   @JsonProperty("properties")
   @Valid
-  private Map<String, String> properties = null;
+  private Map<String, Object> properties = null;
 
   @JsonProperty("requirements")
   @Valid
-  private List<Map<String, String>> requirements = null;
+  private List<Map<String, Object>> requirements = null;
 
   @JsonProperty("interfaces")
   @Valid
-  private Map<String, String> interfaces = null;
+  private Map<String, Object> interfaces = null;
 
   @JsonProperty("capabilities")
   @Valid
-  private Map<String, String> capabilities = null;
+  private Map<String, Object> capabilities = null;
 
   @JsonProperty("type")
   private String type = null;
@@ -52,11 +51,11 @@ public class NodeTemplate   {
 
   @JsonProperty("attributes")
   @Valid
-  private Map<String, String> attributes = null;
+  private Map<String, Object> attributes = null;
 
   @JsonProperty("artifacts")
   @Valid
-  private Map<String, String> artifacts = null;
+  private Map<String, Object> artifacts = null;
 
   public NodeTemplate derivedFrom(String derivedFrom) {
     this.derivedFrom = derivedFrom;
@@ -78,14 +77,14 @@ public class NodeTemplate   {
     this.derivedFrom = derivedFrom;
   }
 
-  public NodeTemplate properties(Map<String, String> properties) {
+  public NodeTemplate properties(Map<String, Object> properties) {
     this.properties = properties;
     return this;
   }
 
-  public NodeTemplate putPropertiesItem(String key, String propertiesItem) {
+  public NodeTemplate putPropertiesItem(String key, Object propertiesItem) {
     if (this.properties == null) {
-      this.properties = new HashMap<String, String>();
+      this.properties = new HashMap<String, Object>();
     }
     this.properties.put(key, propertiesItem);
     return this;
@@ -98,22 +97,22 @@ public class NodeTemplate   {
   @ApiModelProperty(value = "")
 
 
-  public Map<String, String> getProperties() {
+  public Map<String, Object> getProperties() {
     return properties;
   }
 
-  public void setProperties(Map<String, String> properties) {
+  public void setProperties(Map<String, Object> properties) {
     this.properties = properties;
   }
 
-  public NodeTemplate requirements(List<Map<String, String>> requirements) {
+  public NodeTemplate requirements(List<Map<String, Object>> requirements) {
     this.requirements = requirements;
     return this;
   }
 
-  public NodeTemplate addRequirementsItem(Map<String, String> requirementsItem) {
+  public NodeTemplate addRequirementsItem(Map<String, Object> requirementsItem) {
     if (this.requirements == null) {
-      this.requirements = new ArrayList<Map<String, String>>();
+      this.requirements = new ArrayList<Map<String, Object>>();
     }
     this.requirements.add(requirementsItem);
     return this;
@@ -127,22 +126,22 @@ public class NodeTemplate   {
 
   @Valid
 
-  public List<Map<String, String>> getRequirements() {
+  public List<Map<String, Object>> getRequirements() {
     return requirements;
   }
 
-  public void setRequirements(List<Map<String, String>> requirements) {
+  public void setRequirements(List<Map<String, Object>> requirements) {
     this.requirements = requirements;
   }
 
-  public NodeTemplate interfaces(Map<String, String> interfaces) {
+  public NodeTemplate interfaces(Map<String, Object> interfaces) {
     this.interfaces = interfaces;
     return this;
   }
 
-  public NodeTemplate putInterfacesItem(String key, String interfacesItem) {
+  public NodeTemplate putInterfacesItem(String key, Object interfacesItem) {
     if (this.interfaces == null) {
-      this.interfaces = new HashMap<String, String>();
+      this.interfaces = new HashMap<String, Object>();
     }
     this.interfaces.put(key, interfacesItem);
     return this;
@@ -155,22 +154,22 @@ public class NodeTemplate   {
   @ApiModelProperty(value = "")
 
 
-  public Map<String, String> getInterfaces() {
+  public Map<String, Object> getInterfaces() {
     return interfaces;
   }
 
-  public void setInterfaces(Map<String, String> interfaces) {
+  public void setInterfaces(Map<String, Object> interfaces) {
     this.interfaces = interfaces;
   }
 
-  public NodeTemplate capabilities(Map<String, String> capabilities) {
+  public NodeTemplate capabilities(Map<String, Object> capabilities) {
     this.capabilities = capabilities;
     return this;
   }
 
-  public NodeTemplate putCapabilitiesItem(String key, String capabilitiesItem) {
+  public NodeTemplate putCapabilitiesItem(String key, Object capabilitiesItem) {
     if (this.capabilities == null) {
-      this.capabilities = new HashMap<String, String>();
+      this.capabilities = new HashMap<String, Object>();
     }
     this.capabilities.put(key, capabilitiesItem);
     return this;
@@ -183,11 +182,11 @@ public class NodeTemplate   {
   @ApiModelProperty(value = "")
 
 
-  public Map<String, String> getCapabilities() {
+  public Map<String, Object> getCapabilities() {
     return capabilities;
   }
 
-  public void setCapabilities(Map<String, String> capabilities) {
+  public void setCapabilities(Map<String, Object> capabilities) {
     this.capabilities = capabilities;
   }
 
@@ -259,14 +258,14 @@ public class NodeTemplate   {
     this.directives = directives;
   }
 
-  public NodeTemplate attributes(Map<String, String> attributes) {
+  public NodeTemplate attributes(Map<String, Object> attributes) {
     this.attributes = attributes;
     return this;
   }
 
-  public NodeTemplate putAttributesItem(String key, String attributesItem) {
+  public NodeTemplate putAttributesItem(String key, Object attributesItem) {
     if (this.attributes == null) {
-      this.attributes = new HashMap<String, String>();
+      this.attributes = new HashMap<String, Object>();
     }
     this.attributes.put(key, attributesItem);
     return this;
@@ -279,22 +278,22 @@ public class NodeTemplate   {
   @ApiModelProperty(value = "")
 
 
-  public Map<String, String> getAttributes() {
+  public Map<String, Object> getAttributes() {
     return attributes;
   }
 
-  public void setAttributes(Map<String, String> attributes) {
+  public void setAttributes(Map<String, Object> attributes) {
     this.attributes = attributes;
   }
 
-  public NodeTemplate artifacts(Map<String, String> artifacts) {
+  public NodeTemplate artifacts(Map<String, Object> artifacts) {
     this.artifacts = artifacts;
     return this;
   }
 
-  public NodeTemplate putArtifactsItem(String key, String artifactsItem) {
+  public NodeTemplate putArtifactsItem(String key, Object artifactsItem) {
     if (this.artifacts == null) {
-      this.artifacts = new HashMap<String, String>();
+      this.artifacts = new HashMap<String, Object>();
     }
     this.artifacts.put(key, artifactsItem);
     return this;
@@ -307,11 +306,11 @@ public class NodeTemplate   {
   @ApiModelProperty(value = "")
 
 
-  public Map<String, String> getArtifacts() {
+  public Map<String, Object> getArtifacts() {
     return artifacts;
   }
 
-  public void setArtifacts(Map<String, String> artifacts) {
+  public void setArtifacts(Map<String, Object> artifacts) {
     this.artifacts = artifacts;
   }
 

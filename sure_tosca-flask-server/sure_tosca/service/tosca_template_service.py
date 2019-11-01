@@ -42,10 +42,8 @@ def query_db(queries, db=None):
         updated_results = []
         for res in results:
             if root_key in res:
-                key = res.pop(root_key)
+                key = res[root_key]
                 node = {key: res}
-            else:
-                node = res
             updated_results.append(node)
         return updated_results
     return None
@@ -87,15 +85,27 @@ def save(file):
 
 def get_interface_types(id, interface_type=None):
     if len(interface_types_db) <= 1:
-        interface_types = get_tosca_template_model_by_id(id).interface_types
-        if interface_types:
-            for interface_type_name in interface_types:
-                interface = {root_key: interface_type_name}
-                interface.update(interface_types[interface_type_name])
+
+        tosca_template_model = get_tosca_template_model_by_id(id)
+        object_list = tosca_template_model.interface_types
+        if object_list is None:
+            object_list = {}
+        tosca_template = get_tosca_template(tosca_template_model.to_dict())
+        tosca_node_types = tosca_template.nodetemplates[0].type_definition.TOSCA_DEF
+        all_custom_def = tosca_template.nodetemplates[0].custom_def
+        object_list.update(tosca_node_types)
+        object_list.update(all_custom_def)
+        if object_list:
+            for interface_type_name in object_list:
+                if 'tosca.interfaces' in interface_type_name:
+                    interface = {root_key: interface_type_name}
+                    interface.update(object_list[interface_type_name])
+                    interface_types_db.insert(interface)
+
     queries = []
     if interface_type:
         query = Query()
-        queries.append(query._node_nme == interface_type)
+        queries.append(query.root_key == interface_type)
 
     return query_db(queries, db=interface_types_db)
 
@@ -351,4 +361,11 @@ def set_node_properties(id, properties, node_name):
 
         tosca_template_model.topology_template.node_templates[node_name] = node_template_model
         return update(id,tosca_template_model.to_dict())
+    return None
+
+
+def get_types(id, kind_of_type, has_interfaces, type_name, has_properties, has_attributes, has_requirements,
+              has_capabilities, has_artifacts, derived_from):
+    if kind_of_type == 'interface_types':
+        return get_interface_types(id, interface_type=type_name)
     return None

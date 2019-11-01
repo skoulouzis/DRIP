@@ -20,8 +20,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 })
 @EnableMongoRepositories(basePackageClasses = {ToscaTemplateDAO.class})
 @ComponentScan(basePackages = {"nl.uva.sne.drip", "nl.uva.sne.drip.api",
-    "nl.uva.sne.drip.configuration", "nl.uva.sne.drip.dao", "nl.uva.sne.drip.model",
-    "nl.uva.sne.drip.service"})
+    "nl.uva.sne.drip.configuration", "nl.uva.sne.drip.dao", "nl.uva.sne.drip.service"})
 public class Swagger2SpringBoot implements CommandLineRunner {
 
     @Value("${message.broker.host}")
