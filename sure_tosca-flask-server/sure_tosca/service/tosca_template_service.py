@@ -70,26 +70,6 @@ def get_tosca_template_dict_by_id(id):
     return tosca_template_dict
 
 
-# def deTOSCAfy_topology_template(dictionary):
-#     # outputs out of nowhere is  instantiated  as GetAttribute or str
-#     if 'outputs' in dictionary['topology_template']:
-#         outputs = dictionary['topology_template']['outputs']
-#         if isinstance(outputs, str):
-#             json_acceptable_string = outputs.replace("'", "\"")
-#             d = json.loads(json_acceptable_string)
-#             outputs = d
-#         if not isinstance(outputs, dict):
-#             for output_name in outputs:
-#                 output = outputs[output_name]
-#                 if isinstance(output['value'], GetAttribute):
-#                     args = output['value'].args
-#                     assert isinstance(args, list)
-#                     output['value'] = {'get_attribute': args}
-#         dictionary['topology_template']['outputs'] = outputs
-#
-#     return dictionary
-
-
 def save(file):
     try:
         # tosca_template_file_path = os.path.join(db_dir_path, file.filename)
@@ -352,8 +332,23 @@ def get_node_type_name(id, node_name):
     return None
 
 
+def update(id, tosca_template_dict):
+    tosca_template = ToscaTemplate(yaml_dict_tpl=copy.deepcopy(tosca_template_dict))
+    tosca_template_model = ToscaTemplateModel.from_dict(tosca_template_dict)
+    doc_id = tosca_templates_db.update(tosca_template_dict, doc_ids=[int(id)])
+    return doc_id
+
+
 def set_node_properties(id, properties, node_name):
-    node_template_dict = get_node_templates(id, node_name=node_name)[0]
-    if node_name in node_template_dict:
-        node_template_dict = node_template_dict[node_name]
+    properties = properties['properties']
+    tosca_template_model = get_tosca_template_model_by_id(id)
+    node_template_model = tosca_template_model.topology_template.node_templates[node_name]
+    if node_template_model:
+        if node_template_model.properties:
+            node_template_model.properties.update(properties)
+        else:
+            node_template_model.properties = properties
+
+        tosca_template_model.topology_template.node_templates[node_name] = node_template_model
+        return update(id,tosca_template_model.to_dict())
     return None
