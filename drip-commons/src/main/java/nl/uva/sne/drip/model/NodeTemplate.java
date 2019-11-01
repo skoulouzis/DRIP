@@ -2,6 +2,10 @@ package nl.uva.sne.drip.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,29 +13,43 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
+import javax.validation.constraints.*;
+import org.springframework.data.annotation.Id;
 
 /**
  * NodeTemplate
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-25T14:09:25.182Z")
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class NodeTemplate {
 
-    @JsonProperty("type")
-    private String type = null;
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
 
-    @JsonProperty("requirements")
-    @Valid
-    private List<Map<String, Object>> requirements = null;
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    @JsonProperty("artifacts")
-    @Valid
-    private Map<String, Object> artifacts = null;
+    @Id
+    @JsonIgnore
+    private String id;
+    @JsonProperty("derived_from")
+    private String derivedFrom = null;
 
     @JsonProperty("properties")
     @Valid
     private Map<String, Object> properties = null;
+
+    @JsonProperty("requirements")
+    @Valid
+    private List<Map<String, Object>> requirements = null;
 
     @JsonProperty("interfaces")
     @Valid
@@ -41,29 +59,72 @@ public class NodeTemplate {
     @Valid
     private Map<String, Object> capabilities = null;
 
-    @JsonProperty("workflows")
-    @Valid
-    private Map<String, Object> workflows = null;
+    @JsonProperty("type")
+    private String type = null;
 
-    public NodeTemplate type(String type) {
-        this.type = type;
+    @JsonProperty("description")
+    private String description = null;
+
+    @JsonProperty("directives")
+    @Valid
+    private List<String> directives = null;
+
+    @JsonProperty("attributes")
+    @Valid
+    private Map<String, Object> attributes = null;
+
+    @JsonProperty("artifacts")
+    @Valid
+    private Map<String, Object> artifacts = null;
+
+    public NodeTemplate derivedFrom(String derivedFrom) {
+        this.derivedFrom = derivedFrom;
         return this;
     }
 
     /**
-     * Get type
+     * Get derivedFrom
      *
-     * @return type
+     * @return derivedFrom
   *
      */
     @ApiModelProperty(value = "")
 
-    public String getType() {
-        return type;
+    public String getDerivedFrom() {
+        return derivedFrom;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setDerivedFrom(String derivedFrom) {
+        this.derivedFrom = derivedFrom;
+    }
+
+    public NodeTemplate properties(Map<String, Object> properties) {
+        this.properties = properties;
+        return this;
+    }
+
+    public NodeTemplate putPropertiesItem(String key, Object propertiesItem) {
+        if (this.properties == null) {
+            this.properties = new HashMap<String, Object>();
+        }
+        this.properties.put(key, propertiesItem);
+        return this;
+    }
+
+    /**
+     * Get properties
+     *
+     * @return properties
+  *
+     */
+    @ApiModelProperty(value = "")
+
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
     }
 
     public NodeTemplate requirements(List<Map<String, Object>> requirements) {
@@ -97,64 +158,6 @@ public class NodeTemplate {
         this.requirements = requirements;
     }
 
-    public NodeTemplate artifacts(Map<String, Object> artifacts) {
-        this.artifacts = artifacts;
-        return this;
-    }
-
-    public NodeTemplate putArtifactsItem(String key, Object artifactsItem) {
-        if (this.artifacts == null) {
-            this.artifacts = new HashMap<String, Object>();
-        }
-        this.artifacts.put(key, artifactsItem);
-        return this;
-    }
-
-    /**
-     * Get artifacts
-     *
-     * @return artifacts
-  *
-     */
-    @ApiModelProperty(value = "")
-
-    public Map<String, Object> getArtifacts() {
-        return artifacts;
-    }
-
-    public void setArtifacts(Map<String, Object> artifacts) {
-        this.artifacts = artifacts;
-    }
-
-    public NodeTemplate properties(Map<String, Object> properties) {
-        this.properties = properties;
-        return this;
-    }
-
-    public NodeTemplate putPropertiesItem(String key, Object propertiesItem) {
-        if (this.properties == null) {
-            this.properties = new HashMap<String, Object>();
-        }
-        this.properties.put(key, propertiesItem);
-        return this;
-    }
-
-    /**
-     * Get properties
-     *
-     * @return properties
-  *
-     */
-    @ApiModelProperty(value = "")
-
-    public Map<String, Object> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
-    }
-
     public NodeTemplate interfaces(Map<String, Object> interfaces) {
         this.interfaces = interfaces;
         return this;
@@ -162,7 +165,7 @@ public class NodeTemplate {
 
     public NodeTemplate putInterfacesItem(String key, Object interfacesItem) {
         if (this.interfaces == null) {
-            this.interfaces = new HashMap<>();
+            this.interfaces = new HashMap<String, Object>();
         }
         this.interfaces.put(key, interfacesItem);
         return this;
@@ -213,33 +216,133 @@ public class NodeTemplate {
         this.capabilities = capabilities;
     }
 
-    public NodeTemplate workflows(Map<String, Object> workflows) {
-        this.workflows = workflows;
-        return this;
-    }
-
-    public NodeTemplate putWorkflowsItem(String key, Object workflowsItem) {
-        if (this.workflows == null) {
-            this.workflows = new HashMap<String, Object>();
-        }
-        this.workflows.put(key, workflowsItem);
+    public NodeTemplate type(String type) {
+        this.type = type;
         return this;
     }
 
     /**
-     * Get workflows
+     * Get type
      *
-     * @return workflows
+     * @return type
   *
      */
     @ApiModelProperty(value = "")
 
-    public Map<String, Object> getWorkflows() {
-        return workflows;
+    public String getType() {
+        return type;
     }
 
-    public void setWorkflows(Map<String, Object> workflows) {
-        this.workflows = workflows;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public NodeTemplate description(String description) {
+        this.description = description;
+        return this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return description
+  *
+     */
+    @ApiModelProperty(value = "")
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public NodeTemplate directives(List<String> directives) {
+        this.directives = directives;
+        return this;
+    }
+
+    public NodeTemplate addDirectivesItem(String directivesItem) {
+        if (this.directives == null) {
+            this.directives = new ArrayList<String>();
+        }
+        this.directives.add(directivesItem);
+        return this;
+    }
+
+    /**
+     * Get directives
+     *
+     * @return directives
+  *
+     */
+    @ApiModelProperty(value = "")
+
+    public List<String> getDirectives() {
+        return directives;
+    }
+
+    public void setDirectives(List<String> directives) {
+        this.directives = directives;
+    }
+
+    public NodeTemplate attributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+        return this;
+    }
+
+    public NodeTemplate putAttributesItem(String key, Object attributesItem) {
+        if (this.attributes == null) {
+            this.attributes = new HashMap<String, Object>();
+        }
+        this.attributes.put(key, attributesItem);
+        return this;
+    }
+
+    /**
+     * Get attributes
+     *
+     * @return attributes
+  *
+     */
+    @ApiModelProperty(value = "")
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
+
+    public NodeTemplate artifacts(Map<String, Object> artifacts) {
+        this.artifacts = artifacts;
+        return this;
+    }
+
+    public NodeTemplate putArtifactsItem(String key, Object artifactsItem) {
+        if (this.artifacts == null) {
+            this.artifacts = new HashMap<String, Object>();
+        }
+        this.artifacts.put(key, artifactsItem);
+        return this;
+    }
+
+    /**
+     * Get artifacts
+     *
+     * @return artifacts
+  *
+     */
+    @ApiModelProperty(value = "")
+
+    public Map<String, Object> getArtifacts() {
+        return artifacts;
+    }
+
+    public void setArtifacts(Map<String, Object> artifacts) {
+        this.artifacts = artifacts;
     }
 
     @Override
@@ -251,31 +354,38 @@ public class NodeTemplate {
             return false;
         }
         NodeTemplate nodeTemplate = (NodeTemplate) o;
-        return Objects.equals(this.type, nodeTemplate.type)
-                && Objects.equals(this.requirements, nodeTemplate.requirements)
-                && Objects.equals(this.artifacts, nodeTemplate.artifacts)
+        return Objects.equals(this.derivedFrom, nodeTemplate.derivedFrom)
                 && Objects.equals(this.properties, nodeTemplate.properties)
+                && Objects.equals(this.requirements, nodeTemplate.requirements)
                 && Objects.equals(this.interfaces, nodeTemplate.interfaces)
                 && Objects.equals(this.capabilities, nodeTemplate.capabilities)
-                && Objects.equals(this.workflows, nodeTemplate.workflows);
+                && Objects.equals(this.type, nodeTemplate.type)
+                && Objects.equals(this.description, nodeTemplate.description)
+                && Objects.equals(this.directives, nodeTemplate.directives)
+                && Objects.equals(this.attributes, nodeTemplate.attributes)
+                && Objects.equals(this.artifacts, nodeTemplate.artifacts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, requirements, artifacts, properties, interfaces, capabilities, workflows);
+        return Objects.hash(derivedFrom, properties, requirements, interfaces, capabilities, type, description, directives, attributes, artifacts);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class NodeTemplate {\n");
-        sb.append("    type: ").append(toIndentedString(type)).append("\n");
-        sb.append("    requirements: ").append(toIndentedString(requirements)).append("\n");
-        sb.append("    artifacts: ").append(toIndentedString(artifacts)).append("\n");
+
+        sb.append("    derivedFrom: ").append(toIndentedString(derivedFrom)).append("\n");
         sb.append("    properties: ").append(toIndentedString(properties)).append("\n");
+        sb.append("    requirements: ").append(toIndentedString(requirements)).append("\n");
         sb.append("    interfaces: ").append(toIndentedString(interfaces)).append("\n");
         sb.append("    capabilities: ").append(toIndentedString(capabilities)).append("\n");
-        sb.append("    workflows: ").append(toIndentedString(workflows)).append("\n");
+        sb.append("    type: ").append(toIndentedString(type)).append("\n");
+        sb.append("    description: ").append(toIndentedString(description)).append("\n");
+        sb.append("    directives: ").append(toIndentedString(directives)).append("\n");
+        sb.append("    attributes: ").append(toIndentedString(attributes)).append("\n");
+        sb.append("    artifacts: ").append(toIndentedString(artifacts)).append("\n");
         sb.append("}");
         return sb.toString();
     }

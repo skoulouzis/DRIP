@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.commons.utils.TOSCAUtils;
+import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.ToscaTemplate;
@@ -37,45 +37,36 @@ public class ProvisionerService {
     @Autowired
     private ToscaTemplateService toscaTemplateService;
 
+    ToscaHelper toscaHelper;
+    private Integer toscaHelperID;
+
     public String provision(String id) throws IOException {
 
         String ymlToscaTemplate = toscaTemplateService.findByID(id);
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
+        toscaHelper = new ToscaHelper(toscaTemplate);
 
         toscaTemplate = addProvisionInterface(toscaTemplate);
 
         return null;
     }
 
-    private List<Map<String, NodeTemplate>> getVmTopologies(ToscaTemplate toscaTemplate) {
-        return TOSCAUtils.getNodesByType(toscaTemplate, "tosca.nodes.ARTICONF.VM.topology");
-    }
+//    private List<Map<String, NodeTemplate>> getVmTopologies(ToscaTemplate toscaTemplate) {
+//        return ToscaHelper.getNodesByType(toscaTemplate, "tosca.nodes.ARTICONF.VM.topology");
+//    }
 
     protected ToscaTemplate addProvisionInterface(ToscaTemplate toscaTemplate) {
-        List<Map<String, NodeTemplate>> vmTopologies = getVmTopologies(toscaTemplate);
-        for (Map<String, NodeTemplate> vmTopologyMap : vmTopologies) {
-            String topologyName = vmTopologyMap.keySet().iterator().next();
-            NodeTemplate vmTopology = vmTopologyMap.get(topologyName);
-            Map<String, Object> interfaces = vmTopology.getInterfaces();
-            Map<String, Object> cloudStormInterface = getCloudStormProvisionInterface(topologyName);
-            interfaces.put("cloudStorm", cloudStormInterface);
-
-        }
+//        List<Map<String, NodeTemplate>> vmTopologies = getVmTopologies(toscaTemplate);
+//        for (Map<String, NodeTemplate> vmTopologyMap : vmTopologies) {
+//            String topologyName = vmTopologyMap.keySet().iterator().next();
+//            NodeTemplate vmTopology = vmTopologyMap.get(topologyName);
+//            Map<String, Object> interfaces = vmTopology.getInterfaces();
+//            Map<String, Object> cloudStormInterface = getCloudStormProvisionInterface(topologyName);
+//            interfaces.put("cloudStorm", cloudStormInterface);
+//        }
 
         return toscaTemplate;
     }
 
-    private Map<String, Object> getCloudStormProvisionInterface(String topologyName) {
-        Map<String, Object> csMap = new HashMap<>();
-        Map<String, Object> provisionMap = new HashMap<>();
-        Map<String, Object> inputs = new HashMap<>();
-        inputs.put("code_type", "SEQ");
-        inputs.put("object_type", "SubTopology");
-        inputs.put("objects", topologyName);
-        provisionMap.put("inputs", inputs);
-
-        csMap.put("provision", provisionMap);
-        return null;
-    }
 
 }

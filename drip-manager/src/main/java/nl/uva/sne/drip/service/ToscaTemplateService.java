@@ -61,7 +61,7 @@ public class ToscaTemplateService {
         byte[] bytes = file.getBytes();
         String ymlStr = new String(bytes, "UTF-8");
         tt = objectMapper.readValue(ymlStr, ToscaTemplate.class);
-        tt.setID(id);
+        tt.setId(id);
         return save(tt);
     }
 

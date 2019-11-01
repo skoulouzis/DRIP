@@ -2,6 +2,10 @@ package nl.uva.sne.drip.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,28 +13,38 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
+import javax.validation.constraints.*;
+import org.springframework.data.annotation.Id;
 
 /**
  * TopologyTemplate
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-25T14:47:27.096Z")
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TopologyTemplate   {
+        /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Id
+    @JsonIgnore
+    private String id;
   @JsonProperty("description")
   private String description = null;
 
   @JsonProperty("inputs")
   @Valid
   private List<Map<String, Object>> inputs = null;
-
-  @JsonProperty("policies")
-  @Valid
-  private List<Map<String, Object>> policies = null;
-
-  @JsonProperty("outputs")
-  @Valid
-  private List<Map<String, Object>> outputs = null;
 
   @JsonProperty("node_templates")
   @Valid
@@ -40,6 +54,10 @@ public class TopologyTemplate   {
   @Valid
   private Map<String, Object> relationshipTemplates = null;
 
+  @JsonProperty("outputs")
+  @Valid
+  private List<Map<String, Object>> outputs = null;
+
   @JsonProperty("groups")
   @Valid
   private Map<String, Object> groups = null;
@@ -47,6 +65,10 @@ public class TopologyTemplate   {
   @JsonProperty("substitution_mappings")
   @Valid
   private Map<String, Object> substitutionMappings = null;
+
+  @JsonProperty("policies")
+  @Valid
+  private List<Map<String, Object>> policies = null;
 
   public TopologyTemplate description(String description) {
     this.description = description;
@@ -95,64 +117,6 @@ public class TopologyTemplate   {
 
   public void setInputs(List<Map<String, Object>> inputs) {
     this.inputs = inputs;
-  }
-
-  public TopologyTemplate policies(List<Map<String, Object>> policies) {
-    this.policies = policies;
-    return this;
-  }
-
-  public TopologyTemplate addPoliciesItem(Map<String, Object> policiesItem) {
-    if (this.policies == null) {
-      this.policies = new ArrayList<Map<String, Object>>();
-    }
-    this.policies.add(policiesItem);
-    return this;
-  }
-
-  /**
-   * Get policies
-   * @return policies
-  **/
-  @ApiModelProperty(value = "")
-
-  @Valid
-
-  public List<Map<String, Object>> getPolicies() {
-    return policies;
-  }
-
-  public void setPolicies(List<Map<String, Object>> policies) {
-    this.policies = policies;
-  }
-
-  public TopologyTemplate outputs(List<Map<String, Object>> outputs) {
-    this.outputs = outputs;
-    return this;
-  }
-
-  public TopologyTemplate addOutputsItem(Map<String, Object> outputsItem) {
-    if (this.outputs == null) {
-      this.outputs = new ArrayList<Map<String, Object>>();
-    }
-    this.outputs.add(outputsItem);
-    return this;
-  }
-
-  /**
-   * Get outputs
-   * @return outputs
-  **/
-  @ApiModelProperty(value = "")
-
-  @Valid
-
-  public List<Map<String, Object>> getOutputs() {
-    return outputs;
-  }
-
-  public void setOutputs(List<Map<String, Object>> outputs) {
-    this.outputs = outputs;
   }
 
   public TopologyTemplate nodeTemplates(Map<String, NodeTemplate> nodeTemplates) {
@@ -212,6 +176,35 @@ public class TopologyTemplate   {
     this.relationshipTemplates = relationshipTemplates;
   }
 
+  public TopologyTemplate outputs(List<Map<String, Object>> outputs) {
+    this.outputs = outputs;
+    return this;
+  }
+
+  public TopologyTemplate addOutputsItem(Map<String, Object> outputsItem) {
+    if (this.outputs == null) {
+      this.outputs = new ArrayList<Map<String, Object>>();
+    }
+    this.outputs.add(outputsItem);
+    return this;
+  }
+
+  /**
+   * Get outputs
+   * @return outputs
+  **/
+  @ApiModelProperty(value = "")
+
+  @Valid
+
+  public List<Map<String, Object>> getOutputs() {
+    return outputs;
+  }
+
+  public void setOutputs(List<Map<String, Object>> outputs) {
+    this.outputs = outputs;
+  }
+
   public TopologyTemplate groups(Map<String, Object> groups) {
     this.groups = groups;
     return this;
@@ -268,6 +261,35 @@ public class TopologyTemplate   {
     this.substitutionMappings = substitutionMappings;
   }
 
+  public TopologyTemplate policies(List<Map<String, Object>> policies) {
+    this.policies = policies;
+    return this;
+  }
+
+  public TopologyTemplate addPoliciesItem(Map<String, Object> policiesItem) {
+    if (this.policies == null) {
+      this.policies = new ArrayList<Map<String, Object>>();
+    }
+    this.policies.add(policiesItem);
+    return this;
+  }
+
+  /**
+   * Get policies
+   * @return policies
+  **/
+  @ApiModelProperty(value = "")
+
+  @Valid
+
+  public List<Map<String, Object>> getPolicies() {
+    return policies;
+  }
+
+  public void setPolicies(List<Map<String, Object>> policies) {
+    this.policies = policies;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -280,17 +302,17 @@ public class TopologyTemplate   {
     TopologyTemplate topologyTemplate = (TopologyTemplate) o;
     return Objects.equals(this.description, topologyTemplate.description) &&
         Objects.equals(this.inputs, topologyTemplate.inputs) &&
-        Objects.equals(this.policies, topologyTemplate.policies) &&
-        Objects.equals(this.outputs, topologyTemplate.outputs) &&
         Objects.equals(this.nodeTemplates, topologyTemplate.nodeTemplates) &&
         Objects.equals(this.relationshipTemplates, topologyTemplate.relationshipTemplates) &&
+        Objects.equals(this.outputs, topologyTemplate.outputs) &&
         Objects.equals(this.groups, topologyTemplate.groups) &&
-        Objects.equals(this.substitutionMappings, topologyTemplate.substitutionMappings);
+        Objects.equals(this.substitutionMappings, topologyTemplate.substitutionMappings) &&
+        Objects.equals(this.policies, topologyTemplate.policies);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(description, inputs, policies, outputs, nodeTemplates, relationshipTemplates, groups, substitutionMappings);
+    return Objects.hash(description, inputs, nodeTemplates, relationshipTemplates, outputs, groups, substitutionMappings, policies);
   }
 
   @Override
@@ -300,12 +322,12 @@ public class TopologyTemplate   {
     
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    inputs: ").append(toIndentedString(inputs)).append("\n");
-    sb.append("    policies: ").append(toIndentedString(policies)).append("\n");
-    sb.append("    outputs: ").append(toIndentedString(outputs)).append("\n");
     sb.append("    nodeTemplates: ").append(toIndentedString(nodeTemplates)).append("\n");
     sb.append("    relationshipTemplates: ").append(toIndentedString(relationshipTemplates)).append("\n");
+    sb.append("    outputs: ").append(toIndentedString(outputs)).append("\n");
     sb.append("    groups: ").append(toIndentedString(groups)).append("\n");
     sb.append("    substitutionMappings: ").append(toIndentedString(substitutionMappings)).append("\n");
+    sb.append("    policies: ").append(toIndentedString(policies)).append("\n");
     sb.append("}");
     return sb.toString();
   }

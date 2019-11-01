@@ -1,9 +1,11 @@
 package nl.uva.sne.drip.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
+import javax.validation.constraints.*;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -18,12 +21,24 @@ import org.springframework.data.annotation.Id;
  */
 @Validated
 @JsonInclude(JsonInclude.Include.NON_NULL)
-
 public class ToscaTemplate   {
-        @Id
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Id
     @JsonIgnore
     private String id;
-        
   @JsonProperty("tosca_definitions_version")
   private String toscaDefinitionsVersion = null;
 
@@ -33,24 +48,29 @@ public class ToscaTemplate   {
   @JsonProperty("template_name")
   private String templateName = null;
 
+  @JsonProperty("topology_template")
+  private TopologyTemplate topologyTemplate = null;
+
+  @JsonProperty("template_author")
+  private String templateAuthor = null;
+
+  @JsonProperty("template_version")
+  private String templateVersion = null;
+
+  @JsonProperty("description")
+  private String description = null;
+
   @JsonProperty("imports")
   @Valid
-  private List<Map<String, String>> imports = null;
-
-  @JsonProperty("repositories")
-  @Valid
-  private Map<String, String> repositories = null;
+  private List<Map<String, Object>> imports = null;
 
   @JsonProperty("dsl_definitions")
   @Valid
-  private Map<String, String> dslDefinitions = null;
+  private Map<String, Object> dslDefinitions = null;
 
   @JsonProperty("node_types")
   @Valid
   private Map<String, Object> nodeTypes = null;
-
-  @JsonProperty("topology_template")
-  private TopologyTemplate topologyTemplate = null;
 
   @JsonProperty("relationship_types")
   @Valid
@@ -84,24 +104,15 @@ public class ToscaTemplate   {
   @Valid
   private Map<String, Object> groupTypes = null;
 
-  @JsonProperty("description")
-  private String description = null;
-
-  @JsonProperty("template_author")
-  private String templateAuthor = null;
+  @JsonProperty("repositories")
+  @Valid
+  private Map<String, Object> repositories = null;
 
   public ToscaTemplate toscaDefinitionsVersion(String toscaDefinitionsVersion) {
     this.toscaDefinitionsVersion = toscaDefinitionsVersion;
     return this;
   }
-    @JsonIgnore
-    public String getId() {
-        return id;
-    }
 
-    public void setID(String id) {
-        this.id = id;
-    }
   /**
    * Get toscaDefinitionsVersion
    * @return toscaDefinitionsVersion
@@ -157,14 +168,95 @@ public class ToscaTemplate   {
     this.templateName = templateName;
   }
 
-  public ToscaTemplate imports(List<Map<String, String>> imports) {
+  public ToscaTemplate topologyTemplate(TopologyTemplate topologyTemplate) {
+    this.topologyTemplate = topologyTemplate;
+    return this;
+  }
+
+  /**
+   * Get topologyTemplate
+   * @return topologyTemplate
+  **/
+  @ApiModelProperty(value = "")
+
+  @Valid
+
+  public TopologyTemplate getTopologyTemplate() {
+    return topologyTemplate;
+  }
+
+  public void setTopologyTemplate(TopologyTemplate topologyTemplate) {
+    this.topologyTemplate = topologyTemplate;
+  }
+
+  public ToscaTemplate templateAuthor(String templateAuthor) {
+    this.templateAuthor = templateAuthor;
+    return this;
+  }
+
+  /**
+   * Get templateAuthor
+   * @return templateAuthor
+  **/
+  @ApiModelProperty(value = "")
+
+
+  public String getTemplateAuthor() {
+    return templateAuthor;
+  }
+
+  public void setTemplateAuthor(String templateAuthor) {
+    this.templateAuthor = templateAuthor;
+  }
+
+  public ToscaTemplate templateVersion(String templateVersion) {
+    this.templateVersion = templateVersion;
+    return this;
+  }
+
+  /**
+   * Get templateVersion
+   * @return templateVersion
+  **/
+  @ApiModelProperty(value = "")
+
+
+  public String getTemplateVersion() {
+    return templateVersion;
+  }
+
+  public void setTemplateVersion(String templateVersion) {
+    this.templateVersion = templateVersion;
+  }
+
+  public ToscaTemplate description(String description) {
+    this.description = description;
+    return this;
+  }
+
+  /**
+   * Get description
+   * @return description
+  **/
+  @ApiModelProperty(value = "")
+
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public ToscaTemplate imports(List<Map<String, Object>> imports) {
     this.imports = imports;
     return this;
   }
 
-  public ToscaTemplate addImportsItem(Map<String, String> importsItem) {
+  public ToscaTemplate addImportsItem(Map<String, Object> importsItem) {
     if (this.imports == null) {
-      this.imports = new ArrayList<Map<String, String>>();
+      this.imports = new ArrayList<Map<String, Object>>();
     }
     this.imports.add(importsItem);
     return this;
@@ -178,50 +270,22 @@ public class ToscaTemplate   {
 
   @Valid
 
-  public List<Map<String, String>> getImports() {
+  public List<Map<String, Object>> getImports() {
     return imports;
   }
 
-  public void setImports(List<Map<String, String>> imports) {
+  public void setImports(List<Map<String, Object>> imports) {
     this.imports = imports;
   }
 
-  public ToscaTemplate repositories(Map<String, String> repositories) {
-    this.repositories = repositories;
-    return this;
-  }
-
-  public ToscaTemplate putRepositoriesItem(String key, String repositoriesItem) {
-    if (this.repositories == null) {
-      this.repositories = new HashMap<>();
-    }
-    this.repositories.put(key, repositoriesItem);
-    return this;
-  }
-
-  /**
-   * Get repositories
-   * @return repositories
-  **/
-  @ApiModelProperty(value = "")
-
-
-  public Map<String, String> getRepositories() {
-    return repositories;
-  }
-
-  public void setRepositories(Map<String, String> repositories) {
-    this.repositories = repositories;
-  }
-
-  public ToscaTemplate dslDefinitions(Map<String, String> dslDefinitions) {
+  public ToscaTemplate dslDefinitions(Map<String, Object> dslDefinitions) {
     this.dslDefinitions = dslDefinitions;
     return this;
   }
 
-  public ToscaTemplate putDslDefinitionsItem(String key, String dslDefinitionsItem) {
+  public ToscaTemplate putDslDefinitionsItem(String key, Object dslDefinitionsItem) {
     if (this.dslDefinitions == null) {
-      this.dslDefinitions = new HashMap<String, String>();
+      this.dslDefinitions = new HashMap<String, Object>();
     }
     this.dslDefinitions.put(key, dslDefinitionsItem);
     return this;
@@ -234,11 +298,11 @@ public class ToscaTemplate   {
   @ApiModelProperty(value = "")
 
 
-  public Map<String, String> getDslDefinitions() {
+  public Map<String, Object> getDslDefinitions() {
     return dslDefinitions;
   }
 
-  public void setDslDefinitions(Map<String, String> dslDefinitions) {
+  public void setDslDefinitions(Map<String, Object> dslDefinitions) {
     this.dslDefinitions = dslDefinitions;
   }
 
@@ -268,27 +332,6 @@ public class ToscaTemplate   {
 
   public void setNodeTypes(Map<String, Object> nodeTypes) {
     this.nodeTypes = nodeTypes;
-  }
-
-  public ToscaTemplate topologyTemplate(TopologyTemplate topologyTemplate) {
-    this.topologyTemplate = topologyTemplate;
-    return this;
-  }
-
-  /**
-   * Get topologyTemplate
-   * @return topologyTemplate
-  **/
-  @ApiModelProperty(value = "")
-
-  @Valid
-
-  public TopologyTemplate getTopologyTemplate() {
-    return topologyTemplate;
-  }
-
-  public void setTopologyTemplate(TopologyTemplate topologyTemplate) {
-    this.topologyTemplate = topologyTemplate;
   }
 
   public ToscaTemplate relationshipTypes(Map<String, Object> relationshipTypes) {
@@ -515,44 +558,32 @@ public class ToscaTemplate   {
     this.groupTypes = groupTypes;
   }
 
-  public ToscaTemplate description(String description) {
-    this.description = description;
+  public ToscaTemplate repositories(Map<String, Object> repositories) {
+    this.repositories = repositories;
+    return this;
+  }
+
+  public ToscaTemplate putRepositoriesItem(String key, Object repositoriesItem) {
+    if (this.repositories == null) {
+      this.repositories = new HashMap<String, Object>();
+    }
+    this.repositories.put(key, repositoriesItem);
     return this;
   }
 
   /**
-   * Get description
-   * @return description
+   * Get repositories
+   * @return repositories
   **/
   @ApiModelProperty(value = "")
 
 
-  public String getDescription() {
-    return description;
+  public Map<String, Object> getRepositories() {
+    return repositories;
   }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public ToscaTemplate templateAuthor(String templateAuthor) {
-    this.templateAuthor = templateAuthor;
-    return this;
-  }
-
-  /**
-   * Get templateAuthor
-   * @return templateAuthor
-  **/
-  @ApiModelProperty(value = "")
-
-
-  public String getTemplateAuthor() {
-    return templateAuthor;
-  }
-
-  public void setTemplateAuthor(String templateAuthor) {
-    this.templateAuthor = templateAuthor;
+  public void setRepositories(Map<String, Object> repositories) {
+    this.repositories = repositories;
   }
 
 
@@ -568,11 +599,13 @@ public class ToscaTemplate   {
     return Objects.equals(this.toscaDefinitionsVersion, toscaTemplate.toscaDefinitionsVersion) &&
         Objects.equals(this.toscaDefaultNamespace, toscaTemplate.toscaDefaultNamespace) &&
         Objects.equals(this.templateName, toscaTemplate.templateName) &&
+        Objects.equals(this.topologyTemplate, toscaTemplate.topologyTemplate) &&
+        Objects.equals(this.templateAuthor, toscaTemplate.templateAuthor) &&
+        Objects.equals(this.templateVersion, toscaTemplate.templateVersion) &&
+        Objects.equals(this.description, toscaTemplate.description) &&
         Objects.equals(this.imports, toscaTemplate.imports) &&
-        Objects.equals(this.repositories, toscaTemplate.repositories) &&
         Objects.equals(this.dslDefinitions, toscaTemplate.dslDefinitions) &&
         Objects.equals(this.nodeTypes, toscaTemplate.nodeTypes) &&
-        Objects.equals(this.topologyTemplate, toscaTemplate.topologyTemplate) &&
         Objects.equals(this.relationshipTypes, toscaTemplate.relationshipTypes) &&
         Objects.equals(this.relationshipTemplates, toscaTemplate.relationshipTemplates) &&
         Objects.equals(this.capabilityTypes, toscaTemplate.capabilityTypes) &&
@@ -581,13 +614,12 @@ public class ToscaTemplate   {
         Objects.equals(this.interfaceTypes, toscaTemplate.interfaceTypes) &&
         Objects.equals(this.policyTypes, toscaTemplate.policyTypes) &&
         Objects.equals(this.groupTypes, toscaTemplate.groupTypes) &&
-        Objects.equals(this.description, toscaTemplate.description) &&
-        Objects.equals(this.templateAuthor, toscaTemplate.templateAuthor);
+        Objects.equals(this.repositories, toscaTemplate.repositories);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(toscaDefinitionsVersion, toscaDefaultNamespace, templateName, imports, repositories, dslDefinitions, nodeTypes, topologyTemplate, relationshipTypes, relationshipTemplates, capabilityTypes, artifactTypes, dataTypes, interfaceTypes, policyTypes, groupTypes, description, templateAuthor);
+    return Objects.hash(toscaDefinitionsVersion, toscaDefaultNamespace, templateName, topologyTemplate, templateAuthor, templateVersion, description, imports, dslDefinitions, nodeTypes, relationshipTypes, relationshipTemplates, capabilityTypes, artifactTypes, dataTypes, interfaceTypes, policyTypes, groupTypes, repositories);
   }
 
   @Override
@@ -598,11 +630,13 @@ public class ToscaTemplate   {
     sb.append("    toscaDefinitionsVersion: ").append(toIndentedString(toscaDefinitionsVersion)).append("\n");
     sb.append("    toscaDefaultNamespace: ").append(toIndentedString(toscaDefaultNamespace)).append("\n");
     sb.append("    templateName: ").append(toIndentedString(templateName)).append("\n");
+    sb.append("    topologyTemplate: ").append(toIndentedString(topologyTemplate)).append("\n");
+    sb.append("    templateAuthor: ").append(toIndentedString(templateAuthor)).append("\n");
+    sb.append("    templateVersion: ").append(toIndentedString(templateVersion)).append("\n");
+    sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    imports: ").append(toIndentedString(imports)).append("\n");
-    sb.append("    repositories: ").append(toIndentedString(repositories)).append("\n");
     sb.append("    dslDefinitions: ").append(toIndentedString(dslDefinitions)).append("\n");
     sb.append("    nodeTypes: ").append(toIndentedString(nodeTypes)).append("\n");
-    sb.append("    topologyTemplate: ").append(toIndentedString(topologyTemplate)).append("\n");
     sb.append("    relationshipTypes: ").append(toIndentedString(relationshipTypes)).append("\n");
     sb.append("    relationshipTemplates: ").append(toIndentedString(relationshipTemplates)).append("\n");
     sb.append("    capabilityTypes: ").append(toIndentedString(capabilityTypes)).append("\n");
@@ -611,8 +645,7 @@ public class ToscaTemplate   {
     sb.append("    interfaceTypes: ").append(toIndentedString(interfaceTypes)).append("\n");
     sb.append("    policyTypes: ").append(toIndentedString(policyTypes)).append("\n");
     sb.append("    groupTypes: ").append(toIndentedString(groupTypes)).append("\n");
-    sb.append("    description: ").append(toIndentedString(description)).append("\n");
-    sb.append("    templateAuthor: ").append(toIndentedString(templateAuthor)).append("\n");
+    sb.append("    repositories: ").append(toIndentedString(repositories)).append("\n");
     sb.append("}");
     return sb.toString();
   }
