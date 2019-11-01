@@ -137,26 +137,6 @@ class TestDefaultController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_get_node_types(self):
-        """Test case for get_node_types
-
-        
-        """
-        query_string = [('has_interfaces', true),
-                        ('type_name', 'type_name_example'),
-                        ('has_properties', true),
-                        ('has_attributes', true),
-                        ('has_requirements', true),
-                        ('has_capabilities', true),
-                        ('has_artifacts', true),
-                        ('derived_from', 'derived_from_example')]
-        response = self.client.open(
-            '/tosca-sure/1.0.0/tosca_template/{id}/node_types'.format(id='id_example'),
-            method='GET',
-            query_string=query_string)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
     def test_get_parent_type_name(self):
         """Test case for get_parent_type_name
 

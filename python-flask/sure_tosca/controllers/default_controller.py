@@ -173,35 +173,6 @@ def get_node_type_name(id, node_name):  # noqa: E501
     return 'do some magic!'
 
 
-def get_node_types(id, has_interfaces=None, type_name=None, has_properties=None, has_attributes=None, has_requirements=None, has_capabilities=None, has_artifacts=None, derived_from=None):  # noqa: E501
-    """
-
-    returns the interface types # noqa: E501
-
-    :param id: ID of topolog template uplodaed
-    :type id: str
-    :param has_interfaces: filter if has interfaces
-    :type has_interfaces: bool
-    :param type_name: The type_name
-    :type type_name: str
-    :param has_properties: filter if has properties
-    :type has_properties: bool
-    :param has_attributes: filter if has attributes
-    :type has_attributes: bool
-    :param has_requirements: filter if has requirements
-    :type has_requirements: bool
-    :param has_capabilities: filter if has capabilities
-    :type has_capabilities: bool
-    :param has_artifacts: filter if has artifacts
-    :type has_artifacts: bool
-    :param derived_from: derived from
-    :type derived_from: str
-
-    :rtype: List[Dict[str, object]]
-    """
-    return 'do some magic!'
-
-
 def get_parent_type_name(id, node_name):  # noqa: E501
     """
 
