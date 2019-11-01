@@ -4,7 +4,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
@@ -20,7 +19,8 @@ import org.springframework.data.annotation.Id;
  * TopologyTemplate
  */
 @Validated
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-11-01T13:58:45.661Z")
+
 public class TopologyTemplate   {
         /**
      * @return the id
@@ -39,12 +39,12 @@ public class TopologyTemplate   {
     @Id
     @JsonIgnore
     private String id;
+    
   @JsonProperty("description")
   private String description = null;
 
   @JsonProperty("inputs")
-  @Valid
-  private List<Map<String, Object>> inputs = null;
+  private String inputs = null;
 
   @JsonProperty("node_templates")
   @Valid
@@ -55,20 +55,17 @@ public class TopologyTemplate   {
   private Map<String, Object> relationshipTemplates = null;
 
   @JsonProperty("outputs")
-  @Valid
-  private List<Map<String, Object>> outputs = null;
+  private String outputs = null;
 
   @JsonProperty("groups")
-  @Valid
-  private Map<String, Object> groups = null;
+  private String groups = null;
 
   @JsonProperty("substitution_mappings")
-  @Valid
-  private Map<String, Object> substitutionMappings = null;
+  private String substitutionMappings = null;
 
   @JsonProperty("policies")
   @Valid
-  private List<Map<String, Object>> policies = null;
+  private List<String> policies = null;
 
   public TopologyTemplate description(String description) {
     this.description = description;
@@ -90,16 +87,8 @@ public class TopologyTemplate   {
     this.description = description;
   }
 
-  public TopologyTemplate inputs(List<Map<String, Object>> inputs) {
+  public TopologyTemplate inputs(String inputs) {
     this.inputs = inputs;
-    return this;
-  }
-
-  public TopologyTemplate addInputsItem(Map<String, Object> inputsItem) {
-    if (this.inputs == null) {
-      this.inputs = new ArrayList<Map<String, Object>>();
-    }
-    this.inputs.add(inputsItem);
     return this;
   }
 
@@ -109,13 +98,12 @@ public class TopologyTemplate   {
   **/
   @ApiModelProperty(value = "")
 
-  @Valid
 
-  public List<Map<String, Object>> getInputs() {
+  public String getInputs() {
     return inputs;
   }
 
-  public void setInputs(List<Map<String, Object>> inputs) {
+  public void setInputs(String inputs) {
     this.inputs = inputs;
   }
 
@@ -176,16 +164,8 @@ public class TopologyTemplate   {
     this.relationshipTemplates = relationshipTemplates;
   }
 
-  public TopologyTemplate outputs(List<Map<String, Object>> outputs) {
+  public TopologyTemplate outputs(String outputs) {
     this.outputs = outputs;
-    return this;
-  }
-
-  public TopologyTemplate addOutputsItem(Map<String, Object> outputsItem) {
-    if (this.outputs == null) {
-      this.outputs = new ArrayList<Map<String, Object>>();
-    }
-    this.outputs.add(outputsItem);
     return this;
   }
 
@@ -195,26 +175,17 @@ public class TopologyTemplate   {
   **/
   @ApiModelProperty(value = "")
 
-  @Valid
 
-  public List<Map<String, Object>> getOutputs() {
+  public String getOutputs() {
     return outputs;
   }
 
-  public void setOutputs(List<Map<String, Object>> outputs) {
+  public void setOutputs(String outputs) {
     this.outputs = outputs;
   }
 
-  public TopologyTemplate groups(Map<String, Object> groups) {
+  public TopologyTemplate groups(String groups) {
     this.groups = groups;
-    return this;
-  }
-
-  public TopologyTemplate putGroupsItem(String key, Object groupsItem) {
-    if (this.groups == null) {
-      this.groups = new HashMap<String, Object>();
-    }
-    this.groups.put(key, groupsItem);
     return this;
   }
 
@@ -225,24 +196,16 @@ public class TopologyTemplate   {
   @ApiModelProperty(value = "")
 
 
-  public Map<String, Object> getGroups() {
+  public String getGroups() {
     return groups;
   }
 
-  public void setGroups(Map<String, Object> groups) {
+  public void setGroups(String groups) {
     this.groups = groups;
   }
 
-  public TopologyTemplate substitutionMappings(Map<String, Object> substitutionMappings) {
+  public TopologyTemplate substitutionMappings(String substitutionMappings) {
     this.substitutionMappings = substitutionMappings;
-    return this;
-  }
-
-  public TopologyTemplate putSubstitutionMappingsItem(String key, Object substitutionMappingsItem) {
-    if (this.substitutionMappings == null) {
-      this.substitutionMappings = new HashMap<String, Object>();
-    }
-    this.substitutionMappings.put(key, substitutionMappingsItem);
     return this;
   }
 
@@ -253,22 +216,22 @@ public class TopologyTemplate   {
   @ApiModelProperty(value = "")
 
 
-  public Map<String, Object> getSubstitutionMappings() {
+  public String getSubstitutionMappings() {
     return substitutionMappings;
   }
 
-  public void setSubstitutionMappings(Map<String, Object> substitutionMappings) {
+  public void setSubstitutionMappings(String substitutionMappings) {
     this.substitutionMappings = substitutionMappings;
   }
 
-  public TopologyTemplate policies(List<Map<String, Object>> policies) {
+  public TopologyTemplate policies(List<String> policies) {
     this.policies = policies;
     return this;
   }
 
-  public TopologyTemplate addPoliciesItem(Map<String, Object> policiesItem) {
+  public TopologyTemplate addPoliciesItem(String policiesItem) {
     if (this.policies == null) {
-      this.policies = new ArrayList<Map<String, Object>>();
+      this.policies = new ArrayList<String>();
     }
     this.policies.add(policiesItem);
     return this;
@@ -280,13 +243,12 @@ public class TopologyTemplate   {
   **/
   @ApiModelProperty(value = "")
 
-  @Valid
 
-  public List<Map<String, Object>> getPolicies() {
+  public List<String> getPolicies() {
     return policies;
   }
 
-  public void setPolicies(List<Map<String, Object>> policies) {
+  public void setPolicies(List<String> policies) {
     this.policies = policies;
   }
 

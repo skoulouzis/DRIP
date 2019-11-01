@@ -4,9 +4,9 @@
           description:
               type: "string"
           inputs:
-              type: string
+              type: object
               additionalProperties:
-                  type: object  
+                  type: string      
           node_templates:
               type: object
               additionalProperties:
@@ -14,22 +14,22 @@
           relationship_templates:
               type: object
               additionalProperties:
-                  type: object      
+                  type: string    
           outputs:
-              type: string
+              type: object
               additionalProperties:
-                  type: object  
+                  type: string  
           groups:
-              type: string
+              type: object
               additionalProperties:
-                  type: object         
+                  type: string              
           substitution_mappings:
-              type: string
+              type: object
               additionalProperties:
-                  type: object                   
+                  type: string               
           policies:
               type: "array"
               items:
-                  type: string
-                  additionalProperties:
-                    type: object                    
+                type: object
+                additionalProperties:
+                    type: string                    

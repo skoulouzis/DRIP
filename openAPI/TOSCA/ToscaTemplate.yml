@@ -20,39 +20,39 @@
               items:
                   type: object
                   additionalProperties:
-                    type: object
+                    type: string
           dsl_definitions:
               type: object
               additionalProperties:
-                  type: object  
+                  type: string  
           node_types:
               type: object
               additionalProperties:
-                  type: object        
+                  type: string       
           relationship_types:
               type: object
               additionalProperties:
-                  type: object        
+                  type: string      
           relationship_templates:
               type: object
               additionalProperties:
-                  type: object     
+                  type: string       
           capability_types:
               type: object
               additionalProperties:
-                  type: object   
+                  type: string   
           artifact_types:
               type: object
               additionalProperties:
-                  type: object      
+                  type: string      
           data_types:
               type: object
               additionalProperties:
-                  type: object     
+                  type: string      
           interface_types:
               type: object
               additionalProperties:
-                  type: object  
+                  type: string  
           policy_types:
               type: object
               additionalProperties:
@@ -60,9 +60,9 @@
           group_types:
               type: object
               additionalProperties:
-                  type: object                  
+                  type: string                
           repositories:
               type: object
               additionalProperties:
-                  type: object                  
+                  type: string                
                     
