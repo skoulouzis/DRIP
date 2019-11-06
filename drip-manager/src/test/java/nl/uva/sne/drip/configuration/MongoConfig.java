@@ -26,7 +26,8 @@ import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
  * @author S. Koulouzis
  */
 @Configuration
-@ComponentScan(basePackages = {"nl.uva.sne.drip", "nl.uva.sne.drip.api", "nl.uva.sne.drip.configuration", "nl.uva.sne.drip.dao", "nl.uva.sne.drip.model", "nl.uva.sne.drip.service"})
+@ComponentScan(basePackages = {"nl.uva.sne.drip", "nl.uva.sne.drip.api", 
+    "nl.uva.sne.drip.configuration", "nl.uva.sne.drip.dao", "nl.uva.sne.drip.model", "nl.uva.sne.drip.service"})
 public class MongoConfig extends AbstractMongoConfiguration {
 
     public static int MONGO_TEST_PORT = 12345;

@@ -67,7 +67,6 @@ public class ServiceTests {
 
     @Autowired
     CredentialService credentialService;
-    private String credentialID;
 
     @Autowired
     ProvisionerService provisionService;
