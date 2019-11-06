@@ -3,9 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../openAPI/TOSCA/OutputParameters.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../openAPI/TOSCA/OutputParameters.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/controllers/default_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/controllers/default_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/service/tosca_template_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/service/tosca_template_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/planner/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/planner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/planner/specification_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/specification_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/rpc_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rpc_server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tests/test_planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_planner.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +40,7 @@
     <property name="TODO_SCOPE" value="All Places" />
     <property name="full.screen.before.presentation.mode" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../drip-deployer" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="project.propDebugger" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -141,8 +143,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.rpc_server" />
-        <item itemvalue="Python tests.Unittests in tests" />
         <item itemvalue="Python.test_planner" />
+        <item itemvalue="Python tests.Unittests in tests" />
         <item itemvalue="Python.basic_planner" />
       </list>
     </recent_temporary>
@@ -335,11 +337,6 @@
           <url>file://$USER_HOME$/.local/lib/python3.6/site-packages/toscaparser/elements/nodetype.py</url>
           <line>64</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/rpc_server.py</url>
-          <line>105</line>
-          <option name="timeStamp" value="302" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/venv/lib/python3.6/site-packages/toscaparser/elements/scalarunit.py</url>

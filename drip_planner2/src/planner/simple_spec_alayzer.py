@@ -3,8 +3,8 @@ import copy
 from toscaparser.nodetemplate import NodeTemplate
 from toscaparser.properties import Property
 
-from src.utils import tosca_helper as tosca_util
-from src.planner.specification_analyzer import SpecificationAnalyzer
+from utils import tosca_helper as tosca_util
+from planner.specification_analyzer import SpecificationAnalyzer
 import networkx as nx
 import logging
 

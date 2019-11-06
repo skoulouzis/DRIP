@@ -78,9 +78,10 @@ def handle_delivery(message):
         tosca_folder_path = os.path.join(tempfile.gettempdir(), "planner_files", str(input_current_milli_time()))
     except NameError:
         import sys
+        millis = int(round(time.time() * 1000))
         tosca_folder_path = os.path.dirname(os.path.abspath(sys.argv[0])) + os.path.join(tempfile.gettempdir(),
                                                                                          "planner_files",
-                                                                                         str(current_milli_time()))
+                                                                                         str(millis))
 
     if not os.path.exists(tosca_folder_path):
         os.makedirs(tosca_folder_path)
@@ -110,7 +111,7 @@ def handle_delivery(message):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     if sys.argv[1] == "test_local":
-        tosca_path = "../../TOSCA/"
+        tosca_path = "../TOSCA/"
         input_tosca_file_path = tosca_path + '/application_example_2_topologies.yaml'
         conf = {'url': "http://host"}
         spec_service = SpecService(conf)
@@ -118,7 +119,7 @@ if __name__ == "__main__":
         test_tosca_template = test_planner.resolve_requirements()
         test_tosca_template = test_planner.set_infrastructure_specifications()
         template_dict = tosca_util.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
-        # logger.info("template ----: \n" + yaml.dump(template))
+        logger.info("template ----: \n" + yaml.dump(template_dict))
 
         try:
             tosca_folder_path = os.path.join(tempfile.gettempdir(), tosca_path)
@@ -128,7 +129,7 @@ if __name__ == "__main__":
             tosca_folder_path = os.path.dirname(os.path.abspath(sys.argv[0])) + os.path.join(tempfile.gettempdir(),
                                                                                              tosca_path)
         tosca_file_name = 'tosca_template'
-        input_tosca_file_path = tosca_path + '/application_example_output.yaml'
+        input_tosca_file_path = tosca_path + '/application_example_2_topologies.yaml'
 
         with open(input_tosca_file_path, 'w') as outfile:
             outfile.write(yaml.dump(template_dict))

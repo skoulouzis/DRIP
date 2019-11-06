@@ -15,7 +15,7 @@ class MyTestCase(unittest.TestCase):
     def test_something(self):
         logger = logging.getLogger(__name__)
         tosca_path = "../../../TOSCA/"
-        input_tosca_file_path = tosca_path + '/application_example.yaml'
+        input_tosca_file_path = tosca_path + '/application_example_2_topologies.yaml'
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
         print(dir_path)
