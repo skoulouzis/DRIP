@@ -4,7 +4,7 @@ from toscaparser.tosca_template import ToscaTemplate
 from toscaparser.topology_template import TopologyTemplate
 
 import operator
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 from service.simple_spec_alayzer import SimpleAnalyzer
 from util import tosca_helper

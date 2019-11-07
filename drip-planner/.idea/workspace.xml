@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.jenkins_pipeline.kate-swp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/planner/planner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/specification_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/service/specification_analyzer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../jenkins_pipeline" beforeDir="false" afterPath="$PROJECT_DIR$/../jenkins_pipeline" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -50,7 +52,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests in test_planner.py">
+  <component name="RunManager" selected="Python.__main__">
     <configuration name="__main__" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="drip-planner" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -92,8 +94,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Unittests in test_planner.py" />
         <item itemvalue="Python.__main__" />
+        <item itemvalue="Python tests.Unittests in test_planner.py" />
       </list>
     </recent_temporary>
   </component>
@@ -115,7 +117,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573136717037</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="added requrements file">
+      <created>1573139478946</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1573139478947</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -133,6 +142,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="refactor planner" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor planner" />
+    <MESSAGE value="added requrements file" />
+    <option name="LAST_COMMIT_MESSAGE" value="added requrements file" />
   </component>
 </project>
