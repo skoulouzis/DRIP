@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../.jenkins_pipeline.kate-swp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip-manager/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../jenkins_pipeline" beforeDir="false" afterPath="$PROJECT_DIR$/../jenkins_pipeline" afterDir="false" />
     </list>
@@ -128,7 +130,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573140673028</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="added yaml">
+      <created>1573140906501</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1573140906501</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -148,6 +157,7 @@
     <MESSAGE value="refactor planner" />
     <MESSAGE value="added requrements file" />
     <MESSAGE value="removed matplotlib" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed matplotlib" />
+    <MESSAGE value="added yaml" />
+    <option name="LAST_COMMIT_MESSAGE" value="added yaml" />
   </component>
 </project>
