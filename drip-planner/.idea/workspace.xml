@@ -4,7 +4,6 @@
     <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../.jenkins_pipeline.kate-swp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../drip-manager/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../jenkins_pipeline" beforeDir="false" afterPath="$PROJECT_DIR$/../jenkins_pipeline" afterDir="false" />
     </list>
@@ -151,7 +150,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573146558882</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="added tosca-parser">
+      <created>1573146748521</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1573146748521</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -174,6 +180,7 @@
     <MESSAGE value="added yaml" />
     <MESSAGE value="added PyYAML" />
     <MESSAGE value="added pyyaml" />
-    <option name="LAST_COMMIT_MESSAGE" value="added pyyaml" />
+    <MESSAGE value="added tosca-parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="added tosca-parser" />
   </component>
 </project>
