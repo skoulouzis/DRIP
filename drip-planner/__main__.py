@@ -11,8 +11,11 @@ import pika
 import yaml
 import sys
 
+from toscaparser.tosca_template import ToscaTemplate
+
 from planner.planner import Planner
 from service.spec_service import SpecService
+from util import tosca_helper
 
 logger = logging.getLogger(__name__)
 
@@ -94,7 +97,7 @@ def handle_delivery(message):
     test_planner = Planner(input_tosca_file_path, spec_service)
     tosca_template = test_planner.resolve_requirements()
     tosca_template = test_planner.set_infrastructure_specifications()
-    template_dict = tosca_util.get_tosca_template_2_topology_template_dictionary(tosca_template)
+    template_dict = tosca_helper.get_tosca_template_2_topology_template_dictionary(tosca_template)
     logger.info("template ----: \n" + yaml.dump(template_dict))
 
     response = {'toscaTemplate': template_dict}
@@ -118,7 +121,7 @@ if __name__ == "__main__":
         test_planner = Planner(input_tosca_file_path, spec_service)
         test_tosca_template = test_planner.resolve_requirements()
         test_tosca_template = test_planner.set_infrastructure_specifications()
-        template_dict = tosca_util.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
+        template_dict = tosca_helper.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
         logger.info("template ----: \n" + yaml.dump(template_dict))
 
         try:
