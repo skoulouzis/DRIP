@@ -36,3 +36,7 @@
 /drip-manager/nbproject/
 /.idea/
 /drip-manager/.idea/
+/drip-planner/service/__pycache__/
+/drip-planner/planner/__pycache__/
+/drip-planner/util/__pycache__/
+/drip-planner/test/__pycache__/

@@ -12,9 +12,10 @@ from src.utils import tosca_helper as tosca_util
 
 
 class MyTestCase(unittest.TestCase):
+
     def test_something(self):
         logger = logging.getLogger(__name__)
-        tosca_path = "../../../TOSCA/"
+        tosca_path = "../../TOSCA/"
         input_tosca_file_path = tosca_path + '/application_example_2_topologies.yaml'
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -54,3 +55,7 @@ class MyTestCase(unittest.TestCase):
         response["parameters"] = []
         print("Output message:" + json.dumps(response))
         self.assertEqual(True, True)
+
+
+if __name__ == '__main__':
+    unittest.main()

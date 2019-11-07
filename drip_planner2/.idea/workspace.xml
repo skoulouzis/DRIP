@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="" />
+    <list default="true" id="462ede19-adfe-472b-975e-fefefa973fe0" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../drip-planner/.idea/drip-planner.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drip-planner/__main__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drip-planner/planner/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drip-planner/planner/planner.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drip-planner/service/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drip-planner/service/simple_spec_alayzer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drip-planner/service/spec_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drip-planner/service/specification_analyzer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drip-planner/setup.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drip-planner/test/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drip-planner/test/test_planner.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drip-planner/util/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drip-planner/util/tosca_helper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/planner/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/planner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/planner/simple_spec_alayzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tests/test_planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_planner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../jenkins_pipeline" beforeDir="false" afterPath="$PROJECT_DIR$/../jenkins_pipeline" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +74,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.rpc_server">
+  <component name="RunManager" selected="Python.test_planner">
     <configuration name="basic_planner" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="drip_planner2" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -135,8 +154,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.rpc_server" />
         <item itemvalue="Python.test_planner" />
+        <item itemvalue="Python.rpc_server" />
         <item itemvalue="Python tests.Unittests in tests" />
         <item itemvalue="Python.basic_planner" />
       </list>

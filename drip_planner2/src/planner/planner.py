@@ -5,10 +5,10 @@ from toscaparser.topology_template import TopologyTemplate
 
 import operator
 
-from planner.simple_spec_alayzer import SimpleAnalyzer
-from utils.tosca_helper import *
-from planner.specification_analyzer import *
-from utils import tosca_helper as tosca_util
+from src.planner.simple_spec_alayzer import SimpleAnalyzer
+from src.utils.tosca_helper import *
+from src.planner.specification_analyzer import *
+from src.utils import tosca_helper as tosca_util
 import matplotlib.pyplot as plt
 
 
