@@ -157,7 +157,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573146748521</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="added matplotlib">
+      <created>1573146875676</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1573146875676</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -181,6 +188,7 @@
     <MESSAGE value="added PyYAML" />
     <MESSAGE value="added pyyaml" />
     <MESSAGE value="added tosca-parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="added tosca-parser" />
+    <MESSAGE value="added matplotlib" />
+    <option name="LAST_COMMIT_MESSAGE" value="added matplotlib" />
   </component>
 </project>

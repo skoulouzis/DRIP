@@ -1,5 +1,4 @@
 pika==1.1.0
-tosca-parser==1.6.0
 names==0.3.0
 networkx==2.4
 pyyaml==5.1.2
