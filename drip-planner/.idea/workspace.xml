@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
+    <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="added matplotlib">
       <change beforePath="$PROJECT_DIR$/../.jenkins_pipeline.kate-swp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../drip-manager/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../jenkins_pipeline" beforeDir="false" afterPath="$PROJECT_DIR$/../jenkins_pipeline" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/requirements.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -164,7 +166,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573146875676</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="added matplotlib">
+      <created>1573146945740</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1573146945740</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

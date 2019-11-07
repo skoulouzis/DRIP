@@ -4,3 +4,4 @@ networkx==2.4
 pyyaml==5.1.2
 tosca-parser ==1.6.1
 matplotlib==3.0.3
+networkx==2.4
