@@ -23,14 +23,12 @@ class SimpleAnalyzer(SpecificationAnalyzer):
                                                           self.tosca_template.nodetemplates, self.all_node_types,
                                                           self.all_custom_def)
 
-        if 'properties' in orchestrator_nodes[0].entity_tpl:
-            if 'masters_num' in orchestrator_nodes[0].entity_tpl['properties']:
-                masters_num = orchestrator_nodes[0].entity_tpl['properties']['masters_num']
-            if 'workers_num' in orchestrator_nodes[0].entity_tpl['properties']:
-                workers_num = orchestrator_nodes[0].entity_tpl['properties']['workers_num']
-        else:
-            masters_num = orchestrator_nodes[0].get_property_value('masters_num')
-            workers_num = orchestrator_nodes[0].get_property_value('workers_num')
+        orchestrator_nodes[0].type_definition
+        if 'attributes' in orchestrator_nodes[0].entity_tpl:
+            if 'masters_num' in orchestrator_nodes[0].entity_tpl['attributes']:
+                masters_num = orchestrator_nodes[0].entity_tpl['attributes']['masters_num']
+            if 'workers_num' in orchestrator_nodes[0].entity_tpl['attributes']:
+                workers_num = orchestrator_nodes[0].entity_tpl['attributes']['workers_num']
 
         topology_nodes = tosca_helper.get_nodes_by_type('tosca.nodes.ARTICONF.VM.topology',
                                                       self.tosca_template.nodetemplates, self.all_node_types,

@@ -50,14 +50,14 @@ node_types:
         type: tosca.capabilities.Container.Docker
       container:
         type: tosca.capabilities.Container        
-    attributes:
-        masters_num:
+    properties:
+        min_masters_num:
             type: integer
             required: true
             default: 1
             constraints:
             - greater_or_equal: 1
-        workers_num:
+        min_workers_num:
             type: integer
             required: true
             default: 1
@@ -102,20 +102,20 @@ node_types:
         type: string
         required: false
         description: The subnet of the VMs this topology e.g. 192.168.10.10/24
-    attributes:
       domain:        
         type: string
         required: true
         default: "UvA (Amsterdam, The Netherlands) XO Rack"
-        description: the domain of this topology e.g. California, UvA, etc   
-      credential:
-        type: tosca.datatypes.Credential
-        required: false        
+        description: the domain of this topology e.g. California, UvA, etc           
       provider:
         type: string
         required: true
         default: "ExoGeni"
-        description: The name of the provider e.g. EC2, ExoGeni etc.         
+        description: The name of the provider e.g. EC2, ExoGeni etc.              
+    attributes:
+      credential:
+        type: tosca.datatypes.Credential
+        required: false           
     interfaces:
       Standard:
         create: dumy.yaml
