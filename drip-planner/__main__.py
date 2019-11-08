@@ -10,6 +10,7 @@ import logging
 import pika
 import yaml
 import sys
+import copy
 
 from toscaparser.tosca_template import ToscaTemplate
 
@@ -124,23 +125,10 @@ if __name__ == "__main__":
         template_dict = tosca_helper.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
         logger.info("template ----: \n" + yaml.dump(template_dict))
 
-        try:
-            tosca_folder_path = os.path.join(tempfile.gettempdir(), tosca_path)
-        except NameError:
-            import sys
+        ToscaTemplate(yaml_dict_tpl=copy.deepcopy(template_dict))
 
-        #     tosca_folder_path = os.path.dirname(os.path.abspath(sys.argv[0])) + os.path.join(tempfile.gettempdir(),
-        #                                                                                      tosca_path)
-        # tosca_file_name = 'tosca_template'
-        # input_tosca_file_path = tosca_path + '/application_example_2_topologies.yaml'
-        #
-        # with open(input_tosca_file_path, 'w') as outfile:
-        #     outfile.write(yaml.dump(template_dict))
-        #
-        # ToscaTemplate(input_tosca_file_path)
-        #
-        # test_response = {'toscaTemplate': template_dict}
-        # logger.info("Output message:" + json.dumps(test_response))
+        test_response = {'toscaTemplate': template_dict}
+        logger.info("Output message:" + json.dumps(test_response))
     else:
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         channel = init_chanel(sys.argv)

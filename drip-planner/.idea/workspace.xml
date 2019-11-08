@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="added matplotlib">
+    <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__main__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/simple_spec_alayzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/service/simple_spec_alayzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_planner.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -169,7 +171,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573146945740</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="fixed default property setting">
+      <created>1573214191545</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1573214191545</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -194,7 +203,8 @@
     <MESSAGE value="added pyyaml" />
     <MESSAGE value="added tosca-parser" />
     <MESSAGE value="added matplotlib" />
-    <option name="LAST_COMMIT_MESSAGE" value="added matplotlib" />
+    <MESSAGE value="fixed default property setting" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed default property setting" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -208,11 +218,6 @@
           <url>file://$PROJECT_DIR$/planner/planner.py</url>
           <line>61</line>
           <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__main__.py</url>
-          <line>124</line>
-          <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/service/simple_spec_alayzer.py</url>

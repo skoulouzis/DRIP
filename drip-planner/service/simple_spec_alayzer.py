@@ -71,7 +71,6 @@ class SimpleAnalyzer(SpecificationAnalyzer):
                 new_vm.name = new_vm_name
                 templates = new_vm.templates.pop(old_vm_name)
                 new_vm.templates[new_vm_name] = templates
-                new_vm.templates[next(iter(new_vm.templates))]['properties']['role'] = "worker"
 
                 return_nodes.append(new_vm)
                 for requirement in topology_nodes[0].requirements:

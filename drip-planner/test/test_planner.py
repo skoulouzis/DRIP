@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 import os
@@ -19,10 +20,9 @@ class MyTestCase(unittest.TestCase):
     def test_something(self):
         logger = logging.getLogger(__name__)
         tosca_path = "../TOSCA/"
-        input_tosca_file_path = tosca_path + '/application_example_2_topologies.yaml'
+        input_tosca_file_path = tosca_path + '/application_example_updated.yaml'
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        print(dir_path)
 
         self.assertEqual(True, os.path.exists(input_tosca_file_path),
                          "Input TOSCA file: " + input_tosca_file_path + " not found")
@@ -35,20 +35,7 @@ class MyTestCase(unittest.TestCase):
         template_dict = tosca_helper.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
         logger.info("template ----: \n" + yaml.dump(template_dict))
 
-        try:
-            tosca_folder_path = os.path.join(tempfile.gettempdir(), tosca_path)
-        except NameError:
-            import sys
-
-            tosca_folder_path = os.path.dirname(os.path.abspath(sys.argv[0])) + os.path.join(tempfile.gettempdir(),
-                                                                                             tosca_path)
-        tosca_file_name = 'tosca_template'
-        input_tosca_file_path = tosca_path + '/application_example_output.yaml'
-
-        with open(input_tosca_file_path, 'w') as outfile:
-            outfile.write(yaml.dump(template_dict))
-
-        ToscaTemplate(input_tosca_file_path)
+        ToscaTemplate(yaml_dict_tpl=copy.deepcopy(template_dict))
 
         test_response = {'toscaTemplate': template_dict}
 
