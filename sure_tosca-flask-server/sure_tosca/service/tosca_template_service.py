@@ -280,8 +280,13 @@ def get_node_outputs(id, node_name):
     matching_outputs = {}
     matching_output_names = []
     tosca_template_dict = get_tosca_template_dict_by_id(id)
+    logging.info('Got tosca_template_dict: '+str(tosca_template_dict))
     tosca_template = get_tosca_template(tosca_template_dict)
+    logging.info('Got tosca_template: ' + str(tosca_template))
     outputs = tosca_template.topology_template.outputs
+    logging.info('Got outputs: ' + str(outputs))
+    if not outputs:
+        return None
     for output in outputs:
         if node_name == output.value.node_template_name:
             matching_output_names.append(output.name)
