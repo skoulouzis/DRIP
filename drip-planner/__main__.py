@@ -115,7 +115,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     if sys.argv[1] == "test_local":
         tosca_path = "../TOSCA/"
-        input_tosca_file_path = tosca_path + '/application_example_2_topologies.yaml'
+        input_tosca_file_path = tosca_path + '/application_example_updated.yaml'
         conf = {'url': "http://host"}
         spec_service = SpecService(conf)
         test_planner = Planner(input_tosca_file_path, spec_service)
@@ -129,18 +129,18 @@ if __name__ == "__main__":
         except NameError:
             import sys
 
-            tosca_folder_path = os.path.dirname(os.path.abspath(sys.argv[0])) + os.path.join(tempfile.gettempdir(),
-                                                                                             tosca_path)
-        tosca_file_name = 'tosca_template'
-        input_tosca_file_path = tosca_path + '/application_example_2_topologies.yaml'
-
-        with open(input_tosca_file_path, 'w') as outfile:
-            outfile.write(yaml.dump(template_dict))
-
-        ToscaTemplate(input_tosca_file_path)
-
-        test_response = {'toscaTemplate': template_dict}
-        logger.info("Output message:" + json.dumps(test_response))
+        #     tosca_folder_path = os.path.dirname(os.path.abspath(sys.argv[0])) + os.path.join(tempfile.gettempdir(),
+        #                                                                                      tosca_path)
+        # tosca_file_name = 'tosca_template'
+        # input_tosca_file_path = tosca_path + '/application_example_2_topologies.yaml'
+        #
+        # with open(input_tosca_file_path, 'w') as outfile:
+        #     outfile.write(yaml.dump(template_dict))
+        #
+        # ToscaTemplate(input_tosca_file_path)
+        #
+        # test_response = {'toscaTemplate': template_dict}
+        # logger.info("Output message:" + json.dumps(test_response))
     else:
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         channel = init_chanel(sys.argv)

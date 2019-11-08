@@ -2,13 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="added matplotlib">
-      <change beforePath="$PROJECT_DIR$/../build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../build.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_2_topologies.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_2_topologies.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__main__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/simple_spec_alayzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/service/simple_spec_alayzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../jenkins_pipeline" beforeDir="false" afterPath="$PROJECT_DIR$/../jenkins_pipeline" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/test-requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/test-requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../test.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../test.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -206,18 +203,38 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/service/simple_spec_alayzer.py</url>
-          <line>45</line>
+          <line>47</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/planner/planner.py</url>
-          <line>36</line>
-          <option name="timeStamp" value="3" />
+          <line>66</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/planner/planner.py</url>
+          <line>61</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__main__.py</url>
+          <line>124</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/service/simple_spec_alayzer.py</url>
-          <line>26</line>
-          <option name="timeStamp" value="5" />
+          <line>25</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/service/simple_spec_alayzer.py</url>
+          <line>127</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/service/simple_spec_alayzer.py</url>
+          <line>160</line>
+          <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

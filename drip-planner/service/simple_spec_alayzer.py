@@ -20,19 +20,21 @@ class SimpleAnalyzer(SpecificationAnalyzer):
         # nodes_with_occurrences_in_requirements = tosca_util.get_nodes_with_occurrences_in_requirements(
         # self.tosca_template.nodetemplates)
         orchestrator_nodes = tosca_helper.get_nodes_by_type('tosca.nodes.ARTICONF.Orchestrator',
-                                                          self.tosca_template.nodetemplates, self.all_node_types,
-                                                          self.all_custom_def)
+                                                            self.tosca_template.nodetemplates, self.all_node_types,
+                                                            self.all_custom_def)
 
-        orchestrator_nodes[0].type_definition
-        if 'attributes' in orchestrator_nodes[0].entity_tpl:
-            if 'masters_num' in orchestrator_nodes[0].entity_tpl['attributes']:
-                masters_num = orchestrator_nodes[0].entity_tpl['attributes']['masters_num']
-            if 'workers_num' in orchestrator_nodes[0].entity_tpl['attributes']:
-                workers_num = orchestrator_nodes[0].entity_tpl['attributes']['workers_num']
+        if 'properties' in orchestrator_nodes[0].entity_tpl:
+            if 'min_masters_num' in orchestrator_nodes[0].entity_tpl['properties']:
+                min_masters_num = orchestrator_nodes[0].entity_tpl['properties']['min_masters_num']
+            if 'min_workers_num' in orchestrator_nodes[0].entity_tpl['properties']:
+                workers_num = orchestrator_nodes[0].entity_tpl['properties']['min_workers_num']
+        else:
+            min_masters_num = orchestrator_nodes[0].get_property_value('min_masters_num')
+            workers_num = orchestrator_nodes[0].get_property_value('min_workers_num')
 
         topology_nodes = tosca_helper.get_nodes_by_type('tosca.nodes.ARTICONF.VM.topology',
-                                                      self.tosca_template.nodetemplates, self.all_node_types,
-                                                      self.all_custom_def)
+                                                        self.tosca_template.nodetemplates, self.all_node_types,
+                                                        self.all_custom_def)
 
         # for requirement in topology_nodes[0].requirements:
         #     requirement_dict = requirement[next(iter(requirement))]
@@ -40,10 +42,10 @@ class SimpleAnalyzer(SpecificationAnalyzer):
         #         requirement_dict['occurrences'] = min_num_of_vm
 
         vm_nodes = tosca_helper.get_nodes_by_type('tosca.nodes.ARTICONF.VM.Compute',
-                                                self.tosca_template.nodetemplates, self.all_node_types,
-                                                self.all_custom_def)
+                                                  self.tosca_template.nodetemplates, self.all_node_types,
+                                                  self.all_custom_def)
         if vm_nodes:
-            for i in range(len(vm_nodes), masters_num):
+            for i in range(len(vm_nodes), min_masters_num):
                 old_vm_name = vm_nodes[0].name
                 new_vm = copy.deepcopy(vm_nodes[0])
                 new_vm_name = new_vm.name + '_' + str(i)
@@ -116,12 +118,12 @@ class SimpleAnalyzer(SpecificationAnalyzer):
         ancestors_types = tosca_helper.get_all_ancestors_types(affected_node, self.all_node_types, self.all_custom_def)
         # if 'tosca.nodes.ARTICONF.Orchestrator' in ancestors_types:
         #     logging.info('Do Something')
-        properties = tosca_helper.get_all_ancestors_properties(affected_node, self.all_node_types,
-                                                             self.all_custom_def)
+        ancestors_properties = tosca_helper.get_all_ancestors_properties(affected_node, self.all_node_types,
+                                                                         self.all_custom_def)
 
         default_properties = {}
-        for node_property in properties:
-            default_property = self.get_defult_value(node_property)
+        for ancestors_property in ancestors_properties:
+            default_property = self.get_defult_value(ancestors_property)
             if default_property:
                 default_properties[next(iter(default_property))] = default_property[next(iter(default_property))]
 
@@ -156,25 +158,36 @@ class SimpleAnalyzer(SpecificationAnalyzer):
         return affected_node
 
     def get_defult_value(self, node_property):
-        if isinstance(node_property.value,
-                      dict) and 'required' in node_property.value and 'type' in node_property.value:
-            if node_property.value['required']:
-                default_prop = {}
-                if 'default' in node_property.value:
-                    if node_property.value['type'] == 'integer':
-                        default_prop = int(node_property.value['default'])
-                    else:
-                        default_prop = str(node_property.value['default'])
-                elif 'constraints' in node_property.value:
-                    constraints = node_property.value['constraints']
-                    for constraint in constraints:
-                        for constraint_key in constraint:
-                            if 'equal' in constraint_key:
-                                if node_property.value['type'] == 'integer':
-                                    default_prop = int(constraint[constraint_key])
-                                else:
-                                    default_prop = str(constraint[constraint_key])
-                name = node_property.name
-                node_property = {name: default_prop}
-                return node_property
+        if node_property and node_property.required and isinstance(node_property.value, dict) and 'required' in \
+                node_property.value and 'type' in node_property.value:
+            if node_property.default:
+                return {node_property.name: node_property.default}
+            if node_property.constraints:
+                for constraint in node_property.constraints:
+                    print(constraint)
+        # if isinstance(node_property.value,
+        #               dict) and 'required' in node_property.value and 'type' in node_property.value:
+        #     if node_property.value['required']:
+        #         default_prop = {}
+        #         if 'default' in node_property.value:
+        #             if node_property.value['type'] == 'integer':
+        #                 default_prop = int(node_property.value['default'])
+        #             else:
+        #                 default_prop = str(node_property.value['default'])
+        #         elif 'constraints' in node_property.value:
+        #             constraints = node_property.value['constraints']
+        #             for constraint in constraints:
+        #                 for constraint_key in constraint:
+        #                     if 'equal' in constraint_key:
+        #                         if node_property.value['type'] == 'integer':
+        #                             default_prop = int(constraint[constraint_key])
+        #                         else:
+        #                             default_prop = str(constraint[constraint_key])
+        #         name = node_property.name
+        #         node_property = {name: default_prop}
+        #         return node_property
+        # if node_property.value:
+        #     name = node_property.name
+        #     node_property = {name: node_property.value}
+        #     return node_property
         return None

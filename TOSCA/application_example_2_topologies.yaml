@@ -1,13 +1,9 @@
-tosca_definitions_version: tosca_simple_yaml_1_0
 description: TOSCA example
 imports:
 - nodes: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/nodes.yaml
 - capabilities: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/capabilities.yaml
 - policies: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/policies.yaml
 - interfaces: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/interfaces.yml
-repositories:
-  docker_hub: https://hub.docker.com/ 
-  
 topology_template:
   node_templates:
     compute:
@@ -19,8 +15,6 @@ topology_template:
         mem_size: 6000 MB
         num_cores: 2
         os: ubuntu 16
-      attributes:
-        private_ip: 192.168.1.10
       type: tosca.nodes.ARTICONF.VM.Compute
     compute_1:
       interfaces:
@@ -31,19 +25,7 @@ topology_template:
         mem_size: 6000 MB
         num_cores: 2
         os: ubuntu 16
-      attributes:
-        private_ip: 192.168.1.11        
       type: tosca.nodes.ARTICONF.VM.Compute
-    compute_2:
-      interfaces:
-        Standard:
-          create: dumy.yaml
-      properties:
-        disk_size: 50000 MB
-        mem_size: 6000 MB
-        num_cores: 2
-        os: ubuntu 16
-      type: tosca.nodes.ARTICONF.VM.Compute      
     kubernetes:
       interfaces:
         Standard:
@@ -53,11 +35,27 @@ topology_template:
           capability: tosca.capabilities.ARTICONF.VM.topology
           node: topology
           relationship: tosca.relationships.HostedOn
-      - host:
-          capability: tosca.capabilities.ARTICONF.VM.topology
-          node: topology_1
-          relationship: tosca.relationships.HostedOn          
       type: tosca.nodes.ARTICONF.Orchestrator.Kubernetes
+    logspout:
+      artifacts:
+        image:
+          file: gliderlabs/logspout:latest
+          repository: docker_hub
+          type: tosca.artifacts.Deployment.Image.Container.Docker
+      properties:
+        environment:
+          publish: 127.0.0.1:8000:80
+        ports:
+        - 8000:80
+        volumes:
+        - /etc/hostname:/etc/host_hostname:ro
+        - /var/run/docker.sock:/var/run/docker.sock
+      requirements:
+      - host:
+          capability: tosca.capabilities.ARTICONF.Orchestrator
+          node: kubernetes
+          relationship: tosca.relationships.HostedOn
+      type: tosca.nodes.ARTICONF.Container.Application.Docker
     mysql:
       artifacts:
         image:
@@ -84,6 +82,9 @@ topology_template:
       interfaces:
         Standard:
           create: dumy.yaml
+      properties:
+        domain: UvA (Amsterdam, The Netherlands) XO Rack
+        provider: ExoGeni
       requirements:
       - vm:
           capability: tosca.capabilities.ARTICONF.VM
@@ -93,17 +94,7 @@ topology_template:
           capability: tosca.capabilities.ARTICONF.VM
           node: compute_1
           relationship: tosca.relationships.DependsOn
-      type: tosca.nodes.ARTICONF.VM.topology    
-    topology_1:
-      interfaces:
-        Standard:
-          create: dumy.yaml
-      requirements:
-      - vm:
-          capability: tosca.capabilities.ARTICONF.VM
-          node: compute_2
-          relationship: tosca.relationships.DependsOn
-      type: tosca.nodes.ARTICONF.VM.topology         
+      type: tosca.nodes.ARTICONF.VM.topology
     wordpress:
       artifacts:
         image:
@@ -128,21 +119,18 @@ topology_template:
           node: kubernetes
           relationship: tosca.relationships.HostedOn
       type: tosca.nodes.ARTICONF.Container.Application.Docker
-  
   policies:
   - scalability:
       properties:
-        fault_tolerance_level: 0
+        constraint_name: cpu_load
+        max_value: 90
+      targets:
+      - wordpress
+      type: tosca.policies.ARTICONF.Performance.CPU
+  - faultTolerance:
+      properties:
+        level: 1
       targets:
       - mysql
       type: tosca.policies.ARTICONF.FaultTolerance
-      
-      
-  outputs:
-    private_ip:
-        description: The private IP address of the application’s first tier.
-        value: { get_attribute: [compute, private_ip] }
-    private_ip_1:
-        description: The private IP address of the application’s first tier.
-        value: { get_attribute: [compute_1, private_ip] }        
-
+tosca_definitions_version: tosca_simple_yaml_1_0
