@@ -117,8 +117,7 @@ class TestDefaultController(BaseTestCase):
                         ('has_attributes', true),
                         ('has_requirements', true),
                         ('has_capabilities', true),
-                        ('has_artifacts', true),
-                        ('derived_from', 'derived_from_example')]
+                        ('has_artifacts', true)]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates'.format(id='id_example'),
             method='GET',

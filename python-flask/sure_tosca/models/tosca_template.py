@@ -51,7 +51,7 @@ class ToscaTemplate(Model):
         :param interface_types: The interface_types of this ToscaTemplate.  # noqa: E501
         :type interface_types: Dict[str, object]
         :param policy_types: The policy_types of this ToscaTemplate.  # noqa: E501
-        :type policy_types: Dict[str, str]
+        :type policy_types: Dict[str, object]
         :param group_types: The group_types of this ToscaTemplate.  # noqa: E501
         :type group_types: Dict[str, object]
         :param repositories: The repositories of this ToscaTemplate.  # noqa: E501
@@ -74,7 +74,7 @@ class ToscaTemplate(Model):
             'artifact_types': Dict[str, object],
             'data_types': Dict[str, object],
             'interface_types': Dict[str, object],
-            'policy_types': Dict[str, str],
+            'policy_types': Dict[str, object],
             'group_types': Dict[str, object],
             'repositories': Dict[str, object]
         }
@@ -474,7 +474,7 @@ class ToscaTemplate(Model):
 
 
         :return: The policy_types of this ToscaTemplate.
-        :rtype: Dict[str, str]
+        :rtype: Dict[str, object]
         """
         return self._policy_types
 
@@ -484,7 +484,7 @@ class ToscaTemplate(Model):
 
 
         :param policy_types: The policy_types of this ToscaTemplate.
-        :type policy_types: Dict[str, str]
+        :type policy_types: Dict[str, object]
         """
 
         self._policy_types = policy_types

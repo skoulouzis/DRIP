@@ -21,13 +21,13 @@ class TopologyTemplate(Model):
         :param description: The description of this TopologyTemplate.  # noqa: E501
         :type description: str
         :param inputs: The inputs of this TopologyTemplate.  # noqa: E501
-        :type inputs: List[Dict[str, object]]
+        :type inputs: Dict[str, str]
         :param node_templates: The node_templates of this TopologyTemplate.  # noqa: E501
         :type node_templates: Dict[str, NodeTemplate]
         :param relationship_templates: The relationship_templates of this TopologyTemplate.  # noqa: E501
         :type relationship_templates: Dict[str, object]
         :param outputs: The outputs of this TopologyTemplate.  # noqa: E501
-        :type outputs: List[Dict[str, object]]
+        :type outputs: Dict[str, object]
         :param groups: The groups of this TopologyTemplate.  # noqa: E501
         :type groups: Dict[str, object]
         :param substitution_mappings: The substitution_mappings of this TopologyTemplate.  # noqa: E501
@@ -37,10 +37,10 @@ class TopologyTemplate(Model):
         """
         self.swagger_types = {
             'description': str,
-            'inputs': List[Dict[str, object]],
+            'inputs': Dict[str, str],
             'node_templates': Dict[str, NodeTemplate],
             'relationship_templates': Dict[str, object],
-            'outputs': List[Dict[str, object]],
+            'outputs': Dict[str, object],
             'groups': Dict[str, object],
             'substitution_mappings': Dict[str, object],
             'policies': List[Dict[str, object]]
@@ -104,7 +104,7 @@ class TopologyTemplate(Model):
 
 
         :return: The inputs of this TopologyTemplate.
-        :rtype: List[Dict[str, object]]
+        :rtype: Dict[str, str]
         """
         return self._inputs
 
@@ -114,7 +114,7 @@ class TopologyTemplate(Model):
 
 
         :param inputs: The inputs of this TopologyTemplate.
-        :type inputs: List[Dict[str, object]]
+        :type inputs: Dict[str, str]
         """
 
         self._inputs = inputs
@@ -167,7 +167,7 @@ class TopologyTemplate(Model):
 
 
         :return: The outputs of this TopologyTemplate.
-        :rtype: List[Dict[str, object]]
+        :rtype: Dict[str, object]
         """
         return self._outputs
 
@@ -177,7 +177,7 @@ class TopologyTemplate(Model):
 
 
         :param outputs: The outputs of this TopologyTemplate.
-        :type outputs: List[Dict[str, object]]
+        :type outputs: Dict[str, object]
         """
 
         self._outputs = outputs

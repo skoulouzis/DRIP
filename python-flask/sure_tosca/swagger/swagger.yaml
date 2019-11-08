@@ -321,11 +321,6 @@ paths:
         description: "filter if has artifacts"
         required: false
         type: "boolean"
-      - name: "derived_from"
-        in: "query"
-        description: "derived from"
-        required: false
-        type: "string"
       responses:
         200:
           description: "successful operation"
@@ -719,7 +714,8 @@ definitions:
       policy_types:
         type: "object"
         additionalProperties:
-          type: "string"
+          type: "object"
+          properties: {}
       group_types:
         type: "object"
         additionalProperties:
@@ -734,16 +730,14 @@ definitions:
       node_types:
         key: "{}"
       policy_types:
-        key: "policy_types"
+        key: "{}"
       topology_template:
         outputs:
-        - key: "{}"
-        - key: "{}"
+          key: "{}"
         substitution_mappings:
           key: "{}"
         inputs:
-        - key: "{}"
-        - key: "{}"
+          key: "inputs"
         node_templates:
           key:
             requirements:
@@ -806,12 +800,9 @@ definitions:
       description:
         type: "string"
       inputs:
-        type: "array"
-        items:
-          type: "object"
-          additionalProperties:
-            type: "object"
-            properties: {}
+        type: "object"
+        additionalProperties:
+          type: "string"
       node_templates:
         type: "object"
         additionalProperties:
@@ -822,12 +813,10 @@ definitions:
           type: "object"
           properties: {}
       outputs:
-        type: "array"
-        items:
+        type: "object"
+        additionalProperties:
           type: "object"
-          additionalProperties:
-            type: "object"
-            properties: {}
+          properties: {}
       groups:
         type: "object"
         additionalProperties:
@@ -847,13 +836,11 @@ definitions:
             properties: {}
     example:
       outputs:
-      - key: "{}"
-      - key: "{}"
+        key: "{}"
       substitution_mappings:
         key: "{}"
       inputs:
-      - key: "{}"
-      - key: "{}"
+        key: "inputs"
       node_templates:
         key:
           requirements:
