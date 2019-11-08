@@ -117,7 +117,7 @@ def get_interface_types(id, interface_type=None):
 
 def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, has_properties=None,
                        has_attributes=None,
-                       has_requirements=None, has_capabilities=None, has_artifacts=None, derived_from=None):
+                       has_requirements=None, has_capabilities=None, has_artifacts=None):
     if len(node_template_db) <= 1:
         tosca_template_model = get_tosca_template_model_by_id(id)
         object_list = tosca_template_model.topology_template.node_templates
@@ -147,9 +147,6 @@ def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, 
     if type_name:
         query = Query()
         queries.append(query.type == type_name)
-    if derived_from:
-        query = Query()
-        queries.append(query.derived_from == derived_from)
     if has_properties:
         query = Query()
         prop = None

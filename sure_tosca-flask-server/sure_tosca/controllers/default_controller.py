@@ -153,8 +153,7 @@ def get_node_requirements(id, node_name):  # noqa: E501
 
 
 def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, has_properties=None,
-                       has_attributes=None, has_requirements=None, has_capabilities=None, has_artifacts=None,
-                       derived_from=None):  # noqa: E501
+                       has_attributes=None, has_requirements=None, has_capabilities=None, has_artifacts=None):  # noqa: E501
     """get_node_templates
 
     returns nodes templates in topology # noqa: E501
@@ -185,8 +184,7 @@ def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, 
     res = tosca_template_service.get_node_templates(id, type_name=type_name, node_name=node_name,
                                                     has_interfaces=has_interfaces, has_properties=has_properties,
                                                     has_attributes=has_attributes, has_requirements=has_requirements,
-                                                    has_capabilities=has_capabilities, has_artifacts=has_artifacts,
-                                                    derived_from=derived_from)
+                                                    has_capabilities=has_capabilities, has_artifacts=has_artifacts)
     if res:
         return res
     return 'Not Found', 404
