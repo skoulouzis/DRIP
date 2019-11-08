@@ -42,8 +42,12 @@ def query_db(queries, db=None):
         updated_results = []
         for res in results:
             if root_key in res:
-                key = res[root_key]
-                node = {key: res}
+                res_copy = copy.deepcopy(res)
+                key = res_copy[root_key]
+                res_copy.pop(root_key)
+                node = {key: res_copy}
+            else:
+                logging.error(str(res)+ ' has no '+root_key)
             updated_results.append(node)
         return updated_results
     return None
@@ -65,6 +69,7 @@ def get_tosca_template(tosca_template_dict):
 
 def get_tosca_template_dict_by_id(id):
     tosca_template_dict = tosca_templates_db.get(doc_id=int(id))
+
     return tosca_template_dict
 
 
