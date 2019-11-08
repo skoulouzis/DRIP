@@ -115,7 +115,7 @@ class SimpleAnalyzer(SpecificationAnalyzer):
     def set_node_properties_for_policy(self, affected_node, policies):
         logging.info('Setting properties for: ' + str(affected_node.type))
 
-        ancestors_types = tosca_helper.get_all_ancestors_types(affected_node, self.all_node_types, self.all_custom_def)
+        # ancestors_types = tosca_helper.get_all_ancestors_types(affected_node, self.all_node_types, self.all_custom_def)
         # if 'tosca.nodes.ARTICONF.Orchestrator' in ancestors_types:
         #     logging.info('Do Something')
         ancestors_properties = tosca_helper.get_all_ancestors_properties(affected_node, self.all_node_types,
@@ -165,29 +165,6 @@ class SimpleAnalyzer(SpecificationAnalyzer):
             if node_property.constraints:
                 for constraint in node_property.constraints:
                     print(constraint)
-        # if isinstance(node_property.value,
-        #               dict) and 'required' in node_property.value and 'type' in node_property.value:
-        #     if node_property.value['required']:
-        #         default_prop = {}
-        #         if 'default' in node_property.value:
-        #             if node_property.value['type'] == 'integer':
-        #                 default_prop = int(node_property.value['default'])
-        #             else:
-        #                 default_prop = str(node_property.value['default'])
-        #         elif 'constraints' in node_property.value:
-        #             constraints = node_property.value['constraints']
-        #             for constraint in constraints:
-        #                 for constraint_key in constraint:
-        #                     if 'equal' in constraint_key:
-        #                         if node_property.value['type'] == 'integer':
-        #                             default_prop = int(constraint[constraint_key])
-        #                         else:
-        #                             default_prop = str(constraint[constraint_key])
-        #         name = node_property.name
-        #         node_property = {name: default_prop}
-        #         return node_property
-        # if node_property.value:
-        #     name = node_property.name
-        #     node_property = {name: node_property.value}
-        #     return node_property
+        if node_property and node_property.required and node_property.value:
+            return {node_property.name: node_property.value}
         return None
