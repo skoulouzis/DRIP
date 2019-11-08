@@ -2,7 +2,6 @@
 
 mvn test
 
-python3.6 --version
 
 cd drip-planner && venv/bin/python3 -m unittest test/test_planner.py
 
