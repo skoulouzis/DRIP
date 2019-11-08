@@ -332,10 +332,16 @@ class TestDefaultController(BaseTestCase):
     #                    'Response body is : ' + response.data.decode('utf-8'))
 
     def upload_file(self):
+
         tosca_path = "../../../TOSCA/"
         input_tosca_file_path = tosca_path + '/application_example_2_topologies.yaml'
-        self.assertEqual(True, os.path.exists(input_tosca_file_path),
-                         "Input TOSCA file: " + input_tosca_file_path + " not found")
+        if not os.path.exists(input_tosca_file_path):
+            tosca_path = "../TOSCA/"
+            input_tosca_file_path = tosca_path + '/application_example_2_topologies.yaml'
+
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        self.assertEqual(True, os.path.exists(input_tosca_file_path), 'Starting from: '+dir_path+ ' Input TOSCA file: ' + input_tosca_file_path + ' not found')
+
         with open(input_tosca_file_path, 'r') as file:
             contents = file.read()
         byte_contents = bytes(contents, 'utf8')
