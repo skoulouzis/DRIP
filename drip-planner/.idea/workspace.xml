@@ -2,10 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_2_topologies.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_2_topologies.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/commons/utils/ToscaHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/commons/utils/ToscaHelper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/simple_spec_alayzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/service/simple_spec_alayzer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/test_planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_planner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip_planner2/venv/lib/python3.6/site-packages/easy-install.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip_planner2/venv/lib/python3.6/site-packages/prettytable.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip_planner2/venv/lib/python3.6/site-packages/pyparsing.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip_planner2/venv/lib/python3.6/site-packages/setuptools-40.8.0-py3.6.egg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip_planner2/venv/lib/python3.6/site-packages/setuptools.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip_planner2/venv/lib/python3.6/site-packages/six.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../jenkins_pipeline" beforeDir="false" afterPath="$PROJECT_DIR$/../jenkins_pipeline" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../test.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../test.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -50,7 +58,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.__main__">
+  <component name="RunManager" selected="Python tests.Unittests for test_planner.MyTestCase.test_something">
     <configuration name="__main__" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="drip-planner" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -72,6 +80,20 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Unittests for test_planner.MyTestCase.test_something" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <module name="drip-planner" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_planner.MyTestCase.test_something&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <configuration name="Unittests in test_planner.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="drip-planner" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -89,11 +111,13 @@
     <list>
       <item itemvalue="Python.__main__" />
       <item itemvalue="Python tests.Unittests in test_planner.py" />
+      <item itemvalue="Python tests.Unittests for test_planner.MyTestCase.test_something" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.__main__" />
+        <item itemvalue="Python tests.Unittests for test_planner.MyTestCase.test_something" />
         <item itemvalue="Python tests.Unittests in test_planner.py" />
+        <item itemvalue="Python.__main__" />
       </list>
     </recent_temporary>
   </component>
@@ -178,7 +202,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573214191545</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="fixed test">
+      <created>1573214561640</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1573214561640</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -204,7 +235,8 @@
     <MESSAGE value="added tosca-parser" />
     <MESSAGE value="added matplotlib" />
     <MESSAGE value="fixed default property setting" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed default property setting" />
+    <MESSAGE value="fixed test" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed test" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -220,9 +252,9 @@
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/service/simple_spec_alayzer.py</url>
-          <line>25</line>
-          <option name="timeStamp" value="20" />
+          <url>file://$PROJECT_DIR$/test/test_planner.py</url>
+          <line>22</line>
+          <option name="timeStamp" value="21" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

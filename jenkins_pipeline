@@ -22,8 +22,8 @@ pipeline {
       stage('Test') {
           steps {
               echo 'Testing'
-              sh "mvn test"   
-              sh "cd drip-planner && venv/bin/python3 -m unittest test/test_planner.py"   
+              sh "cd drip-planner && venv/bin/python3 -m unittest discover"   
+              sh "cd sure_tosca-flask-server && venv/bin/python3 -m unittest discover"   
           }
         }
         stage('Deploy') {

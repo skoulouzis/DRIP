@@ -25,14 +25,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import nl.uva.sne.drip.commons.sure_tosca.client.ApiClient;
 import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
 import nl.uva.sne.drip.commons.sure_tosca.client.Configuration;
 import nl.uva.sne.drip.commons.sure_tosca.client.DefaultApi;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 /**
  *

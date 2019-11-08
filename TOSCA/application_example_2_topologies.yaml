@@ -1,4 +1,3 @@
-description: TOSCA example
 imports:
 - nodes: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/nodes.yaml
 - capabilities: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/capabilities.yaml
@@ -26,10 +25,23 @@ topology_template:
         num_cores: 2
         os: ubuntu 16
       type: tosca.nodes.ARTICONF.VM.Compute
+    compute_2:
+      interfaces:
+        Standard:
+          create: dumy.yaml
+      properties:
+        disk_size: 50000 MB
+        mem_size: 6000 MB
+        num_cores: 2
+        os: ubuntu 16
+      type: tosca.nodes.ARTICONF.VM.Compute      
     kubernetes:
       interfaces:
         Standard:
           create: interfaces/playbooks/kubernetes_install.yaml
+      properties:
+        min_masters_num: 1
+        min_workers_num: 1
       requirements:
       - host:
           capability: tosca.capabilities.ARTICONF.VM.topology
@@ -78,6 +90,19 @@ topology_template:
           node: kubernetes
           relationship: tosca.relationships.HostedOn
       type: tosca.nodes.ARTICONF.Container.Application.Docker
+    topology_1:
+      interfaces:
+        Standard:
+          create: dumy.yaml
+      properties:
+        domain: UNC BEN (Chapel Hill, NC USA)
+        provider: ExoGeni
+      requirements:
+      - vm:
+          capability: tosca.capabilities.ARTICONF.VM
+          node: compute_2
+          relationship: tosca.relationships.DependsOn
+      type: tosca.nodes.ARTICONF.VM.topology          
     topology:
       interfaces:
         Standard:
@@ -133,4 +158,17 @@ topology_template:
       targets:
       - mysql
       type: tosca.policies.ARTICONF.FaultTolerance
+      
+      
+  outputs:
+    private_ip_compute:
+      description: The private IP address of the application’s first tier.
+      value: { get_attribute: [compute, private_ip] }
+    private_ip_compute_1:
+      description: The private IP address of the application’s second tier.
+      value: { get_attribute: [compute_1, private_ip] }       
+    private_ip_compute_2:
+      description: The private IP address of the application’s second tier.
+      value: { get_attribute: [compute_2, private_ip] }      
+      
 tosca_definitions_version: tosca_simple_yaml_1_0
