@@ -2,18 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_2_topologies.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_2_topologies.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/commons/utils/ToscaHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/commons/utils/ToscaHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/drip-planner.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/drip-planner.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/test_planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_planner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip_planner2/venv/lib/python3.6/site-packages/easy-install.pth" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip_planner2/venv/lib/python3.6/site-packages/prettytable.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip_planner2/venv/lib/python3.6/site-packages/pyparsing.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip_planner2/venv/lib/python3.6/site-packages/setuptools-40.8.0-py3.6.egg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip_planner2/venv/lib/python3.6/site-packages/setuptools.pth" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip_planner2/venv/lib/python3.6/site-packages/six.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../jenkins_pipeline" beforeDir="false" afterPath="$PROJECT_DIR$/../jenkins_pipeline" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../test.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../test.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

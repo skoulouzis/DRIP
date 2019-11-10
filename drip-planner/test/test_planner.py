@@ -17,7 +17,7 @@ from util import tosca_helper
 
 class MyTestCase(unittest.TestCase):
 
-    def test_something(self):
+    def test_planner(self):
         logger = logging.getLogger(__name__)
 
         tosca_path = "../../TOSCA/"
