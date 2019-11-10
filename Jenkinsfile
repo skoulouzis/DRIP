@@ -12,4 +12,19 @@ node {
                 sh "cd sure_tosca-flask-server && python3 -m venv venv && venv/bin/pip3 install -r requirements.txt && venv/bin/pip3 install -r test-requirements.txt"
         }    
     }
+    stage('Test') {
+        steps {
+            echo 'Testing'
+            sh "mvn test"
+            sh "cd drip-planner && venv/bin/python3 -m unittest discover"   
+            sh "cd sure_tosca-flask-server && venv/bin/python3 -m unittest discover"   
+        }
+    }
+    stage('Package') {
+        steps {
+            echo 'Deploying'
+            sh "cd drip-manager && mvn -Dmaven.test.skip=true install dockerfile:build"
+            
+        }
+    }
 }
