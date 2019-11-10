@@ -11,6 +11,4 @@ COPY . /usr/src/app
 
 EXPOSE 8081
 
-ENTRYPOINT ["python"]
-
-CMD ["-m", "sure_tosca"]
+ENTRYPOINT ["python __main__.py $RABBITMQ_HOST planner_queue"]
