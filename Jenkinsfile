@@ -30,6 +30,10 @@ pipeline {
             steps {
                 echo 'Deploying'
                 sh "cd drip-manager && mvn -Dmaven.test.skip=true install dockerfile:build"
+                sh "cd ../"
+                sh "cd sure_tosca-flask-server && docker build -t sure-tosca:3.0.0 ."
+                sh "cd ../"
+                sh "cd drip-planner && docker build -t drip-planner:3.0.0 ."
                 
             }
         }             
