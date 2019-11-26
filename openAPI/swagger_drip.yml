@@ -8,7 +8,7 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-basePath: "/drip-api/3.0"
+basePath: "/conf-api/3.0"
 schemes:
 - "https"
 - "http"
@@ -34,7 +34,7 @@ paths:
         405:
           description: "Invalid input"
       security:
-      - drip_auth:
+      - auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"
   /tosca_template/ids:
@@ -58,7 +58,7 @@ paths:
         405:
           description: "Invalid input"          
       security:
-      - drip_auth:
+      - auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"        
   /tosca_template/{id}:
@@ -86,7 +86,7 @@ paths:
         405:
           description: "Invalid input"          
       security:
-      - drip_auth:
+      - auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"
     put:
@@ -119,7 +119,7 @@ paths:
         405:
           description: "Invalid input"          
       security:
-      - drip_auth:
+      - auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"
     delete:
@@ -142,7 +142,7 @@ paths:
         404:
           description: "ToscaTemplate not found"
       security:
-      - drip_auth:
+      - auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"
   /planner/plan/{id}:
@@ -170,7 +170,7 @@ paths:
         405:
           description: "Invalid input"          
       security:
-      - drip_auth:
+      - auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"    
   /provisioner/provision/{id}:
@@ -198,7 +198,7 @@ paths:
         405:
           description: "Invalid input"          
       security:
-      - drip_auth:
+      - auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"     
   /provisioner/{id}:
@@ -226,7 +226,7 @@ paths:
         405:
           description: "Invalid input"          
       security:
-      - drip_auth:
+      - auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"           
   /deployer/deploy/{id}:
@@ -254,7 +254,7 @@ paths:
         405:
           description: "Invalid input"          
       security:
-      - drip_auth:
+      - auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"    
   /credential:
@@ -285,7 +285,7 @@ paths:
         405:
           description: "Invalid input"     
       security:
-      - drip_auth:
+      - auth:
         - "write:Credentials"
         - "read:Credentials"   
   /credential/ids:
@@ -309,7 +309,7 @@ paths:
         405:
           description: "Invalid input"          
       security:
-      - drip_auth:
+      - auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"            
   /user:
@@ -334,7 +334,7 @@ paths:
         409:
           description: "already exists"
       security:
-      - drip_auth:
+      - auth:
         - "admin:User"
   /user/login:
     get:
@@ -403,7 +403,7 @@ paths:
         404:
           description: "User not found"
       security:
-      - drip_auth:
+      - auth:
         - "admin:User"          
     put:
       tags:
@@ -430,7 +430,7 @@ paths:
         404:
           description: "User not found"
       security:
-      - drip_auth:
+      - auth:
         - "admin:User"    
     delete:
       summary: "Delete user"
@@ -449,10 +449,10 @@ paths:
         404:
           description: "User not found"
       security:
-      - drip_auth:
+      - auth:
         - "admin:User"      
 securityDefinitions:
-  drip_auth:
+  auth:
     type: "oauth2"
     authorizationUrl: "http://localhost/oauth/dialog"
     flow: "implicit"
