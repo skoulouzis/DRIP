@@ -8,21 +8,14 @@ package nl.uva.sne.drip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.dao.ProvisionerDAO;
-import nl.uva.sne.drip.model.Message;
-import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.Provisioner;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -61,10 +54,7 @@ public class ProvisionerService {
 
         return toscaTemplateService.save(toscaTemplate);
     }
-
-//    private List<Map<String, NodeTemplate>> getVmTopologies(ToscaTemplate toscaTemplate) {
-//        return ToscaHelper.getNodesByType(toscaTemplate, "tosca.nodes.ARTICONF.VM.topology");
-//    }
+    
     protected ToscaTemplate addProvisionInterface(ToscaTemplate toscaTemplate) throws ApiException {
         Provisioner provisioner = selectBestProvisioner();
         List<Map<String, Object>> definitions = toscaHelper.getProvisionInterfaceDefinitions(provisioner.getToscaInterfaceTypes());
