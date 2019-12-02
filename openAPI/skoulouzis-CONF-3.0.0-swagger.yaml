@@ -1,8 +1,8 @@
 swagger: "2.0"
 info:
-  description: "The Dynamic Real-time infrastructure planner (DRIP) allows application developers to seamlessly plan a customized virtual infrastructure based on application level constraints on QoS and resource budgets, provisioning the virtual infrastructure, deploy application components onto the virtual infrastructure, and start execution on demand using TOSCA."
+  description: "CONF allows application developers to seamlessly plan a customized virtual infrastructure based on application level constraints on QoS and resource budgets, provisioning the virtual infrastructure, deploy application components onto the virtual infrastructure, and start execution on demand using TOSCA."
   version: "3.0.0"
-  title: "DRIP"
+  title: "CONF"
   contact:
     email: "z.zhao@uva.nl"
   license:
@@ -40,7 +40,7 @@ paths:
   /tosca_template/ids:
     get:
       summary: "Get all topolog template IDs"
-      description: "Returns all IDss "
+      description: "Returns all IDs"
       operationId: "getToscaTemplateIDs"
       produces:
         - "application/json"
@@ -172,7 +172,8 @@ paths:
       security:
       - auth:
         - "write:ToscaTemplate"
-        - "read:ToscaTemplate"    
+        - "read:ToscaTemplate" 
+        
   /provisioner/provision/{id}:
     get:
       summary: "provision tosca template"
@@ -218,7 +219,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/Provisioner.yml#/Provisioner"
+            $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/Provisioner.yml#/Provisioner"
         400:
           description: "Invalid ID supplied"
         404:
@@ -272,7 +273,7 @@ paths:
         description: "Created user object"
         required: true
         schema:
-          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/Credentials.yml#/Credentials"
+          $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/TOSCA/Credentials.yml#/Credentials"
       responses:
         200:
           description: "successful operation"
@@ -325,7 +326,7 @@ paths:
         description: "Created user object"
         required: true
         schema:
-          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/User.yml#/User"
+          $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/User.yml#/User"
       responses:
         200:
           description: "successful operation"
@@ -423,7 +424,7 @@ paths:
         description: "Updated user object"
         required: true
         schema:
-          $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/User.yml#/User"
+          $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/User.yml#/User"
       responses:
         400:
           description: "Invalid user supplied"
@@ -462,17 +463,14 @@ securityDefinitions:
       admin:User: "Grants access to admin operations"
       write:Credentials: "modify cloud credentials in your account"
       read:Credentials: "read your cloud credentials"
-externalDocs:
-  description: "Find out more about DRIP"
-  url: "https://github.com/QCAPI-DRIP/DRIP-integration/wiki"
 definitions:
   User:
-    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/User.yml#/User"
+    $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/User.yml#/User"
   Credentials:
-    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/Credentials.yml#/Credentials"
+    $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/TOSCA/Credentials.yml#/Credentials"
   NodeTemplate:
-    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
+    $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/TOSCA/NodeTemplate.yml#/NodeTemplate"
   TopologyTemplate:
-    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml#/TopologyTemplate"
+    $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/TOSCA/TopologyTemplate.yml#/TopologyTemplate"
   ToscaTemplate:
-    $ref: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/TOSCA/ToscaTemplate.yml#/ToscaTemplate"
+    $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/TOSCA/ToscaTemplate.yml#/ToscaTemplate"

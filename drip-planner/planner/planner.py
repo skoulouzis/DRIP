@@ -12,9 +12,14 @@ from util import tosca_helper
 
 class Planner:
 
-    def __init__(self, path, spec_service):
-        self.path = path
-        self.tosca_template = ToscaTemplate(path)
+    def __init__(self, tosca_path=None, yaml_dict_tpl=None, spec_service=spec_service):
+        if tosca_path:
+            self.path = tosca_path
+            self.tosca_template = ToscaTemplate(tosca_path)
+        elif yaml_dict_tpl:
+            self.yaml_dict_tpl = yaml_dict_tpl
+            self.tosca_template = ToscaTemplate(yaml_dict_tpl=yaml_dict_tpl)
+
         self.tosca_node_types = self.tosca_template.nodetemplates[0].type_definition.TOSCA_DEF
         self.all_custom_def = self.tosca_template.nodetemplates[0].custom_def
         self.all_node_types = {}
