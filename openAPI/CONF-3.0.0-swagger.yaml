@@ -173,7 +173,6 @@ paths:
       - auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate" 
-        
   /provisioner/provision/{id}:
     get:
       summary: "provision tosca template"
@@ -202,34 +201,6 @@ paths:
       - auth:
         - "write:ToscaTemplate"
         - "read:ToscaTemplate"     
-  /provisioner/{id}:
-    get:
-      summary: "get provisiner "
-      description: "provosions the operationId: Plan Tosca Template Returns the provision ID"
-      operationId: "getProvisiner"
-      produces:
-      - "text/plain"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "ID of topolog template to plan"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/Provisioner.yml#/Provisioner"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "ToscaTemplate not found"
-        405:
-          description: "Invalid input"          
-      security:
-      - auth:
-        - "write:ToscaTemplate"
-        - "read:ToscaTemplate"           
   /deployer/deploy/{id}:
     get:
       summary: "deploy the software tosca template"
@@ -273,7 +244,7 @@ paths:
         description: "Created user object"
         required: true
         schema:
-          $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/TOSCA/Credentials.yml#/Credentials"
+          $ref: "#/definitions/Credentials"
       responses:
         200:
           description: "successful operation"
@@ -326,7 +297,7 @@ paths:
         description: "Created user object"
         required: true
         schema:
-          $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/User.yml#/User"
+          $ref: "#/definitions/User"
       responses:
         200:
           description: "successful operation"
@@ -424,7 +395,7 @@ paths:
         description: "Updated user object"
         required: true
         schema:
-          $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/User.yml#/User"
+          $ref: "#/definitions/User"
       responses:
         400:
           description: "Invalid user supplied"
@@ -432,7 +403,7 @@ paths:
           description: "User not found"
       security:
       - auth:
-        - "admin:User"    
+        - "admin:User"
     delete:
       summary: "Delete user"
       description: "This can only be done by the logged in user."

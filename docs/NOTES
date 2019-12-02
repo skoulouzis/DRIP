@@ -6,3 +6,11 @@ docker run --hostname my-proxy --name some-myproxy -p 7512:7512 -p 7513:7513 -p 
 
 #--------Add admin-----------------
 docker exec -t mongo-inst mongo -eval 'db.user.insert({"password":"$2a$10$QdysFgsH0sl6Y4BD84UhGO7yyNfoDPXjjEHkDJ3pX6cRfHDj2Q0BO","roles":["ADMIN"],"username":"admin","accountNonExpired":true,"accountNonLocked":true,"credentialsNonExpired":true,"enabled":true})' localhost/drip
+
+
+
+
+#--------------------------Git-------------------------------------------
+git add .
+git commit -m "$MESSAGE"
+git push origin
