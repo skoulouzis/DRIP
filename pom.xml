@@ -20,6 +20,5 @@
         <module>drip-commons</module>
         <module>drip-provisioner</module>
         <module>drip-manager</module>
-        <module>drip-manager-services</module>
     </modules>
 </project>
