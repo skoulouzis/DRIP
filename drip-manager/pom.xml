@@ -115,11 +115,30 @@
         </dependency>
         
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        
+        <dependency>
+            <groupId>com.github.fridujo</groupId>
+            <artifactId>rabbitmq-mock</artifactId>
+            <version>1.0.12</version>
+            <scope>test</scope>
+        </dependency>
+        
+        
+        <!--        <dependency>
             <groupId>nl.uva.sne.drip</groupId>
             <artifactId>drip-manager-services</artifactId>
             <version>3.0.0</version>
             <type>jar</type>
-        </dependency>        
+        </dependency>        -->
         
     </dependencies>
 </project>
