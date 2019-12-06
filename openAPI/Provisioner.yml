@@ -9,9 +9,3 @@ Provisioner:
         type: "string"
     tosca_interface_types:
         type: "string"
-    password:
-        type: "string"
-    userStatus:
-        type: "array"
-        items:
-            type: "string"
