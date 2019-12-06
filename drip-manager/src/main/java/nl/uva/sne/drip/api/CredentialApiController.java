@@ -11,10 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 import nl.uva.sne.drip.service.CredentialService;
-import nl.uva.sne.drip.service.ToscaTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
@@ -39,8 +37,8 @@ public class CredentialApiController implements CredentialApi {
 
     @Override
     public ResponseEntity<String> createCredentials(@ApiParam(
-            value = "Created user object", required = true) 
-    @Valid @RequestBody Credentials body) {
+            value = "Created user object", required = true)
+            @Valid @RequestBody Credentials body) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             String id = credentialService.save(body);

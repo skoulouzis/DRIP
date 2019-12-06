@@ -2,9 +2,6 @@ package nl.uva.sne.drip.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 
 /**
  * NodeTemplate
  */
 @Validated
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-06T13:31:49.386Z")
+
 public class NodeTemplate   {
   @JsonProperty("derived_from")
   private String derivedFrom = null;
@@ -323,17 +320,17 @@ public class NodeTemplate   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    NodeTemplate nodeTemplate = (NodeTemplate) o;
-    return Objects.equals(this.derivedFrom, nodeTemplate.derivedFrom) &&
-        Objects.equals(this.properties, nodeTemplate.properties) &&
-        Objects.equals(this.requirements, nodeTemplate.requirements) &&
-        Objects.equals(this.interfaces, nodeTemplate.interfaces) &&
-        Objects.equals(this.capabilities, nodeTemplate.capabilities) &&
-        Objects.equals(this.type, nodeTemplate.type) &&
-        Objects.equals(this.description, nodeTemplate.description) &&
-        Objects.equals(this.directives, nodeTemplate.directives) &&
-        Objects.equals(this.attributes, nodeTemplate.attributes) &&
-        Objects.equals(this.artifacts, nodeTemplate.artifacts);
+    NodeTemplate nodeTemplate2 = (NodeTemplate) o;
+    return Objects.equals(this.derivedFrom, nodeTemplate2.derivedFrom) &&
+        Objects.equals(this.properties, nodeTemplate2.properties) &&
+        Objects.equals(this.requirements, nodeTemplate2.requirements) &&
+        Objects.equals(this.interfaces, nodeTemplate2.interfaces) &&
+        Objects.equals(this.capabilities, nodeTemplate2.capabilities) &&
+        Objects.equals(this.type, nodeTemplate2.type) &&
+        Objects.equals(this.description, nodeTemplate2.description) &&
+        Objects.equals(this.directives, nodeTemplate2.directives) &&
+        Objects.equals(this.attributes, nodeTemplate2.attributes) &&
+        Objects.equals(this.artifacts, nodeTemplate2.artifacts);
   }
 
   @Override
@@ -344,7 +341,7 @@ public class NodeTemplate   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class NodeTemplate {\n");
+    sb.append("class NodeTemplate2 {\n");
     
     sb.append("    derivedFrom: ").append(toIndentedString(derivedFrom)).append("\n");
     sb.append("    properties: ").append(toIndentedString(properties)).append("\n");

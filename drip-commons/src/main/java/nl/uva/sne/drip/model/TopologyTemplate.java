@@ -2,9 +2,6 @@ package nl.uva.sne.drip.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,15 +9,14 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 
 /**
  * TopologyTemplate
  */
 @Validated
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-06T13:31:49.386Z")
+
 public class TopologyTemplate   {
-    
   @JsonProperty("description")
   private String description = null;
 
@@ -279,15 +275,15 @@ public class TopologyTemplate   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TopologyTemplate topologyTemplate = (TopologyTemplate) o;
-    return Objects.equals(this.description, topologyTemplate.description) &&
-        Objects.equals(this.inputs, topologyTemplate.inputs) &&
-        Objects.equals(this.nodeTemplates, topologyTemplate.nodeTemplates) &&
-        Objects.equals(this.relationshipTemplates, topologyTemplate.relationshipTemplates) &&
-        Objects.equals(this.outputs, topologyTemplate.outputs) &&
-        Objects.equals(this.groups, topologyTemplate.groups) &&
-        Objects.equals(this.substitutionMappings, topologyTemplate.substitutionMappings) &&
-        Objects.equals(this.policies, topologyTemplate.policies);
+    TopologyTemplate topologyTemplate2 = (TopologyTemplate) o;
+    return Objects.equals(this.description, topologyTemplate2.description) &&
+        Objects.equals(this.inputs, topologyTemplate2.inputs) &&
+        Objects.equals(this.nodeTemplates, topologyTemplate2.nodeTemplates) &&
+        Objects.equals(this.relationshipTemplates, topologyTemplate2.relationshipTemplates) &&
+        Objects.equals(this.outputs, topologyTemplate2.outputs) &&
+        Objects.equals(this.groups, topologyTemplate2.groups) &&
+        Objects.equals(this.substitutionMappings, topologyTemplate2.substitutionMappings) &&
+        Objects.equals(this.policies, topologyTemplate2.policies);
   }
 
   @Override
@@ -298,7 +294,7 @@ public class TopologyTemplate   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class TopologyTemplate {\n");
+    sb.append("class TopologyTemplate2 {\n");
     
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    inputs: ").append(toIndentedString(inputs)).append("\n");

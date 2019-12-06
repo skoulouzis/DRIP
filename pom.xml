@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.0.RELEASE</version>
+        <version>2.2.1.RELEASE</version>
     </parent>    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,5 +20,6 @@
         <module>drip-commons</module>
         <module>drip-provisioner</module>
         <module>drip-manager</module>
+        <module>drip-manager-services</module>
     </modules>
 </project>

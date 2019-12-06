@@ -40,3 +40,9 @@
 /drip-planner/planner/__pycache__/
 /drip-planner/util/__pycache__/
 /drip-planner/test/__pycache__/
+/drip-manager-old/nbproject/
+/drip-manager-old/target/
+/spring-server-generated/target/
+/manager-services/target/
+/drip-manager-services/nbproject/
+/drip-manager-services/target/

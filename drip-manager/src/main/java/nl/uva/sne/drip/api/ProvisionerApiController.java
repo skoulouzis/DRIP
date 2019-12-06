@@ -1,6 +1,5 @@
 package nl.uva.sne.drip.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -10,14 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.Level;
-import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
-import nl.uva.sne.drip.service.DRIPService;
-import nl.uva.sne.drip.service.ProvisionerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
@@ -30,9 +21,8 @@ public class ProvisionerApiController implements ProvisionerApi {
 
     private final HttpServletRequest request;
 
-    @Autowired
-    private ProvisionerService provisionerService;
-
+//    @Autowired
+//    private ProvisionerService provisionerService;
     @org.springframework.beans.factory.annotation.Autowired
     public ProvisionerApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
@@ -45,12 +35,8 @@ public class ProvisionerApiController implements ProvisionerApi {
             @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("text/plain")) {
-            try {
-                String planedYemplateId = provisionerService.provision(id);
-                return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
-            } catch (IOException | ApiException ex) {
-                java.util.logging.Logger.getLogger(ProvisionerApiController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//                String planedYemplateId = provisionerService.provision(id);
+//                return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

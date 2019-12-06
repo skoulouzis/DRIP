@@ -24,14 +24,11 @@ import java.util.Map;
  */
 public class MessageParameter implements Serializable {
 
-
-
     private String url;
     private String encoding;
     private String value;
     private String name;
     private Map<String, String> attributes;
-
 
     public static final String NAME = "name";
     public static final String URL = "url";

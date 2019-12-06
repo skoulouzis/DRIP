@@ -2,24 +2,19 @@ package nl.uva.sne.drip.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 import org.springframework.data.annotation.Id;
 
 /**
  * Credentials
  */
 @Validated
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-06T13:31:49.386Z")
+
 public class Credentials {
 
     /**
@@ -37,7 +32,6 @@ public class Credentials {
     }
 
     @Id
-    @JsonIgnore
     private String id;
 
     @JsonProperty("protocol")
