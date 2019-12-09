@@ -44,14 +44,33 @@ paths:
 components:
   schemas:
     CloudsStormTopTopology:
-        type: "object"
-        properties:
-            userName:
-                type: "string"
-            publicKeyPath:
-                type: "string"
-            topologies:
-                type: array
-                items:
-                    $ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudsStormSubTopology.yml#/CloudsStormSubTopology'
-
+      type: object
+      properties:
+        userName:
+          type: string
+        publicKeyPath:
+          type: string
+        topologies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudsStormSubTopology'
+    CloudsStormSubTopology:
+      type: object
+      properties:
+        VMs:
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudsStormVM'
+    CloudsStormVM:
+      type: object
+      properties:
+        name:
+          type: string
+        nodeType:
+          type: string
+        OSType:
+          type: string
+        script:
+          type: string
+        publicAddress:
+          type: string

@@ -1,15 +1,15 @@
 ---
 swagger: "2.0"
 info:
-  description: CONF allows application developers to seamlessly plan a customized virtual infrastructure based on application level constraints on QoS and resource budgets, provisioning the virtual infrastructure, deploy application components onto the virtual infrastructure, and start execution on demand using TOSCA.
-  version: 3.0.0
-  title: CONF
+  description: 'TOSCA Simple qUeRy sErvice (SURE). '
+  version: 1.0.0
+  title: tosca-sure
   contact:
-    email: z.zhao@uva.nl
+    email: S.Koulouzis@uva.nl
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-basePath: /conf-api/3.0
+basePath: /tosca-sure/1.0.0
 schemes:
 - https
 - http
@@ -17,7 +17,7 @@ paths:
   /tosca_template:
     post:
       summary: upload a tosca template description file
-      description: uploads and validates TOSCA template file
+      description: upload and validate a tosca template description file
       operationId: uploadToscaTemplate
       consumes:
       - multipart/form-data
@@ -34,243 +34,427 @@ paths:
             type: string
         "405":
           description: Invalid input
-      security:
-      - auth:
-        - write:ToscaTemplate
-        - read:ToscaTemplate
-  /tosca_template/ids:
-    get:
-      summary: Get all topolog template IDs
-      description: Returns all IDs
-      operationId: getToscaTemplateIDs
-      produces:
-      - application/json
-      parameters: []
-      responses:
-        "200":
-          description: successful operation
-          schema:
-            type: array
-            items:
-              type: string
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: ToscaTemplate not found
-        "405":
-          description: Invalid input
-      security:
-      - auth:
-        - write:ToscaTemplate
-        - read:ToscaTemplate
   /tosca_template/{id}:
     get:
-      summary: Find topolog template by ID
-      description: Returns a single topolog template
-      operationId: getToscaTemplateByID
+      description: ""
+      operationId: getToscaTemplate
       produces:
-      - text/plain
+      - application/json
       parameters:
       - name: id
         in: path
-        description: ID of topolog template to return
+        description: ID of topolog template uplodaed
         required: true
         type: string
       responses:
         "200":
           description: successful operation
           schema:
-            type: string
-        "400":
-          description: Invalid ID supplied
+            $ref: '#/definitions/ToscaTemplate'
         "404":
-          description: ToscaTemplate not found
+          description: Not found
         "405":
           description: Invalid input
-      security:
-      - auth:
-        - write:ToscaTemplate
-        - read:ToscaTemplate
-    put:
-      summary: Updates exisintg topolog template
-      description: ""
-      operationId: updateToscaTemplateByID
-      consumes:
-      - multipart/form-data
+  /tosca_template/{id}/imports:
+    get:
+      summary: ""
+      description: returns the interface types
+      operationId: getImports
       produces:
-      - text/plain
+      - application/json
       parameters:
-      - name: file
-        in: formData
-        description: tosca Template description
+      - name: id
+        in: path
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                type: object
+                properties: {}
+        "404":
+          description: Not found
+        "405":
+          description: Invalid input
+  /tosca_template/{id}/dsl_definitions:
+    get:
+      summary: ""
+      description: returns the interface types
+      operationId: getDslDefinitions
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      - name: anchors
+        in: query
+        description: the anchors the definition is for
         required: false
-        type: file
+        type: array
+        items:
+          type: string
+        collectionFormat: multi
+      - name: derived_from
+        in: query
+        description: derived from
+        required: false
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                type: object
+                properties: {}
+        "404":
+          description: Not found
+        "405":
+          description: Invalid input
+  /tosca_template/{id}/types:
+    get:
+      summary: ""
+      description: returns the interface types
+      operationId: getTypes
+      produces:
+      - application/json
+      parameters:
       - name: id
         in: path
-        description: ID of topolog template to return
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      - name: kind_of_type
+        in: query
+        description: the type we are looking for e.g. capability_types, artifact_types. etc.
+        required: false
+        type: string
+        enum:
+        - node_types
+        - relationship_types
+        - capability_types
+        - artifact_types
+        - data_types
+        - interface_types
+        - policy_types
+        - group_types
+      - name: has_interfaces
+        in: query
+        description: filter if has interfaces
+        required: false
+        type: boolean
+      - name: type_name
+        in: query
+        description: The type_name
+        required: false
+        type: string
+      - name: has_properties
+        in: query
+        description: filter if has properties
+        required: false
+        type: boolean
+      - name: has_attributes
+        in: query
+        description: filter if has attributes
+        required: false
+        type: boolean
+      - name: has_requirements
+        in: query
+        description: filter if has requirements
+        required: false
+        type: boolean
+      - name: has_capabilities
+        in: query
+        description: filter if has capabilities
+        required: false
+        type: boolean
+      - name: has_artifacts
+        in: query
+        description: filter if has artifacts
+        required: false
+        type: boolean
+      - name: derived_from
+        in: query
+        description: derived from
+        required: false
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                type: object
+                properties: {}
+        "404":
+          description: Not found
+        "405":
+          description: Invalid input
+  /tosca_template/{id}/relationship_templates:
+    get:
+      summary: ""
+      description: returns the interface types
+      operationId: getRelationshipTemplates
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      - name: type_name
+        in: query
+        description: The relationship type
+        required: false
+        type: string
+      - name: derived_from
+        in: query
+        description: derived from
+        required: false
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                type: object
+                properties: {}
+        "404":
+          description: Not found
+        "405":
+          description: Invalid input
+  /tosca_template/{id}/topology_template:
+    get:
+      description: r
+      operationId: getTopologyTemplate
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template uplodaed
         required: true
         type: string
       responses:
         "200":
           description: successful operation
           schema:
-            type: string
-        "400":
-          description: Invalid ID supplied
+            $ref: '#/definitions/TopologyTemplate'
         "404":
-          description: ToscaTemplate not found
+          description: Not found
         "405":
           description: Invalid input
-      security:
-      - auth:
-        - write:ToscaTemplate
-        - read:ToscaTemplate
-    delete:
-      summary: Deletes a tosca topology template
+  /tosca_template/{id}/topology_template/node_templates:
+    get:
+      description: returns nodes templates in topology
+      operationId: getNodeTemplates
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      - name: type_name
+        in: query
+        description: The type
+        required: false
+        type: string
+      - name: node_name
+        in: query
+        description: the name
+        required: false
+        type: string
+      - name: has_interfaces
+        in: query
+        description: filter if has interfaces
+        required: false
+        type: boolean
+      - name: has_properties
+        in: query
+        description: filter if has properties
+        required: false
+        type: boolean
+      - name: has_attributes
+        in: query
+        description: filter if has attributes
+        required: false
+        type: boolean
+      - name: has_requirements
+        in: query
+        description: filter if has requirements
+        required: false
+        type: boolean
+      - name: has_capabilities
+        in: query
+        description: filter if has capabilities
+        required: false
+        type: boolean
+      - name: has_artifacts
+        in: query
+        description: filter if has artifacts
+        required: false
+        type: boolean
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NodeTemplate'
+        "404":
+          description: Not found
+        "405":
+          description: Invalid input
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/type_name:
+    get:
+      summary: ""
       description: ""
-      operationId: deleteToscaTemplateByID
-      parameters:
-      - name: id
-        in: path
-        description: ID of topology template to return
-        required: true
-        type: string
-      responses:
-        "200":
-          description: successful operation
-          schema:
-            type: string
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: ToscaTemplate not found
-      security:
-      - auth:
-        - write:ToscaTemplate
-        - read:ToscaTemplate
-  /planner/plan/{id}:
-    get:
-      summary: plan tosca template
-      description: Returns the ID of the planed topolog template
-      operationId: planToscaTemplateByID
-      produces:
-      - text/plain
-      parameters:
-      - name: id
-        in: path
-        description: ID of topolog template to plan
-        required: true
-        type: string
-      responses:
-        "200":
-          description: successful operation
-          schema:
-            type: string
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: ToscaTemplate not found
-        "405":
-          description: Invalid input
-      security:
-      - auth:
-        - write:ToscaTemplate
-        - read:ToscaTemplate
-  /provisioner/provision/{id}:
-    get:
-      summary: provision tosca template
-      description: 'provosions the operationId: Plan Tosca Template Returns the provision ID'
-      operationId: provisionPlanToscaTemplateByID
-      produces:
-      - text/plain
-      parameters:
-      - name: id
-        in: path
-        description: ID of topolog template to plan
-        required: true
-        type: string
-      responses:
-        "200":
-          description: successful operation
-          schema:
-            type: string
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: ToscaTemplate not found
-        "405":
-          description: Invalid input
-      security:
-      - auth:
-        - write:ToscaTemplate
-        - read:ToscaTemplate
-  /deployer/deploy/{id}:
-    get:
-      summary: deploy the software tosca template
-      description: Returns the deployment ID
-      operationId: deployProvisionToscaTemplateByID
-      produces:
-      - text/plain
-      parameters:
-      - name: id
-        in: path
-        description: ID of topolog template to deploy
-        required: true
-        type: string
-      responses:
-        "200":
-          description: successful operation
-          schema:
-            type: string
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: ToscaTemplate not found
-        "405":
-          description: Invalid input
-      security:
-      - auth:
-        - write:ToscaTemplate
-        - read:ToscaTemplate
-  /credential:
-    post:
-      summary: Create credentials
-      description: Creates credentials
-      operationId: createCredentials
-      consumes:
-      - application/json
+      operationId: getNodeTypeName
       produces:
       - application/json
       parameters:
-      - in: body
-        name: body
-        description: Created user object
+      - name: id
+        in: path
+        description: ID of topolog template uplodaed
         required: true
-        schema:
-          $ref: '#/definitions/Credentials'
+        type: string
+      - name: node_name
+        in: path
+        description: node_name
+        required: true
+        type: string
       responses:
         "200":
           description: successful operation
           schema:
             type: string
-        "400":
-          description: Invalid ID supplied
         "404":
-          description: ToscaTemplate not found
+          description: Not found
         "405":
           description: Invalid input
-      security:
-      - auth:
-        - write:Credentials
-        - read:Credentials
-  /credential/ids:
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/requirements:
     get:
-      summary: Get all credential IDs
-      description: 'Returns all IDss '
-      operationId: getCredentialIDs
+      description: 'Returns  the requirements for an input node as described in the template not in the node''s definition '
+      operationId: getNodeRequirements
       produces:
       - application/json
-      parameters: []
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      - name: node_name
+        in: path
+        description: node_name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+              properties: {}
+        "404":
+          description: Not found
+        "405":
+          description: Invalid input
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/derived_from:
+    get:
+      summary: ""
+      description: ""
+      operationId: getParentTypeName
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      - name: node_name
+        in: path
+        description: node_name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "404":
+          description: Not found
+        "405":
+          description: Invalid input
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_requirements:
+    get:
+      summary: ""
+      description: Recursively get all requirements all the way to the ROOT including the input node's
+      operationId: getAncestorsRequirements
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      - name: node_name
+        in: path
+        description: node_name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+              properties: {}
+        "404":
+          description: Not found
+        "405":
+          description: Invalid input
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_types:
+    get:
+      summary: ""
+      description: Recursively get all requirements all the way to the ROOT including the input node's
+      operationId: getAllAncestorTypes
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      - name: node_name
+        in: path
+        description: node_name
+        required: true
+        type: string
       responses:
         "200":
           description: successful operation
@@ -278,271 +462,168 @@ paths:
             type: array
             items:
               type: string
-        "400":
-          description: Invalid ID supplied
         "404":
-          description: ToscaTemplate not found
+          description: Not found
         "405":
           description: Invalid input
-      security:
-      - auth:
-        - write:ToscaTemplate
-        - read:ToscaTemplate
-  /user:
-    post:
-      summary: Create user
-      description: This can only be done by admin.
-      operationId: createUser
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_properties:
+    get:
+      summary: ""
+      description: Recursively get all requirements all the way to the ROOT including the input node's
+      operationId: getAllAncestorProperties
       produces:
       - application/json
       parameters:
-      - in: body
-        name: body
-        description: Created user object
-        required: true
-        schema:
-          $ref: '#/definitions/User'
-      responses:
-        "200":
-          description: successful operation
-          schema:
-            type: string
-        "409":
-          description: already exists
-      security:
-      - auth:
-        - admin:User
-  /user/login:
-    get:
-      tags:
-      - user
-      summary: Logs user into the system
-      description: ""
-      produces:
-      - application/json
-      parameters:
-      - name: username
-        in: query
-        description: The user name for login
-        required: true
-        type: string
-      - name: password
-        in: query
-        description: The password for login in clear text
-        required: true
-        type: string
-      responses:
-        "200":
-          description: successful operation
-          headers:
-            X-Rate-Limit:
-              type: integer
-              format: int32
-              description: calls per hour allowed by the user
-            X-Expires-After:
-              type: string
-              format: date-time
-              description: date in UTC when token expires
-          schema:
-            type: string
-        "400":
-          description: Invalid username/password supplied
-  /user/logout:
-    get:
-      summary: Logs out current logged in user session
-      description: ""
-      produces:
-      - application/json
-      parameters: []
-      responses:
-        default:
-          description: successful operation
-  /user/{username}:
-    get:
-      summary: Get user by user name
-      description: ""
-      produces:
-      - application/json
-      parameters:
-      - name: username
+      - name: id
         in: path
-        description: 'The name that needs to be fetched. Use user1 for testing. '
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      - name: node_name
+        in: path
+        description: node_name
         required: true
         type: string
       responses:
         "200":
           description: successful operation
           schema:
-            $ref: '#/definitions/User'
-        "400":
-          description: Invalid username supplied
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                type: object
+                properties: {}
         "404":
-          description: User not found
-      security:
-      - auth:
-        - admin:User
+          description: Not found
+        "405":
+          description: Invalid input
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/properties:
+    get:
+      summary: ""
+      description: s
+      operationId: getNodeProperties
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      - name: node_name
+        in: path
+        description: node_name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+              properties: {}
+        "404":
+          description: Not found
+        "405":
+          description: Invalid input
     put:
-      tags:
-      - user
-      summary: Updated user
-      description: This can only be done by the logged in user.
+      summary: ""
+      description: s
+      operationId: setNodeProperties
       produces:
       - application/json
       parameters:
-      - name: username
+      - name: id
         in: path
-        description: name that need to be updated
+        description: ID of topolog template uplodaed
         required: true
         type: string
       - in: body
-        name: body
-        description: Updated user object
+        name: properties
         required: true
         schema:
-          $ref: '#/definitions/User'
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+      - name: node_name
+        in: path
+        description: node_name
+        required: true
+        type: string
       responses:
-        "400":
-          description: Invalid user supplied
+        "200":
+          description: successful operation
+          schema:
+            type: string
         "404":
-          description: User not found
-      security:
-      - auth:
-        - admin:User
-    delete:
-      summary: Delete user
-      description: This can only be done by the logged in user.
+          description: Not found
+        "405":
+          description: Invalid input
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/outputs:
+    get:
+      summary: ""
+      description: s
+      operationId: getNodeOutputs
       produces:
       - application/json
       parameters:
-      - name: username
+      - name: id
         in: path
-        description: The name that needs to be deleted
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      - name: node_name
+        in: path
+        description: node_name
         required: true
         type: string
       responses:
-        "400":
-          description: Invalid username supplied
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties:
+                type: object
+                properties: {}
         "404":
-          description: User not found
-      security:
-      - auth:
-        - admin:User
-securityDefinitions:
-  auth:
-    type: oauth2
-    authorizationUrl: http://localhost/oauth/dialog
-    flow: implicit
-    scopes:
-      write:ToscaTemplate: modify topolog template in your account
-      read:ToscaTemplate: read your topolog template
-      admin:User: Grants access to admin operations
-      write:Credentials: modify cloud credentials in your account
-      read:Credentials: read your cloud credentials
+          description: Not found
+        "405":
+          description: Invalid input
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/related:
+    get:
+      summary: ""
+      description: s
+      operationId: getRelatedNodes
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template uplodaed
+        required: true
+        type: string
+      - name: node_name
+        in: path
+        description: node_name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NodeTemplate'
+        "404":
+          description: Not found
+        "405":
+          description: Invalid input
 definitions:
-  User:
-    type: object
-  Credentials:
-    type: object
-    properties:
-      protocol:
-        type: string
-      token_type:
-        type: string
-      token:
-        type: string
-      keys:
-        type: object
-        additionalProperties:
-          type: string
-      user:
-        type: string
-      cloud_provider_name:
-        type: string
-  NodeTemplate:
-    type: object
-    properties:
-      derived_from:
-        type: string
-      properties:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      requirements:
-        type: array
-        items:
-          type: object
-          additionalProperties:
-            type: object
-            properties: {}
-      interfaces:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      capabilities:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      type:
-        type: string
-      description:
-        type: string
-      directives:
-        type: array
-        items:
-          type: string
-      attributes:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      artifacts:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-  TopologyTemplate:
-    type: object
-    properties:
-      description:
-        type: string
-      inputs:
-        type: object
-        additionalProperties:
-          type: string
-      node_templates:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/NodeTemplate'
-      relationship_templates:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      outputs:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      groups:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      substitution_mappings:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      policies:
-        type: array
-        items:
-          type: object
-          additionalProperties:
-            type: object
-            properties: {}
   ToscaTemplate:
     type: object
     properties:
@@ -622,7 +703,88 @@ definitions:
         additionalProperties:
           type: object
           properties: {}
-  Provisioner:
+  TopologyTemplate:
     type: object
-  CloudsStormTopTopology:
+    properties:
+      description:
+        type: string
+      inputs:
+        type: object
+        additionalProperties:
+          type: string
+      node_templates:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/NodeTemplate'
+      relationship_templates:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      outputs:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      groups:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      substitution_mappings:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      policies:
+        type: array
+        items:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+  NodeTemplate:
     type: object
+    properties:
+      derived_from:
+        type: string
+      properties:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      requirements:
+        type: array
+        items:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+      interfaces:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      capabilities:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      type:
+        type: string
+      description:
+        type: string
+      directives:
+        type: array
+        items:
+          type: string
+      attributes:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      artifacts:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
