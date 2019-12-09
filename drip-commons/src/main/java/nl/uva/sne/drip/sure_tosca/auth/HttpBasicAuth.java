@@ -11,16 +11,16 @@
  */
 
 
-package nl.uva.sne.drip.auth;
+package nl.uva.sne.drip.sure_tosca.auth;
 
-import nl.uva.sne.drip.commons.sure_tosca.client.Pair;
+
 
 import com.squareup.okhttp.Credentials;
 
 import java.util.Map;
 import java.util.List;
 
-import java.io.UnsupportedEncodingException;
+import nl.uva.sne.drip.sure_tosca.client.Pair;
 
 public class HttpBasicAuth implements Authentication {
     private String username;

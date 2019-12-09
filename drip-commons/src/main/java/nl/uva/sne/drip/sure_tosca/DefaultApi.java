@@ -1,5 +1,3 @@
-package nl.uva.sne.drip.commons.sure_tosca.client;
-
 /*
  * tosca-sure
  * TOSCA Simple qUeRy sErvice (SURE). 
@@ -11,6 +9,7 @@ package nl.uva.sne.drip.commons.sure_tosca.client;
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+package nl.uva.sne.drip.sure_tosca;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -26,6 +25,14 @@ import java.util.Map;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.TopologyTemplate;
 import nl.uva.sne.drip.model.ToscaTemplate;
+import nl.uva.sne.drip.sure_tosca.client.ApiCallback;
+import nl.uva.sne.drip.sure_tosca.client.ApiClient;
+import nl.uva.sne.drip.sure_tosca.client.ApiException;
+import nl.uva.sne.drip.sure_tosca.client.ApiResponse;
+import nl.uva.sne.drip.sure_tosca.client.Configuration;
+import nl.uva.sne.drip.sure_tosca.client.Pair;
+import nl.uva.sne.drip.sure_tosca.client.ProgressRequestBody;
+import nl.uva.sne.drip.sure_tosca.client.ProgressResponseBody;
 
 public class DefaultApi {
 
@@ -1193,13 +1200,12 @@ public class DefaultApi {
      * @param hasRequirements filter if has requirements (optional)
      * @param hasCapabilities filter if has capabilities (optional)
      * @param hasArtifacts filter if has artifacts (optional)
-     * @param derivedFrom derived from (optional)
      * @param progressListener Progress listener
      * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getNodeTemplatesCall(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts, String derivedFrom, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call getNodeTemplatesCall(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -1231,9 +1237,6 @@ public class DefaultApi {
         }
         if (hasArtifacts != null) {
             localVarQueryParams.addAll(apiClient.parameterToPair("has_artifacts", hasArtifacts));
-        }
-        if (derivedFrom != null) {
-            localVarQueryParams.addAll(apiClient.parameterToPair("derived_from", derivedFrom));
         }
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
@@ -1269,14 +1272,14 @@ public class DefaultApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getNodeTemplatesValidateBeforeCall(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts, String derivedFrom, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getNodeTemplatesValidateBeforeCall(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
 
         // verify the required parameter 'id' is set
         if (id == null) {
             throw new ApiException("Missing the required parameter 'id' when calling getNodeTemplates(Async)");
         }
 
-        com.squareup.okhttp.Call call = getNodeTemplatesCall(id, typeName, nodeName, hasInterfaces, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts, derivedFrom, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getNodeTemplatesCall(id, typeName, nodeName, hasInterfaces, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts, progressListener, progressRequestListener);
         return call;
 
     }
@@ -1294,13 +1297,12 @@ public class DefaultApi {
      * @param hasRequirements filter if has requirements (optional)
      * @param hasCapabilities filter if has capabilities (optional)
      * @param hasArtifacts filter if has artifacts (optional)
-     * @param derivedFrom derived from (optional)
      * @return List&lt;NodeTemplate&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot
      * deserialize the response body
      */
-    public List<NodeTemplate> getNodeTemplates(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts, String derivedFrom) throws ApiException {
-        ApiResponse<List<NodeTemplate>> resp = getNodeTemplatesWithHttpInfo(id, typeName, nodeName, hasInterfaces, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts, derivedFrom);
+    public List<NodeTemplate> getNodeTemplates(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts) throws ApiException {
+        ApiResponse<List<NodeTemplate>> resp = getNodeTemplatesWithHttpInfo(id, typeName, nodeName, hasInterfaces, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts);
         return resp.getData();
     }
 
@@ -1317,13 +1319,12 @@ public class DefaultApi {
      * @param hasRequirements filter if has requirements (optional)
      * @param hasCapabilities filter if has capabilities (optional)
      * @param hasArtifacts filter if has artifacts (optional)
-     * @param derivedFrom derived from (optional)
      * @return ApiResponse&lt;List&lt;NodeTemplate&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot
      * deserialize the response body
      */
-    public ApiResponse<List<NodeTemplate>> getNodeTemplatesWithHttpInfo(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts, String derivedFrom) throws ApiException {
-        com.squareup.okhttp.Call call = getNodeTemplatesValidateBeforeCall(id, typeName, nodeName, hasInterfaces, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts, derivedFrom, null, null);
+    public ApiResponse<List<NodeTemplate>> getNodeTemplatesWithHttpInfo(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts) throws ApiException {
+        com.squareup.okhttp.Call call = getNodeTemplatesValidateBeforeCall(id, typeName, nodeName, hasInterfaces, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts, null, null);
         Type localVarReturnType = new TypeToken<List<NodeTemplate>>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -1341,13 +1342,12 @@ public class DefaultApi {
      * @param hasRequirements filter if has requirements (optional)
      * @param hasCapabilities filter if has capabilities (optional)
      * @param hasArtifacts filter if has artifacts (optional)
-     * @param derivedFrom derived from (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing
      * the request body object
      */
-    public com.squareup.okhttp.Call getNodeTemplatesAsync(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts, String derivedFrom, final ApiCallback<List<NodeTemplate>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getNodeTemplatesAsync(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts, final ApiCallback<List<NodeTemplate>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1368,7 +1368,7 @@ public class DefaultApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getNodeTemplatesValidateBeforeCall(id, typeName, nodeName, hasInterfaces, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts, derivedFrom, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getNodeTemplatesValidateBeforeCall(id, typeName, nodeName, hasInterfaces, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<List<NodeTemplate>>() {
         }.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);

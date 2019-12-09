@@ -11,7 +11,7 @@
  */
 
 
-package nl.uva.sne.drip.commons.sure_tosca.client;
+package nl.uva.sne.drip.sure_tosca.client;
 
 import java.util.List;
 import java.util.Map;

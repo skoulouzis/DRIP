@@ -1,4 +1,3 @@
-package nl.uva.sne.drip.commons.sure_tosca.client;
 /*
  * tosca-sure
  * TOSCA Simple qUeRy sErvice (SURE). 
@@ -11,6 +10,8 @@ package nl.uva.sne.drip.commons.sure_tosca.client;
  * Do not edit the class manually.
  */
 
+
+package nl.uva.sne.drip.sure_tosca.client;
 
 import java.io.IOException;
 

@@ -11,7 +11,7 @@
  */
 
 
-package nl.uva.sne.drip.auth;
+package nl.uva.sne.drip.sure_tosca.auth;
 
 public enum OAuthFlow {
     accessCode, implicit, password, application

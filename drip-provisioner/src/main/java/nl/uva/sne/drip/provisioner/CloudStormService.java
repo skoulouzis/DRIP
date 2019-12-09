@@ -13,14 +13,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.CloudsStormTopTopology;
-import nl.uva.sne.drip.model.CloudsStormVM;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import org.apache.commons.io.FilenameUtils;
@@ -30,41 +28,41 @@ import org.apache.commons.io.FilenameUtils;
  * @author S. Koulouzis
  */
 class CloudStormService {
-    
+
     private List<Map.Entry> vmTopologies;
     private String tempInputDirPath;
     private final ToscaTemplate toscaTemplate;
     private final ToscaHelper helper;
 
-    CloudStormService(String sureToscaBasePath,ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException {
-       this.toscaTemplate = toscaTemplate;
-       this.helper = new ToscaHelper(toscaTemplate, sureToscaBasePath);
+    CloudStormService(String sureToscaBasePath, ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException {
+        this.toscaTemplate = toscaTemplate;
+        this.helper = new ToscaHelper(toscaTemplate, sureToscaBasePath);
     }
-    
-    ToscaTemplate execute() throws FileNotFoundException, JSchException, IOException {
+
+    public ToscaTemplate execute() throws FileNotFoundException, JSchException, IOException, ApiException {
         tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
         File tempInputDir = new File(tempInputDirPath);
         if (!(tempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
         }
-        
+
         buildCloudStormTopTopology(toscaTemplate);
-        
+
         return toscaTemplate;
     }
-    
-    private CloudsStormTopTopology buildCloudStormTopTopology(ToscaTemplate toscaTemplate) throws JSchException, IOException {
+
+    private CloudsStormTopTopology buildCloudStormTopTopology(ToscaTemplate toscaTemplate) throws JSchException, IOException, ApiException {
         CloudsStormTopTopology topTopology = new CloudsStormTopTopology();
         String publicKeyPath = buildSSHKeyPair();
         topTopology.setPublicKeyPath(publicKeyPath);
         topTopology.setUserName(getUserName());
-        
+
         List<CloudsStormSubTopology> topologies = getCloudsStormSubTopologies(toscaTemplate);
         topTopology.setTopologies(topologies);
-        
+
         return topTopology;
     }
-    
+
     private String buildSSHKeyPair() throws JSchException, IOException {
         String userPublicKeyName = "id_rsa.pub";
         String publicKeyPath = "name@" + userPublicKeyName;
@@ -76,29 +74,32 @@ class CloudStormService {
         kpair.dispose();
         return publicKeyPath;
     }
-    
+
     private String getUserName() {
         return "vm_user";
     }
-    
+
     private List<CloudsStormSubTopology> getCloudsStormSubTopologies(ToscaTemplate toscaTemplate) throws ApiException {
-        List<NodeTemplate> vmTopologyTemplates = helper.getVMTopologyTemplates(toscaTemplate);
+        List<NodeTemplate> vmTopologyTemplates = helper.getVMTopologyTemplates();
         List<CloudsStormSubTopology> cloudsStormSubTopologies = new ArrayList<>();
-        for(NodeTemplate nodeTemplate: vmTopologyTemplates){
+        int i = 0;
+        for (NodeTemplate nodeTemplate : vmTopologyTemplates) {
             CloudsStormSubTopology cloudsStormSubTopology = new CloudsStormSubTopology();
-            
+
             Map<String, Object> properties = nodeTemplate.getProperties();
             String domain = (String) properties.get("domain");
             String provider = (String) properties.get("provider");
             cloudsStormSubTopology.setCloudProvider(domain);
             cloudsStormSubTopology.setCloudProvider(provider);
-            cloudsStormSubTopology.setTopology("vm");
-        }
-       
-        
-        
+            cloudsStormSubTopology.setTopology("vm_topology" + i);
 
-        
+//            List<NodeTemplate> vmTopologyTemplates = helper.getVMTemplatesForTopology();
+//            CloudsStormVM cloudsStormVM = new CloudsStormVM();
+//            cloudsStormVM.setName("node"+i);
+//            cloudsStormVM.setNodeType(domain);
+            i++;
+        }
+
 //        List<CloudsStormVM> vms  = new ArrayList<>();
 //        CloudsStormVM cloudsStormVM = new CloudsStormVM();
 //        cloudsStormVM.setName("Node1");
@@ -106,5 +107,5 @@ class CloudStormService {
 //        vms.add(cloudsStormVM);
         return cloudsStormSubTopologies;
     }
-    
+
 }

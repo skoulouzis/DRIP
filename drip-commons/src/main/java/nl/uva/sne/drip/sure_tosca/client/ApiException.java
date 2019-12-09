@@ -11,12 +11,12 @@
  */
 
 
-package nl.uva.sne.drip.commons.sure_tosca.client;
+package nl.uva.sne.drip.sure_tosca.client;
 
 import java.util.Map;
 import java.util.List;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-11-01T13:11:24.211Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-12-09T20:19:44.689Z")
 public class ApiException extends Exception {
     private int code = 0;
     private Map<String, List<String>> responseHeaders = null;

@@ -11,14 +11,15 @@
  */
 
 
-package nl.uva.sne.drip.auth;
+package nl.uva.sne.drip.sure_tosca.auth;
 
-import nl.uva.sne.drip.commons.sure_tosca.client.Pair;
+
 
 import java.util.Map;
 import java.util.List;
+import nl.uva.sne.drip.sure_tosca.client.Pair;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-11-01T13:11:24.211Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-12-09T20:19:44.689Z")
 public class OAuth implements Authentication {
   private String accessToken;
 

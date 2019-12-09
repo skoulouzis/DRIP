@@ -25,12 +25,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
-import nl.uva.sne.drip.commons.sure_tosca.client.Configuration;
-import nl.uva.sne.drip.commons.sure_tosca.client.DefaultApi;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.ToscaTemplate;
+import nl.uva.sne.drip.sure_tosca.DefaultApi;
 import org.apache.commons.io.FileUtils;
+import nl.uva.sne.drip.sure_tosca.client.ApiException;
+import nl.uva.sne.drip.sure_tosca.client.Configuration;
 
 /**
  *
@@ -80,9 +80,13 @@ public class ToscaHelper {
         return interfaceDefinitions;
     }
 
-    public List<NodeTemplate> getVMTopologyTemplates(ToscaTemplate toscaTemplate) throws ApiException {
-        List<NodeTemplate> vmTopologyTemplates = api.getNodeTemplates(String.valueOf(id), "tosca.nodes.ARTICONF.VM.topology", null, null, null, null, null, null, null, null);
+    public List<NodeTemplate> getVMTopologyTemplates() throws ApiException {
+        List<NodeTemplate> vmTopologyTemplates = api.getNodeTemplates(String.valueOf(id), "tosca.nodes.ARTICONF.VM.topology", null, null, null, null, null, null, null);
         return vmTopologyTemplates;
+    }
+
+    public ToscaTemplate execute() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
