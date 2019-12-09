@@ -8,4 +8,4 @@ CloudsStormTopTopology:
     topologies:
         type: array
     items: 
-        $ref: 'https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/CloudsStormSubTopology.yml#/CloudsStormSubTopology'
+        $ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudsStormSubTopology.yml#/CloudsStormSubTopology'

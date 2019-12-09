@@ -128,7 +128,7 @@
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
             <type>jar</type>
-        </dependency>
+        </dependency>                
     </dependencies>
     
     
@@ -148,21 +148,25 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.jsonschema2pojo</groupId> 
-                <artifactId>jsonschema2pojo-maven-plugin</artifactId> 
-                <version>1.0.1</version>
-                <configuration> 
-                    <sourceDirectory>${basedir}/../openAPI/schema</sourceDirectory> 
-                    <targetPackage>nl.uva.sne.drip.model</targetPackage> 
-                </configuration> 
-                <executions> 
-                    <execution> 
-                        <goals> 
-                            <goal>generate</goal> 
-                        </goals> 
-                    </execution> 
-                </executions> 
-            </plugin>            
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>4.2.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${basedir}/../openAPI/schema</inputSpec>
+                            <generatorName>java</generatorName>
+                            <configOptions>
+                                <sourceFolder>src/gen/java/main</sourceFolder>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+                           
         </plugins>
     </build>
 </project>
