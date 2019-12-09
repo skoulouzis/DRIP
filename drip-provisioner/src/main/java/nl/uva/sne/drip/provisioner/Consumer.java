@@ -69,7 +69,7 @@ public class Consumer extends DefaultConsumer {
                 throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
             }
 
-            ProvisionerRPCService service = new ProvisionerRPCService();
+            CloudStormService service = new CloudStormService();
             ToscaTemplate toscaTemplate = service.execute(message.getToscaTemplate());
 
             Message responceMessage = new Message();

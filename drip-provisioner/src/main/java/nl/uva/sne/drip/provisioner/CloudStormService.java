@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import nl.uva.sne.drip.model.CloudsStormSubTopology;
+import nl.uva.sne.drip.model.CloudsStormTopTopology;
+import nl.uva.sne.drip.model.CloudsStormVM;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import org.apache.commons.io.FilenameUtils;
 
@@ -22,7 +25,7 @@ import org.apache.commons.io.FilenameUtils;
  *
  * @author S. Koulouzis
  */
-class ProvisionerRPCService {
+class CloudStormService {
 
     private List<Map.Entry> vmTopologies;
     private String tempInputDirPath;
@@ -39,8 +42,14 @@ class ProvisionerRPCService {
         return toscaTemplate;
     }
 
-    private Map<String, Object> buildCloudStormTopTopology(ToscaTemplate toscaTemplate) throws JSchException, IOException {
-        Map<String, Object> topTopology = new HashMap<>();
+    private CloudsStormTopTopology buildCloudStormTopTopology(ToscaTemplate toscaTemplate) throws JSchException, IOException {
+        CloudsStormTopTopology topTopology = new CloudsStormTopTopology();
+        String publicKeyPath = buildSSHKeyPair();
+        topTopology.setPublicKeyPath(publicKeyPath);
+        topTopology.setUserName(getUserName());
+        List<CloudsStormSubTopology> topologies = getCloudsStormSubTopologies(toscaTemplate);
+        topTopology.setTopologies(topologies);
+
         return topTopology;
     }
 
@@ -54,6 +63,25 @@ class ProvisionerRPCService {
         kpair.writePublicKey(tempInputDirPath + File.separator + userPublicKeyName, "auto generated user accees keys");
         kpair.dispose();
         return publicKeyPath;
+    }
+
+    private String getUserName() {
+        return "vm_user";
+    }
+
+    private List<CloudsStormSubTopology> getCloudsStormSubTopologies(ToscaTemplate toscaTemplate) {
+        List<CloudsStormSubTopology> cloudsStormSubTopologies = new ArrayList<>();
+     
+        CloudsStormSubTopology cloudsStormSubTopology = new CloudsStormSubTopology();
+        List<CloudsStormVM> vms  = new ArrayList<>();
+        CloudsStormVM cloudsStormVM = new CloudsStormVM();
+        cloudsStormVM.setName("Node1");
+        
+        vms.add(cloudsStormVM);
+        
+        cloudsStormSubTopology.setVms(vms);
+        cloudsStormSubTopology.
+        return cloudsStormSubTopologies;
     }
 
 }

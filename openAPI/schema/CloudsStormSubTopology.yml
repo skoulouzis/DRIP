@@ -1,9 +1,18 @@
     CloudsStormSubTopology:
         type: "object"
         properties:
-            VMs:
-                type: array
-                items:
-                    $ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudsStormVM.yml#/CloudsStormVM'
+            topology:
+                type: "string"
+            cloudProvider:
+                type: "string"
+            domain:
+                type: "string"
+            status:
+                type: "string"
+                
+            #VMs:
+                #type: array
+                #items:
+                    #$ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudsStormVM.yml#/CloudsStormVM'
 
         
