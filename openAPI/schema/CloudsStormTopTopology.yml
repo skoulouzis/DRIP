@@ -5,7 +5,3 @@
             type: "string"
         publicKeyPath:
             type: "string"
-        #topologies:
-            #type: array
-            #items:
-                #$ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudsStormSubTopology.yml#/CloudsStormSubTopology'
