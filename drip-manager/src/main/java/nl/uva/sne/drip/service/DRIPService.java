@@ -33,10 +33,11 @@ public class DRIPService {
     public String execute(String id) {
 
         try {
+            caller.init();
             String ymlToscaTemplate = toscaTemplateService.findByID(id);
             ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
-
             Message message = new Message();
+            message.setOwner("user");
             message.setCreationDate(System.currentTimeMillis());
             message.setToscaTemplate(toscaTemplate);
 

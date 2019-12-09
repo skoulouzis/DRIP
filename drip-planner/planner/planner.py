@@ -3,6 +3,7 @@ from toscaparser.nodetemplate import NodeTemplate
 from toscaparser.tosca_template import ToscaTemplate
 from toscaparser.topology_template import TopologyTemplate
 
+
 import operator
 # import matplotlib.pyplot as plt
 
@@ -12,7 +13,7 @@ from util import tosca_helper
 
 class Planner:
 
-    def __init__(self, tosca_path=None, yaml_dict_tpl=None, spec_service=spec_service):
+    def __init__(self, tosca_path=None, yaml_dict_tpl=None, spec_service=None):
         if tosca_path:
             self.path = tosca_path
             self.tosca_template = ToscaTemplate(tosca_path)

@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__main__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planner/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/planner/planner.py" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,7 +22,13 @@
   </component>
   <component name="ProjectId" id="1TI7vNZs1Z3y1uB6wXCH5F47r0F" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -37,18 +40,6 @@
       <recent name="$PROJECT_DIR$/planner" />
       <recent name="$PROJECT_DIR$/test" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager" selected="Python.__main__">
     <configuration name="__main__" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -102,8 +93,8 @@
     </configuration>
     <list>
       <item itemvalue="Python.__main__" />
-      <item itemvalue="Python tests.Unittests in test_planner.py" />
       <item itemvalue="Python tests.Unittests for test_planner.MyTestCase.test_something" />
+      <item itemvalue="Python tests.Unittests in test_planner.py" />
     </list>
     <recent_temporary>
       <list>
@@ -112,6 +103,18 @@
         <item itemvalue="Python tests.Unittests for test_planner.MyTestCase.test_something" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -230,28 +233,77 @@
     <MESSAGE value="fixed test" />
     <option name="LAST_COMMIT_MESSAGE" value="fixed test" />
   </component>
+  <component name="WindowStateProjectService">
+    <state x="808" y="316" width="1000" height="839" key="#Inspections" timestamp="1575885366203">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state x="808" y="316" width="1000" height="839" key="#Inspections/67.34.2493.1406@67.34.2493.1406" timestamp="1575885366203" />
+    <state x="925" y="283" width="767" height="906" key="#__main__" timestamp="1575885420596">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state x="925" y="283" width="767" height="906" key="#__main__/67.34.2493.1406@67.34.2493.1406" timestamp="1575885420596" />
+    <state x="1043" y="437" width="530" height="598" key="FileChooserDialogImpl" timestamp="1575885341909">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state x="1043" y="437" width="530" height="598" key="FileChooserDialogImpl/67.34.2493.1406@67.34.2493.1406" timestamp="1575885341909" />
+    <state width="2465" height="471" key="GridCell.Tab.0.bottom" timestamp="1575891470097">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state width="2465" height="471" key="GridCell.Tab.0.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1575891470097" />
+    <state width="2465" height="471" key="GridCell.Tab.0.center" timestamp="1575891470096">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state width="2465" height="471" key="GridCell.Tab.0.center/67.34.2493.1406@67.34.2493.1406" timestamp="1575891470096" />
+    <state width="2465" height="471" key="GridCell.Tab.0.left" timestamp="1575891470096">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state width="2465" height="471" key="GridCell.Tab.0.left/67.34.2493.1406@67.34.2493.1406" timestamp="1575891470096" />
+    <state width="2465" height="471" key="GridCell.Tab.0.right" timestamp="1575891470096">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state width="2465" height="471" key="GridCell.Tab.0.right/67.34.2493.1406@67.34.2493.1406" timestamp="1575891470096" />
+    <state width="2465" height="471" key="GridCell.Tab.1.bottom" timestamp="1575891470098">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state width="2465" height="471" key="GridCell.Tab.1.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1575891470098" />
+    <state width="2465" height="471" key="GridCell.Tab.1.center" timestamp="1575891470097">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state width="2465" height="471" key="GridCell.Tab.1.center/67.34.2493.1406@67.34.2493.1406" timestamp="1575891470097" />
+    <state width="2465" height="471" key="GridCell.Tab.1.left" timestamp="1575891470097">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state width="2465" height="471" key="GridCell.Tab.1.left/67.34.2493.1406@67.34.2493.1406" timestamp="1575891470097" />
+    <state width="2465" height="471" key="GridCell.Tab.1.right" timestamp="1575891470097">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state width="2465" height="471" key="GridCell.Tab.1.right/67.34.2493.1406@67.34.2493.1406" timestamp="1575891470097" />
+    <state x="679" y="283" key="SettingsEditor" timestamp="1575885393075">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state x="679" y="283" key="SettingsEditor/67.34.2493.1406@67.34.2493.1406" timestamp="1575885393075" />
+    <state x="893" y="526" key="com.intellij.ide.util.TipDialog" timestamp="1575885327988">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state x="893" y="526" key="com.intellij.ide.util.TipDialog/67.34.2493.1406@67.34.2493.1406" timestamp="1575885327988" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/planner/planner.py</url>
-          <line>71</line>
+          <line>72</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/planner/planner.py</url>
-          <line>66</line>
+          <line>67</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/test/test_planner.py</url>
           <line>22</line>
           <option name="timeStamp" value="21" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__main__.py</url>
-          <line>102</line>
-          <option name="timeStamp" value="22" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

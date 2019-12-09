@@ -42,24 +42,31 @@ import org.springframework.stereotype.Service;
 @Service
 public class DRIPCaller implements AutoCloseable {
 
-    private final Connection connection;
-    private final Channel channel;
-    private final String replyQueueName;
+    private Connection connection;
+    private Channel channel;
+    private String replyQueueName;
     private String requestQeueName;
     private final ObjectMapper mapper;
+    private final ConnectionFactory factory;
 
     public DRIPCaller(ConnectionFactory factory) throws IOException, TimeoutException {
-
-//        factory.setHost(messageBrokerHost);
+        this.factory = factory;
+        //        factory.setHost(messageBrokerHost);
 //        factory.setPort(AMQP.PROTOCOL.PORT);
 //        factory.setUsername(username);
 //        factory.setPassword(password);
-        connection = factory.newConnection();
-        channel = connection.createChannel();
-        // create a single callback queue per client not per requests. 
-        replyQueueName = channel.queueDeclare().getQueue();
+        init();
         this.mapper = new ObjectMapper();
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+    }
+
+    public void init() throws IOException, TimeoutException {
+        if (connection == null || !connection.isOpen()) {
+            connection = factory.newConnection();
+            channel = connection.createChannel();
+            // create a single callback queue per client not per requests. 
+            replyQueueName = channel.queueDeclare().getQueue();
+        }
     }
 
     /**
