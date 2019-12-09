@@ -161,7 +161,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${basedir}/../openAPI/API/CONF-3.0.0-swagger.yaml</inputSpec>
+                            <inputSpec>${basedir}/../openAPI/API/CloudStorm-1.0.0-openapi.yaml</inputSpec>
                             <generatorName>java</generatorName>
                             <output>${project.build.directory}/generated-sources</output>
                             <apiPackage>${default.package}.handler</apiPackage>

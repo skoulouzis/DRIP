@@ -1,0 +1,8 @@
+    CloudsStormSubMembers:
+        type: "object"
+        properties:
+            vmName:
+                type: "string"
+            address:
+                type: "string"
+                

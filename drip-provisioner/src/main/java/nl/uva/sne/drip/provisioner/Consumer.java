@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.provisioner;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.jcraft.jsch.JSchException;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.ToscaTemplate;
 
@@ -43,9 +45,11 @@ public class Consumer extends DefaultConsumer {
     private final Channel channel;
     private final Logger logger;
     private final ObjectMapper objectMapper;
+    private final String sureToscaBasePath;
 
-    public Consumer(Channel channel) throws IOException, TimeoutException {
+    public Consumer(Channel channel,String sureToscaBasePath) throws IOException, TimeoutException {
         super(channel);
+        this.sureToscaBasePath = sureToscaBasePath;
         this.channel = channel;
         logger = Logger.getLogger(Consumer.class.getName());
         this.objectMapper = new ObjectMapper();
@@ -53,7 +57,7 @@ public class Consumer extends DefaultConsumer {
     }
 
     @Override
-    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException, FileNotFoundException {
+    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException, FileNotFoundException, JsonProcessingException {
         try {
             //Create the reply properties which tells us where to reply, and which id to use.
             //No need to change anything here
@@ -69,8 +73,8 @@ public class Consumer extends DefaultConsumer {
                 throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
             }
 
-            CloudStormService service = new CloudStormService();
-            ToscaTemplate toscaTemplate = service.execute(message.getToscaTemplate());
+            CloudStormService service = new CloudStormService(sureToscaBasePath,message.getToscaTemplate());
+            ToscaTemplate toscaTemplate = service.execute();
 
             Message responceMessage = new Message();
             responceMessage.setCreationDate(System.currentTimeMillis());
@@ -83,7 +87,7 @@ public class Consumer extends DefaultConsumer {
 //We send the response back. No need to change anything here
             channel.basicPublish("", properties.getReplyTo(), replyProps, response.getBytes("UTF-8"));
             channel.basicAck(envelope.getDeliveryTag(), false);
-        } catch (JSchException ex) {
+        } catch (JSchException | ApiException ex) {
             Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
         }
 

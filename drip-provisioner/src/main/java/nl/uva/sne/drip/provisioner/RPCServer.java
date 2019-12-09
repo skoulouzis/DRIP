@@ -70,11 +70,11 @@ public class RPCServer {
             //We define the queue name 
             channel.queueDeclare(prop.getProperty("message.broker.queue.provisioner", "provisioner"), false, false, false, null);
             DefaultConsumer c;
-            c = new nl.uva.sne.drip.provisioner.Consumer(channel);
+            c = new nl.uva.sne.drip.provisioner.Consumer(channel,prop.getProperty("sure-tosca.base.path"));
 
             //Start listening for messages 
             channel.basicConsume(prop.getProperty("message.broker.queue.provisioner", "provisioner"), false, c);
-
+            
             //Block so we don't close the channel
             while (true) {
 

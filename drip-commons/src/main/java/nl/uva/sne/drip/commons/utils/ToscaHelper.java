@@ -28,6 +28,7 @@ import java.util.Map;
 import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
 import nl.uva.sne.drip.commons.sure_tosca.client.Configuration;
 import nl.uva.sne.drip.commons.sure_tosca.client.DefaultApi;
+import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import org.apache.commons.io.FileUtils;
 
@@ -72,11 +73,16 @@ public class ToscaHelper {
         for (String type : toscaInterfaceTypes) {
             String derivedFrom = null;
             List<Map<String, Object>> interfaces = api.getTypes(String.valueOf(id), "interface_types", null, type, null, null, null, null, null, derivedFrom);
-            
+
             interfaceDefinitions.addAll(interfaces);
         }
 
         return interfaceDefinitions;
+    }
+
+    public List<NodeTemplate> getVMTopologyTemplates(ToscaTemplate toscaTemplate) throws ApiException {
+        List<NodeTemplate> vmTopologyTemplates = api.getNodeTemplates(String.valueOf(id), "tosca.nodes.ARTICONF.VM.topology", null, null, null, null, null, null, null, null);
+        return vmTopologyTemplates;
     }
 
 }
