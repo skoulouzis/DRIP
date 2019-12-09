@@ -1,13 +1,13 @@
-  CloudsStormVM:
-    type: "object"
-    properties:
-        name:
-            type: "string"
-        nodeType:
-            type: "string"
-        OSType:
-            type: "string"
-        script:
-            type: "string"
-        publicAddress:
-            type: "string"
+    CloudsStormVM:
+        type: "object"
+        properties:
+            name:
+                type: "string"
+            nodeType:
+                type: "string"
+            OSType:
+                type: "string"
+            script:
+                type: "string"
+            publicAddress:
+                type: "string"

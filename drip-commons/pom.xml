@@ -127,6 +127,11 @@
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
             <type>jar</type>
+        </dependency>        
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
         </dependency>                
     </dependencies>
     
@@ -161,7 +166,7 @@
                             <output>${project.build.directory}/generated-sources</output>
                             <apiPackage>${default.package}.handler</apiPackage>
                             <modelPackage>nl.uva.sne.drip.model</modelPackage>
-                            <invokerPackage>${default.package}.handler</invokerPackage>                            
+                            <invokerPackage>nl.uva.sne.drip.commons.cloud_storm.client</invokerPackage>                            
                         </configuration>
                     </execution>
                 </executions>
