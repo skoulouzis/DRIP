@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ import java.util.Map;
  *
  * @author S. Koulouzis.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MessageParameter implements Serializable {
 
     private String url;

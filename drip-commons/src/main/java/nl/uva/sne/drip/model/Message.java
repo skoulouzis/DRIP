@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import java.util.List;
  *
  * @author S. Koulouzis.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Message implements Serializable {
 
     private String owner;
