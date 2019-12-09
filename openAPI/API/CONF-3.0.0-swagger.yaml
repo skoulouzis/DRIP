@@ -515,7 +515,7 @@ definitions:
       node_templates:
         type: object
         additionalProperties:
-          $ref: '#/definitions/NodeTemplate_2'
+          $ref: '#/definitions/NodeTemplate'
       relationship_templates:
         type: object
         additionalProperties:
@@ -553,7 +553,7 @@ definitions:
       template_name:
         type: string
       topology_template:
-        $ref: '#/definitions/TopologyTemplate_2'
+        $ref: '#/definitions/TopologyTemplate'
       template_author:
         type: string
       template_version:
@@ -624,88 +624,5 @@ definitions:
           properties: {}
   Provisioner:
     type: object
-  NodeTemplate_2:
+  CloudsStormTopTopology:
     type: object
-    properties:
-      derived_from:
-        type: string
-      properties:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      requirements:
-        type: array
-        items:
-          type: object
-          additionalProperties:
-            type: object
-            properties: {}
-      interfaces:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      capabilities:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      type:
-        type: string
-      description:
-        type: string
-      directives:
-        type: array
-        items:
-          type: string
-      attributes:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      artifacts:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-  TopologyTemplate_2:
-    type: object
-    properties:
-      description:
-        type: string
-      inputs:
-        type: object
-        additionalProperties:
-          type: string
-      node_templates:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/NodeTemplate_2'
-      relationship_templates:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      outputs:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      groups:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      substitution_mappings:
-        type: object
-        additionalProperties:
-          type: object
-          properties: {}
-      policies:
-        type: array
-        items:
-          type: object
-          additionalProperties:
-            type: object
-            properties: {}
