@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
+import nl.uva.sne.drip.service.DRIPService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
@@ -21,8 +24,12 @@ public class ProvisionerApiController implements ProvisionerApi {
 
     private final HttpServletRequest request;
 
-//    @Autowired
-//    private ProvisionerService provisionerService;
+    @Value("${message.broker.queue.provisioner}")
+    private String queueName;
+
+    @Autowired
+    private DRIPService dripService;
+
     @org.springframework.beans.factory.annotation.Autowired
     public ProvisionerApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
@@ -35,8 +42,9 @@ public class ProvisionerApiController implements ProvisionerApi {
             @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("text/plain")) {
-//                String planedYemplateId = provisionerService.provision(id);
-//                return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
+            dripService.setRequestQeueName(queueName);
+            String planedYemplateId = dripService.execute(id);
+            return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

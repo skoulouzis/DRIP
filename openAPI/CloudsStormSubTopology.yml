@@ -1,0 +1,7 @@
+CloudsStormSubTopology:
+    type: "object"
+    properties:
+    VMs:
+        type: array
+    items: 
+        $ref: 'https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/openAPI/CloudsStormVM.yml#/CloudsStormVM'
