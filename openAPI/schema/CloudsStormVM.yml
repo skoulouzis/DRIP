@@ -1,4 +1,4 @@
-CloudsStormVM:
+  CloudsStormVM:
     type: "object"
     properties:
         name:
