@@ -28,11 +28,11 @@ paths:
         required: true
         type: "file"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "string"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}:
@@ -48,13 +48,13 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             $ref: "#/definitions/ToscaTemplate"
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/imports:
@@ -71,7 +71,7 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "array"
@@ -80,9 +80,9 @@ paths:
               additionalProperties:
                 type: "object"
                 properties: {}
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/dsl_definitions:
@@ -112,7 +112,7 @@ paths:
         required: false
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "array"
@@ -121,9 +121,9 @@ paths:
               additionalProperties:
                 type: "object"
                 properties: {}
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/types:
@@ -195,7 +195,7 @@ paths:
         required: false
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "array"
@@ -204,9 +204,9 @@ paths:
               additionalProperties:
                 type: "object"
                 properties: {}
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/relationship_templates:
@@ -233,7 +233,7 @@ paths:
         required: false
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "array"
@@ -242,9 +242,9 @@ paths:
               additionalProperties:
                 type: "object"
                 properties: {}
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/topology_template:
@@ -260,13 +260,13 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             $ref: "#/definitions/TopologyTemplate"
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/topology_template/node_templates:
@@ -322,15 +322,15 @@ paths:
         required: false
         type: "boolean"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "array"
             items:
               $ref: "#/definitions/NodeTemplate"
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/topology_template/node_templates/{node_name}/type_name:
@@ -352,13 +352,13 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "string"
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/topology_template/node_templates/{node_name}/requirements:
@@ -380,16 +380,16 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "object"
             additionalProperties:
               type: "object"
               properties: {}
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/topology_template/node_templates/{node_name}/derived_from:
@@ -411,13 +411,13 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "string"
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_requirements:
@@ -440,16 +440,16 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "object"
             additionalProperties:
               type: "object"
               properties: {}
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_types:
@@ -472,15 +472,15 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "array"
             items:
               type: "string"
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_properties:
@@ -503,7 +503,7 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "array"
@@ -512,9 +512,9 @@ paths:
               additionalProperties:
                 type: "object"
                 properties: {}
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/topology_template/node_templates/{node_name}/properties:
@@ -536,16 +536,16 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "object"
             additionalProperties:
               type: "object"
               properties: {}
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
     put:
@@ -574,13 +574,13 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "string"
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/topology_template/node_templates/{node_name}/outputs:
@@ -602,7 +602,7 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "array"
@@ -611,9 +611,9 @@ paths:
               additionalProperties:
                 type: "object"
                 properties: {}
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/topology_template/node_templates/{node_name}/related:
@@ -635,15 +635,15 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "successful operation"
           schema:
             type: "array"
             items:
               $ref: "#/definitions/NodeTemplate"
-        404:
+        "404":
           description: "Not found"
-        405:
+        "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
 definitions:
