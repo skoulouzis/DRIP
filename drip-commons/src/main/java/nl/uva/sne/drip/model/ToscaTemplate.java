@@ -1,7 +1,6 @@
 package nl.uva.sne.drip.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,13 +16,10 @@ import org.springframework.data.annotation.Id;
  * ToscaTemplate
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-06T13:31:49.386Z")
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-10T15:39:04.296Z")
+
 public class ToscaTemplate {
 
-    /**
-     * @return the id
-     */
     public String getId() {
         return id;
     }
@@ -117,7 +113,7 @@ public class ToscaTemplate {
      * Get toscaDefinitionsVersion
      *
      * @return toscaDefinitionsVersion
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -138,7 +134,7 @@ public class ToscaTemplate {
      * Get toscaDefaultNamespace
      *
      * @return toscaDefaultNamespace
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -159,7 +155,7 @@ public class ToscaTemplate {
      * Get templateName
      *
      * @return templateName
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -180,7 +176,7 @@ public class ToscaTemplate {
      * Get topologyTemplate
      *
      * @return topologyTemplate
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -203,7 +199,7 @@ public class ToscaTemplate {
      * Get templateAuthor
      *
      * @return templateAuthor
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -224,7 +220,7 @@ public class ToscaTemplate {
      * Get templateVersion
      *
      * @return templateVersion
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -245,7 +241,7 @@ public class ToscaTemplate {
      * Get description
      *
      * @return description
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -274,7 +270,7 @@ public class ToscaTemplate {
      * Get imports
      *
      * @return imports
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -305,7 +301,7 @@ public class ToscaTemplate {
      * Get dslDefinitions
      *
      * @return dslDefinitions
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -334,7 +330,7 @@ public class ToscaTemplate {
      * Get nodeTypes
      *
      * @return nodeTypes
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -363,7 +359,7 @@ public class ToscaTemplate {
      * Get relationshipTypes
      *
      * @return relationshipTypes
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -392,7 +388,7 @@ public class ToscaTemplate {
      * Get relationshipTemplates
      *
      * @return relationshipTemplates
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -421,7 +417,7 @@ public class ToscaTemplate {
      * Get capabilityTypes
      *
      * @return capabilityTypes
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -450,7 +446,7 @@ public class ToscaTemplate {
      * Get artifactTypes
      *
      * @return artifactTypes
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -479,7 +475,7 @@ public class ToscaTemplate {
      * Get dataTypes
      *
      * @return dataTypes
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -508,7 +504,7 @@ public class ToscaTemplate {
      * Get interfaceTypes
      *
      * @return interfaceTypes
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -537,7 +533,7 @@ public class ToscaTemplate {
      * Get policyTypes
      *
      * @return policyTypes
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -566,7 +562,7 @@ public class ToscaTemplate {
      * Get groupTypes
      *
      * @return groupTypes
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -595,7 +591,7 @@ public class ToscaTemplate {
      * Get repositories
      *
      * @return repositories
-  *
+     *
      */
     @ApiModelProperty(value = "")
 

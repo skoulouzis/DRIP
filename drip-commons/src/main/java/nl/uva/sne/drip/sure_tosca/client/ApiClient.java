@@ -11,6 +11,7 @@
  */
 package nl.uva.sne.drip.sure_tosca.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.*;
 
 import javax.net.ssl.*;

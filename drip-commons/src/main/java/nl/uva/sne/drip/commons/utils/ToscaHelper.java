@@ -73,7 +73,6 @@ public class ToscaHelper {
         for (String type : toscaInterfaceTypes) {
             String derivedFrom = null;
             List<Map<String, Object>> interfaces = api.getTypes(String.valueOf(id), "interface_types", null, type, null, null, null, null, null, derivedFrom);
-
             interfaceDefinitions.addAll(interfaces);
         }
 
@@ -83,10 +82,6 @@ public class ToscaHelper {
     public List<NodeTemplate> getVMTopologyTemplates() throws ApiException {
         List<NodeTemplate> vmTopologyTemplates = api.getNodeTemplates(String.valueOf(id), "tosca.nodes.ARTICONF.VM.topology", null, null, null, null, null, null, null);
         return vmTopologyTemplates;
-    }
-
-    public ToscaTemplate execute() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

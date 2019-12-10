@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import org.junit.After;
@@ -60,10 +61,8 @@ public class ToscaHelperTest {
         prop.load(new FileInputStream(resourceName));
         byte[] bytes = Files.readAllBytes(Paths.get(testUpdatedApplicationExampleToscaFilePath));
         String ymlStr = new String(bytes, "UTF-8");
-
         objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         toscaTemplate = objectMapper.readValue(ymlStr, ToscaTemplate.class);
-
         instance = new ToscaHelper(toscaTemplate, prop.getProperty("sure-tosca.base.path"));
 
     }
@@ -97,9 +96,12 @@ public class ToscaHelperTest {
     public void testGetProvisionInterfaceDefinitions() throws Exception {
         System.out.println("getProvisionInterfaceDefinitions");
         List<String> toscaInterfaceTypes = new ArrayList<>();
-        toscaInterfaceTypes.add("tosca.interfaces.ARTICONF.CloudsStorm");
+        String expected = "tosca.interfaces.ARTICONF.CloudsStorm";
+        toscaInterfaceTypes.add(expected);
         List<Map<String, Object>> result = instance.getProvisionInterfaceDefinitions(toscaInterfaceTypes);
         assertNotNull(result);
+        String key = result.get(0).keySet().iterator().next();
+        assertEquals(expected, key);
     }
 
     /**
@@ -110,7 +112,7 @@ public class ToscaHelperTest {
         System.out.println("getVMTopologyTemplates");
         List<NodeTemplate> result = instance.getVMTopologyTemplates();
         assertNotNull(result);
-        for(NodeTemplate nodeTemplate:result){
+        for (NodeTemplate nodeTemplate : result) {
             assertEquals(nodeTemplate.getType(), "tosca.nodes.ARTICONF.VM.topology");
         }
     }
