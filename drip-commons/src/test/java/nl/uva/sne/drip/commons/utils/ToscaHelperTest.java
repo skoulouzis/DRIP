@@ -36,14 +36,14 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.model.NodeTemplate;
-import nl.uva.sne.drip.model.ToscaTemplate;
+import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import nl.uva.sne.drip.sure_tosca.client.ApiException;
+import nl.uva.sne.drip.sure.tosca.client.ApiException;
 
 /**
  *
@@ -105,7 +105,7 @@ public class ToscaHelperTest {
     /**
      * Test of getProvisionInterfaceDefinitions method, of class ToscaHelper.
      *
-     * @throws nl.uva.sne.drip.sure_tosca.client.ApiException
+     * @throws nl.uva.sne.drip.sure.tosca.client.ApiException
      */
     @Test
     public void testGetProvisionInterfaceDefinitions() throws ApiException {
@@ -124,7 +124,7 @@ public class ToscaHelperTest {
     /**
      * Test of getVMTopologyTemplates method, of class ToscaHelper.
      *
-     * @throws nl.uva.sne.drip.sure_tosca.client.ApiException
+     * @throws nl.uva.sne.drip.sure.tosca.client.ApiException
      */
     @Test
     public void testGetVMTopologyTemplates() throws ApiException {

@@ -26,11 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.model.NodeTemplate;
-import nl.uva.sne.drip.model.ToscaTemplate;
-import nl.uva.sne.drip.sure_tosca.DefaultApi;
+import nl.uva.sne.drip.model.tosca.ToscaTemplate;
+import nl.uva.sne.drip.sure.tosca.client.DefaultApi;
 import org.apache.commons.io.FileUtils;
-import nl.uva.sne.drip.sure_tosca.client.ApiException;
-import nl.uva.sne.drip.sure_tosca.client.Configuration;
+import nl.uva.sne.drip.sure.tosca.client.ApiException;
+import nl.uva.sne.drip.sure.tosca.client.Configuration;
 
 /**
  *
@@ -99,10 +99,6 @@ public class ToscaHelper {
         }
         return vms;
 
-    }
-
-    public String getVMType(NodeTemplate vm, String provider) {
-        
     }
 
 }

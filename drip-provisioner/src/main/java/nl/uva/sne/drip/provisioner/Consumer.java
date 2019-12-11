@@ -26,12 +26,13 @@ import com.rabbitmq.client.Envelope;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.model.Message;
-import nl.uva.sne.drip.model.ToscaTemplate;
-import nl.uva.sne.drip.sure_tosca.client.ApiException;
+import nl.uva.sne.drip.model.tosca.ToscaTemplate;
+import nl.uva.sne.drip.sure.tosca.client.ApiException;
 
 /**
  *
@@ -45,11 +46,11 @@ public class Consumer extends DefaultConsumer {
     private final Channel channel;
     private final Logger logger;
     private final ObjectMapper objectMapper;
-    private final String sureToscaBasePath;
+    private final Properties properties;
 
-    public Consumer(Channel channel, String sureToscaBasePath) throws IOException, TimeoutException {
+    public Consumer(Channel channel, Properties properties) throws IOException, TimeoutException {
         super(channel);
-        this.sureToscaBasePath = sureToscaBasePath;
+        this.properties = properties;
         this.channel = channel;
         logger = Logger.getLogger(Consumer.class.getName());
         this.objectMapper = new ObjectMapper();
@@ -73,7 +74,7 @@ public class Consumer extends DefaultConsumer {
                 throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
             }
 
-            CloudStormService service = new CloudStormService(sureToscaBasePath, message.getToscaTemplate());
+            CloudStormService service = new CloudStormService(this.properties, message.getToscaTemplate());
             ToscaTemplate toscaTemplate = service.execute();
 
             Message responceMessage = new Message();

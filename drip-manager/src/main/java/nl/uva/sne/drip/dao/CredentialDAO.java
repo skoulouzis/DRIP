@@ -5,7 +5,7 @@
  */
 package nl.uva.sne.drip.dao;
 
-import nl.uva.sne.drip.model.Credentials;
+import nl.uva.sne.drip.model.tosca.Credentials;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

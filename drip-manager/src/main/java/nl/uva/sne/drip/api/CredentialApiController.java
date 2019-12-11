@@ -1,6 +1,6 @@
 package nl.uva.sne.drip.api;
 
-import nl.uva.sne.drip.model.Credentials;
+import nl.uva.sne.drip.model.tosca.Credentials;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;

@@ -11,6 +11,7 @@
  */
 package nl.uva.sne.drip.sure_tosca.client;
 
+import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import java.io.File;
 import org.junit.Test;
 

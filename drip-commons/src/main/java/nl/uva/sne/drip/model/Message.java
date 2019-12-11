@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.model;
 
+import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.List;

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import nl.uva.sne.drip.dao.ToscaTemplateDAO;
-import nl.uva.sne.drip.model.ToscaTemplate;
+import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

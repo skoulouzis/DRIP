@@ -2,5 +2,6 @@
       type: "object"
       properties:
         cloudDBs:
-            type: "array"
-            items: $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/CloudDB.yml#/CloudDB"
+            type: array
+            items:
+              $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/CloudDB.yml#/CloudDB"

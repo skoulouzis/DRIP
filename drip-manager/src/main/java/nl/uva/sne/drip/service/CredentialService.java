@@ -11,7 +11,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.dao.CredentialDAO;
-import nl.uva.sne.drip.model.Credentials;
+import nl.uva.sne.drip.model.tosca.Credentials;
 
 /**
  *

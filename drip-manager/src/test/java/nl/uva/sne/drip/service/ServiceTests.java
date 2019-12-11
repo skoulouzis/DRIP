@@ -36,7 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.Swagger2SpringBoot;
 import nl.uva.sne.drip.configuration.MongoConfig;
-import nl.uva.sne.drip.model.Credentials;
+import nl.uva.sne.drip.model.tosca.Credentials;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
