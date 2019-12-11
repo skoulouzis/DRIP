@@ -1,6 +1,6 @@
 package nl.uva.sne.drip.api;
 
-import nl.uva.sne.drip.model.
+import nl.uva.sne.drip.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
