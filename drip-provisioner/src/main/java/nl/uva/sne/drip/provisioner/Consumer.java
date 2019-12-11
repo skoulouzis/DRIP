@@ -29,9 +29,9 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.ToscaTemplate;
+import nl.uva.sne.drip.sure_tosca.client.ApiException;
 
 /**
  *
@@ -47,7 +47,7 @@ public class Consumer extends DefaultConsumer {
     private final ObjectMapper objectMapper;
     private final String sureToscaBasePath;
 
-    public Consumer(Channel channel,String sureToscaBasePath) throws IOException, TimeoutException {
+    public Consumer(Channel channel, String sureToscaBasePath) throws IOException, TimeoutException {
         super(channel);
         this.sureToscaBasePath = sureToscaBasePath;
         this.channel = channel;
@@ -73,7 +73,7 @@ public class Consumer extends DefaultConsumer {
                 throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
             }
 
-            CloudStormService service = new CloudStormService(sureToscaBasePath,message.getToscaTemplate());
+            CloudStormService service = new CloudStormService(sureToscaBasePath, message.getToscaTemplate());
             ToscaTemplate toscaTemplate = service.execute();
 
             Message responceMessage = new Message();

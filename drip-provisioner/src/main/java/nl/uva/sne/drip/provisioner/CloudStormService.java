@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import nl.uva.sne.drip.commons.sure_tosca.client.ApiException;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.CloudsStormTopTopology;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.ToscaTemplate;
+import nl.uva.sne.drip.sure_tosca.client.ApiException;
 import org.apache.commons.io.FilenameUtils;
 
 /**

@@ -5,7 +5,6 @@
  */
 package nl.uva.sne.drip.api;
 
-import nl.uva.sne.drip.model.User;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
