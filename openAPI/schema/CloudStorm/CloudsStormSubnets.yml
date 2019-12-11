@@ -10,5 +10,5 @@
             members:
                 type: array
                 items:
-                    $ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudsStorm/CloudsStormSubMembers.yml#/CloudsStormSubMembers'
+                    $ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/CloudsStormSubMembers.yml#/CloudsStormSubMembers'
                 
