@@ -441,6 +441,23 @@ securityDefinitions:
 definitions:
   User:
     type: object
+    properties:
+      id:
+        type: string
+      username:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      userStatus:
+        type: integer
+        format: int32
+        description: User Status
   Credentials:
     type: object
     properties:
@@ -461,8 +478,6 @@ definitions:
   NodeTemplate:
     type: object
     properties:
-      name:
-        type: string
       derived_from:
         type: string
       properties:
@@ -639,6 +654,62 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/CloudsStormSubnets'
+  CloudDB:
+    type: object
+    properties:
+      cloudProvider:
+        type: string
+      dbInfoFile:
+        type: string
+  DBInfo:
+    type: object
+    properties:
+      GlobalEntry:
+        type: string
+      DCMetaInfo:
+        $ref: '#/definitions/DCMetaInfo'
+  DCMetaInfo:
+    type: object
+    properties:
+      domain:
+        type: string
+      endpoint:
+        type: string
+      country:
+        type: string
+      longitude:
+        type: string
+      latitude:
+        type: string
+      availability:
+        type: string
+      VMMetaInfo:
+        $ref: '#/definitions/VMMetaInfo'
+      extraInfo:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+  VMMetaInfo:
+    type: object
+    properties:
+      OS:
+        type: string
+      CPU:
+        type: string
+      MEM:
+        type: string
+      Price:
+        type: string
+      DefaultSSHAccount:
+        type: string
+      availability:
+        type: string
+      extraInfo:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
   CloudsStormSubTopology:
     type: object
     properties:
