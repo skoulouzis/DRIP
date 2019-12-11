@@ -46,6 +46,7 @@ public class ToscaHelper {
     private static final String VM_NUM_OF_CORES = "num_cores";
     private static final String MEM_SIZE = "mem_size";
     private static final String VM_OS = "os";
+    private static final String VM_TOPOLOGY = "tosca.nodes.ARTICONF.VM.topology";
 
     /**
      * @return the id
@@ -145,6 +146,22 @@ public class ToscaHelper {
                 return value * 0.000001;
             default:
                 return null;
+        }
+    }
+
+    public String getTopologyDomain(NodeTemplate nodeTemplate) throws Exception {
+        if (nodeTemplate.getType().equals(VM_TOPOLOGY)) {
+            return (String) nodeTemplate.getProperties().get("domain");
+        } else {
+            throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
+        }
+    }
+
+    public String getTopologyProvider(NodeTemplate nodeTemplate) throws Exception {
+        if (nodeTemplate.getType().equals(VM_TOPOLOGY)) {
+            return (String) nodeTemplate.getProperties().get("provider");
+        } else {
+            throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
         }
     }
 
