@@ -3,6 +3,7 @@ import logging
 import os
 import tempfile
 import uuid
+from builtins import print
 from functools import reduce
 import copy
 
@@ -115,6 +116,17 @@ def get_interface_types(id, interface_type=None):
     return query_db(queries, db=interface_types_db)
 
 
+def change_to_nodeTemplateModel(query_results):
+    res = []
+    for node_template in query_results:
+        # copy.deepcopy()
+        name = next(iter(node_template))
+        node_template = node_template[name]
+        node_template['name'] = name
+        res.append(NodeTemplateModel.from_dict(node_template))
+    return res
+
+
 def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, has_properties=None,
                        has_attributes=None,
                        has_requirements=None, has_capabilities=None, has_artifacts=None):
@@ -173,7 +185,8 @@ def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, 
         queries.append(query.artifacts != prop)
 
     query_results = query_db(queries, db=node_template_db)
-    return query_results
+    return change_to_nodeTemplateModel(query_results)
+
 
 
 def get_tosca_template_get_dsl_definitions(id, anchors, derived_from):

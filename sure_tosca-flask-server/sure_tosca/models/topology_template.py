@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from sure_tosca.models import NodeTemplateModel
 from sure_tosca.models.base_model_ import Model
 from sure_tosca import util
+from sure_tosca.models.node_template import NodeTemplateModel
 
 
 class TopologyTemplateModel(Model):
@@ -22,9 +22,9 @@ class TopologyTemplateModel(Model):
         :param description: The description of this TopologyTemplate.  # noqa: E501
         :type description: str
         :param inputs: The inputs of this TopologyTemplate.  # noqa: E501
-        :type inputs: List[Dict[str, object]]
+        :type inputs: Dict[str, str]
         :param node_templates: The node_templates of this TopologyTemplate.  # noqa: E501
-        :type node_templates: Dict[str, NodeTemplateModel]
+        :type node_templates: Dict[str, NodeTemplate]
         :param relationship_templates: The relationship_templates of this TopologyTemplate.  # noqa: E501
         :type relationship_templates: Dict[str, object]
         :param outputs: The outputs of this TopologyTemplate.  # noqa: E501
@@ -38,7 +38,7 @@ class TopologyTemplateModel(Model):
         """
         self.swagger_types = {
             'description': str,
-            'inputs': List[Dict[str, object]],
+            'inputs': Dict[str, str],
             'node_templates': Dict[str, NodeTemplateModel],
             'relationship_templates': Dict[str, object],
             'outputs': Dict[str, object],
@@ -74,7 +74,7 @@ class TopologyTemplateModel(Model):
         :param dikt: A dict.
         :type: dict
         :return: The TopologyTemplate of this TopologyTemplate.  # noqa: E501
-        :rtype: TopologyTemplateModel
+        :rtype: TopologyTemplate
         """
         return util.deserialize_model(dikt, cls)
 
@@ -105,7 +105,7 @@ class TopologyTemplateModel(Model):
 
 
         :return: The inputs of this TopologyTemplate.
-        :rtype: List[Dict[str, object]]
+        :rtype: Dict[str, str]
         """
         return self._inputs
 
@@ -115,7 +115,7 @@ class TopologyTemplateModel(Model):
 
 
         :param inputs: The inputs of this TopologyTemplate.
-        :type inputs: List[Dict[str, object]]
+        :type inputs: Dict[str, str]
         """
 
         self._inputs = inputs
@@ -126,7 +126,7 @@ class TopologyTemplateModel(Model):
 
 
         :return: The node_templates of this TopologyTemplate.
-        :rtype: Dict[str, NodeTemplateModel]
+        :rtype: Dict[str, NodeTemplate]
         """
         return self._node_templates
 
@@ -136,7 +136,7 @@ class TopologyTemplateModel(Model):
 
 
         :param node_templates: The node_templates of this TopologyTemplate.
-        :type node_templates: Dict[str, NodeTemplateModel]
+        :type node_templates: Dict[str, NodeTemplate]
         """
 
         self._node_templates = node_templates
@@ -168,7 +168,7 @@ class TopologyTemplateModel(Model):
 
 
         :return: The outputs of this TopologyTemplate.
-        :rtype: str
+        :rtype: Dict[str, object]
         """
         return self._outputs
 
@@ -178,7 +178,7 @@ class TopologyTemplateModel(Model):
 
 
         :param outputs: The outputs of this TopologyTemplate.
-        :type outputs: str
+        :type outputs: Dict[str, object]
         """
 
         self._outputs = outputs
@@ -245,8 +245,3 @@ class TopologyTemplateModel(Model):
         """
 
         self._policies = policies
-
-    def __eq__(self, other):
-        if isinstance(other, TopologyTemplateModel):
-            return self.__key() == other.__key()
-        return NotImplemented

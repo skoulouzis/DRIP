@@ -15,15 +15,24 @@ import java.io.File;
 import org.junit.Test;
 
 import java.util.List;
+import static nl.uva.sne.drip.commons.utils.ToscaHelperTest.isServiceUp;
 import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 
 /**
  * API tests for DefaultApi
  */
+@Ignore
 public class DefaultApiTest {
 
-//    private final DefaultApi api = new DefaultApi();
+    private String serviceBasePath;
+    private final Boolean serviceUp;
 
+    public DefaultApiTest() {
+        serviceUp = isServiceUp(serviceBasePath);
+    }
+
+//    private final DefaultApi api = new DefaultApi();
     /**
      *
      *
@@ -330,5 +339,4 @@ public class DefaultApiTest {
 //
 //        // TODO: test validations
 //    }
-
 }

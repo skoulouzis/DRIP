@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from sure_tosca.models import TopologyTemplateModel
 from sure_tosca.models.base_model_ import Model
 from sure_tosca import util
+from sure_tosca.models.topology_template import TopologyTemplateModel
 
 
 class ToscaTemplateModel(Model):
@@ -16,11 +16,7 @@ class ToscaTemplateModel(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, tosca_definitions_version=None, tosca_default_namespace=None, template_name=None,
-                 topology_template=None, template_author=None, template_version=None, description=None, imports=None,
-                 dsl_definitions=None, node_types=None, relationship_types=None, relationship_templates=None,
-                 capability_types=None, artifact_types=None, data_types=None, interface_types=None, policy_types=None,
-                 group_types=None, repositories=None):  # noqa: E501
+    def __init__(self, tosca_definitions_version=None, tosca_default_namespace=None, template_name=None, topology_template=None, template_author=None, template_version=None, description=None, imports=None, dsl_definitions=None, node_types=None, relationship_types=None, relationship_templates=None, capability_types=None, artifact_types=None, data_types=None, interface_types=None, policy_types=None, group_types=None, repositories=None):  # noqa: E501
         """ToscaTemplate - a model defined in Swagger
 
         :param tosca_definitions_version: The tosca_definitions_version of this ToscaTemplate.  # noqa: E501
@@ -30,7 +26,7 @@ class ToscaTemplateModel(Model):
         :param template_name: The template_name of this ToscaTemplate.  # noqa: E501
         :type template_name: str
         :param topology_template: The topology_template of this ToscaTemplate.  # noqa: E501
-        :type topology_template: TopologyTemplateModel
+        :type topology_template: TopologyTemplate
         :param template_author: The template_author of this ToscaTemplate.  # noqa: E501
         :type template_author: str
         :param template_version: The template_version of this ToscaTemplate.  # noqa: E501
@@ -56,7 +52,7 @@ class ToscaTemplateModel(Model):
         :param interface_types: The interface_types of this ToscaTemplate.  # noqa: E501
         :type interface_types: Dict[str, object]
         :param policy_types: The policy_types of this ToscaTemplate.  # noqa: E501
-        :type policy_types: Dict[str, str]
+        :type policy_types: Dict[str, object]
         :param group_types: The group_types of this ToscaTemplate.  # noqa: E501
         :type group_types: Dict[str, object]
         :param repositories: The repositories of this ToscaTemplate.  # noqa: E501
@@ -79,7 +75,7 @@ class ToscaTemplateModel(Model):
             'artifact_types': Dict[str, object],
             'data_types': Dict[str, object],
             'interface_types': Dict[str, object],
-            'policy_types': Dict[str, str],
+            'policy_types': Dict[str, object],
             'group_types': Dict[str, object],
             'repositories': Dict[str, object]
         }
@@ -133,7 +129,7 @@ class ToscaTemplateModel(Model):
         :param dikt: A dict.
         :type: dict
         :return: The ToscaTemplate of this ToscaTemplate.  # noqa: E501
-        :rtype: ToscaTemplateModel
+        :rtype: ToscaTemplate
         """
         return util.deserialize_model(dikt, cls)
 
@@ -206,7 +202,7 @@ class ToscaTemplateModel(Model):
 
 
         :return: The topology_template of this ToscaTemplate.
-        :rtype: TopologyTemplateModel
+        :rtype: TopologyTemplate
         """
         return self._topology_template
 
@@ -216,7 +212,7 @@ class ToscaTemplateModel(Model):
 
 
         :param topology_template: The topology_template of this ToscaTemplate.
-        :type topology_template: TopologyTemplateModel
+        :type topology_template: TopologyTemplate
         """
 
         self._topology_template = topology_template
@@ -479,7 +475,7 @@ class ToscaTemplateModel(Model):
 
 
         :return: The policy_types of this ToscaTemplate.
-        :rtype: Dict[str, str]
+        :rtype: Dict[str, object]
         """
         return self._policy_types
 
@@ -489,7 +485,7 @@ class ToscaTemplateModel(Model):
 
 
         :param policy_types: The policy_types of this ToscaTemplate.
-        :type policy_types: Dict[str, str]
+        :type policy_types: Dict[str, object]
         """
 
         self._policy_types = policy_types
@@ -535,8 +531,3 @@ class ToscaTemplateModel(Model):
         """
 
         self._repositories = repositories
-
-    def __eq__(self, other):
-        if isinstance(other, ToscaTemplateModel):
-            return self.__key() == other.__key()
-        return NotImplemented

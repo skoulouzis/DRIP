@@ -24,12 +24,17 @@ import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import org.junit.After;
@@ -50,12 +55,14 @@ public class ToscaHelperTest {
     private static final String testUpdatedApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_2_topologies.yaml";
     private static ToscaHelper instance;
     private static ToscaTemplate toscaTemplate;
+    private static Boolean serviceUp;
 
     public ToscaHelperTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws UnsupportedEncodingException, JsonProcessingException, IOException, ApiException {
+
         Properties prop = new Properties();
         String resourceName = "src/test/resources/application.properties";
         prop.load(new FileInputStream(resourceName));
@@ -63,7 +70,11 @@ public class ToscaHelperTest {
         String ymlStr = new String(bytes, "UTF-8");
         objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         toscaTemplate = objectMapper.readValue(ymlStr, ToscaTemplate.class);
-        instance = new ToscaHelper(toscaTemplate, prop.getProperty("sure-tosca.base.path"));
+        String serviceBasePath = prop.getProperty("sure-tosca.base.path");
+        serviceUp = isServiceUp(serviceBasePath);
+        if (serviceUp) {
+            instance = new ToscaHelper(toscaTemplate, serviceBasePath);
+        }
 
     }
 
@@ -84,37 +95,59 @@ public class ToscaHelperTest {
      */
     @Test
     public void testGetId() {
-        System.out.println("getId");
-        Integer result = instance.getId();
-        assertNotNull(result);
+        if (serviceUp) {
+            System.out.println("getId");
+            Integer result = instance.getId();
+            assertNotNull(result);
+        }
     }
 
     /**
      * Test of getProvisionInterfaceDefinitions method, of class ToscaHelper.
+     *
+     * @throws nl.uva.sne.drip.sure_tosca.client.ApiException
      */
     @Test
-    public void testGetProvisionInterfaceDefinitions() throws Exception {
-        System.out.println("getProvisionInterfaceDefinitions");
-        List<String> toscaInterfaceTypes = new ArrayList<>();
-        String expected = "tosca.interfaces.ARTICONF.CloudsStorm";
-        toscaInterfaceTypes.add(expected);
-        List<Map<String, Object>> result = instance.getProvisionInterfaceDefinitions(toscaInterfaceTypes);
-        assertNotNull(result);
-        String key = result.get(0).keySet().iterator().next();
-        assertEquals(expected, key);
+    public void testGetProvisionInterfaceDefinitions() throws ApiException {
+        if (serviceUp) {
+            System.out.println("getProvisionInterfaceDefinitions");
+            List<String> toscaInterfaceTypes = new ArrayList<>();
+            String expected = "tosca.interfaces.ARTICONF.CloudsStorm";
+            toscaInterfaceTypes.add(expected);
+            List<Map<String, Object>> result = instance.getProvisionInterfaceDefinitions(toscaInterfaceTypes);
+            assertNotNull(result);
+            String key = result.get(0).keySet().iterator().next();
+            assertEquals(expected, key);
+        }
     }
 
     /**
      * Test of getVMTopologyTemplates method, of class ToscaHelper.
+     *
+     * @throws nl.uva.sne.drip.sure_tosca.client.ApiException
      */
     @Test
-    public void testGetVMTopologyTemplates() throws Exception {
-        System.out.println("getVMTopologyTemplates");
-        List<NodeTemplate> result = instance.getVMTopologyTemplates();
-        assertNotNull(result);
-        for (NodeTemplate nodeTemplate : result) {
-            assertEquals(nodeTemplate.getType(), "tosca.nodes.ARTICONF.VM.topology");
+    public void testGetVMTopologyTemplates() throws ApiException {
+        if (serviceUp) {
+            System.out.println("getVMTopologyTemplates");
+            List<NodeTemplate> result = instance.getVMTopologyTemplates();
+            assertNotNull(result);
+            for (NodeTemplate nodeTemplate : result) {
+                assertEquals(nodeTemplate.getType(), "tosca.nodes.ARTICONF.VM.topology");
+            }
         }
     }
 
+    public static Boolean isServiceUp(String serviceBasePath) {
+        try {
+            URL serviceUrl = new URL(serviceBasePath);
+            HttpURLConnection connection = (HttpURLConnection) serviceUrl.openConnection();
+            //Set request to header to reduce load as Subirkumarsao said.
+            connection.setRequestMethod("HEAD");
+            int code = connection.getResponseCode();
+        } catch (IOException ex) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -1,8 +1,9 @@
 package nl.uva.sne.drip.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,28 +11,15 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
+import javax.validation.constraints.*;
 
 /**
  * NodeTemplate
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-10T15:39:04.296Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-10T16:27:40.329Z")
 
 public class NodeTemplate {
-
-    public String getId() {
-        return name;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.name = id;
-    }
-
-    @JsonIgnore
-    private String name;
 
     @JsonProperty("derived_from")
     private String derivedFrom = null;
@@ -79,7 +67,7 @@ public class NodeTemplate {
      * Get derivedFrom
      *
      * @return derivedFrom
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -108,7 +96,7 @@ public class NodeTemplate {
      * Get properties
      *
      * @return properties
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -137,7 +125,7 @@ public class NodeTemplate {
      * Get requirements
      *
      * @return requirements
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -168,7 +156,7 @@ public class NodeTemplate {
      * Get interfaces
      *
      * @return interfaces
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -197,7 +185,7 @@ public class NodeTemplate {
      * Get capabilities
      *
      * @return capabilities
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -218,7 +206,7 @@ public class NodeTemplate {
      * Get type
      *
      * @return type
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -239,7 +227,7 @@ public class NodeTemplate {
      * Get description
      *
      * @return description
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -268,7 +256,7 @@ public class NodeTemplate {
      * Get directives
      *
      * @return directives
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -297,7 +285,7 @@ public class NodeTemplate {
      * Get attributes
      *
      * @return attributes
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -326,7 +314,7 @@ public class NodeTemplate {
      * Get artifacts
      *
      * @return artifacts
-     *
+  *
      */
     @ApiModelProperty(value = "")
 

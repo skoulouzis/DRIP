@@ -15,8 +15,7 @@ class NodeTemplateModel(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, derived_from=None, properties=None, requirements=None, interfaces=None, capabilities=None,
-                 type=None, description=None, directives=None, attributes=None, artifacts=None):  # noqa: E501
+    def __init__(self, derived_from=None, properties=None, requirements=None, interfaces=None, capabilities=None, type=None, description=None, directives=None, attributes=None, artifacts=None):  # noqa: E501
         """NodeTemplate - a model defined in Swagger
 
         :param derived_from: The derived_from of this NodeTemplate.  # noqa: E501
@@ -84,9 +83,11 @@ class NodeTemplateModel(Model):
         :param dikt: A dict.
         :type: dict
         :return: The NodeTemplate of this NodeTemplate.  # noqa: E501
-        :rtype: NodeTemplateModel
+        :rtype: NodeTemplate
         """
         return util.deserialize_model(dikt, cls)
+
+
 
     @property
     def derived_from(self):
