@@ -6,10 +6,6 @@
 package nl.uva.sne.drip.provisioner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
@@ -25,6 +21,7 @@ import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormTopTopology;
+import nl.uva.sne.drip.model.cloud.storm.VMMetaInfo;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.apache.commons.io.FilenameUtils;
@@ -39,16 +36,14 @@ class CloudStormService {
     private String tempInputDirPath;
     private final ToscaTemplate toscaTemplate;
     private final ToscaHelper helper;
-    private final String cloudStormDBPath;
-    private final ObjectMapper objectMapper;
+    private final CloudStormDAO cloudStormDAO;
 
     CloudStormService(Properties properties, ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException {
         this.toscaTemplate = toscaTemplate;
-        this.cloudStormDBPath = properties.getProperty("cloud.storm.db.path");
+        String cloudStormDBPath = properties.getProperty("cloud.storm.db.path");
+        cloudStormDAO = new CloudStormDAO(cloudStormDBPath);
         String sureToscaBasePath = properties.getProperty("sure-tosca.base.path");
         this.helper = new ToscaHelper(toscaTemplate, sureToscaBasePath);
-        this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);        
     }
 
     public ToscaTemplate execute() throws FileNotFoundException, JSchException, IOException, ApiException {
@@ -91,7 +86,7 @@ class CloudStormService {
         return "vm_user";
     }
 
-    private List<CloudsStormSubTopology> getCloudsStormSubTopologies(ToscaTemplate toscaTemplate) throws ApiException {
+    private List<CloudsStormSubTopology> getCloudsStormSubTopologies(ToscaTemplate toscaTemplate) throws ApiException, IOException {
         List<NodeTemplate> vmTopologyTemplates = helper.getVMTopologyTemplates();
         List<CloudsStormSubTopology> cloudsStormSubTopologies = new ArrayList<>();
         int i = 0;
@@ -120,9 +115,16 @@ class CloudStormService {
         return cloudsStormSubTopologies;
     }
 
-    private String getVMType(NodeTemplate vm, String provider) {
-        nl.uva.sne.drip.model.cloud.storm.CloudDB
-               objectMapper.readValue(new File(cloudStormDBPath), DB)
+    private String getVMType(NodeTemplate vm, String provider) throws IOException {
+        VMMetaInfo vmInfo = cloudStormDAO.findVmMetaInfoByProvider(provider);
+        String cpu = vmInfo.getCPU();
+         String mem = vmInfo.getMEM();
+         vmInfo.get
+         int numOfCores = helper.getVMNumOfCores(vm);
+         int memSize = helper.getVMNMemSize(vm);
+
+        
+        return null;
     }
 
 }

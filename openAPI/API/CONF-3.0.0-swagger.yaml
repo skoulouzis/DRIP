@@ -654,6 +654,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/CloudsStormSubnets'
+  DB:
+    type: object
+    properties:
+      cloudDBs:
+        type: array
+        items:
+          $ref: '#/definitions/CloudDB'
   CloudDB:
     type: object
     properties:

@@ -14,8 +14,10 @@
         availability:
             type: "string"
         VMMetaInfo:
-            $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/VMMetaInfo.yml#/VMMetaInfo"
+            type: "array"
+            items:
+              $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/VMMetaInfo.yml#/VMMetaInfo"
         extraInfo:
             type: object
             additionalProperties:
-                type: object   
+                type: object    
