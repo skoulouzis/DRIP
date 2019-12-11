@@ -29,7 +29,7 @@ topology_template:
       interfaces:
         Standard: {create: dumy.yaml}
       properties: {cpu_frequency: 2.9 GHz, disk_size: 25000 MB, host_name: vm, mem_size: 3000 MB,
-        num_cpus: 1, os: Ubuntu 17.10, user_name: vm_user}
+        num_cpus: 1, os: Ubuntu 14.04, user_name: vm_user}
       type: tosca.nodes.ARTICONF.VM.Compute
     lawrence_kubernetes:
       interfaces:

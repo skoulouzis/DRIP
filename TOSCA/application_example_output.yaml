@@ -44,7 +44,7 @@ topology_template:
           required: true
           type: integer
         os:
-          default: ubuntu 16.04
+          default: ubuntu 14.04
           required: true
           type: string
         private_ip:
@@ -74,7 +74,7 @@ topology_template:
         host_name: vm
         mem_size: 6000 MB
         num_cores: 2
-        os: ubuntu 16.04
+        os: ubuntu 14.04
         role: worker
         user_name: vm_user
       type: tosca.nodes.ARTICONF.VM.Compute
@@ -87,7 +87,7 @@ topology_template:
         host_name: vm
         mem_size: 6000 MB
         num_cores: 2
-        os: ubuntu 16.04
+        os: ubuntu 14.04
         role: worker
         user_name: vm_user
       type: tosca.nodes.ARTICONF.VM.Compute

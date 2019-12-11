@@ -13,7 +13,7 @@ topology_template:
         disk_size: 50000 MB
         mem_size: 6000 MB
         num_cores: 2
-        os: ubuntu 16.04
+        os: ubuntu 14.04
       type: tosca.nodes.ARTICONF.VM.Compute
     compute_1:
       interfaces:
@@ -23,7 +23,7 @@ topology_template:
         disk_size: 50000 MB
         mem_size: 6000 MB
         num_cores: 2
-        os: ubuntu 16.04
+        os: ubuntu 14.04
       type: tosca.nodes.ARTICONF.VM.Compute
     compute_2:
       interfaces:
@@ -33,7 +33,7 @@ topology_template:
         disk_size: 50000 MB
         mem_size: 6000 MB
         num_cores: 2
-        os: ubuntu 16.04.04
+        os: ubuntu 14.04.04
       type: tosca.nodes.ARTICONF.VM.Compute      
     kubernetes:
       interfaces:
