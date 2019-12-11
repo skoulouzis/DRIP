@@ -7,6 +7,8 @@
             type: "string"
         MEM:
             type: "string"
+        VMType:
+            type: "string"
         Price:
             type: "string"
         DefaultSSHAccount:

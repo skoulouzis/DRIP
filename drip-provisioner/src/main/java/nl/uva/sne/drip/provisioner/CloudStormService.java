@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
@@ -46,7 +47,7 @@ class CloudStormService {
         this.helper = new ToscaHelper(toscaTemplate, sureToscaBasePath);
     }
 
-    public ToscaTemplate execute() throws FileNotFoundException, JSchException, IOException, ApiException {
+    public ToscaTemplate execute() throws FileNotFoundException, JSchException, IOException, ApiException, Exception {
         tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
         File tempInputDir = new File(tempInputDirPath);
         if (!(tempInputDir.mkdirs())) {
@@ -58,7 +59,7 @@ class CloudStormService {
         return toscaTemplate;
     }
 
-    private CloudsStormTopTopology buildCloudStormTopTopology(ToscaTemplate toscaTemplate) throws JSchException, IOException, ApiException {
+    private CloudsStormTopTopology buildCloudStormTopTopology(ToscaTemplate toscaTemplate) throws JSchException, IOException, ApiException, Exception {
         CloudsStormTopTopology topTopology = new CloudsStormTopTopology();
         String publicKeyPath = buildSSHKeyPair();
         topTopology.setPublicKeyPath(publicKeyPath);
@@ -86,7 +87,7 @@ class CloudStormService {
         return "vm_user";
     }
 
-    private List<CloudsStormSubTopology> getCloudsStormSubTopologies(ToscaTemplate toscaTemplate) throws ApiException, IOException {
+    private List<CloudsStormSubTopology> getCloudsStormSubTopologies(ToscaTemplate toscaTemplate) throws ApiException, IOException, Exception {
         List<NodeTemplate> vmTopologyTemplates = helper.getVMTopologyTemplates();
         List<CloudsStormSubTopology> cloudsStormSubTopologies = new ArrayList<>();
         int i = 0;
@@ -115,15 +116,20 @@ class CloudStormService {
         return cloudsStormSubTopologies;
     }
 
-    private String getVMType(NodeTemplate vm, String provider) throws IOException {
-        VMMetaInfo vmInfo = cloudStormDAO.findVmMetaInfoByProvider(provider);
-        String cpu = vmInfo.getCPU();
-         String mem = vmInfo.getMEM();
-         vmInfo.get
-         int numOfCores = helper.getVMNumOfCores(vm);
-         int memSize = helper.getVMNMemSize(vm);
+    private String getVMType(NodeTemplate vm, String provider) throws IOException, Exception {
+        Double numOfCores = helper.getVMNumOfCores(vm);
+        Double memSize = helper.getVMNMemSize(vm);
+        String os = helper.getVMNOS(vm);
+        List<VMMetaInfo> vmInfos = cloudStormDAO.findVmMetaInfoByProvider(provider);
+        for (VMMetaInfo vmInfo : vmInfos) {
+            System.err.println("numOfCores: " + numOfCores + " = " + vmInfo.getCPU());
+            System.err.println("memSize: " + numOfCores + " = " + vmInfo.getMEM());
+            System.err.println("os: " + os + " = " + vmInfo.getOS());
+            if (Objects.equals(numOfCores, Double.valueOf(vmInfo.getCPU())) && Objects.equals(memSize, Double.valueOf(vmInfo.getMEM())) && os.toLowerCase().equals(vmInfo.getOS().toLowerCase())) {
+                return vmInfo.getVmType();
+            }
+        }
 
-        
         return null;
     }
 

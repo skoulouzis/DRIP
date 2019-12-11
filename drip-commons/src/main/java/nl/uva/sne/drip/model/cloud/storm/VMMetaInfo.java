@@ -19,8 +19,25 @@ import javax.validation.constraints.*;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-11T15:13:55.016Z")
 
 public class VMMetaInfo   {
+
+    /**
+     * @return the vmType
+     */
+    public String getVmType() {
+        return vmType;
+    }
+
+    /**
+     * @param vmType the vmType to set
+     */
+    public void setVmType(String vmType) {
+        this.vmType = vmType;
+    }
   @JsonProperty("OS")
   private String OS = null;
+  
+  @JsonProperty("VMType")
+  private String vmType = null;  
 
   @JsonProperty("CPU")
   private String CPU = null;

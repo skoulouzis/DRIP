@@ -42,6 +42,10 @@ public class ToscaHelper {
 
     private final ObjectMapper objectMapper;
     public static final String VM_CAPABILITY = "tosca.capabilities.ARTICONF.VM";
+    private static final String VM_TYPE = "tosca.nodes.ARTICONF.VM.Compute";
+    private static final String VM_NUM_OF_CORES = "num_cores";
+    private static final String MEM_SIZE = "mem_size";
+    private static final String VM_OS = "os";
 
     /**
      * @return the id
@@ -99,6 +103,49 @@ public class ToscaHelper {
         }
         return vms;
 
+    }
+
+    public Double getVMNumOfCores(NodeTemplate vm) throws Exception {
+        if (vm.getType().equals(VM_TYPE)) {
+            return (Double) vm.getProperties().get(VM_NUM_OF_CORES);
+        } else {
+            throw new Exception("NodeTemplate is not of type: " + VM_TYPE + " it is of type: " + vm.getType());
+        }
+    }
+
+    public Double getVMNMemSize(NodeTemplate vm) throws Exception {
+        if (vm.getType().equals(VM_TYPE)) {
+            String memScalar = (String) vm.getProperties().get(MEM_SIZE);
+            String[] memScalarArray = memScalar.split(" ");
+            String memSize = memScalarArray[0];
+            String memUnit = memScalarArray[1];
+            Double memSizeInGB = convertToGB(Integer.valueOf(memSize), memUnit);
+            return memSizeInGB;
+        } else {
+            throw new Exception("NodeTemplate is not of type: " + VM_TYPE + " it is of type: " + vm.getType());
+        }
+
+    }
+
+    public String getVMNOS(NodeTemplate vm) throws Exception {
+        if (vm.getType().equals(VM_TYPE)) {
+            return (String) vm.getProperties().get(VM_OS);
+        } else {
+            throw new Exception("NodeTemplate is not of type: " + VM_TYPE + " it is of type: " + vm.getType());
+        }
+    }
+
+    private Double convertToGB(Integer value, String memUnit) {
+        switch (memUnit) {
+            case "GB":
+                return Double.valueOf(value);
+            case "MB":
+                return value * 0.001;
+            case "KB":
+                return value * 0.000001;
+            default:
+                return null;
+        }
     }
 
 }

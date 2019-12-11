@@ -4,4 +4,6 @@
       GlobalEntry:
           type: "string"
       DCMetaInfo:
-          $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/DCMetaInfo.yml#/DCMetaInfo"
+          type: "array"
+          items:
+            $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/DCMetaInfo.yml#/DCMetaInfo"

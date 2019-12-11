@@ -11,10 +11,14 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.uva.sne.drip.model.cloud.storm.CloudDB;
 import nl.uva.sne.drip.model.cloud.storm.DB;
 import nl.uva.sne.drip.model.cloud.storm.DBInfo;
+import nl.uva.sne.drip.model.cloud.storm.DCMetaInfo;
 import nl.uva.sne.drip.model.cloud.storm.VMMetaInfo;
 
 /**
@@ -32,7 +36,8 @@ class CloudStormDAO {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
-    VMMetaInfo findVmMetaInfoByProvider(String provider) throws IOException {
+    List<VMMetaInfo> findVmMetaInfoByProvider(String provider) throws IOException {
+
         DB db = objectMapper.readValue(new File(cloudStormDBPath + File.separator + "db.yml"), DB.class);
         List<CloudDB> cloudDBs = db.getCloudDBs();
 
@@ -44,10 +49,18 @@ class CloudStormDAO {
             }
         }
         if (targetCloudDB != null) {
+
+            List<VMMetaInfo> vMMetaInfos = new ArrayList<>();
             DBInfo dbInfo = objectMapper.readValue(new File(cloudStormDBPath + File.separator + targetCloudDB.getDbInfoFile()), DBInfo.class);
-            return dbInfo.getDcMetaInfo().getVmMetaInfo();
+            List<DCMetaInfo> metaInfos = dbInfo.getDcMetaInfo();
+            for (DCMetaInfo metaInfo : metaInfos) {
+                vMMetaInfos.addAll(metaInfo.getVmMetaInfo());
+            }
+            return vMMetaInfos;
+
         }
         return null;
+
     }
 
 }
