@@ -18,6 +18,7 @@ import java.util.Map;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.CloudsStormTopTopology;
+import nl.uva.sne.drip.model.CloudsStormVM;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.ToscaTemplate;
 import nl.uva.sne.drip.sure_tosca.client.ApiException;
@@ -87,24 +88,24 @@ class CloudStormService {
             CloudsStormSubTopology cloudsStormSubTopology = new CloudsStormSubTopology();
 
             Map<String, Object> properties = nodeTemplate.getProperties();
+
             String domain = (String) properties.get("domain");
             String provider = (String) properties.get("provider");
-            cloudsStormSubTopology.setCloudProvider(domain);
+            cloudsStormSubTopology.setDomain(domain);
             cloudsStormSubTopology.setCloudProvider(provider);
             cloudsStormSubTopology.setTopology("vm_topology" + i);
+            cloudsStormSubTopology.setStatus("fresh");
 
-//            List<NodeTemplate> vmTopologyTemplates = helper.getVMTemplatesForTopology();
-//            CloudsStormVM cloudsStormVM = new CloudsStormVM();
-//            cloudsStormVM.setName("node"+i);
-//            cloudsStormVM.setNodeType(domain);
+            List<NodeTemplate> vmTemplates = helper.getTopologyTemplateVMs(nodeTemplate);
+            List<CloudsStormVM> vms = new ArrayList<>();
+            for (NodeTemplate vm : vmTemplates) {
+                CloudsStormVM cloudsStormVM = new CloudsStormVM();
+                
+                String vmType = helper.getVMType(vm,provider);
+                cloudsStormVM.setNodeType(vmType);
+            }
             i++;
         }
-
-//        List<CloudsStormVM> vms  = new ArrayList<>();
-//        CloudsStormVM cloudsStormVM = new CloudsStormVM();
-//        cloudsStormVM.setName("Node1");
-//        
-//        vms.add(cloudsStormVM);
         return cloudsStormSubTopologies;
     }
 

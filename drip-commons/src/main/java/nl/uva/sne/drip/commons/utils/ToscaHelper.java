@@ -41,6 +41,7 @@ public class ToscaHelper {
     private final DefaultApi api;
 
     private final ObjectMapper objectMapper;
+    public static final String VM_CAPABILITY = "tosca.capabilities.ARTICONF.VM";
 
     /**
      * @return the id
@@ -82,6 +83,26 @@ public class ToscaHelper {
     public List<NodeTemplate> getVMTopologyTemplates() throws ApiException {
         List<NodeTemplate> vmTopologyTemplates = api.getNodeTemplates(String.valueOf(id), "tosca.nodes.ARTICONF.VM.topology", null, null, null, null, null, null, null);
         return vmTopologyTemplates;
+    }
+
+    public List<NodeTemplate> getTopologyTemplateVMs(NodeTemplate nodeTemplate) throws ApiException {
+        List<Map<String, Object>> requirements = nodeTemplate.getRequirements();
+        List<NodeTemplate> vms = new ArrayList<>();
+        for (Map<String, Object> req : requirements) {
+            String nodeName = req.keySet().iterator().next();
+            Map<String, Object> node = (Map<String, Object>) req.get(nodeName);
+            if (node.get("capability").equals(VM_CAPABILITY)) {
+                String vmName = (String) node.get("node");
+                List<NodeTemplate> vmNodeTemplates = api.getNodeTemplates(String.valueOf(id), null, vmName, null, null, null, null, null, null);
+                vms.addAll(vmNodeTemplates);
+            }
+        }
+        return vms;
+
+    }
+
+    public String getVMType(NodeTemplate vm, String provider) {
+        
     }
 
 }

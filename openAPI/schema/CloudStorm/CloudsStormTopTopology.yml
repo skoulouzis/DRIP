@@ -8,9 +8,9 @@
             topologies:
                 type: array
                 items:
-                    $ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudsStormSubTopology.yml#/CloudsStormSubTopology'
+                    $ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudsStorm/CloudsStormSubTopology.yml#/CloudsStormSubTopology'
             subnets:
                 type: array
                 items:
-                    $ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudsStormSubnets.yml#/CloudsStormSubnets'
+                    $ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudsStorm/CloudsStormSubnets.yml#/CloudsStormSubnets'
                 

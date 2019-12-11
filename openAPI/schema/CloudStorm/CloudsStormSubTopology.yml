@@ -13,6 +13,6 @@
             #VMs:
                 #type: array
                 #items:
-                    #$ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudsStormVM.yml#/CloudsStormVM'
+                    #$ref: 'https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudsStorm/CloudsStormVM.yml#/CloudsStormVM'
 
         

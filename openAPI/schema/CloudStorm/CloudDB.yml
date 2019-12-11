@@ -1,0 +1,7 @@
+  CloudDB:
+      type: "object"
+      properties:
+        cloudProvider:
+            type: "string"
+        dbInfoFile:
+            type: "string"
