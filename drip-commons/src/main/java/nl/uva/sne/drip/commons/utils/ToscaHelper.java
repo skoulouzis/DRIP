@@ -23,6 +23,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.model.NodeTemplate;
@@ -175,12 +176,25 @@ public class ToscaHelper {
         }
     }
 
-    public void setCredentialsInVMTopology(NodeTemplate vmTopology, Credential credential) throws Exception {
+    public NodeTemplate setCredentialsInVMTopology(NodeTemplate vmTopology, Credential credential) throws Exception {
         if (vmTopology.getType().equals(VM_TOPOLOGY)) {
-            vmTopology.getAttributes();
+            Map<String, Object> att = vmTopology.getAttributes();
+            Map<String, Object> toscaCredential = new HashMap<>();
+            toscaCredential.put("protocol", credential.getProtocol());
+            toscaCredential.put("token_type", credential.getTokenType());
+            toscaCredential.put("token", credential.getToken());
+            toscaCredential.put("keys", credential.getKeys());
+            toscaCredential.put("user", credential.getUser());
+            toscaCredential.put("cloud_provider_name", credential.getCloudProviderName());
+            att.put("credential", toscaCredential);
+            return vmTopology;
         } else {
             throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + vmTopology.getType());
         }
+    }
+
+    public ToscaTemplate setVMTopologyInToscaTemplate(NodeTemplate vmTopology) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
