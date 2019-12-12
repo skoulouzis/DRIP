@@ -114,7 +114,7 @@ node_types:
         description: The name of the provider e.g. EC2, ExoGeni etc.              
     attributes:
       credential:
-        type: tosca.datatypes.Credential
+        type: tosca.datatypes.ARTICONF.Credential
         required: false    
     interfaces:
       Standard:
@@ -186,8 +186,6 @@ node_types:
     interfaces:
       Standard:
         create: dumy.yaml        
-    
-    
         
   tosca.nodes.ARTICONF.Infrastructure:
     derived_from:  tosca.nodes.ARTICONF.Root

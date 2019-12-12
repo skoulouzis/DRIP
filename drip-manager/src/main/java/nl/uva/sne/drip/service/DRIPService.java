@@ -50,9 +50,15 @@ public class DRIPService {
             ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
             helper.uploadToscaTemplate(toscaTemplate);
             List<NodeTemplate> vmTopologies = helper.getVMTopologyTemplates();
+            List<Credential> credentials = null;
             for (NodeTemplate vmTopology : vmTopologies) {
                 String provider = helper.getTopologyProvider(vmTopology);
-                List<Credential> credentials = credentialService.findByProvider(provider);
+                credentials = credentialService.findByProvider(provider.toLowerCase());
+                if (credentials != null && credentials.size() > 0) {
+                    Credential credential = getBestCredential(vmTopology, credentials);
+                    helper.setCredentialsInVMTopology(vmTopology, credential);
+                    break;
+                }
             }
 
             Message message = new Message();
@@ -88,6 +94,10 @@ public class DRIPService {
      */
     public void setRequestQeueName(String requestQeueName) {
         this.requestQeueName = requestQeueName;
+    }
+
+    private Credential getBestCredential(NodeTemplate vmTopology, List<Credential> credentials) {
+        return credentials.get(0);
     }
 
 }

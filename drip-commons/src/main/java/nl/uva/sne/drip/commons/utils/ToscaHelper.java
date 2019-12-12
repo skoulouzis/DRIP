@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.model.NodeTemplate;
+import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.sure.tosca.client.DefaultApi;
 import org.apache.commons.io.FileUtils;
@@ -171,6 +172,14 @@ public class ToscaHelper {
             return (String) nodeTemplate.getProperties().get("provider");
         } else {
             throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
+        }
+    }
+
+    public void setCredentialsInVMTopology(NodeTemplate vmTopology, Credential credential) throws Exception {
+        if (vmTopology.getType().equals(VM_TOPOLOGY)) {
+            vmTopology.getAttributes();
+        } else {
+            throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + vmTopology.getType());
         }
     }
 
