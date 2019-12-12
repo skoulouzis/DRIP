@@ -31,6 +31,9 @@ import nl.uva.sne.drip.sure.tosca.client.DefaultApi;
 import org.apache.commons.io.FileUtils;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import nl.uva.sne.drip.sure.tosca.client.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  *
@@ -38,15 +41,21 @@ import nl.uva.sne.drip.sure.tosca.client.Configuration;
  */
 public class ToscaHelper {
 
-    private final DefaultApi api;
+    private DefaultApi api;
 
-    private final ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     public static final String VM_CAPABILITY = "tosca.capabilities.ARTICONF.VM";
     private static final String VM_TYPE = "tosca.nodes.ARTICONF.VM.Compute";
     private static final String VM_NUM_OF_CORES = "num_cores";
     private static final String MEM_SIZE = "mem_size";
     private static final String VM_OS = "os";
     private static final String VM_TOPOLOGY = "tosca.nodes.ARTICONF.VM.topology";
+    private Integer id;
+
+    @Autowired
+    public ToscaHelper(String sureToscaBasePath) {
+        init(sureToscaBasePath);
+    }
 
     /**
      * @return the id
@@ -55,23 +64,23 @@ public class ToscaHelper {
         return id;
     }
 
-    private final Integer id;
-
-    public ToscaHelper(ToscaTemplate toscaTemplate, String sureToscaBasePath) throws JsonProcessingException, IOException, ApiException {
+//    public ToscaHelper(ToscaTemplate toscaTemplate, String sureToscaBasePath) throws JsonProcessingException, IOException, ApiException {
+//        init(sureToscaBasePath);
+//        uploadToscaTemplate(toscaTemplate);
+//    }
+    private void init(String sureToscaBasePath) {
         Configuration.getDefaultApiClient().setBasePath(sureToscaBasePath);
         api = new DefaultApi(Configuration.getDefaultApiClient());
         this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        id = uploadToscaTemplate(toscaTemplate);
-
     }
 
-    private Integer uploadToscaTemplate(ToscaTemplate toscaTemplate) throws JsonProcessingException, IOException, ApiException {
+    public void uploadToscaTemplate(ToscaTemplate toscaTemplate) throws JsonProcessingException, IOException, ApiException {
         String ymlStr = objectMapper.writeValueAsString(toscaTemplate);
         File toscaTemplateFile = File.createTempFile("temp-toscaTemplate", ".yml");
         FileUtils.writeByteArrayToFile(toscaTemplateFile, ymlStr.getBytes());
         String resp = api.uploadToscaTemplate(toscaTemplateFile);
-        return Integer.valueOf(resp);
+        id = Integer.valueOf(resp);
     }
 
     public List<Map<String, Object>> getProvisionInterfaceDefinitions(List<String> toscaInterfaceTypes) throws ApiException {
@@ -90,7 +99,7 @@ public class ToscaHelper {
         return vmTopologyTemplates;
     }
 
-    public List<NodeTemplate> getTopologyTemplateVMs(NodeTemplate nodeTemplate) throws ApiException {
+    public List<NodeTemplate> getTemplateVMsForVMTopology(NodeTemplate nodeTemplate) throws ApiException {
         List<Map<String, Object>> requirements = nodeTemplate.getRequirements();
         List<NodeTemplate> vms = new ArrayList<>();
         for (Map<String, Object> req : requirements) {

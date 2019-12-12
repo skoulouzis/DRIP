@@ -11,12 +11,12 @@ import javax.validation.Valid;
 import org.springframework.data.annotation.Id;
 
 /**
- * Credentials
+ * Credential
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-10T15:39:04.296Z")
 
-public class Credentials {
+public class Credential {
     /**
      * @return the id
      */
@@ -55,7 +55,7 @@ public class Credentials {
     @JsonProperty("cloud_provider_name")
     private String cloudProviderName = null;
 
-    public Credentials protocol(String protocol) {
+    public Credential protocol(String protocol) {
         this.protocol = protocol;
         return this;
     }
@@ -76,7 +76,7 @@ public class Credentials {
         this.protocol = protocol;
     }
 
-    public Credentials tokenType(String tokenType) {
+    public Credential tokenType(String tokenType) {
         this.tokenType = tokenType;
         return this;
     }
@@ -97,7 +97,7 @@ public class Credentials {
         this.tokenType = tokenType;
     }
 
-    public Credentials token(String token) {
+    public Credential token(String token) {
         this.token = token;
         return this;
     }
@@ -118,12 +118,12 @@ public class Credentials {
         this.token = token;
     }
 
-    public Credentials keys(Map<String, String> keys) {
+    public Credential keys(Map<String, String> keys) {
         this.keys = keys;
         return this;
     }
 
-    public Credentials putKeysItem(String key, String keysItem) {
+    public Credential putKeysItem(String key, String keysItem) {
         if (this.keys == null) {
             this.keys = new HashMap<String, String>();
         }
@@ -147,7 +147,7 @@ public class Credentials {
         this.keys = keys;
     }
 
-    public Credentials user(String user) {
+    public Credential user(String user) {
         this.user = user;
         return this;
     }
@@ -168,7 +168,7 @@ public class Credentials {
         this.user = user;
     }
 
-    public Credentials cloudProviderName(String cloudProviderName) {
+    public Credential cloudProviderName(String cloudProviderName) {
         this.cloudProviderName = cloudProviderName;
         return this;
     }
@@ -197,7 +197,7 @@ public class Credentials {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Credentials credentials = (Credentials) o;
+        Credential credentials = (Credential) o;
         return Objects.equals(this.protocol, credentials.protocol)
                 && Objects.equals(this.tokenType, credentials.tokenType)
                 && Objects.equals(this.token, credentials.token)

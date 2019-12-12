@@ -1,6 +1,6 @@
 package nl.uva.sne.drip.api;
 
-import nl.uva.sne.drip.model.tosca.Credentials;
+import nl.uva.sne.drip.model.tosca.Credential;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class CredentialApiController implements CredentialApi {
     @Override
     public ResponseEntity<String> createCredentials(@ApiParam(
             value = "Created user object", required = true)
-            @Valid @RequestBody Credentials body) {
+            @Valid @RequestBody Credential body) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             String id = credentialService.save(body);

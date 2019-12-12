@@ -73,7 +73,8 @@ public class ToscaHelperTest {
         String serviceBasePath = prop.getProperty("sure-tosca.base.path");
         serviceUp = isServiceUp(serviceBasePath);
         if (serviceUp) {
-            instance = new ToscaHelper(toscaTemplate, serviceBasePath);
+            instance = new ToscaHelper(serviceBasePath);
+            instance.uploadToscaTemplate(toscaTemplate);
         }
 
     }

@@ -11,7 +11,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.dao.CredentialDAO;
-import nl.uva.sne.drip.model.tosca.Credentials;
+import nl.uva.sne.drip.model.tosca.Credential;
 
 /**
  *
@@ -23,13 +23,13 @@ public class CredentialService {
     @Autowired
     private CredentialDAO dao;
 
-    public String save(Credentials document) {
+    public String save(Credential document) {
         dao.save(document);
         return document.getId();
     }
 
-    public Credentials findByID(String id) throws JsonProcessingException {
-        Credentials credentials = dao.findById(id).get();
+    public Credential findByID(String id) throws JsonProcessingException {
+        Credential credentials = dao.findById(id).get();
         return credentials;
     }
 
@@ -39,8 +39,8 @@ public class CredentialService {
 
     public List<String> getAllIds() {
         List<String> allIds = new ArrayList<>();
-        List<Credentials> all = dao.findAll();
-        for (Credentials tt : all) {
+        List<Credential> all = dao.findAll();
+        for (Credential tt : all) {
             allIds.add(tt.getId());
         }
         return allIds;
@@ -48,6 +48,10 @@ public class CredentialService {
 
     void deleteAll() {
         dao.deleteAll();
+    }
+
+    List<Credential> findByProvider(String provider) {
+        return dao.findBycloudProviderName(provider);
     }
 
 }

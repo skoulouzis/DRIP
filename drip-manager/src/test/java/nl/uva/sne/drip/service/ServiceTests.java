@@ -36,7 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.Swagger2SpringBoot;
 import nl.uva.sne.drip.configuration.MongoConfig;
-import nl.uva.sne.drip.model.tosca.Credentials;
+import nl.uva.sne.drip.model.tosca.Credential;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -266,7 +266,7 @@ public class ServiceTests {
 
     public String saveCredential() {
         Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "saveCredential");
-        Credentials document = new Credentials();
+        Credential document = new Credential();
         document.setCloudProviderName("exogeni");
         Map<String, String> keys = new HashMap<>();
         keys.put("keystore", "/qTlqams0Ppq2rnaOgL5am7ExGO2nMsOZYM61kiAnsvkOixUuoPy9r4d4OfhwQXXg3lZmeRITjNz4ps+hIDKuxodIQXgBtfMy9Kx8Syb9bIl/MQQls5hWyp9yHAl6vAampoxYu0170lceT1sds4OCz3tM9eF7/UoBQwXBPo94QhO1/vSbtICyVsm3Z2HeGKcBWobT3opZV2w30GqX/7OBmNeIG7RBMPuxLsUxJ9Alahi1zXOUjLkd2bmmVFREngmeubgCzPFxxCQQrZK6WratTzJKc1sRVNK5GJzTwi9BlcZSQSgprum9yVHUgQc6Ylmvdrkhn2g9SlluY2JAZyCZvHYaRBKE4o5bXBDumTy1YAPMNPTfpeeLz+YmH0GMfVwKkxtIBpjb045QseoIWcqxke60WWfJguaTqymXknmcqcLNz+UzUdfVfyurOy9X8xmTGCW5V4N");
@@ -286,7 +286,7 @@ public class ServiceTests {
     public void testCredentialServiceFindByID() throws Exception {
         Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "findByID");
         String id = saveCredential();
-        Credentials result = credentialService.findByID(id);
+        Credential result = credentialService.findByID(id);
         assertNotNull(result);
     }
 
@@ -299,7 +299,7 @@ public class ServiceTests {
         String id = saveCredential();
         credentialService.deleteByID(id);
         try {
-            Credentials res = credentialService.findByID(id);
+            Credential res = credentialService.findByID(id);
         } catch (Exception ex) {
             if (!(ex instanceof NoSuchElementException)) {
                 fail(ex.getMessage());

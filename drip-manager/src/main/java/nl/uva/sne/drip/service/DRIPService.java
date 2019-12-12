@@ -5,13 +5,19 @@
  */
 package nl.uva.sne.drip.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.Message;
+import nl.uva.sne.drip.model.NodeTemplate;
+import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.rpc.DRIPCaller;
+import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,14 +34,27 @@ public class DRIPService {
     @Autowired
     DRIPCaller caller;
 
+    @Autowired
+    CredentialService credentialService;
+
     private String requestQeueName;
 
-    public String execute(String id) {
+    @Autowired
+    private ToscaHelper helper;
+
+    public String execute(String id) throws JsonProcessingException, ApiException, Exception {
 
         try {
             caller.init();
             String ymlToscaTemplate = toscaTemplateService.findByID(id);
             ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
+            helper.uploadToscaTemplate(toscaTemplate);
+            List<NodeTemplate> vmTopologies = helper.getVMTopologyTemplates();
+            for (NodeTemplate vmTopology : vmTopologies) {
+                String provider = helper.getTopologyProvider(vmTopology);
+                List<Credential> credentials = credentialService.findByProvider(provider);
+            }
+
             Message message = new Message();
             message.setOwner("user");
             message.setCreationDate(System.currentTimeMillis());

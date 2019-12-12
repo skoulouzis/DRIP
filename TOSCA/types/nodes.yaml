@@ -115,7 +115,7 @@ node_types:
     attributes:
       credential:
         type: tosca.datatypes.Credential
-        required: false           
+        required: false    
     interfaces:
       Standard:
         create: dumy.yaml

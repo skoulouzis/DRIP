@@ -51,7 +51,8 @@ class CloudStormService {
         String cloudStormDBPath = properties.getProperty("cloud.storm.db.path");
         cloudStormDAO = new CloudStormDAO(cloudStormDBPath);
         String sureToscaBasePath = properties.getProperty("sure-tosca.base.path");
-        this.helper = new ToscaHelper(toscaTemplate, sureToscaBasePath);
+        this.helper = new ToscaHelper(sureToscaBasePath);
+        this.helper.uploadToscaTemplate(toscaTemplate);
         this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
@@ -75,14 +76,12 @@ class CloudStormService {
         if (!(credentialsTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
         }
-        writeCloudcredentialsTopologyFiles(toscaTemplate, credentialsTempInputDirPath);
+        writeCloudStormCredentialsFiles(toscaTemplate, credentialsTempInputDirPath);
         String infrasCodeTempInputDirPath = File.separator + "infrasCodes";
         File infrasCodeTempInputDir = new File(infrasCodeTempInputDirPath);
         if (!(infrasCodeTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
         }
-
-        
 
         return toscaTemplate;
     }
@@ -136,7 +135,7 @@ class CloudStormService {
 
             List<CloudsStormVM> vms = new ArrayList<>();
             cloudsStormVMs.setName("vm_topology" + i);
-            List<NodeTemplate> vmTemplates = helper.getTopologyTemplateVMs(nodeTemplate);
+            List<NodeTemplate> vmTemplates = helper.getTemplateVMsForVMTopology(nodeTemplate);
             int j = 0;
             for (NodeTemplate vm : vmTemplates) {
                 CloudsStormVM cloudsStormVM = new CloudsStormVM();
@@ -173,8 +172,8 @@ class CloudStormService {
         return null;
     }
 
-    private void writeCloudcredentialsTopologyFiles(ToscaTemplate toscaTemplate, String credentialsTempInputDirPath) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void writeCloudStormCredentialsFiles(ToscaTemplate toscaTemplate, String credentialsTempInputDirPath) {
+
     }
 
 }

@@ -5,7 +5,8 @@
  */
 package nl.uva.sne.drip.dao;
 
-import nl.uva.sne.drip.model.tosca.Credentials;
+import java.util.List;
+import nl.uva.sne.drip.model.tosca.Credential;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
  * @author S. Koulouzis
  */
 @Repository
-public interface CredentialDAO extends MongoRepository<Credentials, String> {
+public interface CredentialDAO extends MongoRepository<Credential, String> {
 
+    List<Credential> findBycloudProviderName(String cloudProviderName);
 }

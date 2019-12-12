@@ -2,6 +2,7 @@ package nl.uva.sne.drip.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
 import nl.uva.sne.drip.service.DRIPService;
+import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -42,9 +44,15 @@ public class ProvisionerApiController implements ProvisionerApi {
             @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("text/plain")) {
-            dripService.setRequestQeueName(queueName);
-            String planedYemplateId = dripService.execute(id);
-            return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
+            try {
+                dripService.setRequestQeueName(queueName);
+                String planedYemplateId = dripService.execute(id);
+                return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
+            } catch (ApiException ex) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            } catch (Exception ex) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
 
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
