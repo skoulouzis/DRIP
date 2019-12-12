@@ -57,18 +57,37 @@ class CloudStormService {
     }
 
     public ToscaTemplate execute() throws FileNotFoundException, JSchException, IOException, ApiException, Exception {
+
         String tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
         File tempInputDir = new File(tempInputDirPath);
         if (!(tempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
         }
+        String topologyTempInputDirPath = File.separator + "topology";
+        File topologyTempInputDir = new File(topologyTempInputDirPath);
+        if (!(topologyTempInputDir.mkdirs())) {
+            throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
+        }
+        writeCloudStormTopologyFiles(toscaTemplate, topologyTempInputDirPath);
 
-        writeCloudStormTopology(toscaTemplate, tempInputDirPath);
+        String credentialsTempInputDirPath = File.separator + "credentials";
+        File credentialsTempInputDir = new File(credentialsTempInputDirPath);
+        if (!(credentialsTempInputDir.mkdirs())) {
+            throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
+        }
+        writeCloudcredentialsTopologyFiles(toscaTemplate, credentialsTempInputDirPath);
+        String infrasCodeTempInputDirPath = File.separator + "infrasCodes";
+        File infrasCodeTempInputDir = new File(infrasCodeTempInputDirPath);
+        if (!(infrasCodeTempInputDir.mkdirs())) {
+            throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
+        }
+
+        
 
         return toscaTemplate;
     }
 
-    private void writeCloudStormTopology(ToscaTemplate toscaTemplate, String tempInputDirPath) throws JSchException, IOException, ApiException, Exception {
+    private void writeCloudStormTopologyFiles(ToscaTemplate toscaTemplate, String tempInputDirPath) throws JSchException, IOException, ApiException, Exception {
         CloudsStormTopTopology topTopology = new CloudsStormTopTopology();
         String publicKeyPath = buildSSHKeyPair(tempInputDirPath);
         topTopology.setPublicKeyPath(publicKeyPath);
@@ -152,6 +171,10 @@ class CloudStormService {
             }
         }
         return null;
+    }
+
+    private void writeCloudcredentialsTopologyFiles(ToscaTemplate toscaTemplate, String credentialsTempInputDirPath) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

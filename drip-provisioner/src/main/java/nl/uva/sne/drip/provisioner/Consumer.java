@@ -90,6 +90,8 @@ public class Consumer extends DefaultConsumer {
             channel.basicAck(envelope.getDeliveryTag(), false);
         } catch (JSchException | ApiException ex) {
             Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

@@ -1,0 +1,7 @@
+  CloudCred:
+      type: "object"
+      properties:
+        cloudProvider:
+          type: "string"
+        credInfoFile:
+          type: "string"

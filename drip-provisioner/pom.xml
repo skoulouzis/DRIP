@@ -58,9 +58,15 @@
             <artifactId>hamcrest-core</artifactId>
             <scope>test</scope>
         </dependency>
+        
+
+        <dependency>
+            <groupId>nl.uva.sne.zh</groupId>
+            <artifactId>CloudsStorm</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
-    
-    
+   
     <build>
         <plugins>
             <plugin>
@@ -92,5 +98,13 @@
     </build>
     
     
-
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>zh-releases</id>
+            <url>https://raw.githubusercontent.com/CloudsStorm/mvn-repo/master/releases</url>
+        </repository>
+    </repositories>    
 </project>
