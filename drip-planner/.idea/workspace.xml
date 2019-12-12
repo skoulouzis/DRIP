@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="" />
+    <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -243,21 +245,25 @@
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state x="1043" y="437" width="530" height="598" key="FileChooserDialogImpl/67.34.2493.1406@67.34.2493.1406" timestamp="1575907769017" />
-    <state width="2465" height="410" key="GridCell.Tab.0.bottom" timestamp="1576092018571">
-      <screen x="67" y="34" width="2493" height="1406" />
+    <state width="1825" height="283" key="GridCell.Tab.0.bottom" timestamp="1576165003401">
+      <screen x="67" y="34" width="1853" height="1046" />
     </state>
+    <state width="1825" height="283" key="GridCell.Tab.0.bottom/67.34.1853.1046@67.34.1853.1046" timestamp="1576165003401" />
     <state width="2465" height="410" key="GridCell.Tab.0.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1576092018571" />
-    <state width="2465" height="410" key="GridCell.Tab.0.center" timestamp="1576092018571">
-      <screen x="67" y="34" width="2493" height="1406" />
+    <state width="1825" height="283" key="GridCell.Tab.0.center" timestamp="1576165003399">
+      <screen x="67" y="34" width="1853" height="1046" />
     </state>
+    <state width="1825" height="283" key="GridCell.Tab.0.center/67.34.1853.1046@67.34.1853.1046" timestamp="1576165003399" />
     <state width="2465" height="410" key="GridCell.Tab.0.center/67.34.2493.1406@67.34.2493.1406" timestamp="1576092018571" />
-    <state width="2465" height="410" key="GridCell.Tab.0.left" timestamp="1576092018570">
-      <screen x="67" y="34" width="2493" height="1406" />
+    <state width="1825" height="283" key="GridCell.Tab.0.left" timestamp="1576165003398">
+      <screen x="67" y="34" width="1853" height="1046" />
     </state>
+    <state width="1825" height="283" key="GridCell.Tab.0.left/67.34.1853.1046@67.34.1853.1046" timestamp="1576165003398" />
     <state width="2465" height="410" key="GridCell.Tab.0.left/67.34.2493.1406@67.34.2493.1406" timestamp="1576092018570" />
-    <state width="2465" height="410" key="GridCell.Tab.0.right" timestamp="1576092018571">
-      <screen x="67" y="34" width="2493" height="1406" />
+    <state width="1825" height="283" key="GridCell.Tab.0.right" timestamp="1576165003400">
+      <screen x="67" y="34" width="1853" height="1046" />
     </state>
+    <state width="1825" height="283" key="GridCell.Tab.0.right/67.34.1853.1046@67.34.1853.1046" timestamp="1576165003400" />
     <state width="2465" height="410" key="GridCell.Tab.0.right/67.34.2493.1406@67.34.2493.1406" timestamp="1576092018571" />
     <state width="2465" height="471" key="GridCell.Tab.1.bottom" timestamp="1575891470098">
       <screen x="67" y="34" width="2493" height="1406" />

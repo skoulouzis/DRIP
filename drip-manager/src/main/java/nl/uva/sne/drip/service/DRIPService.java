@@ -48,17 +48,8 @@ public class DRIPService {
             caller.init();
             String ymlToscaTemplate = toscaTemplateService.findByID(id);
             ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
-            helper.uploadToscaTemplate(toscaTemplate);
-            List<NodeTemplate> vmTopologies = helper.getVMTopologyTemplates();
-            List<Credential> credentials = null;
-            for (NodeTemplate vmTopology : vmTopologies) {
-                String provider = helper.getTopologyProvider(vmTopology);
-                credentials = credentialService.findByProvider(provider.toLowerCase());
-                if (credentials != null && credentials.size() > 0) {
-                    Credential credential = getBestCredential(vmTopology, credentials);
-                    helper.setCredentialsInVMTopology(vmTopology, credential);
-                    break;
-                }
+            if (requestQeueName.equals("provisioner")) {
+                toscaTemplate = addCredentials(toscaTemplate);
             }
 
             Message message = new Message();
@@ -69,6 +60,7 @@ public class DRIPService {
             caller.setRequestQeueName(requestQeueName);
             Message plannerResponse = caller.call(message);
             ToscaTemplate plannedToscaTemplate = plannerResponse.getToscaTemplate();
+
             return toscaTemplateService.save(plannedToscaTemplate);
         } catch (IOException | TimeoutException | InterruptedException ex) {
             Logger.getLogger(DRIPService.class.getName()).log(Level.SEVERE, null, ex);
@@ -98,6 +90,23 @@ public class DRIPService {
 
     private Credential getBestCredential(NodeTemplate vmTopology, List<Credential> credentials) {
         return credentials.get(0);
+    }
+
+    private ToscaTemplate addCredentials(ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException, Exception {
+        helper.uploadToscaTemplate(toscaTemplate);
+        List<NodeTemplate> vmTopologies = helper.getVMTopologyTemplates();
+        List<Credential> credentials = null;
+        for (NodeTemplate vmTopology : vmTopologies) {
+            String provider = helper.getTopologyProvider(vmTopology);
+            credentials = credentialService.findByProvider(provider.toLowerCase());
+            if (credentials != null && credentials.size() > 0) {
+                Credential credential = getBestCredential(vmTopology, credentials);
+                helper.setCredentialsInVMTopology(vmTopology, credential);
+
+                return toscaTemplate;
+            }
+        }
+        return toscaTemplate;
     }
 
 }
