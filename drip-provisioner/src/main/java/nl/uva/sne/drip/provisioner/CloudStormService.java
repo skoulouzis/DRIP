@@ -29,6 +29,7 @@ import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormTopTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVMs;
 import nl.uva.sne.drip.model.cloud.storm.VMMetaInfo;
+import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.apache.commons.io.FilenameUtils;
@@ -64,20 +65,20 @@ class CloudStormService {
         if (!(tempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
         }
-        String topologyTempInputDirPath = File.separator + "topology";
+        String topologyTempInputDirPath = tempInputDirPath + File.separator + "topology";
         File topologyTempInputDir = new File(topologyTempInputDirPath);
         if (!(topologyTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
         }
         writeCloudStormTopologyFiles(toscaTemplate, topologyTempInputDirPath);
 
-        String credentialsTempInputDirPath = File.separator + "credentials";
+        String credentialsTempInputDirPath = tempInputDirPath + File.separator + "credentials";
         File credentialsTempInputDir = new File(credentialsTempInputDirPath);
         if (!(credentialsTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
         }
         writeCloudStormCredentialsFiles(toscaTemplate, credentialsTempInputDirPath);
-        String infrasCodeTempInputDirPath = File.separator + "infrasCodes";
+        String infrasCodeTempInputDirPath = tempInputDirPath + File.separator + "infrasCodes";
         File infrasCodeTempInputDir = new File(infrasCodeTempInputDirPath);
         if (!(infrasCodeTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
@@ -172,8 +173,11 @@ class CloudStormService {
         return null;
     }
 
-    private void writeCloudStormCredentialsFiles(ToscaTemplate toscaTemplate, String credentialsTempInputDirPath) {
-
+    private void writeCloudStormCredentialsFiles(ToscaTemplate toscaTemplate, String credentialsTempInputDirPath) throws ApiException, Exception {
+        List<NodeTemplate> vmTopologies = helper.getVMTopologyTemplates();
+        for (NodeTemplate vmTopology : vmTopologies) {
+            Credential credentials = helper.getCredentialsFromVMTopology(vmTopology);
+        }
     }
 
 }

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
@@ -179,6 +180,9 @@ public class ToscaHelper {
     public NodeTemplate setCredentialsInVMTopology(NodeTemplate vmTopology, Credential credential) throws Exception {
         if (vmTopology.getType().equals(VM_TOPOLOGY)) {
             Map<String, Object> att = vmTopology.getAttributes();
+            if (att == null) {
+                att = new HashMap<>();
+            }
             Map<String, Object> toscaCredential = new HashMap<>();
             toscaCredential.put("protocol", credential.getProtocol());
             toscaCredential.put("token_type", credential.getTokenType());
@@ -187,14 +191,39 @@ public class ToscaHelper {
             toscaCredential.put("user", credential.getUser());
             toscaCredential.put("cloud_provider_name", credential.getCloudProviderName());
             att.put("credential", toscaCredential);
+            vmTopology.setAttributes(att);
             return vmTopology;
         } else {
             throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + vmTopology.getType());
         }
     }
 
-    public ToscaTemplate setVMTopologyInToscaTemplate(NodeTemplate vmTopology) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Credential getCredentialsFromVMTopology(NodeTemplate vmTopology) throws Exception {
+        if (vmTopology.getType().equals(VM_TOPOLOGY)) {
+            Map<String, Object> att = vmTopology.getAttributes();
+            Object credentialMap = att.get("credential");
+//            Map<String, Object> toscaCredential = new HashMap<>();
+//            toscaCredential.put("protocol", credential.getProtocol());
+//            toscaCredential.put("token_type", credential.getTokenType());
+//            toscaCredential.put("token", credential.getToken());
+//            toscaCredential.put("keys", credential.getKeys());
+//            toscaCredential.put("user", credential.getUser());
+//            toscaCredential.put("cloud_provider_name", credential.getCloudProviderName());
+//            att.put("credential", toscaCredential);
+//            vmTopology.setAttributes(att);
+//            return vmTopology;
+        } else {
+            throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + vmTopology.getType());
+        }
+        return null;
+    }
+
+    public ToscaTemplate setVMTopologyInToscaTemplate(ToscaTemplate toscaTemplate, NodeTemplate vmTopology) {
+        Map<String, NodeTemplate> nodes = toscaTemplate.getTopologyTemplate().getNodeTemplates();
+        Set<String> keys = nodes.keySet();
+        for(String key :keys){
+            NodeTemplate node = nodes.get(key);
+        }
     }
 
 }
