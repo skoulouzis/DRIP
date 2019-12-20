@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.List;
 import nl.uva.sne.drip.sure.tosca.client.Pair;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-12-09T20:19:44.689Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-12-20T15:53:11.510Z")
 public class OAuth implements Authentication {
   private String accessToken;
 

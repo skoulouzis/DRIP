@@ -22,17 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import nl.uva.sne.drip.model.NodeTemplate;
+import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.tosca.TopologyTemplate;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
-import nl.uva.sne.drip.sure.tosca.client.ApiCallback;
-import nl.uva.sne.drip.sure.tosca.client.ApiClient;
-import nl.uva.sne.drip.sure.tosca.client.ApiException;
-import nl.uva.sne.drip.sure.tosca.client.ApiResponse;
-import nl.uva.sne.drip.sure.tosca.client.Configuration;
-import nl.uva.sne.drip.sure.tosca.client.Pair;
-import nl.uva.sne.drip.sure.tosca.client.ProgressRequestBody;
-import nl.uva.sne.drip.sure.tosca.client.ProgressResponseBody;
 
 public class DefaultApi {
 
@@ -1297,12 +1289,12 @@ public class DefaultApi {
      * @param hasRequirements filter if has requirements (optional)
      * @param hasCapabilities filter if has capabilities (optional)
      * @param hasArtifacts filter if has artifacts (optional)
-     * @return List&lt;NodeTemplate&gt;
+     * @return List&lt;NodeTemplateMap&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot
      * deserialize the response body
      */
-    public List<NodeTemplate> getNodeTemplates(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts) throws ApiException {
-        ApiResponse<List<NodeTemplate>> resp = getNodeTemplatesWithHttpInfo(id, typeName, nodeName, hasInterfaces, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts);
+    public List<NodeTemplateMap> getNodeTemplates(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts) throws ApiException {
+        ApiResponse<List<NodeTemplateMap>> resp = getNodeTemplatesWithHttpInfo(id, typeName, nodeName, hasInterfaces, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts);
         return resp.getData();
     }
 
@@ -1319,13 +1311,13 @@ public class DefaultApi {
      * @param hasRequirements filter if has requirements (optional)
      * @param hasCapabilities filter if has capabilities (optional)
      * @param hasArtifacts filter if has artifacts (optional)
-     * @return ApiResponse&lt;List&lt;NodeTemplate&gt;&gt;
+     * @return ApiResponse&lt;List&lt;NodeTemplateMap&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot
      * deserialize the response body
      */
-    public ApiResponse<List<NodeTemplate>> getNodeTemplatesWithHttpInfo(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts) throws ApiException {
+    public ApiResponse<List<NodeTemplateMap>> getNodeTemplatesWithHttpInfo(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts) throws ApiException {
         com.squareup.okhttp.Call call = getNodeTemplatesValidateBeforeCall(id, typeName, nodeName, hasInterfaces, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts, null, null);
-        Type localVarReturnType = new TypeToken<List<NodeTemplate>>() {
+        Type localVarReturnType = new TypeToken<List<NodeTemplateMap>>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1347,7 +1339,7 @@ public class DefaultApi {
      * @throws ApiException If fail to process the API call, e.g. serializing
      * the request body object
      */
-    public com.squareup.okhttp.Call getNodeTemplatesAsync(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts, final ApiCallback<List<NodeTemplate>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getNodeTemplatesAsync(String id, String typeName, String nodeName, Boolean hasInterfaces, Boolean hasProperties, Boolean hasAttributes, Boolean hasRequirements, Boolean hasCapabilities, Boolean hasArtifacts, final ApiCallback<List<NodeTemplateMap>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1369,7 +1361,7 @@ public class DefaultApi {
         }
 
         com.squareup.okhttp.Call call = getNodeTemplatesValidateBeforeCall(id, typeName, nodeName, hasInterfaces, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<List<NodeTemplate>>() {
+        Type localVarReturnType = new TypeToken<List<NodeTemplateMap>>() {
         }.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
@@ -1730,12 +1722,12 @@ public class DefaultApi {
      *
      * @param id ID of topolog template uplodaed (required)
      * @param nodeName node_name (required)
-     * @return List&lt;NodeTemplate&gt;
+     * @return List&lt;NodeTemplateMap&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot
      * deserialize the response body
      */
-    public List<NodeTemplate> getRelatedNodes(String id, String nodeName) throws ApiException {
-        ApiResponse<List<NodeTemplate>> resp = getRelatedNodesWithHttpInfo(id, nodeName);
+    public List<NodeTemplateMap> getRelatedNodes(String id, String nodeName) throws ApiException {
+        ApiResponse<List<NodeTemplateMap>> resp = getRelatedNodesWithHttpInfo(id, nodeName);
         return resp.getData();
     }
 
@@ -1745,13 +1737,13 @@ public class DefaultApi {
      *
      * @param id ID of topolog template uplodaed (required)
      * @param nodeName node_name (required)
-     * @return ApiResponse&lt;List&lt;NodeTemplate&gt;&gt;
+     * @return ApiResponse&lt;List&lt;NodeTemplateMap&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot
      * deserialize the response body
      */
-    public ApiResponse<List<NodeTemplate>> getRelatedNodesWithHttpInfo(String id, String nodeName) throws ApiException {
+    public ApiResponse<List<NodeTemplateMap>> getRelatedNodesWithHttpInfo(String id, String nodeName) throws ApiException {
         com.squareup.okhttp.Call call = getRelatedNodesValidateBeforeCall(id, nodeName, null, null);
-        Type localVarReturnType = new TypeToken<List<NodeTemplate>>() {
+        Type localVarReturnType = new TypeToken<List<NodeTemplateMap>>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -1766,7 +1758,7 @@ public class DefaultApi {
      * @throws ApiException If fail to process the API call, e.g. serializing
      * the request body object
      */
-    public com.squareup.okhttp.Call getRelatedNodesAsync(String id, String nodeName, final ApiCallback<List<NodeTemplate>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getRelatedNodesAsync(String id, String nodeName, final ApiCallback<List<NodeTemplateMap>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -1788,7 +1780,7 @@ public class DefaultApi {
         }
 
         com.squareup.okhttp.Call call = getRelatedNodesValidateBeforeCall(id, nodeName, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<List<NodeTemplate>>() {
+        Type localVarReturnType = new TypeToken<List<NodeTemplateMap>>() {
         }.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

@@ -9,14 +9,17 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+
+
 package nl.uva.sne.drip.sure.tosca.auth;
+
+
 
 import java.util.Map;
 import java.util.List;
 import nl.uva.sne.drip.sure.tosca.client.Pair;
 
 public interface Authentication {
-
     /**
      * Apply authentication settings to header and query params.
      *

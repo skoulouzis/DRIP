@@ -11,21 +11,17 @@
  */
 package nl.uva.sne.drip.sure.tosca.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.*;
-
-import javax.net.ssl.*;
-import java.util.*;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.OffsetDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
-
 import com.squareup.okhttp.internal.http.HttpMethod;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor.Level;
 import okio.BufferedSink;
 import okio.Okio;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
 
+import javax.net.ssl.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,14 +37,14 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import nl.uva.sne.drip.sure.tosca.auth.ApiKeyAuth;
 import nl.uva.sne.drip.sure.tosca.auth.Authentication;
 import nl.uva.sne.drip.sure.tosca.auth.HttpBasicAuth;
-import nl.uva.sne.drip.sure.tosca.auth.ApiKeyAuth;
 import nl.uva.sne.drip.sure.tosca.auth.OAuth;
 
 public class ApiClient {
@@ -518,7 +514,7 @@ public class ApiClient {
      * @return A list containing a single {@code Pair} object.
      */
     public List<Pair> parameterToPair(String name, Object value) {
-        List<Pair> params = new ArrayList<>();
+        List<Pair> params = new ArrayList<Pair>();
 
         // preconditions
         if (name == null || name.isEmpty() || value == null || value instanceof Collection) {

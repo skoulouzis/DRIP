@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import nl.uva.sne.drip.model.NodeTemplate;
+import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.sure.tosca.client.DefaultApi;
@@ -97,20 +98,21 @@ public class ToscaHelper {
         return interfaceDefinitions;
     }
 
-    public List<NodeTemplate> getVMTopologyTemplates() throws ApiException {
-        List<NodeTemplate> vmTopologyTemplates = api.getNodeTemplates(String.valueOf(id), "tosca.nodes.ARTICONF.VM.topology", null, null, null, null, null, null, null);
+    public List<NodeTemplateMap> getVMTopologyTemplates() throws ApiException {
+        List<NodeTemplateMap> vmTopologyTemplates = api.getNodeTemplates(String.valueOf(id), "tosca.nodes.ARTICONF.VM.topology", null, null, null, null, null, null, null);
         return vmTopologyTemplates;
     }
 
-    public List<NodeTemplate> getTemplateVMsForVMTopology(NodeTemplate nodeTemplate) throws ApiException {
+    public List<NodeTemplateMap> getTemplateVMsForVMTopology(NodeTemplateMap nodeTemplateMap) throws ApiException {
+        NodeTemplate nodeTemplate = nodeTemplateMap.getNodeTemplate();
         List<Map<String, Object>> requirements = nodeTemplate.getRequirements();
-        List<NodeTemplate> vms = new ArrayList<>();
+        List<NodeTemplateMap> vms = new ArrayList<>();
         for (Map<String, Object> req : requirements) {
             String nodeName = req.keySet().iterator().next();
             Map<String, Object> node = (Map<String, Object>) req.get(nodeName);
             if (node.get("capability").equals(VM_CAPABILITY)) {
                 String vmName = (String) node.get("node");
-                List<NodeTemplate> vmNodeTemplates = api.getNodeTemplates(String.valueOf(id), null, vmName, null, null, null, null, null, null);
+                List<NodeTemplateMap> vmNodeTemplates = api.getNodeTemplates(String.valueOf(id), null, vmName, null, null, null, null, null, null);
                 vms.addAll(vmNodeTemplates);
             }
         }
@@ -118,7 +120,8 @@ public class ToscaHelper {
 
     }
 
-    public Double getVMNumOfCores(NodeTemplate vm) throws Exception {
+    public Double getVMNumOfCores(NodeTemplateMap vmMap) throws Exception {
+        NodeTemplate vm = vmMap.getNodeTemplate();
         if (vm.getType().equals(VM_TYPE)) {
             return (Double) vm.getProperties().get(VM_NUM_OF_CORES);
         } else {
@@ -126,7 +129,8 @@ public class ToscaHelper {
         }
     }
 
-    public Double getVMNMemSize(NodeTemplate vm) throws Exception {
+    public Double getVMNMemSize(NodeTemplateMap vmMap) throws Exception {
+        NodeTemplate vm = vmMap.getNodeTemplate();
         if (vm.getType().equals(VM_TYPE)) {
             String memScalar = (String) vm.getProperties().get(MEM_SIZE);
             String[] memScalarArray = memScalar.split(" ");
@@ -140,7 +144,8 @@ public class ToscaHelper {
 
     }
 
-    public String getVMNOS(NodeTemplate vm) throws Exception {
+    public String getVMNOS(NodeTemplateMap vmMap) throws Exception {
+        NodeTemplate vm = vmMap.getNodeTemplate();
         if (vm.getType().equals(VM_TYPE)) {
             return (String) vm.getProperties().get(VM_OS);
         } else {
@@ -161,15 +166,17 @@ public class ToscaHelper {
         }
     }
 
-    public String getTopologyDomain(NodeTemplate nodeTemplate) throws Exception {
+    public String getTopologyDomain(NodeTemplateMap nodeTemplateMap) throws Exception {
+        NodeTemplate nodeTemplate = nodeTemplateMap.getNodeTemplate();
         if (nodeTemplate.getType().equals(VM_TOPOLOGY)) {
             return (String) nodeTemplate.getProperties().get("domain");
         } else {
-            throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
+            throw new Exception("NodeTemplateMap is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
         }
     }
 
-    public String getTopologyProvider(NodeTemplate nodeTemplate) throws Exception {
+    public String getTopologyProvider(NodeTemplateMap nodeTemplateMap) throws Exception {
+        NodeTemplate nodeTemplate = nodeTemplateMap.getNodeTemplate();
         if (nodeTemplate.getType().equals(VM_TOPOLOGY)) {
             return (String) nodeTemplate.getProperties().get("provider");
         } else {
@@ -177,7 +184,8 @@ public class ToscaHelper {
         }
     }
 
-    public NodeTemplate setCredentialsInVMTopology(NodeTemplate vmTopology, Credential credential) throws Exception {
+    public NodeTemplateMap setCredentialsInVMTopology(NodeTemplateMap vmTopologyMap, Credential credential) throws Exception {
+        NodeTemplate vmTopology = vmTopologyMap.getNodeTemplate();
         if (vmTopology.getType().equals(VM_TOPOLOGY)) {
             Map<String, Object> att = vmTopology.getAttributes();
             if (att == null) {
@@ -192,13 +200,15 @@ public class ToscaHelper {
             toscaCredential.put("cloud_provider_name", credential.getCloudProviderName());
             att.put("credential", toscaCredential);
             vmTopology.setAttributes(att);
-            return vmTopology;
+            vmTopologyMap.setNodeTemplate(vmTopology);
+            return vmTopologyMap;
         } else {
             throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + vmTopology.getType());
         }
     }
 
-    public Credential getCredentialsFromVMTopology(NodeTemplate vmTopology) throws Exception {
+    public Credential getCredentialsFromVMTopology(NodeTemplateMap vmTopologyMap) throws Exception {
+        NodeTemplate vmTopology = vmTopologyMap.getNodeTemplate();
         if (vmTopology.getType().equals(VM_TOPOLOGY)) {
             Map<String, Object> att = vmTopology.getAttributes();
             Object credentialMap = att.get("credential");
@@ -221,7 +231,7 @@ public class ToscaHelper {
     public ToscaTemplate setVMTopologyInToscaTemplate(ToscaTemplate toscaTemplate, NodeTemplate vmTopology) {
         Map<String, NodeTemplate> nodes = toscaTemplate.getTopologyTemplate().getNodeTemplates();
         Set<String> keys = nodes.keySet();
-        for(String key :keys){
+        for (String key : keys) {
             NodeTemplate node = nodes.get(key);
         }
         return null;

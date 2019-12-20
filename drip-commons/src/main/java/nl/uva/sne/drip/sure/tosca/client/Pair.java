@@ -13,7 +13,7 @@
 
 package nl.uva.sne.drip.sure.tosca.client;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-12-09T20:19:44.689Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-12-20T15:53:11.510Z")
 public class Pair {
     private String name = "";
     private String value = "";

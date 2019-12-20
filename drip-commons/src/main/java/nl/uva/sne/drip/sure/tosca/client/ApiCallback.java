@@ -13,7 +13,6 @@
 
 package nl.uva.sne.drip.sure.tosca.client;
 
-import java.io.IOException;
 
 import java.util.Map;
 import java.util.List;

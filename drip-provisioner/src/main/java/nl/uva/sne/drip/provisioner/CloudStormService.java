@@ -25,6 +25,7 @@ import java.util.Properties;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
 import nl.uva.sne.drip.model.NodeTemplate;
+import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormTopTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVMs;
@@ -119,15 +120,15 @@ class CloudStormService {
     }
 
     private Map<String, Object> getCloudsStormSubTopologiesAndVMs(ToscaTemplate toscaTemplate, String tempInputDirPath) throws ApiException, IOException, Exception {
-        List<NodeTemplate> vmTopologyTemplates = helper.getVMTopologyTemplates();
+        List<NodeTemplateMap> vmTopologyTemplatesMap = helper.getVMTopologyTemplates();
         List<CloudsStormSubTopology> cloudsStormSubTopologies = new ArrayList<>();
         Map<String, Object> cloudsStormMap = new HashMap<>();
         List<CloudsStormVMs> cloudsStormVMsList = new ArrayList<>();
         int i = 0;
-        for (NodeTemplate nodeTemplate : vmTopologyTemplates) {
+        for (NodeTemplateMap nodeTemplateMap : vmTopologyTemplatesMap) {
             CloudsStormSubTopology cloudsStormSubTopology = new CloudsStormSubTopology();
-            String domain = helper.getTopologyDomain(nodeTemplate);
-            String provider = helper.getTopologyProvider(nodeTemplate);
+            String domain = helper.getTopologyDomain(nodeTemplateMap);
+            String provider = helper.getTopologyProvider(nodeTemplateMap);
             cloudsStormSubTopology.setDomain(domain);
             cloudsStormSubTopology.setCloudProvider(provider);
             cloudsStormSubTopology.setTopology("vm_topology" + i);
@@ -136,14 +137,14 @@ class CloudStormService {
 
             List<CloudsStormVM> vms = new ArrayList<>();
             cloudsStormVMs.setName("vm_topology" + i);
-            List<NodeTemplate> vmTemplates = helper.getTemplateVMsForVMTopology(nodeTemplate);
+            List<NodeTemplateMap> vmTemplatesMap = helper.getTemplateVMsForVMTopology(nodeTemplateMap);
             int j = 0;
-            for (NodeTemplate vm : vmTemplates) {
+            for (NodeTemplateMap vmMap : vmTemplatesMap) {
                 CloudsStormVM cloudsStormVM = new CloudsStormVM();
-                String vmType = getVMType(vm, provider);
+                String vmType = getVMType(vmMap, provider);
                 cloudsStormVM.setNodeType(vmType);
                 cloudsStormVM.setName("vm" + j);
-                String os = helper.getVMNOS(vm);
+                String os = helper.getVMNOS(vmMap);
                 cloudsStormVM.setOsType(os);
                 vms.add(cloudsStormVM);
                 j++;
@@ -160,10 +161,10 @@ class CloudStormService {
         return cloudsStormMap;
     }
 
-    private String getVMType(NodeTemplate vm, String provider) throws IOException, Exception {
-        Double numOfCores = helper.getVMNumOfCores(vm);
-        Double memSize = helper.getVMNMemSize(vm);
-        String os = helper.getVMNOS(vm);
+    private String getVMType(NodeTemplateMap vmMap, String provider) throws IOException, Exception {
+        Double numOfCores = helper.getVMNumOfCores(vmMap);
+        Double memSize = helper.getVMNMemSize(vmMap);
+        String os = helper.getVMNOS(vmMap);
         List<VMMetaInfo> vmInfos = cloudStormDAO.findVmMetaInfoByProvider(provider);
         for (VMMetaInfo vmInfo : vmInfos) {
             if (Objects.equals(numOfCores, Double.valueOf(vmInfo.getCPU())) && Objects.equals(memSize, Double.valueOf(vmInfo.getMEM())) && os.toLowerCase().equals(vmInfo.getOS().toLowerCase())) {
@@ -174,9 +175,9 @@ class CloudStormService {
     }
 
     private void writeCloudStormCredentialsFiles(ToscaTemplate toscaTemplate, String credentialsTempInputDirPath) throws ApiException, Exception {
-        List<NodeTemplate> vmTopologies = helper.getVMTopologyTemplates();
-        for (NodeTemplate vmTopology : vmTopologies) {
-            Credential credentials = helper.getCredentialsFromVMTopology(vmTopology);
+        List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
+        for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
+            Credential credentials = helper.getCredentialsFromVMTopology(vmTopologyMap);
         }
     }
 

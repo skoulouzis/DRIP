@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.NodeTemplate;
+import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.rpc.DRIPCaller;
@@ -94,15 +95,15 @@ public class DRIPService {
 
     private ToscaTemplate addCredentials(ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException, Exception {
         helper.uploadToscaTemplate(toscaTemplate);
-        List<NodeTemplate> vmTopologies = helper.getVMTopologyTemplates();
+        List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         List<Credential> credentials = null;
-        for (NodeTemplate vmTopology : vmTopologies) {
-            String provider = helper.getTopologyProvider(vmTopology);
+        for (NodeTemplateMap vmTopologyMap : vmTopologies) {
+            String provider = helper.getTopologyProvider(vmTopologyMap);
             credentials = credentialService.findByProvider(provider.toLowerCase());
             if (credentials != null && credentials.size() > 0) {
-                Credential credential = getBestCredential(vmTopology, credentials);
-                vmTopology = helper.setCredentialsInVMTopology(vmTopology, credential);
-                toscaTemplate = helper.setVMTopologyInToscaTemplate(toscaTemplate,vmTopology);
+                Credential credential = getBestCredential(vmTopologyMap.getNodeTemplate(), credentials);
+                vmTopologyMap = helper.setCredentialsInVMTopology(vmTopologyMap, credential);
+                toscaTemplate = helper.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap.getNodeTemplate());
                 return toscaTemplate;
             }
         }

@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.model.NodeTemplate;
+import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -131,10 +132,10 @@ public class ToscaHelperTest {
     public void testGetVMTopologyTemplates() throws ApiException {
         if (serviceUp) {
             System.out.println("getVMTopologyTemplates");
-            List<NodeTemplate> result = instance.getVMTopologyTemplates();
+            List<NodeTemplateMap> result = instance.getVMTopologyTemplates();
             assertNotNull(result);
-            for (NodeTemplate nodeTemplate : result) {
-                assertEquals(nodeTemplate.getType(), "tosca.nodes.ARTICONF.VM.topology");
+            for (NodeTemplateMap nodeTemplateMap : result) {
+                assertEquals(nodeTemplateMap.getNodeTemplate().getType(), "tosca.nodes.ARTICONF.VM.topology");
             }
         }
     }
