@@ -106,8 +106,9 @@ def get_node_types_with_interface(nodes):
     return node_types_with_interface
 
 
-def node_dict_2_node_template(node_dict, all_custom_def):
-    node_name = next(iter(node_dict))
+def node_dict_2_node_template(node_name,node_dict, all_custom_def):
+
+    node_dict = {node_name:node_dict}
     # node_type = node_dict[node_name]['type']
 
     # for name_to_remove in node_type_key_names_to_remove:

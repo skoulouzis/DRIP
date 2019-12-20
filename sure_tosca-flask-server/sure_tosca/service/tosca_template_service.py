@@ -16,7 +16,9 @@ from toscaparser.tosca_template import ToscaTemplate
 
 from sure_tosca.models.base_model_ import Model
 from sure_tosca.models.node_template import NodeTemplateModel as NodeTemplateModel
+from sure_tosca.models.node_template_map import NodeTemplateMapModel
 from sure_tosca.models.tosca_template import ToscaTemplateModel  as ToscaTemplateModel
+
 from sure_tosca.service import tosca_helper
 
 # db = TinyDB(storage=CachingMiddleware(MemoryStorage))
@@ -48,7 +50,7 @@ def query_db(queries, db=None):
                 res_copy.pop(root_key)
                 node = {key: res_copy}
             else:
-                logging.error(str(res)+ ' has no '+root_key)
+                logging.error(str(res) + ' has no ' + root_key)
             updated_results.append(node)
         return updated_results
     return None
@@ -120,10 +122,12 @@ def change_to_nodeTemplateModel(query_results):
     res = []
     for node_template in query_results:
         # copy.deepcopy()
+        node_template_map = NodeTemplateMapModel()
         name = next(iter(node_template))
+        node_template_map.name = name
         node_template = node_template[name]
-        node_template['name'] = name
-        res.append(NodeTemplateModel.from_dict(node_template))
+        node_template_map.node_template = NodeTemplateModel.from_dict(node_template)
+        res.append(node_template_map)
     return res
 
 
@@ -188,7 +192,6 @@ def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, 
     return change_to_nodeTemplateModel(query_results)
 
 
-
 def get_tosca_template_get_dsl_definitions(id, anchors, derived_from):
     # interface_types_db.purge()
     if len(dsl_definitions_db) <= 1:
@@ -240,14 +243,10 @@ def node_dict_2_node_template(id, node_name):
     all_node_types.update(tosca_node_types.items())
     all_node_types.update(all_custom_def.items())
 
-    node_template_dict = get_node_templates(id, node_name=node_name)[0]
-
-    if next(iter(node_template_dict)) != node_name:
-        node_template_dict = {node_name: node_template_dict}
-    if isinstance(node_template_dict, dict):
-        the_node = tosca_helper.node_dict_2_node_template(node_template_dict, all_node_types)
-        return the_node, all_node_types, all_custom_def
-    return None
+    node_template_map_dict = get_node_templates(id, node_name=node_name)[0]
+    the_node = tosca_helper.node_dict_2_node_template(node_template_map_dict.name,
+                                                      node_template_map_dict.node_template.to_dict(), all_node_types)
+    return the_node, all_node_types, all_custom_def
 
 
 def get_all_ancestors_requirements(id, node_root_key):
@@ -310,22 +309,17 @@ def get_node_outputs(id, node_name):
 
 
 def get_node_properties(id, node_name):
-    node_template_dict = get_node_templates(id, node_name=node_name)[0]
-    if node_name in node_template_dict:
-        node_template_dict = node_template_dict[node_name]
+    node_template_map = get_node_templates(id, node_name=node_name)[0]
 
-    properties = NodeTemplateModel.from_dict(node_template_dict).properties
+    properties = node_template_map.node_template.properties
     if properties:
         return properties
     return None
 
 
 def get_node_requirements(id, node_name):
-    node_template_dict = get_node_templates(id, node_name=node_name)[0]
-    if node_name in node_template_dict:
-        node_template_dict = node_template_dict[node_name]
-
-    requirements = NodeTemplateModel.from_dict(node_template_dict).requirements
+    node_template_map = get_node_templates(id, node_name=node_name)[0]
+    requirements = node_template_map.node_template.requirements
     if requirements:
         return requirements
     return None
@@ -349,11 +343,8 @@ def get_related_nodes(id, node_name):
 
 
 def get_node_type_name(id, node_name):
-    node_template_dict = get_node_templates(id, node_name=node_name)[0]
-    if node_name in node_template_dict:
-        node_template_dict = node_template_dict[node_name]
-
-    type_name = NodeTemplateModel.from_dict(node_template_dict).type
+    node_template_map = get_node_templates(id, node_name=node_name)[0]
+    type_name = node_template_map.node_template.type
     if type_name:
         return type_name
     return None
@@ -377,7 +368,7 @@ def set_node_properties(id, properties, node_name):
             node_template_model.properties = properties
 
         tosca_template_model.topology_template.node_templates[node_name] = node_template_model
-        return update(id,tosca_template_model.to_dict())
+        return update(id, tosca_template_model.to_dict())
     return None
 
 

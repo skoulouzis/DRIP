@@ -176,10 +176,8 @@ def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, 
     :type has_capabilities: bool
     :param has_artifacts: filter if has artifacts
     :type has_artifacts: bool
-    :param derived_from: derived from
-    :type derived_from: str
 
-    :rtype: List[NodeTemplate]
+    :rtype: List[NodeTemplateMap]
     """
     res = tosca_template_service.get_node_templates(id, type_name=type_name, node_name=node_name,
                                                     has_interfaces=has_interfaces, has_properties=has_properties,
@@ -236,7 +234,7 @@ def get_related_nodes(id, node_name):  # noqa: E501
     :param node_name: node_name
     :type node_name: str
 
-    :rtype: List[NodeTemplate]
+    :rtype: List[NodeTemplateMap]
     """
     res = tosca_template_service.get_related_nodes(id, node_name)
     if res:

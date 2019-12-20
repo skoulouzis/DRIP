@@ -319,7 +319,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/NodeTemplate'
+              $ref: '#/definitions/NodeTemplateMap'
         "404":
           description: Not found
         "405":
@@ -618,7 +618,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/NodeTemplate'
+              $ref: '#/definitions/NodeTemplateMap'
         "404":
           description: Not found
         "405":
@@ -746,8 +746,6 @@ definitions:
   NodeTemplate:
     type: object
     properties:
-      name:
-        type: string
       derived_from:
         type: string
       properties:
@@ -790,3 +788,10 @@ definitions:
         additionalProperties:
           type: object
           properties: {}
+  NodeTemplateMap:
+    type: object
+    properties:
+      name:
+        type: string
+      nodeTemplate:
+        $ref: '#/definitions/NodeTemplate'
