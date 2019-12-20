@@ -15,7 +15,6 @@ import org.springframework.data.annotation.Id;
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-10T15:39:04.296Z")
-
 public class Credential {
     /**
      * @return the id

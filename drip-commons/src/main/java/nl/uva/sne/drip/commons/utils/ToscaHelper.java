@@ -224,6 +224,7 @@ public class ToscaHelper {
         for(String key :keys){
             NodeTemplate node = nodes.get(key);
         }
+        return null;
     }
 
 }
