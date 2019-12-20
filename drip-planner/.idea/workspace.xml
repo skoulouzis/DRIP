@@ -2,12 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/commons/utils/ToscaHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-commons/src/main/java/nl/uva/sne/drip/commons/utils/ToscaHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/service/DRIPService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/service/DRIPService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/service/ToscaTemplateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-manager/src/main/java/nl/uva/sne/drip/service/ToscaTemplateService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="drip-planner" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">

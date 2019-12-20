@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.tosca.Credential;
@@ -36,8 +35,6 @@ import org.apache.commons.io.FileUtils;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import nl.uva.sne.drip.sure.tosca.client.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  *
@@ -228,13 +225,14 @@ public class ToscaHelper {
         return null;
     }
 
-    public ToscaTemplate setVMTopologyInToscaTemplate(ToscaTemplate toscaTemplate, NodeTemplate vmTopology) {
+    public ToscaTemplate setVMTopologyInToscaTemplate(ToscaTemplate toscaTemplate, NodeTemplateMap vmTopologyMap) {
         Map<String, NodeTemplate> nodes = toscaTemplate.getTopologyTemplate().getNodeTemplates();
-        Set<String> keys = nodes.keySet();
-        for (String key : keys) {
-            NodeTemplate node = nodes.get(key);
-        }
-        return null;
+        nodes.put(vmTopologyMap.getName(), vmTopologyMap.getNodeTemplate());
+//        Set<String> keys = nodes.keySet();
+//        for (String key : keys) {
+//            NodeTemplate node = nodes.get(key);
+//        }
+        return toscaTemplate;
     }
 
 }

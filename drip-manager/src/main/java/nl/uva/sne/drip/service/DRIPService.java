@@ -103,11 +103,10 @@ public class DRIPService {
             if (credentials != null && credentials.size() > 0) {
                 Credential credential = getBestCredential(vmTopologyMap.getNodeTemplate(), credentials);
                 vmTopologyMap = helper.setCredentialsInVMTopology(vmTopologyMap, credential);
-                toscaTemplate = helper.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap.getNodeTemplate());
-                return toscaTemplate;
+                toscaTemplate = helper.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
             }
         }
-        return null;
+        return toscaTemplate;
     }
 
 }

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import nl.uva.sne.drip.api.NotFoundException;
 import nl.uva.sne.drip.dao.ToscaTemplateDAO;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,8 +65,11 @@ public class ToscaTemplateService {
         return save(tt);
     }
 
-    public String findByID(String id) throws JsonProcessingException {
+    public String findByID(String id) throws JsonProcessingException, NotFoundException {
         ToscaTemplate tt = dao.findById(id).get();
+        if(tt==null){
+            throw new NotFoundException(404, "ToscaTemplate with id: "+id+" not found");
+        }
         String ymlStr = objectMapper.writeValueAsString(tt);
         return ymlStr;
     }
