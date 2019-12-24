@@ -52,7 +52,7 @@ public class DRIPService {
             if (requestQeueName.equals("provisioner")) {
                 toscaTemplate = addCredentials(toscaTemplate);
             }
-
+            Logger.getLogger(DRIPService.class.getName()).log(Level.INFO, "toscaTemplate:\n" + toscaTemplate);
             Message message = new Message();
             message.setOwner("user");
             message.setCreationDate(System.currentTimeMillis());

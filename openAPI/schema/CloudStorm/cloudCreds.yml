@@ -1,7 +1,0 @@
-  cloudCreds:
-      type: "object"
-      properties:
-        CloudCredential:
-            type: "array"
-            items:
-              $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/CloudCredential.yml#/CloudCredential"

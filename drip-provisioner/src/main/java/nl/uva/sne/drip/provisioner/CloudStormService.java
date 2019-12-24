@@ -16,7 +16,9 @@ import com.jcraft.jsch.KeyPair;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +28,12 @@ import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
+import nl.uva.sne.drip.model.cloud.storm.CloudCredential;
+import nl.uva.sne.drip.model.cloud.storm.CloudCredentials;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormTopTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVMs;
+import nl.uva.sne.drip.model.cloud.storm.CredentialInfo;
 import nl.uva.sne.drip.model.cloud.storm.VMMetaInfo;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
@@ -176,12 +181,46 @@ class CloudStormService {
 
     private void writeCloudStormCredentialsFiles(ToscaTemplate toscaTemplate, String credentialsTempInputDirPath) throws ApiException, Exception {
         List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
+        List<CloudCredential> cloudStormCredentialList = new ArrayList<>();
+        int i = 0;
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
-            Credential credentials = helper.getCredentialsFromVMTopology(vmTopologyMap);
-            Cloudstorm
-            objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + "top.yml"), credentials);
+            Credential toscaCredentials = helper.getCredentialsFromVMTopology(vmTopologyMap);
+
+            CloudCredential cloudStormCredential = new CloudCredential();
+            cloudStormCredential.setCloudProvider(toscaCredentials.getCloudProviderName());
+            String credInfoFile = credentialsTempInputDirPath + File.separator + toscaCredentials.getCloudProviderName() + i + ".yml";
+            cloudStormCredential.setCredInfoFile(credInfoFile);
+
+            CredentialInfo cloudStormCredentialInfo = getCloudStormCredentialInfo(toscaCredentials);
+
+            objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + "top.yml"), cloudStormCredentialInfo);
+            i++;
+        }
+        CloudCredentials cloudStormCredentials = new CloudCredentials();
+
+        cloudStormCredentials.setCloudCredential(cloudStormCredentialList);
+    }
+
+    private CredentialInfo getCloudStormCredentialInfo(Credential toscaCredentials) throws FileNotFoundException {
+CredentialInfo cloudStormCredentialInfo = new CredentialInfo();
+        switch (toscaCredentials.getCloudProviderName().toLowerCase()) {
+            case "exogeni":
+                
+                String base64Keystore = toscaCredentials.getKeys().get("keystore");
+                byte[] decoded = Base64.getDecoder().decode(base64Keystore);
+                try (PrintWriter out = new PrintWriter("user.jks")) {
+                    out.println(new String(decoded));
+                }
+                cloudStormCredentialInfo.setUserKeyName("user.jks");
+                cloudStormCredentialInfo.setKeyAlias(toscaCredentials.getUser());
+                cloudStormCredentialInfo.setKeyPassword(toscaCredentials.getToken());
+                return cloudStormCredentialInfo;
+            case "ec2":
+//                cloudStormCredentialInfo.setAccessKey(toscaCredentials.get);
+                return cloudStormCredentialInfo;                
 
         }
+        return null;
     }
 
 }
