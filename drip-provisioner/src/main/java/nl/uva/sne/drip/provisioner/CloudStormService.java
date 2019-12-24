@@ -178,6 +178,9 @@ class CloudStormService {
         List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
             Credential credentials = helper.getCredentialsFromVMTopology(vmTopologyMap);
+            Cloudstorm
+            objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + "top.yml"), credentials);
+
         }
     }
 
