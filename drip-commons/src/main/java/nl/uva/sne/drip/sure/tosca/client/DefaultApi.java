@@ -755,6 +755,145 @@ public class DefaultApi {
     }
 
     /**
+     * Build call for getNodeAttributes
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param nodeName node_name (required)
+     * @param progressListener Progress listener
+     * @param progressRequestListener Progress request listener
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     */
+    public com.squareup.okhttp.Call getNodeAttributesCall(String id, String nodeName, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/tosca_template/{id}/topology_template/node_templates/{node_name}/attributes"
+                .replaceAll("\\{" + "id" + "\\}", apiClient.escapeString(id.toString()))
+                .replaceAll("\\{" + "node_name" + "\\}", apiClient.escapeString(nodeName.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {};
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if (progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                            .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[]{};
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private com.squareup.okhttp.Call getNodeAttributesValidateBeforeCall(String id, String nodeName, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        // verify the required parameter 'id' is set
+        if (id == null) {
+            throw new ApiException("Missing the required parameter 'id' when calling getNodeAttributes(Async)");
+        }
+
+        // verify the required parameter 'nodeName' is set
+        if (nodeName == null) {
+            throw new ApiException("Missing the required parameter 'nodeName' when calling getNodeAttributes(Async)");
+        }
+
+        com.squareup.okhttp.Call call = getNodeAttributesCall(id, nodeName, progressListener, progressRequestListener);
+        return call;
+
+    }
+
+    /**
+     *
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param nodeName node_name (required)
+     * @return Map&lt;String, Object&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot
+     * deserialize the response body
+     */
+    public Map<String, Object> getNodeAttributes(String id, String nodeName) throws ApiException {
+        ApiResponse<Map<String, Object>> resp = getNodeAttributesWithHttpInfo(id, nodeName);
+        return resp.getData();
+    }
+
+    /**
+     *
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param nodeName node_name (required)
+     * @return ApiResponse&lt;Map&lt;String, Object&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot
+     * deserialize the response body
+     */
+    public ApiResponse<Map<String, Object>> getNodeAttributesWithHttpInfo(String id, String nodeName) throws ApiException {
+        com.squareup.okhttp.Call call = getNodeAttributesValidateBeforeCall(id, nodeName, null, null);
+        Type localVarReturnType = new TypeToken<Map<String, Object>>() {
+        }.getType();
+        return apiClient.execute(call, localVarReturnType);
+    }
+
+    /**
+     * (asynchronously)
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param nodeName node_name (required)
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing
+     * the request body object
+     */
+    public com.squareup.okhttp.Call getNodeAttributesAsync(String id, String nodeName, final ApiCallback<Map<String, Object>> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = getNodeAttributesValidateBeforeCall(id, nodeName, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<Map<String, Object>>() {
+        }.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
+        return call;
+    }
+
+    /**
      * Build call for getNodeOutputs
      *
      * @param id ID of topolog template uplodaed (required)
@@ -2384,6 +2523,154 @@ public class DefaultApi {
 
         com.squareup.okhttp.Call call = getTypesValidateBeforeCall(id, kindOfType, hasInterfaces, typeName, hasProperties, hasAttributes, hasRequirements, hasCapabilities, hasArtifacts, derivedFrom, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<List<Map<String, Object>>>() {
+        }.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
+        return call;
+    }
+
+    /**
+     * Build call for setNodeAttributes
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param properties (required)
+     * @param nodeName node_name (required)
+     * @param progressListener Progress listener
+     * @param progressRequestListener Progress request listener
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     */
+    public com.squareup.okhttp.Call setNodeAttributesCall(String id, Object properties, String nodeName, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = properties;
+
+        // create path and map variables
+        String localVarPath = "/tosca_template/{id}/topology_template/node_templates/{node_name}/attributes"
+                .replaceAll("\\{" + "id" + "\\}", apiClient.escapeString(id.toString()))
+                .replaceAll("\\{" + "node_name" + "\\}", apiClient.escapeString(nodeName.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {};
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if (progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                            .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[]{};
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private com.squareup.okhttp.Call setNodeAttributesValidateBeforeCall(String id, Object properties, String nodeName, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        // verify the required parameter 'id' is set
+        if (id == null) {
+            throw new ApiException("Missing the required parameter 'id' when calling setNodeAttributes(Async)");
+        }
+
+        // verify the required parameter 'properties' is set
+        if (properties == null) {
+            throw new ApiException("Missing the required parameter 'properties' when calling setNodeAttributes(Async)");
+        }
+
+        // verify the required parameter 'nodeName' is set
+        if (nodeName == null) {
+            throw new ApiException("Missing the required parameter 'nodeName' when calling setNodeAttributes(Async)");
+        }
+
+        com.squareup.okhttp.Call call = setNodeAttributesCall(id, properties, nodeName, progressListener, progressRequestListener);
+        return call;
+
+    }
+
+    /**
+     *
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param properties (required)
+     * @param nodeName node_name (required)
+     * @return String
+     * @throws ApiException If fail to call the API, e.g. server error or cannot
+     * deserialize the response body
+     */
+    public String setNodeAttributes(String id, Object properties, String nodeName) throws ApiException {
+        ApiResponse<String> resp = setNodeAttributesWithHttpInfo(id, properties, nodeName);
+        return resp.getData();
+    }
+
+    /**
+     *
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param properties (required)
+     * @param nodeName node_name (required)
+     * @return ApiResponse&lt;String&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot
+     * deserialize the response body
+     */
+    public ApiResponse<String> setNodeAttributesWithHttpInfo(String id, Object properties, String nodeName) throws ApiException {
+        com.squareup.okhttp.Call call = setNodeAttributesValidateBeforeCall(id, properties, nodeName, null, null);
+        Type localVarReturnType = new TypeToken<String>() {
+        }.getType();
+        return apiClient.execute(call, localVarReturnType);
+    }
+
+    /**
+     * (asynchronously)
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param properties (required)
+     * @param nodeName node_name (required)
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing
+     * the request body object
+     */
+    public com.squareup.okhttp.Call setNodeAttributesAsync(String id, Object properties, String nodeName, final ApiCallback<String> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = setNodeAttributesValidateBeforeCall(id, properties, nodeName, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<String>() {
         }.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

@@ -208,30 +208,18 @@ public class ToscaHelper {
         NodeTemplate vmTopology = vmTopologyMap.getNodeTemplate();
         if (vmTopology.getType().equals(VM_TOPOLOGY)) {
             Map<String, Object> att = vmTopology.getAttributes();
-            Object credentialMap = att.get("credential");
-//            Map<String, Object> toscaCredential = new HashMap<>();
-//            toscaCredential.put("protocol", credential.getProtocol());
-//            toscaCredential.put("token_type", credential.getTokenType());
-//            toscaCredential.put("token", credential.getToken());
-//            toscaCredential.put("keys", credential.getKeys());
-//            toscaCredential.put("user", credential.getUser());
-//            toscaCredential.put("cloud_provider_name", credential.getCloudProviderName());
-//            att.put("credential", toscaCredential);
-//            vmTopology.setAttributes(att);
-//            return vmTopology;
+            String ymlStr = Converter.map2YmlString((Map<String, Object>) att.get("credential"));
+            Credential toscaCredential = objectMapper.readValue(ymlStr, Credential.class);
+            return toscaCredential;
+
         } else {
             throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + vmTopology.getType());
         }
-        return null;
     }
 
     public ToscaTemplate setVMTopologyInToscaTemplate(ToscaTemplate toscaTemplate, NodeTemplateMap vmTopologyMap) {
         Map<String, NodeTemplate> nodes = toscaTemplate.getTopologyTemplate().getNodeTemplates();
         nodes.put(vmTopologyMap.getName(), vmTopologyMap.getNodeTemplate());
-//        Set<String> keys = nodes.keySet();
-//        for (String key : keys) {
-//            NodeTemplate node = nodes.get(key);
-//        }
         return toscaTemplate;
     }
 

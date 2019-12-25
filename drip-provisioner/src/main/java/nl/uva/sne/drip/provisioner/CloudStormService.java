@@ -202,10 +202,10 @@ class CloudStormService {
     }
 
     private CredentialInfo getCloudStormCredentialInfo(Credential toscaCredentials) throws FileNotFoundException {
-CredentialInfo cloudStormCredentialInfo = new CredentialInfo();
+        CredentialInfo cloudStormCredentialInfo = new CredentialInfo();
         switch (toscaCredentials.getCloudProviderName().toLowerCase()) {
             case "exogeni":
-                
+
                 String base64Keystore = toscaCredentials.getKeys().get("keystore");
                 byte[] decoded = Base64.getDecoder().decode(base64Keystore);
                 try (PrintWriter out = new PrintWriter("user.jks")) {
@@ -217,7 +217,7 @@ CredentialInfo cloudStormCredentialInfo = new CredentialInfo();
                 return cloudStormCredentialInfo;
             case "ec2":
 //                cloudStormCredentialInfo.setAccessKey(toscaCredentials.get);
-                return cloudStormCredentialInfo;                
+                return cloudStormCredentialInfo;
 
         }
         return null;

@@ -367,3 +367,39 @@ def upload_tosca_template(file):  # noqa: E501
     if res:
         return res
     return 'Bad Request', 400
+
+
+def set_node_attributes(id, properties, node_name):  # noqa: E501
+    """set_node_attributes
+
+     # noqa: E501
+
+    :param id: ID of topolog template uplodaed
+    :type id: str
+    :param properties:
+    :type properties:
+    :param node_name: node_name
+    :type node_name: str
+
+    :rtype: str
+    """
+    return 'do some magic!'
+
+
+def get_node_attributes(id, node_name):  # noqa: E501
+    """get_node_attributes
+
+     # noqa: E501
+
+    :param id: ID of topolog template uplodaed
+    :type id: str
+    :param node_name: node_name
+    :type node_name: str
+
+    :rtype: Dict[str, object]
+    """
+    res = tosca_template_service.get_node_attributes(id, node_name)
+    if res:
+        return res
+    return 'Not Found', 404
+

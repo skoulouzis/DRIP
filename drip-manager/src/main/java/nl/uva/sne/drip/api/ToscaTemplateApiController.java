@@ -1,5 +1,6 @@
 package nl.uva.sne.drip.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import nl.uva.sne.drip.service.ToscaTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -56,6 +58,8 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type ", e);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            } catch (NotFoundException ex) {
+                java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

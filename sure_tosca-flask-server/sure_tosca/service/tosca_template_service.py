@@ -118,7 +118,7 @@ def get_interface_types(id, interface_type=None):
     return query_db(queries, db=interface_types_db)
 
 
-def change_to_nodeTemplateModel(query_results):
+def change_to_node_template_model(query_results):
     res = []
     for node_template in query_results:
         # copy.deepcopy()
@@ -189,7 +189,7 @@ def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, 
         queries.append(query.artifacts != prop)
 
     query_results = query_db(queries, db=node_template_db)
-    return change_to_nodeTemplateModel(query_results)
+    return change_to_node_template_model(query_results)
 
 
 def get_tosca_template_get_dsl_definitions(id, anchors, derived_from):
@@ -322,6 +322,14 @@ def get_node_requirements(id, node_name):
     requirements = node_template_map.node_template.requirements
     if requirements:
         return requirements
+    return None
+
+
+def get_node_attributes(id, node_name):
+    node_template_map = get_node_templates(id, node_name=node_name)[0]
+    attributes = node_template_map.node_template.attributes
+    if attributes:
+        return attributes
     return None
 
 
