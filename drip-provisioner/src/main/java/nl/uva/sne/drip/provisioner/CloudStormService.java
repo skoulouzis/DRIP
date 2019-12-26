@@ -27,7 +27,7 @@ import java.util.Properties;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
 import nl.uva.sne.drip.model.NodeTemplateMap;
-import nl.uva.sne.drip.model.cloud.storm.CloudCredential;
+import nl.uva.sne.drip.model.cloud.storm.CloudCred;
 import nl.uva.sne.drip.model.cloud.storm.CloudCredentials;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormTopTopology;
@@ -180,12 +180,12 @@ class CloudStormService {
 
     private void writeCloudStormCredentialsFiles(String credentialsTempInputDirPath) throws ApiException, Exception {
         List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
-        List<CloudCredential> cloudStormCredentialList = new ArrayList<>();
+        List<CloudCred> cloudStormCredentialList = new ArrayList<>();
         int i = 0;
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
             Credential toscaCredentials = helper.getCredentialsFromVMTopology(vmTopologyMap);
 
-            CloudCredential cloudStormCredential = new CloudCredential();
+            CloudCred cloudStormCredential = new CloudCred();
             cloudStormCredential.setCloudProvider(toscaCredentials.getCloudProviderName());
             String credInfoFile = credentialsTempInputDirPath + File.separator + toscaCredentials.getCloudProviderName() + i + ".yml";
             cloudStormCredential.setCredInfoFile(credInfoFile);
@@ -196,7 +196,7 @@ class CloudStormService {
             i++;
         }
         CloudCredentials cloudStormCredentials = new CloudCredentials();
-        cloudStormCredentials.setCloudCredential(cloudStormCredentialList);
+        cloudStormCredentials.setCloudCreds(cloudStormCredentialList);
         objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + "CloudStormCredentials.yml"), cloudStormCredentials);
     }
 

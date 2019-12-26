@@ -6,12 +6,12 @@ import io.swagger.annotations.ApiModelProperty;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * CloudCredential
+ * CloudCred
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-24T17:07:10.081Z")
 
-public class CloudCredential {
+public class CloudCred {
 
     @JsonProperty("cloudProvider")
     private String cloudProvider = null;
@@ -19,7 +19,7 @@ public class CloudCredential {
     @JsonProperty("credInfoFile")
     private String credInfoFile = null;
 
-    public CloudCredential cloudProvider(String cloudProvider) {
+    public CloudCred cloudProvider(String cloudProvider) {
         this.cloudProvider = cloudProvider;
         return this;
     }
@@ -40,7 +40,7 @@ public class CloudCredential {
         this.cloudProvider = cloudProvider;
     }
 
-    public CloudCredential credInfoFile(String credInfoFile) {
+    public CloudCred credInfoFile(String credInfoFile) {
         this.credInfoFile = credInfoFile;
         return this;
     }
@@ -69,9 +69,9 @@ public class CloudCredential {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CloudCredential cloudCredential = (CloudCredential) o;
-        return Objects.equals(this.cloudProvider, cloudCredential.cloudProvider)
-                && Objects.equals(this.credInfoFile, cloudCredential.credInfoFile);
+        CloudCred cloudCred = (CloudCred) o;
+        return Objects.equals(this.cloudProvider, cloudCred.cloudProvider)
+                && Objects.equals(this.credInfoFile, cloudCred.credInfoFile);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class CloudCredential {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("class CloudCredential {\n");
+        sb.append("class cloudCred {\n");
 
         sb.append("    cloudProvider: ").append(toIndentedString(cloudProvider)).append("\n");
         sb.append("    credInfoFile: ").append(toIndentedString(credInfoFile)).append("\n");

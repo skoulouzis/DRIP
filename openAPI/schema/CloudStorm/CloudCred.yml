@@ -1,4 +1,4 @@
-  CloudCredential:
+  CloudCred:
       type: "object"
       properties:
         cloudProvider:

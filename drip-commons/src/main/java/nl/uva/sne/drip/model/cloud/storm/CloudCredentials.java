@@ -18,16 +18,16 @@ public class CloudCredentials {
 
     @JsonProperty("cloudCreds")
     @Valid
-    private List<CloudCredential> cloudCreds = null;
+    private List<CloudCred> cloudCreds = null;
 
-    public CloudCredentials cloudCreds(List<CloudCredential> cloudCreds) {
+    public CloudCredentials cloudCreds(List<CloudCred> cloudCreds) {
         this.cloudCreds = cloudCreds;
         return this;
     }
 
-    public CloudCredentials addCloudCredentialItem(CloudCredential cloudCredsItem) {
+    public CloudCredentials addCloudCredentialItem(CloudCred cloudCredsItem) {
         if (this.cloudCreds == null) {
-            this.cloudCreds = new ArrayList<CloudCredential>();
+            this.cloudCreds = new ArrayList<>();
         }
         this.cloudCreds.add(cloudCredsItem);
         return this;
@@ -43,11 +43,11 @@ public class CloudCredentials {
 
     @Valid
 
-    public List<CloudCredential> getCloudCredential() {
+    public List<CloudCred> getCloudCredential() {
         return cloudCreds;
     }
 
-    public void setCloudCredential(List<CloudCredential> cloudCreds) {
+    public void setCloudCreds(List<CloudCred> cloudCreds) {
         this.cloudCreds = cloudCreds;
     }
 
