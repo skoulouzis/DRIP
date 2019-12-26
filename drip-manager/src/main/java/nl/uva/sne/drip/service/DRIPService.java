@@ -136,8 +136,4 @@ public class DRIPService {
 
     }
 
-    private Map<String, Object> getBestProvisionInterfaceDefinitions(List<Map<String, Object>> result) {
-        return result.get(0);
-    }
-
 }

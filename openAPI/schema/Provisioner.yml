@@ -1,11 +1,11 @@
-Provisioner:
-    type: "object"
-    properties:
-    name:
-        type: "string"
-    version:
-        type: "string"
-    description:
-        type: "string"
-    tosca_interface_type:
-        type: "string"
+  Provisioner:
+      type: "object"
+      properties:
+        name:
+            type: "string"
+        version:
+            type: "string"
+        description:
+            type: "string"
+        tosca_interface_type:
+            type: "string"
