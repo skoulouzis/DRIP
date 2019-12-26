@@ -11,7 +11,7 @@ interface_types:
         default: SEQ
         description: This field indicates the type of this code. Currently, there are only two types, ‘SEQ’ and ‘LOOP’.
         constraints:
-          - valid_values: ['SEQ' , 'LOOP']     
+          - valid_values: ['SEQ' , 'LOOP']
       object_type:
         type: string
         required: true

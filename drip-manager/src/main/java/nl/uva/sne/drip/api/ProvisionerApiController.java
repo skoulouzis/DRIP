@@ -46,7 +46,7 @@ public class ProvisionerApiController implements ProvisionerApi {
         if (accept != null && accept.contains("text/plain")) {
             try {
                 dripService.setRequestQeueName(queueName);
-                String planedYemplateId = dripService.execute(id);
+                String planedYemplateId = dripService.provision(id);
                 return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
             } catch (ApiException ex) {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

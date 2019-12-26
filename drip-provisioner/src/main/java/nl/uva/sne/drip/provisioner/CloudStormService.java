@@ -28,7 +28,7 @@ import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.cloud.storm.CloudCred;
-import nl.uva.sne.drip.model.cloud.storm.CloudCredentials;
+import nl.uva.sne.drip.model.cloud.storm.CloudCredentialDB;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormTopTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVMs;
@@ -75,7 +75,7 @@ class CloudStormService {
         if (!(topologyTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
         }
-        writeCloudStormTopologyFiles(toscaTemplate, topologyTempInputDirPath);
+        writeCloudStormTopologyFiles(topologyTempInputDirPath);
 
         String credentialsTempInputDirPath = tempInputDirPath + File.separator + "credentials";
         File credentialsTempInputDir = new File(credentialsTempInputDirPath);
@@ -88,11 +88,11 @@ class CloudStormService {
         if (!(infrasCodeTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
         }
-
+        writeCloudStormInfrasCodeFiles(infrasCodeTempInputDirPath);
         return toscaTemplate;
     }
 
-    private void writeCloudStormTopologyFiles(ToscaTemplate toscaTemplate, String tempInputDirPath) throws JSchException, IOException, ApiException, Exception {
+    private void writeCloudStormTopologyFiles(String tempInputDirPath) throws JSchException, IOException, ApiException, Exception {
         CloudsStormTopTopology topTopology = new CloudsStormTopTopology();
         String publicKeyPath = buildSSHKeyPair(tempInputDirPath);
         topTopology.setPublicKeyPath(publicKeyPath);
@@ -103,8 +103,6 @@ class CloudStormService {
         topTopology.setTopologies(cloudsStormSubTopology);
 
         objectMapper.writeValue(new File(tempInputDirPath + File.separator + "top.yml"), topTopology);
-
-//        <CloudsStormVMs > cloudsStormVMsList = (List<CloudsStormVMs>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
     }
 
     private String buildSSHKeyPair(String tempInputDirPath) throws JSchException, IOException {
@@ -187,7 +185,7 @@ class CloudStormService {
 
             CloudCred cloudStormCredential = new CloudCred();
             cloudStormCredential.setCloudProvider(toscaCredentials.getCloudProviderName());
-            String credInfoFile = credentialsTempInputDirPath + File.separator + toscaCredentials.getCloudProviderName() + i + ".yml";
+            String credInfoFile = toscaCredentials.getCloudProviderName() + i + ".yml";
             cloudStormCredential.setCredInfoFile(credInfoFile);
             cloudStormCredentialList.add(cloudStormCredential);
 
@@ -195,7 +193,7 @@ class CloudStormService {
             objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + toscaCredentials.getCloudProviderName() + i + ".yml"), cloudStormCredentialInfo);
             i++;
         }
-        CloudCredentials cloudStormCredentials = new CloudCredentials();
+        CloudCredentialDB cloudStormCredentials = new CloudCredentialDB();
         cloudStormCredentials.setCloudCreds(cloudStormCredentialList);
         objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + "CloudStormCredentials.yml"), cloudStormCredentials);
     }
@@ -220,6 +218,10 @@ class CloudStormService {
 
         }
         return null;
+    }
+
+    private void writeCloudStormInfrasCodeFiles(String infrasCodeTempInputDirPath) {
+        
     }
 
 }

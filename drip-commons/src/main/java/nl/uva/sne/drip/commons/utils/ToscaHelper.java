@@ -84,14 +84,14 @@ public class ToscaHelper {
         id = Integer.valueOf(resp);
     }
 
-    public List<Map<String, Object>> getProvisionInterfaceDefinitions(List<String> toscaInterfaceTypes) throws ApiException {
+    public List<Map<String, Object>> getSupportedProvisionInterfaceDefinitions() throws ApiException {
         List<Map<String, Object>> interfaceDefinitions = new ArrayList<>();
+        List<String> toscaInterfaceTypes = getSuportedProvisionInterfaceTypes();
         for (String type : toscaInterfaceTypes) {
             String derivedFrom = null;
             List<Map<String, Object>> interfaces = api.getTypes(String.valueOf(id), "interface_types", null, type, null, null, null, null, null, derivedFrom);
             interfaceDefinitions.addAll(interfaces);
         }
-
         return interfaceDefinitions;
     }
 
@@ -221,6 +221,12 @@ public class ToscaHelper {
         Map<String, NodeTemplate> nodes = toscaTemplate.getTopologyTemplate().getNodeTemplates();
         nodes.put(vmTopologyMap.getName(), vmTopologyMap.getNodeTemplate());
         return toscaTemplate;
+    }
+
+    private List<String> getSuportedProvisionInterfaceTypes() {
+        List<String> suportedProvisionInterfaceTypes = new ArrayList<>();
+        suportedProvisionInterfaceTypes.add("tosca.interfaces.ARTICONF.CloudsStorm");
+        return suportedProvisionInterfaceTypes;
     }
 
 }

@@ -7,5 +7,5 @@ Provisioner:
         type: "string"
     description:
         type: "string"
-    tosca_interface_types:
+    tosca_interface_type:
         type: "string"

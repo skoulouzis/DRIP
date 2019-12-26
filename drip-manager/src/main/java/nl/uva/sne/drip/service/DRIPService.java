@@ -8,9 +8,11 @@ package nl.uva.sne.drip.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.api.NotFoundException;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.NodeTemplate;
@@ -43,16 +45,11 @@ public class DRIPService {
     @Autowired
     private ToscaHelper helper;
 
-    public String execute(String id) throws JsonProcessingException, ApiException, Exception {
+    private String execute(ToscaTemplate toscaTemplate) throws JsonProcessingException, ApiException, Exception {
 
         try {
             caller.init();
-            String ymlToscaTemplate = toscaTemplateService.findByID(id);
-            ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
-            if (requestQeueName.equals("provisioner")) {
-                toscaTemplate = addCredentials(toscaTemplate);
-            }
-            Logger.getLogger(DRIPService.class.getName()).log(Level.INFO, "toscaTemplate:\n" + toscaTemplate);
+            Logger.getLogger(DRIPService.class.getName()).log(Level.INFO, "toscaTemplate:\n{0}", toscaTemplate);
             Message message = new Message();
             message.setOwner("user");
             message.setCreationDate(System.currentTimeMillis());
@@ -107,6 +104,40 @@ public class DRIPService {
             }
         }
         return toscaTemplate;
+    }
+
+    public String plan(String id) throws ApiException, Exception {
+        String ymlToscaTemplate = toscaTemplateService.findByID(id);
+        ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
+        return execute(toscaTemplate);
+    }
+
+    public String provision(String id) throws JsonProcessingException, NotFoundException, IOException, Exception {
+        String ymlToscaTemplate = toscaTemplateService.findByID(id);
+        ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
+        toscaTemplate = addCredentials(toscaTemplate);
+        toscaTemplate = addProvisionInterface(toscaTemplate);
+        return execute(toscaTemplate);
+    }
+
+    private ToscaTemplate addProvisionInterface(ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException, Exception  {
+        helper.uploadToscaTemplate(toscaTemplate);
+        List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
+        List<Provisioner> provisioners = null;
+        for (NodeTemplateMap vmTopologyMap : vmTopologies) {
+            provisioners = provisionerService.findByProvider(provider.toLowerCase());
+            if (provisioners != null && provisioners.size() > 0) {
+                Provisioner provisioner = getBestProvisioners(vmTopologyMap.getNodeTemplate(), provisioners);
+                vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisioner);
+                toscaTemplate = helper.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
+            }
+        }
+        return toscaTemplate;
+
+    }
+
+    private Map<String, Object> getBestProvisionInterfaceDefinitions(List<Map<String, Object>> result) {
+        return result.get(0);
     }
 
 }
