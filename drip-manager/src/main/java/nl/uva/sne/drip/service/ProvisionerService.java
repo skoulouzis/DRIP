@@ -5,14 +5,10 @@
  */
 package nl.uva.sne.drip.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import nl.uva.sne.drip.dao.CredentialDAO;
 import nl.uva.sne.drip.model.Provisioner;
-import nl.uva.sne.drip.model.tosca.Credential;
 
 /**
  *
@@ -21,13 +17,12 @@ import nl.uva.sne.drip.model.tosca.Credential;
 @Service
 public class ProvisionerService {
 
-
-
-
     public List<Provisioner> findAll() {
         List<Provisioner> all = new ArrayList<>();
         Provisioner provisioner = new Provisioner();
-        provisioner.
+        provisioner.setName("CloudsStorm");
+        provisioner.setDescription("Interface for VM topology management with CloudsStorm. More at https://cloudsstorm.github.io/");
+        provisioner.setToscaInterfaceType("tosca.interfaces.ARTICONF.CloudsStorm");
         all.add(provisioner);
         return all;
     }

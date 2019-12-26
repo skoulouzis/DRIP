@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
+import nl.uva.sne.drip.model.Provisioner;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.sure.tosca.client.DefaultApi;
@@ -84,9 +85,8 @@ public class ToscaHelper {
         id = Integer.valueOf(resp);
     }
 
-    public List<Map<String, Object>> getSupportedProvisionInterfaceDefinitions() throws ApiException {
+    public List<Map<String, Object>> getProvisionInterfaceDefinitions(List<String> toscaInterfaceTypes) throws ApiException {
         List<Map<String, Object>> interfaceDefinitions = new ArrayList<>();
-        List<String> toscaInterfaceTypes = getSuportedProvisionInterfaceTypes();
         for (String type : toscaInterfaceTypes) {
             String derivedFrom = null;
             List<Map<String, Object>> interfaces = api.getTypes(String.valueOf(id), "interface_types", null, type, null, null, null, null, null, derivedFrom);
@@ -223,10 +223,12 @@ public class ToscaHelper {
         return toscaTemplate;
     }
 
-    private List<String> getSuportedProvisionInterfaceTypes() {
-        List<String> suportedProvisionInterfaceTypes = new ArrayList<>();
-        suportedProvisionInterfaceTypes.add("tosca.interfaces.ARTICONF.CloudsStorm");
-        return suportedProvisionInterfaceTypes;
+    public NodeTemplateMap setProvisionerInterfaceInVMTopology(NodeTemplateMap vmTopologyMap, Provisioner provisioner) throws ApiException {
+        List<String> toscaInterfaceTypes = new ArrayList<>();
+        toscaInterfaceTypes.add(provisioner.getToscaInterfaceType());
+        List<Map<String, Object>> definitions = getProvisionInterfaceDefinitions(toscaInterfaceTypes);
+        
+        return null;
     }
 
 }

@@ -17,6 +17,7 @@ import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
+import nl.uva.sne.drip.model.Provisioner;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.rpc.DRIPCaller;
@@ -44,6 +45,9 @@ public class DRIPService {
 
     @Autowired
     private ToscaHelper helper;
+
+    @Autowired
+    ProvisionerService provisionerService;
 
     private String execute(ToscaTemplate toscaTemplate) throws JsonProcessingException, ApiException, Exception {
 
@@ -120,12 +124,12 @@ public class DRIPService {
         return execute(toscaTemplate);
     }
 
-    private ToscaTemplate addProvisionInterface(ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException, Exception  {
+    private ToscaTemplate addProvisionInterface(ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException, Exception {
         helper.uploadToscaTemplate(toscaTemplate);
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         List<Provisioner> provisioners = null;
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {
-            provisioners = provisionerService.findByProvider(provider.toLowerCase());
+            provisioners = provisionerService.findAll();
             if (provisioners != null && provisioners.size() > 0) {
                 Provisioner provisioner = getBestProvisioners(vmTopologyMap.getNodeTemplate(), provisioners);
                 vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisioner);
@@ -134,6 +138,10 @@ public class DRIPService {
         }
         return toscaTemplate;
 
+    }
+
+    private Provisioner getBestProvisioners(NodeTemplate nodeTemplate, List<Provisioner> provisioners) {
+        return provisioners.get(0);
     }
 
 }
