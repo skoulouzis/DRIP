@@ -83,7 +83,7 @@ class CloudStormService {
         if (!(credentialsTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
         }
-        writeCloudStormCredentialsFiles(toscaTemplate, credentialsTempInputDirPath);
+        writeCloudStormCredentialsFiles(credentialsTempInputDirPath);
         String infrasCodeTempInputDirPath = tempInputDirPath + File.separator + "infrasCodes";
         File infrasCodeTempInputDir = new File(infrasCodeTempInputDirPath);
         if (!(infrasCodeTempInputDir.mkdirs())) {
@@ -99,7 +99,7 @@ class CloudStormService {
         topTopology.setPublicKeyPath(publicKeyPath);
         topTopology.setUserName(getUserName());
 
-        Map<String, Object> subTopologiesAndVMs = getCloudsStormSubTopologiesAndVMs(toscaTemplate, tempInputDirPath);
+        Map<String, Object> subTopologiesAndVMs = getCloudsStormSubTopologiesAndVMs(tempInputDirPath);
         List<CloudsStormSubTopology> cloudsStormSubTopology = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
         topTopology.setTopologies(cloudsStormSubTopology);
 
@@ -124,7 +124,7 @@ class CloudStormService {
         return "vm_user";
     }
 
-    private Map<String, Object> getCloudsStormSubTopologiesAndVMs(ToscaTemplate toscaTemplate, String tempInputDirPath) throws ApiException, IOException, Exception {
+    private Map<String, Object> getCloudsStormSubTopologiesAndVMs(String tempInputDirPath) throws ApiException, IOException, Exception {
         List<NodeTemplateMap> vmTopologyTemplatesMap = helper.getVMTopologyTemplates();
         List<CloudsStormSubTopology> cloudsStormSubTopologies = new ArrayList<>();
         Map<String, Object> cloudsStormMap = new HashMap<>();
@@ -179,7 +179,7 @@ class CloudStormService {
         return null;
     }
 
-    private void writeCloudStormCredentialsFiles(ToscaTemplate toscaTemplate, String credentialsTempInputDirPath) throws ApiException, Exception {
+    private void writeCloudStormCredentialsFiles(String credentialsTempInputDirPath) throws ApiException, Exception {
         List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
         List<CloudCredential> cloudStormCredentialList = new ArrayList<>();
         int i = 0;
@@ -190,25 +190,25 @@ class CloudStormService {
             cloudStormCredential.setCloudProvider(toscaCredentials.getCloudProviderName());
             String credInfoFile = credentialsTempInputDirPath + File.separator + toscaCredentials.getCloudProviderName() + i + ".yml";
             cloudStormCredential.setCredInfoFile(credInfoFile);
+            cloudStormCredentialList.add(cloudStormCredential);
 
-            CredentialInfo cloudStormCredentialInfo = getCloudStormCredentialInfo(toscaCredentials);
-
-            objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + "top.yml"), cloudStormCredentialInfo);
+            CredentialInfo cloudStormCredentialInfo = getCloudStormCredentialInfo(toscaCredentials, credentialsTempInputDirPath);
+            objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + toscaCredentials.getCloudProviderName() + i + ".yml"), cloudStormCredentialInfo);
             i++;
         }
         CloudCredentials cloudStormCredentials = new CloudCredentials();
-
         cloudStormCredentials.setCloudCredential(cloudStormCredentialList);
+        objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + "CloudStormCredentials.yml"), cloudStormCredentials);
     }
 
-    private CredentialInfo getCloudStormCredentialInfo(Credential toscaCredentials) throws FileNotFoundException {
+    private CredentialInfo getCloudStormCredentialInfo(Credential toscaCredentials, String tmpPath) throws FileNotFoundException {
         CredentialInfo cloudStormCredentialInfo = new CredentialInfo();
         switch (toscaCredentials.getCloudProviderName().toLowerCase()) {
             case "exogeni":
 
                 String base64Keystore = toscaCredentials.getKeys().get("keystore");
                 byte[] decoded = Base64.getDecoder().decode(base64Keystore);
-                try (PrintWriter out = new PrintWriter("user.jks")) {
+                try (PrintWriter out = new PrintWriter(tmpPath + File.separator + "user.jks")) {
                     out.println(new String(decoded));
                 }
                 cloudStormCredentialInfo.setUserKeyName("user.jks");

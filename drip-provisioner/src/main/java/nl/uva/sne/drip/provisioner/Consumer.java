@@ -84,8 +84,6 @@ public class Consumer extends DefaultConsumer {
             String response = objectMapper.writeValueAsString(responceMessage);
 
             logger.log(Level.INFO, "Sending Response: '{'0'}'{0}", response);
-//            Logger.getLogger(Consumer.class.getName()).log(Level.INFO, "Sending Response: {0}", response);
-//We send the response back. No need to change anything here
             channel.basicPublish("", properties.getReplyTo(), replyProps, response.getBytes("UTF-8"));
             channel.basicAck(envelope.getDeliveryTag(), false);
         } catch (JSchException | ApiException ex) {
