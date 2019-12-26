@@ -26,7 +26,6 @@ import java.util.Objects;
 import java.util.Properties;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
-import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.cloud.storm.CloudCredential;
 import nl.uva.sne.drip.model.cloud.storm.CloudCredentials;

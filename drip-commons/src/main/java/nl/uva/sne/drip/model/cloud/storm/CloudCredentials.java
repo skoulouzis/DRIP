@@ -12,79 +12,80 @@ import javax.validation.Valid;
  * CloudCredentials
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-24T17:07:10.081Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-26T12:29:05.903Z")
 
-public class CloudCredentials   {
-  @JsonProperty("CloudCredential")
-  @Valid
-  private List<CloudCredential> cloudCredential = null;
+public class CloudCredentials {
 
-  public CloudCredentials cloudCredential(List<CloudCredential> cloudCredential) {
-    this.cloudCredential = cloudCredential;
-    return this;
-  }
+    @JsonProperty("cloudCreds")
+    @Valid
+    private List<CloudCredential> cloudCreds = null;
 
-  public CloudCredentials addCloudCredentialItem(CloudCredential cloudCredentialItem) {
-    if (this.cloudCredential == null) {
-      this.cloudCredential = new ArrayList<CloudCredential>();
+    public CloudCredentials cloudCreds(List<CloudCredential> cloudCreds) {
+        this.cloudCreds = cloudCreds;
+        return this;
     }
-    this.cloudCredential.add(cloudCredentialItem);
-    return this;
-  }
 
-  /**
-   * Get cloudCredential
-   * @return cloudCredential
-  **/
-  @ApiModelProperty(value = "")
-
-  @Valid
-
-  public List<CloudCredential> getCloudCredential() {
-    return cloudCredential;
-  }
-
-  public void setCloudCredential(List<CloudCredential> cloudCredential) {
-    this.cloudCredential = cloudCredential;
-  }
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
+    public CloudCredentials addCloudCredentialItem(CloudCredential cloudCredsItem) {
+        if (this.cloudCreds == null) {
+            this.cloudCreds = new ArrayList<CloudCredential>();
+        }
+        this.cloudCreds.add(cloudCredsItem);
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get cloudCreds
+     *
+     * @return cloudCreds
+     *
+     */
+    @ApiModelProperty(value = "")
+
+    @Valid
+
+    public List<CloudCredential> getCloudCredential() {
+        return cloudCreds;
     }
-    CloudCredentials cloudCredentials = (CloudCredentials) o;
-    return Objects.equals(this.cloudCredential, cloudCredentials.cloudCredential);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(cloudCredential);
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class CloudCredentials {\n");
-    
-    sb.append("    cloudCredential: ").append(toIndentedString(cloudCredential)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
+    public void setCloudCredential(List<CloudCredential> cloudCreds) {
+        this.cloudCreds = cloudCreds;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CloudCredentials cloudCreds = (CloudCredentials) o;
+        return Objects.equals(this.cloudCreds, cloudCreds.cloudCreds);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cloudCreds);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class CloudCreds {\n");
+
+        sb.append("    cloudCreds: ").append(toIndentedString(cloudCreds)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     */
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 }
-
