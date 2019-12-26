@@ -1,4 +1,4 @@
-  CloudCreds:
+  CloudCredentialDB:
       type: "object"
       properties:
         cloudCreds:
