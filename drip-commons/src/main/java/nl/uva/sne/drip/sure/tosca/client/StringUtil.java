@@ -13,7 +13,7 @@
 
 package nl.uva.sne.drip.sure.tosca.client;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-12-25T13:58:54.535Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-12-28T19:11:27.492Z")
 public class StringUtil {
   /**
    * Check if the given array contains the given value (with case-insensitive comparison).

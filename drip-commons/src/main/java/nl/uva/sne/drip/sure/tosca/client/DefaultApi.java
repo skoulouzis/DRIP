@@ -479,6 +479,326 @@ public class DefaultApi {
     }
 
     /**
+     * Build call for getDefaultInterface
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param interfaceType type to instantiate (required)
+     * @param instanceName the name of the instance to retrun (required)
+     * @param operationName the name of operation (required)
+     * @param progressListener Progress listener
+     * @param progressRequestListener Progress request listener
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     */
+    public com.squareup.okhttp.Call getDefaultInterfaceCall(String id, String interfaceType, String instanceName, String operationName, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/tosca_template/{id}/interface/{interface_type}/default"
+                .replaceAll("\\{" + "id" + "\\}", apiClient.escapeString(id.toString()))
+                .replaceAll("\\{" + "interface_type" + "\\}", apiClient.escapeString(interfaceType.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        if (instanceName != null) {
+            localVarQueryParams.addAll(apiClient.parameterToPair("instance_name", instanceName));
+        }
+        if (operationName != null) {
+            localVarQueryParams.addAll(apiClient.parameterToPair("operation_name", operationName));
+        }
+
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {};
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if (progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                            .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[]{};
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private com.squareup.okhttp.Call getDefaultInterfaceValidateBeforeCall(String id, String interfaceType, String instanceName, String operationName, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        // verify the required parameter 'id' is set
+        if (id == null) {
+            throw new ApiException("Missing the required parameter 'id' when calling getDefaultInterface(Async)");
+        }
+
+        // verify the required parameter 'interfaceType' is set
+        if (interfaceType == null) {
+            throw new ApiException("Missing the required parameter 'interfaceType' when calling getDefaultInterface(Async)");
+        }
+
+        // verify the required parameter 'instanceName' is set
+        if (instanceName == null) {
+            throw new ApiException("Missing the required parameter 'instanceName' when calling getDefaultInterface(Async)");
+        }
+
+        // verify the required parameter 'operationName' is set
+        if (operationName == null) {
+            throw new ApiException("Missing the required parameter 'operationName' when calling getDefaultInterface(Async)");
+        }
+
+        com.squareup.okhttp.Call call = getDefaultInterfaceCall(id, interfaceType, instanceName, operationName, progressListener, progressRequestListener);
+        return call;
+
+    }
+
+    /**
+     *
+     * returns an interface instance with the default required values.
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param interfaceType type to instantiate (required)
+     * @param instanceName the name of the instance to retrun (required)
+     * @param operationName the name of operation (required)
+     * @return Map&lt;String, Object&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot
+     * deserialize the response body
+     */
+    public Map<String, Object> getDefaultInterface(String id, String interfaceType, String instanceName, String operationName) throws ApiException {
+        ApiResponse<Map<String, Object>> resp = getDefaultInterfaceWithHttpInfo(id, interfaceType, instanceName, operationName);
+        return resp.getData();
+    }
+
+    /**
+     *
+     * returns an interface instance with the default required values.
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param interfaceType type to instantiate (required)
+     * @param instanceName the name of the instance to retrun (required)
+     * @param operationName the name of operation (required)
+     * @return ApiResponse&lt;Map&lt;String, Object&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot
+     * deserialize the response body
+     */
+    public ApiResponse<Map<String, Object>> getDefaultInterfaceWithHttpInfo(String id, String interfaceType, String instanceName, String operationName) throws ApiException {
+        com.squareup.okhttp.Call call = getDefaultInterfaceValidateBeforeCall(id, interfaceType, instanceName, operationName, null, null);
+        Type localVarReturnType = new TypeToken<Map<String, Object>>() {
+        }.getType();
+        return apiClient.execute(call, localVarReturnType);
+    }
+
+    /**
+     * (asynchronously) returns an interface instance with the default required
+     * values.
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param interfaceType type to instantiate (required)
+     * @param instanceName the name of the instance to retrun (required)
+     * @param operationName the name of operation (required)
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing
+     * the request body object
+     */
+    public com.squareup.okhttp.Call getDefaultInterfaceAsync(String id, String interfaceType, String instanceName, String operationName, final ApiCallback<Map<String, Object>> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = getDefaultInterfaceValidateBeforeCall(id, interfaceType, instanceName, operationName, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<Map<String, Object>>() {
+        }.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
+        return call;
+    }
+
+    /**
+     * Build call for getDefaultNodeType
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param nodeType type to instantiate (required)
+     * @param instanceName the name of tghe instance to retrun (required)
+     * @param progressListener Progress listener
+     * @param progressRequestListener Progress request listener
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     */
+    public com.squareup.okhttp.Call getDefaultNodeTypeCall(String id, String nodeType, String instanceName, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/tosca_template/{id}/node_types/{node_type}/default"
+                .replaceAll("\\{" + "id" + "\\}", apiClient.escapeString(id.toString()))
+                .replaceAll("\\{" + "node_type" + "\\}", apiClient.escapeString(nodeType.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        if (instanceName != null) {
+            localVarQueryParams.addAll(apiClient.parameterToPair("instance_name", instanceName));
+        }
+
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {};
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if (progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                            .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[]{};
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private com.squareup.okhttp.Call getDefaultNodeTypeValidateBeforeCall(String id, String nodeType, String instanceName, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+
+        // verify the required parameter 'id' is set
+        if (id == null) {
+            throw new ApiException("Missing the required parameter 'id' when calling getDefaultNodeType(Async)");
+        }
+
+        // verify the required parameter 'nodeType' is set
+        if (nodeType == null) {
+            throw new ApiException("Missing the required parameter 'nodeType' when calling getDefaultNodeType(Async)");
+        }
+
+        // verify the required parameter 'instanceName' is set
+        if (instanceName == null) {
+            throw new ApiException("Missing the required parameter 'instanceName' when calling getDefaultNodeType(Async)");
+        }
+
+        com.squareup.okhttp.Call call = getDefaultNodeTypeCall(id, nodeType, instanceName, progressListener, progressRequestListener);
+        return call;
+
+    }
+
+    /**
+     *
+     * returns an node templaye instance with the default required values.
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param nodeType type to instantiate (required)
+     * @param instanceName the name of tghe instance to retrun (required)
+     * @return NodeTemplateMap
+     * @throws ApiException If fail to call the API, e.g. server error or cannot
+     * deserialize the response body
+     */
+    public NodeTemplateMap getDefaultNodeType(String id, String nodeType, String instanceName) throws ApiException {
+        ApiResponse<NodeTemplateMap> resp = getDefaultNodeTypeWithHttpInfo(id, nodeType, instanceName);
+        return resp.getData();
+    }
+
+    /**
+     *
+     * returns an node templaye instance with the default required values.
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param nodeType type to instantiate (required)
+     * @param instanceName the name of tghe instance to retrun (required)
+     * @return ApiResponse&lt;NodeTemplateMap&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot
+     * deserialize the response body
+     */
+    public ApiResponse<NodeTemplateMap> getDefaultNodeTypeWithHttpInfo(String id, String nodeType, String instanceName) throws ApiException {
+        com.squareup.okhttp.Call call = getDefaultNodeTypeValidateBeforeCall(id, nodeType, instanceName, null, null);
+        Type localVarReturnType = new TypeToken<NodeTemplateMap>() {
+        }.getType();
+        return apiClient.execute(call, localVarReturnType);
+    }
+
+    /**
+     * (asynchronously) returns an node templaye instance with the default
+     * required values.
+     *
+     * @param id ID of topolog template uplodaed (required)
+     * @param nodeType type to instantiate (required)
+     * @param instanceName the name of tghe instance to retrun (required)
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing
+     * the request body object
+     */
+    public com.squareup.okhttp.Call getDefaultNodeTypeAsync(String id, String nodeType, String instanceName, final ApiCallback<NodeTemplateMap> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = getDefaultNodeTypeValidateBeforeCall(id, nodeType, instanceName, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<NodeTemplateMap>() {
+        }.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
+        return call;
+    }
+
+    /**
      * Build call for getDslDefinitions
      *
      * @param id ID of topolog template uplodaed (required)
