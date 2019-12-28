@@ -285,7 +285,7 @@ def get_parent_type_name(id, node_root_key):
         the_node, all_node_types, all_custom_def = node_dict_2_node_template(id, node_root_key)
     except Exception as e:
         return None
-    return tosca_helper.get_parent_type(the_node)
+    return tosca_helper.get_node_template_parent_type(the_node)
 
 
 def get_node_outputs(id, node_name):
@@ -385,3 +385,64 @@ def get_types(id, kind_of_type, has_interfaces, type_name, has_properties, has_a
     if kind_of_type == 'interface_types':
         return get_interface_types(id, interface_type=type_name)
     return None
+
+
+def get_default_entry_value(entry):
+    if 'default' in entry and 'required' in entry and entry['required']:
+        return entry['default']
+    return None
+
+
+def get_all_interface_types(id, interface_type, parent_interfaces=None):
+    if parent_interfaces is None:
+        parent_interfaces = []
+    interface = get_interface_types(id, interface_type=interface_type)[0]
+    parent_interfaces.append(interface)
+    if 'derived_from' in interface[interface_type]:
+        return get_all_interface_types(id, interface[interface_type]['derived_from'], parent_interfaces)
+    else:
+        return parent_interfaces
+
+
+def merge_interfaces(id, interface_type):
+    all_interfaces = get_all_interface_types(id, interface_type=interface_type)
+    if all_interfaces is None:
+        return None
+
+    all_inputs= {}
+    all_operations = {}
+    for interface in all_interfaces:
+        interface = interface[next(iter(interface))]
+        if 'inputs' in interface:
+            all_inputs.update(interface['inputs'])
+        for op in interface:
+            if op != 'description' and op != 'derived_from' and op != 'inputs':
+                all_operations[op] = interface[op]
+
+    the_interface = {interface_type: all_operations}
+    the_interface[interface_type]['inputs'] = all_inputs
+    return the_interface
+
+
+def get_default_interface(id, interface_type, instance_name, operation_name):
+    the_interface = merge_interfaces(id, interface_type)
+    if the_interface is None:
+        return None
+
+    interface = the_interface[next(iter(the_interface))]
+    if operation_name not in interface:
+        raise Exception(
+            'Operation: ' + operation_name + ' not in interface: ' + interface_type + ' definition: ' + str(
+                the_interface))
+
+    inputs = interface['inputs']
+    instance_inputs_list = []
+    for key in inputs:
+        default_value = get_default_entry_value(inputs[key])
+        default_entry = {key: default_value}
+        instance_inputs_list.append(default_entry)
+
+    instance_inputs = {'inputs': instance_inputs_list}
+    operation = {operation_name: instance_inputs}
+    instance = {instance_name: operation}
+    return instance

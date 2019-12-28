@@ -159,7 +159,6 @@ class CloudStormService {
         }
         cloudsStormMap.put("cloud_storm_vm", cloudsStormVMsList);
         cloudsStormMap.put("cloud_storm_subtopologies", cloudsStormSubTopologies);
-
         return cloudsStormMap;
     }
 

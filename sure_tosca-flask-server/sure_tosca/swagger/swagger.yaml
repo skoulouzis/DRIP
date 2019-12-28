@@ -126,6 +126,80 @@ paths:
         "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/interface/{interface_type}/defaults:
+    get:
+      summary: ""
+      description: "returns an interface instance with the default required values."
+      operationId: "get_default_interface"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "interface_type"
+        in: "path"
+        description: "type to instantiate"
+        required: true
+        type: "string"
+      - name: "instance_name"
+        in: "query"
+        description: "the name of the instance to retrun"
+        required: true
+        type: "string"
+      - name: "operation_name"
+        in: "query"
+        description: "the name of operation"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            additionalProperties:
+              type: "object"
+              properties: {}
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/node_types/{node_type}/defaults:
+    get:
+      summary: ""
+      description: "returns an node templaye instance with the default required values."
+      operationId: "get_default_node_type"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "node_type"
+        in: "path"
+        description: "type to instantiate"
+        required: true
+        type: "string"
+      - name: "instance_name"
+        in: "query"
+        description: "the name of tghe instance to retrun"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/NodeTemplateMap"
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
   /tosca_template/{id}/types:
     get:
       summary: ""

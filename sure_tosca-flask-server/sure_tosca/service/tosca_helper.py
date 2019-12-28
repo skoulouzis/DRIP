@@ -55,7 +55,7 @@ def get_node_requirements(node):
     return node_requirements
 
 
-def get_parent_type(node):
+def get_node_template_parent_type(node):
     if isinstance(node, NodeTemplate):
         if node.parent_type:
             parent_type = node.parent_type.type
@@ -106,9 +106,8 @@ def get_node_types_with_interface(nodes):
     return node_types_with_interface
 
 
-def node_dict_2_node_template(node_name,node_dict, all_custom_def):
-
-    node_dict = {node_name:node_dict}
+def node_dict_2_node_template(node_name, node_dict, all_custom_def):
+    node_dict = {node_name: node_dict}
     # node_type = node_dict[node_name]['type']
 
     # for name_to_remove in node_type_key_names_to_remove:
@@ -216,7 +215,7 @@ def get_nodes_by_type(node_type, nodes, all_node_types, all_custom_def):
 def get_all_ancestors_types(child_node, all_node_types, all_custom_def, ancestors_types=None):
     if not ancestors_types:
         ancestors_types = [get_node_type_name(child_node)]
-    parent_type = get_parent_type(child_node)
+    parent_type = get_node_template_parent_type(child_node)
     if parent_type:
         ancestors_types.append(parent_type)
         parent_type = node_type_2_node_template({'name': all_node_types[parent_type]}, all_custom_def)
@@ -224,7 +223,8 @@ def get_all_ancestors_types(child_node, all_node_types, all_custom_def, ancestor
     return ancestors_types
 
 
-def get_all_ancestors_properties(node, all_nodes_templates, all_custom_def, ancestors_properties=None, ancestors_types=None):
+def get_all_ancestors_properties(node, all_nodes_templates, all_custom_def, ancestors_properties=None,
+                                 ancestors_types=None):
     if not ancestors_properties:
         ancestors_properties = []
         ancestors_properties_names = []
@@ -294,3 +294,6 @@ def get_node_template_dict(node_template):
     #        print(node_template.templates)
 
     return node_template_dict
+
+
+

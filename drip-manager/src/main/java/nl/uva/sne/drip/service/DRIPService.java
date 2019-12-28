@@ -48,6 +48,7 @@ public class DRIPService {
 
     @Autowired
     ProvisionerService provisionerService;
+    private static final String OPERATION_PROVISION = "provision";
 
     private String execute(ToscaTemplate toscaTemplate) throws JsonProcessingException, ApiException, Exception {
 
@@ -120,11 +121,11 @@ public class DRIPService {
         String ymlToscaTemplate = toscaTemplateService.findByID(id);
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
         toscaTemplate = addCredentials(toscaTemplate);
-        toscaTemplate = addProvisionInterface(toscaTemplate);
+        toscaTemplate = addProvisionInterface(toscaTemplate, OPERATION_PROVISION);
         return execute(toscaTemplate);
     }
 
-    private ToscaTemplate addProvisionInterface(ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException, Exception {
+    private ToscaTemplate addProvisionInterface(ToscaTemplate toscaTemplate, String operation) throws IOException, JsonProcessingException, ApiException, Exception {
         helper.uploadToscaTemplate(toscaTemplate);
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         List<Provisioner> provisioners = null;
@@ -132,7 +133,7 @@ public class DRIPService {
             provisioners = provisionerService.findAll();
             if (provisioners != null && provisioners.size() > 0) {
                 Provisioner provisioner = getBestProvisioners(vmTopologyMap.getNodeTemplate(), provisioners);
-                vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisioner);
+                vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisioner, operation);
                 toscaTemplate = helper.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
             }
         }

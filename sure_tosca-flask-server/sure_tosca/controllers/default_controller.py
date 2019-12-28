@@ -62,6 +62,46 @@ def get_ancestors_requirements(id, node_name):  # noqa: E501
     return 'Not Found', 404
 
 
+def get_default_interface(id, interface_type, instance_name, operation_name):  # noqa: E501
+    """
+
+    returns an interface instance with the default required values. # noqa: E501
+
+    :param id: ID of topolog template uplodaed
+    :type id: str
+    :param interface_type: type to instantiate
+    :type interface_type: str
+    :param instance_name: the name of the instance to retrun
+    :type instance_name: str
+    :param operation_name: the name of operation
+    :type operation_name: str
+
+    :rtype: Dict[str, object]
+    """
+    res = tosca_template_service.get_default_interface(id, interface_type, instance_name,operation_name)
+    if res:
+        return res
+    return 'Not Found', 404
+
+
+def get_default_node_type(id, node_type, instance_name):  # noqa: E501
+    """
+
+    returns an node templaye instance with the default required values. # noqa: E501
+
+    :param id: ID of topolog template uplodaed
+    :type id: str
+    :param node_type: type to instantiate
+    :type node_type: str
+    :param instance_name: the name of tghe instance to retrun
+    :type instance_name: str
+
+    :rtype: NodeTemplateMap
+    """
+    return 'do some magic!'
+
+
+
 def get_dsl_definitions(id, anchors=None, derived_from=None):  # noqa: E501
     """
 
@@ -153,7 +193,8 @@ def get_node_requirements(id, node_name):  # noqa: E501
 
 
 def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, has_properties=None,
-                       has_attributes=None, has_requirements=None, has_capabilities=None, has_artifacts=None):  # noqa: E501
+                       has_attributes=None, has_requirements=None, has_capabilities=None,
+                       has_artifacts=None):  # noqa: E501
     """get_node_templates
 
     returns nodes templates in topology # noqa: E501
@@ -402,4 +443,3 @@ def get_node_attributes(id, node_name):  # noqa: E501
     if res:
         return res
     return 'Not Found', 404
-

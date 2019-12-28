@@ -66,10 +66,6 @@ public class ToscaHelper {
         return id;
     }
 
-//    public ToscaHelper(ToscaTemplate toscaTemplate, String sureToscaBasePath) throws JsonProcessingException, IOException, ApiException {
-//        init(sureToscaBasePath);
-//        uploadToscaTemplate(toscaTemplate);
-//    }
     private void init(String sureToscaBasePath) {
         Configuration.getDefaultApiClient().setBasePath(sureToscaBasePath);
         api = new DefaultApi(Configuration.getDefaultApiClient());
@@ -223,12 +219,28 @@ public class ToscaHelper {
         return toscaTemplate;
     }
 
-    public NodeTemplateMap setProvisionerInterfaceInVMTopology(NodeTemplateMap vmTopologyMap, Provisioner provisioner) throws ApiException {
+    public NodeTemplateMap setProvisionerInterfaceInVMTopology(NodeTemplateMap vmTopologyMap, Provisioner provisioner, String operation) throws ApiException {
         List<String> toscaInterfaceTypes = new ArrayList<>();
         toscaInterfaceTypes.add(provisioner.getToscaInterfaceType());
         List<Map<String, Object>> definitions = getProvisionInterfaceDefinitions(toscaInterfaceTypes);
-        
+        Map<String, Object> definition = getBestProvisionInterfaceDefinition(definitions);
+        Map<String, Object> provisionInterface = getProvisionInterfaceInstance(definition, operation);
+
         return null;
+    }
+
+    private Map<String, Object> getBestProvisionInterfaceDefinition(List<Map<String, Object>> definitions) {
+        for (Map<String, Object> def : definitions) {
+            if (def.containsKey("tosca.interfaces.ARTICONF.CloudsStorm")) {
+                return def;
+            }
+        }
+        return null;
+    }
+
+    private Map<String, Object> getProvisionInterfaceInstance(Map<String, Object> definition, String operation) {
+        Map<String, Object> provisionInterface = new HashMap<>();
+        Map<String, Object> inputs = (Map<String, Object>) definition.get("inputs");
     }
 
 }
