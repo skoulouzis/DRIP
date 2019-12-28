@@ -238,9 +238,12 @@ public class ToscaHelper {
         return null;
     }
 
-    private Map<String, Object> getProvisionInterfaceInstance(Map<String, Object> definition, String operation) {
-        Map<String, Object> provisionInterface = new HashMap<>();
-        Map<String, Object> inputs = (Map<String, Object>) definition.get("inputs");
+    private Map<String, Object> getProvisionInterfaceInstance(Map<String, Object> definition, String operation) throws ApiException {
+        String type = definition.keySet().iterator().next();
+        String[] typeArray = type.split(".");
+        Map<String, Object> provisionInterface = api.getDefaultInterface(String.valueOf(id), type, typeArray[typeArray.length - 1], operation);
+        return null;
+
     }
 
 }
