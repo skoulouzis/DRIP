@@ -78,7 +78,7 @@ def get_default_interface(id, interface_type, instance_name, operation_name):  #
 
     :rtype: Dict[str, object]
     """
-    res = tosca_template_service.get_default_interface(id, interface_type, instance_name,operation_name)
+    res = tosca_template_service.get_default_interface(id, interface_type, instance_name, operation_name)
     if res:
         return res
     return 'Not Found', 404
@@ -99,7 +99,6 @@ def get_default_node_type(id, node_type, instance_name):  # noqa: E501
     :rtype: NodeTemplateMap
     """
     return 'do some magic!'
-
 
 
 def get_dsl_definitions(id, anchors=None, derived_from=None):  # noqa: E501

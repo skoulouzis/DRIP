@@ -316,21 +316,6 @@ class TestDefaultController(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json, list)
 
-
-    # def test_upload_tosca_template(self):
-    #     """Test case for upload_tosca_template
-    #
-    #     upload a tosca template description file
-    #     """
-    #     data = dict(file=(BytesIO(b'some file data'), 'file.txt'))
-    #     response = self.client.open(
-    #         '/tosca-sure/1.0.0/tosca_template',
-    #         method='POST',
-    #         data=data,
-    #         content_type='multipart/form-data')
-    #     self.assert200(response,
-    #                    'Response body is : ' + response.data.decode('utf-8'))
-
     def upload_file(self):
 
         tosca_path = "../../../TOSCA/"
@@ -353,6 +338,23 @@ class TestDefaultController(BaseTestCase):
             content_type='multipart/form-data')
         file_id = response.data.decode('utf-8').replace('\n', '')
         return file_id
+
+    def test_get_default_interface(self):
+        """Test case for get_default_interface
+
+
+        """
+        id_example = self.upload_file()
+        query_string = [('instance_name', 'instance_name_example'),
+                        ('operation_name', 'provision')]
+        response = self.client.open(
+            '/tosca-sure/1.0.0/tosca_template/{id}/interface/{interface_type}/default'.format(id=id_example,
+                                                                                              interface_type='tosca.interfaces.ARTICONF.CloudsStorm'),
+            method='GET',
+            query_string=query_string)
+        self.assertTrue(response.is_json)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.json, dict)
 
 
 if __name__ == '__main__':

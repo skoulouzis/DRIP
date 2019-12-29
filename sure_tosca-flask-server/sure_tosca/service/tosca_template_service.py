@@ -76,11 +76,23 @@ def get_tosca_template_dict_by_id(id):
     return tosca_template_dict
 
 
+def purge_all_tables():
+    node_template_db.purge_tables()
+    dsl_definitions_db.purge_tables()
+    relationship_template_db.purge_tables()
+    interface_types_db.purge_tables()
+    node_template_db.close()
+    dsl_definitions_db.close()
+    relationship_template_db.close()
+    interface_types_db.close()
+
+
 def save(file):
     try:
         # tosca_template_file_path = os.path.join(db_dir_path, file.filename)
+        purge_all_tables()
         dictionary = yaml.safe_load(file.stream)
-
+        print(yaml.dump(dictionary))
         tosca_template = ToscaTemplate(yaml_dict_tpl=copy.deepcopy(dictionary))
         tosca_template_model = ToscaTemplateModel.from_dict(dictionary)
         doc_id = tosca_templates_db.insert(dictionary)
@@ -409,7 +421,7 @@ def merge_interfaces(id, interface_type):
     if all_interfaces is None:
         return None
 
-    all_inputs= {}
+    all_inputs = {}
     all_operations = {}
     for interface in all_interfaces:
         interface = interface[next(iter(interface))]

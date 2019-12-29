@@ -126,7 +126,7 @@ paths:
         "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/interface/{interface_type}/defaults:
+  /tosca_template/{id}/interface/{interface_type}/default:
     get:
       summary: ""
       description: "returns an interface instance with the default required values."
@@ -167,7 +167,7 @@ paths:
         "405":
           description: "Invalid input"
       x-swagger-router-controller: "sure_tosca.controllers.default_controller"
-  /tosca_template/{id}/node_types/{node_type}/defaults:
+  /tosca_template/{id}/node_types/{node_type}/default:
     get:
       summary: ""
       description: "returns an node templaye instance with the default required values."

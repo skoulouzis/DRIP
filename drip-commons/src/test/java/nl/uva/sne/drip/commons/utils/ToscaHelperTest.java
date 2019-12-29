@@ -28,10 +28,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
+import nl.uva.sne.drip.model.Provisioner;
+import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -52,6 +56,7 @@ public class ToscaHelperTest {
     private static ToscaHelper instance;
     private static ToscaTemplate toscaTemplate;
     private static Boolean serviceUp;
+    private ToscaTemplate toscaTemplateWithCredentials;
 
     public ToscaHelperTest() {
     }
@@ -147,5 +152,110 @@ public class ToscaHelperTest {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Test of getTemplateVMsForVMTopology method, of class ToscaHelper.
+     */
+    @Test
+    public void testGetTemplateVMsForVMTopology() throws Exception {
+        if (serviceUp) {
+            System.out.println("getTemplateVMsForVMTopology");
+            List<NodeTemplateMap> vmTopologyTemplatesMap = instance.getVMTopologyTemplates();
+            for (NodeTemplateMap nodeTemplateMap : vmTopologyTemplatesMap) {
+                List<NodeTemplateMap> result = instance.getTemplateVMsForVMTopology(nodeTemplateMap);
+                for (NodeTemplateMap mvmTopology : result) {
+                    assertEquals("tosca.nodes.ARTICONF.VM.Compute", mvmTopology.getNodeTemplate().getType());
+
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Test of setCredentialsInVMTopology method, of class ToscaHelper.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testSetCredentialsInVMTopology() throws Exception {
+        if (serviceUp) {
+            toscaTemplateWithCredentials = null;
+
+            System.out.println("setCredentialsInVMTopology");
+            List<NodeTemplateMap> vmTopologies = instance.getVMTopologyTemplates();
+
+            for (NodeTemplateMap vmTopologyMap : vmTopologies) {
+                String provider = instance.getTopologyProvider(vmTopologyMap);
+
+                Credential credential = new Credential();
+                credential.setCloudProviderName(provider);
+                credential.setProtocol("protocol");
+                Map<String, String> keys = new HashMap<>();
+                keys.put("key1", "eeeeeeavovfouirveiuvbepuyb8rwqovd8boacbdbvwy8oqry7f08r3euadinanzxcjc078yn0183xoqedw");
+                credential.setKeys(keys);
+                credential.setToken("ijwbfciweubfriw");
+                credential.setTokenType("passwrd");
+                credential.setUser("user");
+                vmTopologyMap = instance.setCredentialsInVMTopology(vmTopologyMap, credential);
+                toscaTemplateWithCredentials = instance.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
+
+            }
+            System.err.println(instance.getId());
+            instance.uploadToscaTemplate(toscaTemplateWithCredentials);
+            System.err.println(instance.getId());
+            NodeTemplate topology_1 = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology_1");
+            Map<String, Object> attributes = topology_1.getAttributes();
+            assertNotNull(attributes);
+            assertNotNull(attributes.get("credential"));
+            NodeTemplate topology = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology_1");
+            attributes = topology.getAttributes();
+            assertNotNull(attributes);
+            assertNotNull(attributes.get("credential"));
+
+            List<NodeTemplateMap> vmTopologiesMaps = instance.getVMTopologyTemplates();
+
+            for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
+                Credential toscaCredentials = instance.getCredentialsFromVMTopology(vmTopologyMap);
+                assertNotNull(toscaCredentials);
+            }
+
+            instance.uploadToscaTemplate(toscaTemplate);
+        }
+
+    }
+
+    /**
+     * Test of setVMTopologyInToscaTemplate method, of class ToscaHelper.
+     */
+    @Test
+    public void testSetVMTopologyInToscaTemplate() {
+        System.out.println("setVMTopologyInToscaTemplate");
+        ToscaTemplate toscaTemplate = null;
+        NodeTemplateMap vmTopologyMap = null;
+        ToscaHelper instance = null;
+        ToscaTemplate expResult = null;
+        ToscaTemplate result = instance.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setProvisionerInterfaceInVMTopology method, of class ToscaHelper.
+     */
+    @Test
+    public void testSetProvisionerInterfaceInVMTopology() throws Exception {
+        System.out.println("setProvisionerInterfaceInVMTopology");
+        NodeTemplateMap vmTopologyMap = null;
+        Provisioner provisioner = null;
+        String operation = "";
+        ToscaHelper instance = null;
+        NodeTemplateMap expResult = null;
+        NodeTemplateMap result = instance.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisioner, operation);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 }

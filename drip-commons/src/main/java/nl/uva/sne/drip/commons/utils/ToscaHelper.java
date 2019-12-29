@@ -225,8 +225,8 @@ public class ToscaHelper {
         List<Map<String, Object>> definitions = getProvisionInterfaceDefinitions(toscaInterfaceTypes);
         Map<String, Object> definition = getBestProvisionInterfaceDefinition(definitions);
         Map<String, Object> provisionInterface = getProvisionInterfaceInstance(definition, operation);
-
-        return null;
+        vmTopologyMap.getNodeTemplate().setInterfaces(provisionInterface);
+        return vmTopologyMap;
     }
 
     private Map<String, Object> getBestProvisionInterfaceDefinition(List<Map<String, Object>> definitions) {
@@ -240,10 +240,9 @@ public class ToscaHelper {
 
     private Map<String, Object> getProvisionInterfaceInstance(Map<String, Object> definition, String operation) throws ApiException {
         String type = definition.keySet().iterator().next();
-        String[] typeArray = type.split(".");
-        Map<String, Object> provisionInterface = api.getDefaultInterface(String.valueOf(id), type, typeArray[typeArray.length - 1], operation);
-        return null;
-
+        String[] typeArray = type.split("\\.");
+        Map<String, Object> provisionInterface = api.getDefaultInterface(String.valueOf(id), type, typeArray[typeArray.length - 1].toLowerCase(), operation);
+        return provisionInterface;
     }
 
 }
