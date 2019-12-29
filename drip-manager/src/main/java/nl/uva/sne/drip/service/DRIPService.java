@@ -96,7 +96,7 @@ public class DRIPService {
     }
 
     private ToscaTemplate addCredentials(ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException, Exception {
-        helper.uploadToscaTemplate(toscaTemplate);
+//        helper.uploadToscaTemplate(toscaTemplate);
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         List<Credential> credentials = null;
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {
@@ -126,7 +126,7 @@ public class DRIPService {
     }
 
     private ToscaTemplate addProvisionInterface(ToscaTemplate toscaTemplate, String operation) throws IOException, JsonProcessingException, ApiException, Exception {
-        helper.uploadToscaTemplate(toscaTemplate);
+//        helper.uploadToscaTemplate(toscaTemplate);
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         List<Provisioner> provisioners = null;
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {

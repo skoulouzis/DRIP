@@ -202,14 +202,12 @@ public class ToscaHelperTest {
                 toscaTemplateWithCredentials = instance.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
 
             }
-            System.err.println(instance.getId());
             instance.uploadToscaTemplate(toscaTemplateWithCredentials);
-            System.err.println(instance.getId());
             NodeTemplate topology_1 = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology_1");
             Map<String, Object> attributes = topology_1.getAttributes();
             assertNotNull(attributes);
             assertNotNull(attributes.get("credential"));
-            NodeTemplate topology = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology_1");
+            NodeTemplate topology = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology");
             attributes = topology.getAttributes();
             assertNotNull(attributes);
             assertNotNull(attributes.get("credential"));
@@ -221,41 +219,24 @@ public class ToscaHelperTest {
                 assertNotNull(toscaCredentials);
             }
 
+            vmTopologies = instance.getVMTopologyTemplates();
+            ToscaTemplate toscaTemplateWithInterface = null;
+            for (NodeTemplateMap vmTopologyMap : vmTopologies) {
+                Provisioner provisioner = new Provisioner();
+                provisioner.setName("CloudsStorm");
+                provisioner.setDescription("Interface for VM topology management with CloudsStorm. More at https://cloudsstorm.github.io/");
+                provisioner.setToscaInterfaceType("tosca.interfaces.ARTICONF.CloudsStorm");
+                String operation = "provision";
+                vmTopologyMap = instance.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisioner, operation);
+                toscaTemplateWithInterface = instance.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
+            }
+            instance.uploadToscaTemplate(toscaTemplateWithInterface);
+            topology_1 = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology_1");
+
+            topology = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology");
+
             instance.uploadToscaTemplate(toscaTemplate);
         }
-
     }
 
-    /**
-     * Test of setVMTopologyInToscaTemplate method, of class ToscaHelper.
-     */
-    @Test
-    public void testSetVMTopologyInToscaTemplate() {
-        System.out.println("setVMTopologyInToscaTemplate");
-        ToscaTemplate toscaTemplate = null;
-        NodeTemplateMap vmTopologyMap = null;
-        ToscaHelper instance = null;
-        ToscaTemplate expResult = null;
-        ToscaTemplate result = instance.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setProvisionerInterfaceInVMTopology method, of class ToscaHelper.
-     */
-    @Test
-    public void testSetProvisionerInterfaceInVMTopology() throws Exception {
-        System.out.println("setProvisionerInterfaceInVMTopology");
-        NodeTemplateMap vmTopologyMap = null;
-        Provisioner provisioner = null;
-        String operation = "";
-        ToscaHelper instance = null;
-        NodeTemplateMap expResult = null;
-        NodeTemplateMap result = instance.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisioner, operation);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 }
