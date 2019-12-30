@@ -1,0 +1,239 @@
+artifact_types: null
+capability_types: null
+data_types: null
+description: null
+dsl_definitions: null
+group_types: null
+imports:
+- nodes: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/nodes.yaml
+- capabilities: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/capabilities.yaml
+- policies: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/policies.yaml
+- interfaces: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/interfaces.yml
+interface_types: null
+node_types: null
+policy_types: null
+relationship_templates: null
+relationship_types: null
+repositories: null
+template_author: null
+template_name: null
+template_version: null
+topology_template:
+  description: null
+  groups: null
+  inputs: null
+  node_templates:
+    compute:
+      interfaces:
+        Standard:
+          create: dumy.yaml
+      properties:
+        disk_size: 50000 MB
+        mem_size: 6000 MB
+        num_cores: 2
+        os: ubuntu 14.04
+      type: tosca.nodes.ARTICONF.VM.Compute
+    compute_1:
+      interfaces:
+        Standard:
+          create: dumy.yaml
+      properties:
+        disk_size: 50000 MB
+        mem_size: 6000 MB
+        num_cores: 2
+        os: ubuntu 14.04
+      type: tosca.nodes.ARTICONF.VM.Compute
+    compute_2:
+      interfaces:
+        Standard:
+          create: dumy.yaml
+      properties:
+        disk_size: 50000 MB
+        mem_size: 6000 MB
+        num_cores: 2
+        os: ubuntu 14.04.04
+      type: tosca.nodes.ARTICONF.VM.Compute
+    kubernetes:
+      interfaces:
+        Standard:
+          create: interfaces/playbooks/kubernetes_install.yaml
+      properties:
+        min_masters_num: 1
+        min_workers_num: 1
+      requirements:
+      - host:
+          capability: tosca.capabilities.ARTICONF.VM.topology
+          node: topology
+          relationship: tosca.relationships.HostedOn
+      type: tosca.nodes.ARTICONF.Orchestrator.Kubernetes
+    logspout:
+      artifacts:
+        image:
+          file: gliderlabs/logspout:latest
+          repository: docker_hub
+          type: tosca.artifacts.Deployment.Image.Container.Docker
+      properties:
+        environment:
+          publish: 127.0.0.1:8000:80
+        ports:
+        - 8000:80
+        volumes:
+        - /etc/hostname:/etc/host_hostname:ro
+        - /var/run/docker.sock:/var/run/docker.sock
+      requirements:
+      - host:
+          capability: tosca.capabilities.ARTICONF.Orchestrator
+          node: kubernetes
+          relationship: tosca.relationships.HostedOn
+      type: tosca.nodes.ARTICONF.Container.Application.Docker
+    mysql:
+      artifacts:
+        image:
+          file: mysql:5.7
+          repository: docker_hub
+          type: tosca.artifacts.Deployment.Image.Container.Docker
+      properties:
+        environment:
+          MYSQL_DATABASE: wordpress
+          MYSQL_PASSWORD: wordpress
+          MYSQL_ROOT_PASSWORD: somewordpress
+          MYSQL_USER: wordpress
+        ports:
+        - 3306:3306
+        volumes:
+        - db_data:/var/lib/mysql
+      requirements:
+      - host:
+          capability: tosca.capabilities.ARTICONF.Orchestrator
+          node: kubernetes
+          relationship: tosca.relationships.HostedOn
+      type: tosca.nodes.ARTICONF.Container.Application.Docker
+    topology:
+      attributes:
+        credential:
+          cloud_provider_name: ExoGeni
+          keys:
+            key1: eeeeeeavovfouirveiuvbepuyb8rwqovd8boacbdbvwy8oqry7f08r3euadinanzxcjc078yn0183xoqedw
+          protocol: protocol
+          token: ijwbfciweubfriw
+          token_type: passwrd
+          user: user
+      interfaces:
+        CloudsStorm:
+          provision:
+            inputs:
+            - code_type: SEQ
+            - object_type: SubTopology
+            - objects:
+              - subtopology
+            - command: null
+            - options: null
+            - count: null
+            - duration: null
+            - deadline: null
+      properties:
+        domain: UvA (Amsterdam, The Netherlands) XO Rack
+        provider: ExoGeni
+      requirements:
+      - vm:
+          capability: tosca.capabilities.ARTICONF.VM
+          node: compute
+          relationship: tosca.relationships.DependsOn
+      - vm:
+          capability: tosca.capabilities.ARTICONF.VM
+          node: compute_1
+          relationship: tosca.relationships.DependsOn
+      type: tosca.nodes.ARTICONF.VM.topology
+    topology_1:
+      attributes:
+        credential:
+          cloud_provider_name: ExoGeni
+          keys:
+            key1: eeeeeeavovfouirveiuvbepuyb8rwqovd8boacbdbvwy8oqry7f08r3euadinanzxcjc078yn0183xoqedw
+          protocol: protocol
+          token: ijwbfciweubfriw
+          token_type: passwrd
+          user: user
+      interfaces:
+        tosca.interfaces.ARTICONF.CloudsStorm:
+          provision:
+            inputs:
+            - code_type: SEQ
+            - object_type: SubTopology
+            - objects:
+              - subtopology
+            - command: null
+            - options: null
+            - count: null
+            - duration: null
+            - deadline: null
+      properties:
+        domain: UNC BEN (Chapel Hill, NC USA)
+        provider: ExoGeni
+      requirements:
+      - vm:
+          capability: tosca.capabilities.ARTICONF.VM
+          node: compute_2
+          relationship: tosca.relationships.DependsOn
+      type: tosca.nodes.ARTICONF.VM.topology
+    wordpress:
+      artifacts:
+        image:
+          file: wordpress:latest
+          repository: docker_hub
+          type: tosca.artifacts.Deployment.Image.Container.Docker
+      properties:
+        environment:
+          WORDPRESS_DB_HOST: mysql:3306
+          WORDPRESS_DB_NAME: wordpress
+          WORDPRESS_DB_PASSWORD: wordpress
+          WORDPRESS_DB_USER: wordpress
+        ports:
+        - 8000:80
+      requirements:
+      - service:
+          node: mysql
+          relationship:
+            type: tosca.relationships.DependsOn
+      - host:
+          capability: tosca.capabilities.ARTICONF.Orchestrator
+          node: kubernetes
+          relationship: tosca.relationships.HostedOn
+      type: tosca.nodes.ARTICONF.Container.Application.Docker
+  outputs:
+    private_ip_compute:
+      description: "The private IP address of the application\u2019s first tier."
+      value:
+        get_attribute:
+        - compute
+        - private_ip
+    private_ip_compute_1:
+      description: "The private IP address of the application\u2019s second tier."
+      value:
+        get_attribute:
+        - compute_1
+        - private_ip
+    private_ip_compute_2:
+      description: "The private IP address of the application\u2019s second tier."
+      value:
+        get_attribute:
+        - compute_2
+        - private_ip
+  policies:
+  - scalability:
+      properties:
+        constraint_name: cpu_load
+        max_value: 90
+      targets:
+      - wordpress
+      type: tosca.policies.ARTICONF.Performance.CPU
+  - faultTolerance:
+      properties:
+        level: 1
+      targets:
+      - mysql
+      type: tosca.policies.ARTICONF.FaultTolerance
+  relationship_templates: null
+  substitution_mappings: null
+tosca_default_namespace: null
+tosca_definitions_version: tosca_simple_yaml_1_0

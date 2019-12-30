@@ -117,8 +117,11 @@ node_types:
         type: tosca.datatypes.ARTICONF.Credential
         required: false    
     interfaces:
-      Standard:
-        create: dumy.yaml
+      tosca.interfaces.ARTICONF.CloudsStorm:
+        provision:
+            inputs:
+                - code_type: SEQ
+                - object_type: SubTopology
         
   tosca.nodes.ARTICONF.VM.Compute:
     derived_from: tosca.nodes.ARTICONF.Infrastructure

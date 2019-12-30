@@ -88,19 +88,20 @@ def purge_all_tables():
 
 
 def save(file):
-    try:
-        # tosca_template_file_path = os.path.join(db_dir_path, file.filename)
-        purge_all_tables()
-        dictionary = yaml.safe_load(file.stream)
-        print(yaml.dump(dictionary))
-        tosca_template = ToscaTemplate(yaml_dict_tpl=copy.deepcopy(dictionary))
-        tosca_template_model = ToscaTemplateModel.from_dict(dictionary)
-        doc_id = tosca_templates_db.insert(dictionary)
-        # tosca_templates_db.close()
-        return doc_id
-    except Exception as e:
-        logging.error(str(e))
-        return str(e), 400
+    # try:
+    # tosca_template_file_path = os.path.join(db_dir_path, file.filename)
+    purge_all_tables()
+    dictionary = yaml.safe_load(file.stream)
+    print(yaml.dump(dictionary))
+    tosca_template = ToscaTemplate(yaml_dict_tpl=copy.deepcopy(dictionary))
+    # all_custom_def = tosca_template.nodetemplates[0].custom_def
+    tosca_template_model = ToscaTemplateModel.from_dict(dictionary)
+    doc_id = tosca_templates_db.insert(dictionary)
+    # tosca_templates_db.close()
+    return doc_id
+    # except Exception as e:
+    #     logging.error(str(e))
+    #     return str(e), 400
 
 
 def get_interface_types(id, interface_type=None):

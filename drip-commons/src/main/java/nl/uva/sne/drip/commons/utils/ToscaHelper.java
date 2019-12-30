@@ -219,12 +219,7 @@ public class ToscaHelper {
         return toscaTemplate;
     }
 
-    public NodeTemplateMap setProvisionerInterfaceInVMTopology(NodeTemplateMap vmTopologyMap, Provisioner provisioner, String operation) throws ApiException {
-        List<String> toscaInterfaceTypes = new ArrayList<>();
-        toscaInterfaceTypes.add(provisioner.getToscaInterfaceType());
-        List<Map<String, Object>> definitions = getProvisionInterfaceDefinitions(toscaInterfaceTypes);
-        Map<String, Object> definition = getBestProvisionInterfaceDefinition(definitions);
-        Map<String, Object> provisionInterface = getProvisionInterfaceInstance(definition, operation);
+    public NodeTemplateMap setProvisionerInterfaceInVMTopology(NodeTemplateMap vmTopologyMap, Map<String, Object> provisionInterface) throws ApiException {
         vmTopologyMap.getNodeTemplate().setInterfaces(provisionInterface);
         return vmTopologyMap;
     }
@@ -238,11 +233,19 @@ public class ToscaHelper {
         return null;
     }
 
-    private Map<String, Object> getProvisionInterfaceInstance(Map<String, Object> definition, String operation) throws ApiException {
+    private Map<String, Object> getProvisionInterfaceInstanceDefaultValues(Map<String, Object> definition, String operation) throws ApiException {
         String type = definition.keySet().iterator().next();
         String[] typeArray = type.split("\\.");
-        Map<String, Object> provisionInterface = api.getDefaultInterface(String.valueOf(id), type, typeArray[typeArray.length - 1].toLowerCase(), operation);
+        Map<String, Object> provisionInterface = api.getDefaultInterface(String.valueOf(id), type, typeArray[typeArray.length - 1], operation);
         return provisionInterface;
     }
 
+    public Map<String, Object> getProvisionInterface(Provisioner provisioner, String operation) throws ApiException {
+        List<String> toscaInterfaceTypes = new ArrayList<>();
+        toscaInterfaceTypes.add(provisioner.getToscaInterfaceType());
+        List<Map<String, Object>> definitions = getProvisionInterfaceDefinitions(toscaInterfaceTypes);
+        Map<String, Object> definition = getBestProvisionInterfaceDefinition(definitions);
+        Map<String, Object> provisionInterface = getProvisionInterfaceInstanceDefaultValues(definition, operation);
+        return provisionInterface;
+    }
 }

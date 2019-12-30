@@ -179,7 +179,7 @@ public class ToscaHelperTest {
      * @throws java.lang.Exception
      */
     @Test
-    public void testSetCredentialsInVMTopology() throws Exception {
+    public void testSetCredentialsAndInterface() throws Exception {
         if (serviceUp) {
             toscaTemplateWithCredentials = null;
 
@@ -221,13 +221,28 @@ public class ToscaHelperTest {
 
             vmTopologies = instance.getVMTopologyTemplates();
             ToscaTemplate toscaTemplateWithInterface = null;
+            Provisioner provisioner = new Provisioner();
+            provisioner.setName("CloudsStorm");
+            provisioner.setDescription("Interface for VM topology management with CloudsStorm. More at https://cloudsstorm.github.io/");
+            provisioner.setToscaInterfaceType("tosca.interfaces.ARTICONF.CloudsStorm");
+            String operation = "provision";
+
             for (NodeTemplateMap vmTopologyMap : vmTopologies) {
-                Provisioner provisioner = new Provisioner();
-                provisioner.setName("CloudsStorm");
-                provisioner.setDescription("Interface for VM topology management with CloudsStorm. More at https://cloudsstorm.github.io/");
-                provisioner.setToscaInterfaceType("tosca.interfaces.ARTICONF.CloudsStorm");
-                String operation = "provision";
-                vmTopologyMap = instance.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisioner, operation);
+
+                Map<String, Object> provisionInterface = instance.getProvisionInterface(provisioner, operation);
+                List<String> objects = new ArrayList<>();
+                objects.add("subtopology");
+                String key = provisionInterface.keySet().iterator().next();
+                Map<String, Object> provisionOperation = (Map<String, Object>) provisionInterface.get(key);
+                Map<String, Object> operationMap = (Map<String, Object>) provisionOperation.get(operation);
+                List<Map<String, Object>> inputs = (List<Map<String, Object>>) operationMap.get("inputs");
+                for (Map<String, Object> input : inputs) {
+                    if (input.containsKey("objects")) {
+                        input.put("objects", objects);
+                        break;
+                    }
+                }
+                vmTopologyMap = instance.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisionInterface);
                 toscaTemplateWithInterface = instance.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
             }
             instance.uploadToscaTemplate(toscaTemplateWithInterface);
