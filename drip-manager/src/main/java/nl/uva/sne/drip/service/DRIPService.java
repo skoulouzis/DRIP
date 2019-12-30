@@ -133,7 +133,8 @@ public class DRIPService {
             provisioners = provisionerService.findAll();
             if (provisioners != null && provisioners.size() > 0) {
                 Provisioner provisioner = getBestProvisioners(vmTopologyMap.getNodeTemplate(), provisioners);
-                vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisioner, operation);
+                Map<String, Object> provisionInterface = helper.getProvisionInterface(provisioner, operation);
+                vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisionInterface);
                 toscaTemplate = helper.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
             }
         }

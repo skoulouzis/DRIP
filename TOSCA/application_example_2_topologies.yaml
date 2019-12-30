@@ -91,9 +91,6 @@ topology_template:
           relationship: tosca.relationships.HostedOn
       type: tosca.nodes.ARTICONF.Container.Application.Docker
     topology_1:
-      interfaces:
-        Standard:
-          create: dumy.yaml
       properties:
         domain: UNC BEN (Chapel Hill, NC USA)
         provider: ExoGeni
@@ -104,9 +101,6 @@ topology_template:
           relationship: tosca.relationships.DependsOn
       type: tosca.nodes.ARTICONF.VM.topology          
     topology:
-      interfaces:
-        Standard:
-          create: dumy.yaml
       properties:
         domain: UvA (Amsterdam, The Netherlands) XO Rack
         provider: ExoGeni

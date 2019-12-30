@@ -21,7 +21,7 @@ interface_types:
           - valid_values: ['SubTopology' , 'VM' ,'REQ' ] 
       objects:
         type: list
-        required: true
+        required: false
         description: It indicates a set of objects, which this operation impacts. If the ObjectType is SubTopology, the name of the object is the sub-topology name; If the ObjectType is VM, the name of the object is the VM full name, containing sub-topology and VM node name, such as, $SubTopology.$Node; If the ObjectType is REQ, the name of the object is previously generated request name.        
       command:
         type: string

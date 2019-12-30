@@ -117,11 +117,13 @@ node_types:
         type: tosca.datatypes.ARTICONF.Credential
         required: false    
     interfaces:
-      tosca.interfaces.ARTICONF.CloudsStorm:
-        provision:
-            inputs:
-                - code_type: SEQ
-                - object_type: SubTopology
+        CloudsStorm:
+            type: tosca.interfaces.ARTICONF.CloudsStorm
+            provision:
+                type: AAAAAAAAAAA
+                inputs:
+                    code_type: SEQ
+                    object_type: SubTopology
         
   tosca.nodes.ARTICONF.VM.Compute:
     derived_from: tosca.nodes.ARTICONF.Infrastructure
