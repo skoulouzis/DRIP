@@ -261,7 +261,11 @@ def get_node_template_dict(node_template):
     if PROPERTIES in node_template.templates[node_template.name].keys():
         node_template_dict[PROPERTIES] = node_template.templates[node_template.name][PROPERTIES]
     if INTERFACES in node_template.templates[node_template.name].keys():
-        node_template_dict[INTERFACES] = node_template.templates[node_template.name][INTERFACES]
+        interfaces = copy.deepcopy(node_template.templates[node_template.name][INTERFACES])
+        for interface_name in interfaces:
+            if 'type' in interfaces[interface_name]:
+                interfaces[interface_name].pop('type')
+        node_template_dict[INTERFACES] = interfaces
     #        print(dir(node_template))
     #        print(node_template.templates)
 

@@ -120,13 +120,9 @@ node_types:
         CloudsStorm:
             type: tosca.interfaces.ARTICONF.CloudsStorm
             provision:
-                type: AAAAAAAAAAA
                 inputs:
                     code_type: SEQ
                     object_type: SubTopology
-        Standard:
-            type: tosca.interfaces.node.lifecycle.Standard
-            create: interfaces/playbooks/kubernetes_install.yaml
         
   tosca.nodes.ARTICONF.VM.Compute:
     derived_from: tosca.nodes.ARTICONF.Infrastructure

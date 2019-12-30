@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="" />
+    <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/types/nodes.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/tosca_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/util/tosca_helper.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,7 +45,7 @@
       <recent name="$PROJECT_DIR$/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.__main__">
+  <component name="RunManager" selected="Python tests.Unittests for test_planner.MyTestCase.test_planner">
     <configuration name="__main__" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="drip-planner" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -61,6 +65,20 @@
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unittests for test_planner.MyTestCase.test_planner" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <module name="drip-planner" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_planner.MyTestCase.test_planner&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <configuration name="Unittests for test_planner.MyTestCase.test_something" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
@@ -95,11 +113,13 @@
       <item itemvalue="Python.__main__" />
       <item itemvalue="Python tests.Unittests for test_planner.MyTestCase.test_something" />
       <item itemvalue="Python tests.Unittests in test_planner.py" />
+      <item itemvalue="Python tests.Unittests for test_planner.MyTestCase.test_planner" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.__main__" />
+        <item itemvalue="Python tests.Unittests for test_planner.MyTestCase.test_planner" />
         <item itemvalue="Python tests.Unittests in test_planner.py" />
+        <item itemvalue="Python.__main__" />
         <item itemvalue="Python tests.Unittests for test_planner.MyTestCase.test_something" />
       </list>
     </recent_temporary>
@@ -242,46 +262,50 @@
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state x="925" y="283" width="767" height="906" key="#__main__/67.34.2493.1406@67.34.2493.1406" timestamp="1575885420596" />
+    <state width="2155" height="582" key="DebuggerActiveHint" timestamp="1577715024259">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state width="2155" height="582" key="DebuggerActiveHint/67.34.2493.1406@67.34.2493.1406" timestamp="1577715024259" />
     <state x="1043" y="437" width="530" height="598" key="FileChooserDialogImpl" timestamp="1575907769017">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state x="1043" y="437" width="530" height="598" key="FileChooserDialogImpl/67.34.2493.1406@67.34.2493.1406" timestamp="1575907769017" />
-    <state width="2465" height="666" key="GridCell.Tab.0.bottom" timestamp="1577714295338">
+    <state width="2465" height="413" key="GridCell.Tab.0.bottom" timestamp="1577716871173">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state width="1825" height="283" key="GridCell.Tab.0.bottom/67.34.1853.1046@67.34.1853.1046" timestamp="1576165782177" />
-    <state width="2465" height="666" key="GridCell.Tab.0.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1577714295338" />
-    <state width="2465" height="666" key="GridCell.Tab.0.center" timestamp="1577714295336">
+    <state width="2465" height="413" key="GridCell.Tab.0.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1577716871173" />
+    <state width="2465" height="413" key="GridCell.Tab.0.center" timestamp="1577716871171">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state width="1825" height="283" key="GridCell.Tab.0.center/67.34.1853.1046@67.34.1853.1046" timestamp="1576165782175" />
-    <state width="2465" height="666" key="GridCell.Tab.0.center/67.34.2493.1406@67.34.2493.1406" timestamp="1577714295336" />
-    <state width="2465" height="666" key="GridCell.Tab.0.left" timestamp="1577714295334">
+    <state width="2465" height="413" key="GridCell.Tab.0.center/67.34.2493.1406@67.34.2493.1406" timestamp="1577716871171" />
+    <state width="2465" height="413" key="GridCell.Tab.0.left" timestamp="1577716871170">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state width="1825" height="283" key="GridCell.Tab.0.left/67.34.1853.1046@67.34.1853.1046" timestamp="1576165782174" />
-    <state width="2465" height="666" key="GridCell.Tab.0.left/67.34.2493.1406@67.34.2493.1406" timestamp="1577714295334" />
-    <state width="2465" height="666" key="GridCell.Tab.0.right" timestamp="1577714295337">
+    <state width="2465" height="413" key="GridCell.Tab.0.left/67.34.2493.1406@67.34.2493.1406" timestamp="1577716871170" />
+    <state width="2465" height="413" key="GridCell.Tab.0.right" timestamp="1577716871172">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state width="1825" height="283" key="GridCell.Tab.0.right/67.34.1853.1046@67.34.1853.1046" timestamp="1576165782176" />
-    <state width="2465" height="666" key="GridCell.Tab.0.right/67.34.2493.1406@67.34.2493.1406" timestamp="1577714295337" />
-    <state width="2465" height="666" key="GridCell.Tab.1.bottom" timestamp="1577714382091">
+    <state width="2465" height="413" key="GridCell.Tab.0.right/67.34.2493.1406@67.34.2493.1406" timestamp="1577716871172" />
+    <state width="2465" height="413" key="GridCell.Tab.1.bottom" timestamp="1577716830929">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="2465" height="666" key="GridCell.Tab.1.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1577714382091" />
-    <state width="2465" height="666" key="GridCell.Tab.1.center" timestamp="1577714382091">
+    <state width="2465" height="413" key="GridCell.Tab.1.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1577716830929" />
+    <state width="2465" height="413" key="GridCell.Tab.1.center" timestamp="1577716830929">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="2465" height="666" key="GridCell.Tab.1.center/67.34.2493.1406@67.34.2493.1406" timestamp="1577714382091" />
-    <state width="2465" height="666" key="GridCell.Tab.1.left" timestamp="1577714382091">
+    <state width="2465" height="413" key="GridCell.Tab.1.center/67.34.2493.1406@67.34.2493.1406" timestamp="1577716830929" />
+    <state width="2465" height="413" key="GridCell.Tab.1.left" timestamp="1577716830929">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="2465" height="666" key="GridCell.Tab.1.left/67.34.2493.1406@67.34.2493.1406" timestamp="1577714382091" />
-    <state width="2465" height="666" key="GridCell.Tab.1.right" timestamp="1577714382091">
+    <state width="2465" height="413" key="GridCell.Tab.1.left/67.34.2493.1406@67.34.2493.1406" timestamp="1577716830929" />
+    <state width="2465" height="413" key="GridCell.Tab.1.right" timestamp="1577716830929">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="2465" height="666" key="GridCell.Tab.1.right/67.34.2493.1406@67.34.2493.1406" timestamp="1577714382091" />
+    <state width="2465" height="413" key="GridCell.Tab.1.right/67.34.2493.1406@67.34.2493.1406" timestamp="1577716830929" />
     <state x="679" y="283" key="SettingsEditor" timestamp="1575885393075">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
@@ -320,14 +344,14 @@
           <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/toscaparser/elements/interfaces.py</url>
-          <line>41</line>
-          <option name="timeStamp" value="23" />
+          <url>file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/toscaparser/tosca_template.py</url>
+          <line>114</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/toscaparser/elements/interfaces.py</url>
-          <line>48</line>
-          <option name="timeStamp" value="24" />
+          <url>file://$PROJECT_DIR$/test/test_planner.py</url>
+          <line>36</line>
+          <option name="timeStamp" value="33" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
