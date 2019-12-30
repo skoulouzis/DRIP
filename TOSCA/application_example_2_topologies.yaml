@@ -1,9 +1,10 @@
+description: TOSCA example
 imports:
-    - nodes: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/nodes.yaml
-    - capabilities: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/capabilities.yaml
-    - policies: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/policies.yaml
-    - interfaces: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/interfaces.yml
-  
+- nodes: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/nodes.yaml
+- data: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/TOSCA/types/data.yml
+- capabilities: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/capabilities.yaml
+- policies: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/policies.yaml
+- interfaces: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/interfaces.yml
 topology_template:
   node_templates:
     compute:
@@ -14,7 +15,7 @@ topology_template:
         disk_size: 50000 MB
         mem_size: 6000 MB
         num_cores: 2
-        os: ubuntu 14.04
+        os: Ubuntu 18.04
       type: tosca.nodes.ARTICONF.VM.Compute
     compute_1:
       interfaces:
@@ -24,7 +25,7 @@ topology_template:
         disk_size: 50000 MB
         mem_size: 6000 MB
         num_cores: 2
-        os: ubuntu 14.04
+        os: Ubuntu 18.04
       type: tosca.nodes.ARTICONF.VM.Compute
     compute_2:
       interfaces:
@@ -34,7 +35,7 @@ topology_template:
         disk_size: 50000 MB
         mem_size: 6000 MB
         num_cores: 2
-        os: ubuntu 14.04.04
+        os: Ubuntu 18.04
       type: tosca.nodes.ARTICONF.VM.Compute      
     kubernetes:
       interfaces:
@@ -91,17 +92,13 @@ topology_template:
           node: kubernetes
           relationship: tosca.relationships.HostedOn
       type: tosca.nodes.ARTICONF.Container.Application.Docker
-    topology_1:
-      properties:
-        domain: UNC BEN (Chapel Hill, NC USA)
-        provider: ExoGeni
-      requirements:
-      - vm:
-          capability: tosca.capabilities.ARTICONF.VM
-          node: compute_2
-          relationship: tosca.relationships.DependsOn
-      type: tosca.nodes.ARTICONF.VM.topology          
     topology:
+      interfaces:
+        CloudsStorm:
+          provision:
+            inputs:
+              code_type: SEQ
+              object_type: SubTopology
       properties:
         domain: UvA (Amsterdam, The Netherlands) XO Rack
         provider: ExoGeni
@@ -115,6 +112,22 @@ topology_template:
           node: compute_1
           relationship: tosca.relationships.DependsOn
       type: tosca.nodes.ARTICONF.VM.topology
+    topology_1:
+      interfaces:
+        CloudsStorm:
+          provision:
+            inputs:
+              code_type: SEQ
+              object_type: SubTopology
+      properties:
+        domain: UNC BEN (Chapel Hill, NC USA)
+        provider: ExoGeni
+      requirements:
+      - vm:
+          capability: tosca.capabilities.ARTICONF.VM
+          node: compute_2
+          relationship: tosca.relationships.DependsOn
+      type: tosca.nodes.ARTICONF.VM.topology            
     wordpress:
       artifacts:
         image:
@@ -153,8 +166,7 @@ topology_template:
       targets:
       - mysql
       type: tosca.policies.ARTICONF.FaultTolerance
-      
-      
+
   outputs:
     private_ip_compute:
       description: The private IP address of the application’s first tier.
@@ -164,6 +176,6 @@ topology_template:
       value: { get_attribute: [compute_1, private_ip] }       
     private_ip_compute_2:
       description: The private IP address of the application’s second tier.
-      value: { get_attribute: [compute_2, private_ip] }      
-      
+      value: { get_attribute: [compute_2, private_ip] } 
+
 tosca_definitions_version: tosca_simple_yaml_1_0

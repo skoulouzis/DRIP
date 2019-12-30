@@ -59,9 +59,9 @@ public class ServiceTests {
 
     private String toscaTemplateID;
     private String testApplicationExampleToscaContents;
-    private static final String testApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example.yaml";
+    private static final String testApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
     private static final String testUpdatedApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
-    private static final String testOutputApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_output.yaml";
+    private static final String testOutputApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
 
     @Autowired
     CredentialService credentialService;

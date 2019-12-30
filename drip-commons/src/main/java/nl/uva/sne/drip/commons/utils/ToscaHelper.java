@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
-import nl.uva.sne.drip.model.Provisioner;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.sure.tosca.client.DefaultApi;
@@ -42,9 +41,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author S. Koulouzis
  */
 public class ToscaHelper {
-
+    
     private DefaultApi api;
-
+    
     private ObjectMapper objectMapper;
     public static final String VM_CAPABILITY = "tosca.capabilities.ARTICONF.VM";
     private static final String VM_TYPE = "tosca.nodes.ARTICONF.VM.Compute";
@@ -53,7 +52,7 @@ public class ToscaHelper {
     private static final String VM_OS = "os";
     private static final String VM_TOPOLOGY = "tosca.nodes.ARTICONF.VM.topology";
     private Integer id;
-
+    
     @Autowired
     public ToscaHelper(String sureToscaBasePath) {
         init(sureToscaBasePath);
@@ -65,14 +64,14 @@ public class ToscaHelper {
     public Integer getId() {
         return id;
     }
-
+    
     private void init(String sureToscaBasePath) {
         Configuration.getDefaultApiClient().setBasePath(sureToscaBasePath);
         api = new DefaultApi(Configuration.getDefaultApiClient());
         this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
-
+    
     public void uploadToscaTemplate(ToscaTemplate toscaTemplate) throws JsonProcessingException, IOException, ApiException {
         String ymlStr = objectMapper.writeValueAsString(toscaTemplate);
         File toscaTemplateFile = File.createTempFile("temp-toscaTemplate", ".yml");
@@ -80,7 +79,7 @@ public class ToscaHelper {
         String resp = api.uploadToscaTemplate(toscaTemplateFile);
         id = Integer.valueOf(resp);
     }
-
+    
     public List<Map<String, Object>> getProvisionInterfaceDefinitions(List<String> toscaInterfaceTypes) throws ApiException {
         List<Map<String, Object>> interfaceDefinitions = new ArrayList<>();
         for (String type : toscaInterfaceTypes) {
@@ -90,12 +89,12 @@ public class ToscaHelper {
         }
         return interfaceDefinitions;
     }
-
+    
     public List<NodeTemplateMap> getVMTopologyTemplates() throws ApiException {
         List<NodeTemplateMap> vmTopologyTemplates = api.getNodeTemplates(String.valueOf(id), "tosca.nodes.ARTICONF.VM.topology", null, null, null, null, null, null, null);
         return vmTopologyTemplates;
     }
-
+    
     public List<NodeTemplateMap> getTemplateVMsForVMTopology(NodeTemplateMap nodeTemplateMap) throws ApiException {
         NodeTemplate nodeTemplate = nodeTemplateMap.getNodeTemplate();
         List<Map<String, Object>> requirements = nodeTemplate.getRequirements();
@@ -110,9 +109,9 @@ public class ToscaHelper {
             }
         }
         return vms;
-
+        
     }
-
+    
     public Double getVMNumOfCores(NodeTemplateMap vmMap) throws Exception {
         NodeTemplate vm = vmMap.getNodeTemplate();
         if (vm.getType().equals(VM_TYPE)) {
@@ -121,7 +120,7 @@ public class ToscaHelper {
             throw new Exception("NodeTemplate is not of type: " + VM_TYPE + " it is of type: " + vm.getType());
         }
     }
-
+    
     public Double getVMNMemSize(NodeTemplateMap vmMap) throws Exception {
         NodeTemplate vm = vmMap.getNodeTemplate();
         if (vm.getType().equals(VM_TYPE)) {
@@ -134,9 +133,9 @@ public class ToscaHelper {
         } else {
             throw new Exception("NodeTemplate is not of type: " + VM_TYPE + " it is of type: " + vm.getType());
         }
-
+        
     }
-
+    
     public String getVMNOS(NodeTemplateMap vmMap) throws Exception {
         NodeTemplate vm = vmMap.getNodeTemplate();
         if (vm.getType().equals(VM_TYPE)) {
@@ -145,7 +144,7 @@ public class ToscaHelper {
             throw new Exception("NodeTemplate is not of type: " + VM_TYPE + " it is of type: " + vm.getType());
         }
     }
-
+    
     private Double convertToGB(Integer value, String memUnit) {
         switch (memUnit) {
             case "GB":
@@ -158,7 +157,7 @@ public class ToscaHelper {
                 return null;
         }
     }
-
+    
     public String getTopologyDomain(NodeTemplateMap nodeTemplateMap) throws Exception {
         NodeTemplate nodeTemplate = nodeTemplateMap.getNodeTemplate();
         if (nodeTemplate.getType().equals(VM_TOPOLOGY)) {
@@ -167,7 +166,7 @@ public class ToscaHelper {
             throw new Exception("NodeTemplateMap is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
         }
     }
-
+    
     public String getTopologyProvider(NodeTemplateMap nodeTemplateMap) throws Exception {
         NodeTemplate nodeTemplate = nodeTemplateMap.getNodeTemplate();
         if (nodeTemplate.getType().equals(VM_TOPOLOGY)) {
@@ -176,7 +175,7 @@ public class ToscaHelper {
             throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
         }
     }
-
+    
     public NodeTemplateMap setCredentialsInVMTopology(NodeTemplateMap vmTopologyMap, Credential credential) throws Exception {
         NodeTemplate vmTopology = vmTopologyMap.getNodeTemplate();
         if (vmTopology.getType().equals(VM_TOPOLOGY)) {
@@ -199,7 +198,7 @@ public class ToscaHelper {
             throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + vmTopology.getType());
         }
     }
-
+    
     public Credential getCredentialsFromVMTopology(NodeTemplateMap vmTopologyMap) throws Exception {
         NodeTemplate vmTopology = vmTopologyMap.getNodeTemplate();
         if (vmTopology.getType().equals(VM_TOPOLOGY)) {
@@ -207,23 +206,22 @@ public class ToscaHelper {
             String ymlStr = Converter.map2YmlString((Map<String, Object>) att.get("credential"));
             Credential toscaCredential = objectMapper.readValue(ymlStr, Credential.class);
             return toscaCredential;
-
+            
         } else {
             throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + vmTopology.getType());
         }
     }
-
+    
     public ToscaTemplate setVMTopologyInToscaTemplate(ToscaTemplate toscaTemplate, NodeTemplateMap vmTopologyMap) {
         Map<String, NodeTemplate> nodes = toscaTemplate.getTopologyTemplate().getNodeTemplates();
         nodes.put(vmTopologyMap.getName(), vmTopologyMap.getNodeTemplate());
         return toscaTemplate;
     }
 
-    public NodeTemplateMap setProvisionerInterfaceInVMTopology(NodeTemplateMap vmTopologyMap, Map<String, Object> provisionInterface) throws ApiException {
-        vmTopologyMap.getNodeTemplate().setInterfaces(provisionInterface);
-        return vmTopologyMap;
-    }
-
+//    public NodeTemplateMap setProvisionerInterfaceInVMTopology(NodeTemplateMap vmTopologyMap, Map<String, Object> provisionInterface) throws ApiException {
+//        vmTopologyMap.getNodeTemplate().setInterfaces(provisionInterface);
+//        return vmTopologyMap;
+//    }
     private Map<String, Object> getBestProvisionInterfaceDefinition(List<Map<String, Object>> definitions) {
         for (Map<String, Object> def : definitions) {
             if (def.containsKey("tosca.interfaces.ARTICONF.CloudsStorm")) {
@@ -232,20 +230,28 @@ public class ToscaHelper {
         }
         return null;
     }
-
+    
     private Map<String, Object> getProvisionInterfaceInstanceDefaultValues(Map<String, Object> definition, String operation) throws ApiException {
         String type = definition.keySet().iterator().next();
         String[] typeArray = type.split("\\.");
         Map<String, Object> provisionInterface = api.getDefaultInterface(String.valueOf(id), type, typeArray[typeArray.length - 1], operation);
+//        provisionInterface.remove("")
         return provisionInterface;
     }
 
-    public Map<String, Object> getProvisionInterface(Provisioner provisioner, String operation) throws ApiException {
-        List<String> toscaInterfaceTypes = new ArrayList<>();
-        toscaInterfaceTypes.add(provisioner.getToscaInterfaceType());
-        List<Map<String, Object>> definitions = getProvisionInterfaceDefinitions(toscaInterfaceTypes);
-        Map<String, Object> definition = getBestProvisionInterfaceDefinition(definitions);
-        Map<String, Object> provisionInterface = getProvisionInterfaceInstanceDefaultValues(definition, operation);
-        return provisionInterface;
+//    public Map<String, Object> getProvisionInterface(Provisioner provisioner, String operation) throws ApiException {
+//        List<String> toscaInterfaceTypes = new ArrayList<>();
+//        toscaInterfaceTypes.add(provisioner.getToscaInterfaceType());
+//        List<Map<String, Object>> definitions = getProvisionInterfaceDefinitions(toscaInterfaceTypes);
+//        Map<String, Object> definition = getBestProvisionInterfaceDefinition(definitions);
+//        Map<String, Object> provisionInterface = getProvisionInterfaceInstanceDefaultValues(definition, operation);
+//        return provisionInterface;
+//    }
+    public Map<String, Object> getProvisionerInterfaceFromVMTopology(NodeTemplateMap vmTopologyMap) {
+        return (Map<String, Object>) vmTopologyMap.getNodeTemplate().getInterfaces().get("CloudsStorm");
+    }
+    
+    public NodeTemplateMap setProvisionerInterfaceInVMTopology(NodeTemplateMap vmTopologyMap, Map<String, Object> provisionerInterface) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

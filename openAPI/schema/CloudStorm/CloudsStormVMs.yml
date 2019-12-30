@@ -1,9 +1,7 @@
   CloudsStormVMs:
       type: "object"
       properties:
-        name:
-          type: "string"
-        CloudsStormVM:
+        VMs:
             type: "array"
             items:
               $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/CloudsStormVM.yml#/CloudsStormVM"

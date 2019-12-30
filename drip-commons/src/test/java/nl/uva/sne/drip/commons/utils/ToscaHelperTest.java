@@ -227,28 +227,28 @@ public class ToscaHelperTest {
             provisioner.setToscaInterfaceType("tosca.interfaces.ARTICONF.CloudsStorm");
             String operation = "provision";
 
-            for (NodeTemplateMap vmTopologyMap : vmTopologies) {
+//            for (NodeTemplateMap vmTopologyMap : vmTopologies) {
 
-                Map<String, Object> provisionInterface = instance.getProvisionInterface(provisioner, operation);
-                List<String> objects = new ArrayList<>();
-                objects.add("subtopology");
-                String key = provisionInterface.keySet().iterator().next();
-                Map<String, Object> provisionOperation = (Map<String, Object>) provisionInterface.get(key);
-                Map<String, Object> operationMap = (Map<String, Object>) provisionOperation.get(operation);
-                List<Map<String, Object>> inputs = (List<Map<String, Object>>) operationMap.get("inputs");
-                for (Map<String, Object> input : inputs) {
-                    if (input.containsKey("objects")) {
-                        input.put("objects", objects);
-                        break;
-                    }
-                }
-                vmTopologyMap = instance.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisionInterface);
-                toscaTemplateWithInterface = instance.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
-            }
-            instance.uploadToscaTemplate(toscaTemplateWithInterface);
-            topology_1 = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology_1");
-
-            topology = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology");
+//                Map<String, Object> provisionInterface = instance.getProvisionInterface(provisioner, operation);
+//                List<String> objects = new ArrayList<>();
+//                objects.add("subtopology");
+//                String key = provisionInterface.keySet().iterator().next();
+//                Map<String, Object> provisionOperation = (Map<String, Object>) provisionInterface.get(key);
+//                Map<String, Object> operationMap = (Map<String, Object>) provisionOperation.get(operation);
+//                List<Map<String, Object>> inputs = (List<Map<String, Object>>) operationMap.get("inputs");
+//                for (Map<String, Object> input : inputs) {
+//                    if (input.containsKey("objects")) {
+//                        input.put("objects", objects);
+//                        break;
+//                    }
+//                }
+//                vmTopologyMap = instance.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisionInterface);
+//                toscaTemplateWithInterface = instance.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
+////            }
+//            instance.uploadToscaTemplate(toscaTemplateWithInterface);
+//            topology_1 = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology_1");
+//
+//            topology = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology");
 
             instance.uploadToscaTemplate(toscaTemplate);
         }
