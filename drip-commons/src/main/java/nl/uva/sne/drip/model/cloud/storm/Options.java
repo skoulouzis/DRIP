@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
  * Options
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-31T12:42:56.808Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-31T12:57:31.148Z")
 
 public class Options {
 

@@ -36,14 +36,14 @@ class CloudStormDAO {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
-    List<VMMetaInfo> findVmMetaInfoByProvider(String provider) throws IOException {
+    List<VMMetaInfo> findVmMetaInfoByProvider(CloudDB.CloudProviderEnum provider) throws IOException {
 
         DB db = objectMapper.readValue(new File(cloudStormDBPath + File.separator + "db.yml"), DB.class);
         List<CloudDB> cloudDBs = db.getCloudDBs();
 
         CloudDB targetCloudDB = null;
         for (CloudDB cloudDB : cloudDBs) {
-            if (cloudDB.getCloudProvider().toLowerCase().equals(provider.toLowerCase())) {
+            if (cloudDB.getCloudProvider().equals(provider)) {
                 targetCloudDB = cloudDB;
                 break;
             }

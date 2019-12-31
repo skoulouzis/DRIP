@@ -2,8 +2,9 @@ package nl.uva.sne.drip.model.cloud.storm;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.Options;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 
@@ -11,12 +12,83 @@ import javax.validation.Valid;
  * OpCode
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-31T12:42:56.808Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-31T12:57:31.148Z")
 
 public class OpCode {
 
+    /**
+     * Gets or Sets operation
+     */
+    public enum OperationEnum {
+        PROVISION("provision"),
+        DELETE("delete"),
+        EXECUTE("execute"),
+        PUT("put"),
+        GET("get"),
+        VSCALE("vscale"),
+        HSCALE("hscale"),
+        RECOVER("recover"),
+        START("start");
+
+        private String value;
+
+        OperationEnum(String value) {
+            this.value = value;
+        }
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        @JsonCreator
+        public static OperationEnum fromValue(String text) {
+            for (OperationEnum b : OperationEnum.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
+    }
+
     @JsonProperty("Operation")
-    private String operation = null;
+    private OperationEnum operation = null;
+
+    /**
+     * Gets or Sets objectType
+     */
+    public enum ObjectTypeEnum {
+        SUBTOPOLOGY("SubTopology"),
+        VM("VM"),
+        REQ("REQ");
+
+        private String value;
+
+        ObjectTypeEnum(String value) {
+            this.value = value;
+        }
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        @JsonCreator
+        public static ObjectTypeEnum fromValue(String text) {
+            for (ObjectTypeEnum b : ObjectTypeEnum.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
+    }
+
+    @JsonProperty("ObjectType")
+    private ObjectTypeEnum objectType = null;
 
     @JsonProperty("Objects")
     private String objects = null;
@@ -30,7 +102,7 @@ public class OpCode {
     @JsonProperty("Options")
     private Options options = null;
 
-    public OpCode operation(String operation) {
+    public OpCode operation(OperationEnum operation) {
         this.operation = operation;
         return this;
     }
@@ -43,12 +115,33 @@ public class OpCode {
      */
     @ApiModelProperty(value = "")
 
-    public String getOperation() {
+    public OperationEnum getOperation() {
         return operation;
     }
 
-    public void setOperation(String operation) {
+    public void setOperation(OperationEnum operation) {
         this.operation = operation;
+    }
+
+    public OpCode objectType(ObjectTypeEnum objectType) {
+        this.objectType = objectType;
+        return this;
+    }
+
+    /**
+     * Get objectType
+     *
+     * @return objectType
+  *
+     */
+    @ApiModelProperty(value = "")
+
+    public ObjectTypeEnum getObjectType() {
+        return objectType;
+    }
+
+    public void setObjectType(ObjectTypeEnum objectType) {
+        this.objectType = objectType;
     }
 
     public OpCode objects(String objects) {
@@ -147,6 +240,7 @@ public class OpCode {
         }
         OpCode opCode = (OpCode) o;
         return Objects.equals(this.operation, opCode.operation)
+                && Objects.equals(this.objectType, opCode.objectType)
                 && Objects.equals(this.objects, opCode.objects)
                 && Objects.equals(this.command, opCode.command)
                 && Objects.equals(this.log, opCode.log)
@@ -155,7 +249,7 @@ public class OpCode {
 
     @Override
     public int hashCode() {
-        return Objects.hash(operation, objects, command, log, options);
+        return Objects.hash(operation, objectType, objects, command, log, options);
     }
 
     @Override
@@ -164,6 +258,7 @@ public class OpCode {
         sb.append("class OpCode {\n");
 
         sb.append("    operation: ").append(toIndentedString(operation)).append("\n");
+        sb.append("    objectType: ").append(toIndentedString(objectType)).append("\n");
         sb.append("    objects: ").append(toIndentedString(objects)).append("\n");
         sb.append("    command: ").append(toIndentedString(command)).append("\n");
         sb.append("    log: ").append(toIndentedString(log)).append("\n");

@@ -101,7 +101,7 @@ topology_template:
               object_type: SubTopology
       properties:
         domain: UvA (Amsterdam, The Netherlands) XO Rack
-        provider: ExoGeni
+        provider: ExoGENI
       requirements:
       - vm:
           capability: tosca.capabilities.ARTICONF.VM
@@ -121,7 +121,7 @@ topology_template:
               object_type: SubTopology
       properties:
         domain: UNC BEN (Chapel Hill, NC USA)
-        provider: ExoGeni
+        provider: ExoGENI
       requirements:
       - vm:
           capability: tosca.capabilities.ARTICONF.VM

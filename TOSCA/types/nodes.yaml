@@ -110,8 +110,8 @@ node_types:
       provider:
         type: string
         required: true
-        default: "ExoGeni"
-        description: The name of the provider e.g. EC2, ExoGeni etc.              
+        default: "ExoGENI"
+        description: The name of the provider e.g. EC2, ExoGENI etc.              
     attributes:
       credential:
         type: tosca.datatypes.ARTICONF.Credential

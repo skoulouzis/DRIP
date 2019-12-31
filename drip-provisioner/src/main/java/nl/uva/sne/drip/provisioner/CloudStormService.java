@@ -31,11 +31,14 @@ import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.cloud.storm.CloudCred;
 import nl.uva.sne.drip.model.cloud.storm.CloudCredentialDB;
+import nl.uva.sne.drip.model.cloud.storm.CloudDB;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormInfrasCode;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormTopTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVMs;
 import nl.uva.sne.drip.model.cloud.storm.CredentialInfo;
+import nl.uva.sne.drip.model.cloud.storm.InfrasCode;
+import nl.uva.sne.drip.model.cloud.storm.OpCode;
 import nl.uva.sne.drip.model.cloud.storm.VMMetaInfo;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
@@ -140,7 +143,7 @@ class CloudStormService {
             cloudsStormSubTopology.setDomain(domain);
             cloudsStormSubTopology.setCloudProvider(provider);
             cloudsStormSubTopology.setTopology("vm_topology" + i);
-            cloudsStormSubTopology.setStatus("fresh");
+            cloudsStormSubTopology.setStatus(CloudsStormSubTopology.StatusEnum.FRESH);
             CloudsStormVMs cloudsStormVMs = new CloudsStormVMs();
 
             List<CloudsStormVM> vms = new ArrayList<>();
@@ -148,7 +151,8 @@ class CloudStormService {
             int j = 0;
             for (NodeTemplateMap vmMap : vmTemplatesMap) {
                 CloudsStormVM cloudsStormVM = new CloudsStormVM();
-                String vmType = getVMType(vmMap, provider);
+                CloudDB.CloudProviderEnum cloudProviderEnum = CloudDB.CloudProviderEnum.valueOf(provider);
+                String vmType = getVMType(vmMap, cloudProviderEnum);
                 cloudsStormVM.setNodeType(vmType);
                 cloudsStormVM.setName("vm" + j);
                 String os = helper.getVMNOS(vmMap);
@@ -167,7 +171,7 @@ class CloudStormService {
         return cloudsStormMap;
     }
 
-    private String getVMType(NodeTemplateMap vmMap, String provider) throws IOException, Exception {
+    private String getVMType(NodeTemplateMap vmMap, CloudDB.CloudProviderEnum provider) throws IOException, Exception {
         Double numOfCores = helper.getVMNumOfCores(vmMap);
         Double memSize = helper.getVMNMemSize(vmMap);
         String os = helper.getVMNOS(vmMap);
@@ -226,19 +230,28 @@ class CloudStormService {
         return null;
     }
 
-    private void writeCloudStormInfrasCodeFiles(String infrasCodeTempInputDirPath, List<CloudsStormSubTopology> cloudStormSubtopologies) throws ApiException {
+    private void writeCloudStormInfrasCodeFiles(String infrasCodeTempInputDirPath, List<CloudsStormSubTopology> cloudStormSubtopologies) throws ApiException, IOException {
         List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
         int i = 0;
-        CloudsStormInfrasCode cloudsStormInfrasCode =new  CloudsStormInfrasCode();
-        cloudsStormInfrasCode.setMode("");
+        List<InfrasCode> infrasCodes = new ArrayList<>();
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
             Map<String, Object> provisionInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
             String operation = provisionInterface.keySet().iterator().next();
             Map<String, Object> inputs = (Map<String, Object>) provisionInterface.get(operation);
             inputs.put("object_type", cloudStormSubtopologies.get(i).getTopology());
-
+            OpCode opCode = new OpCode();
+            opCode.setLog(Boolean.FALSE);
+            opCode.setObjectType(OpCode.ObjectTypeEnum.SUBTOPOLOGY);
+            opCode.setObjects(cloudStormSubtopologies.get(i).getTopology());
+            InfrasCode infrasCode = new InfrasCode();
+            infrasCode.setCodeType(InfrasCode.CodeTypeEnum.SEQ);
+            infrasCode.setOpCode(opCode);
         }
+        CloudsStormInfrasCode cloudsStormInfrasCode = new CloudsStormInfrasCode();
+        cloudsStormInfrasCode.setMode(CloudsStormInfrasCode.ModeEnum.LOCAL);
+        cloudsStormInfrasCode.setInfrasCodes(infrasCodes);
 
+        objectMapper.writeValue(new File(infrasCodeTempInputDirPath + File.separator + "infrasCode.yml"), cloudsStormInfrasCode);
     }
 
 }

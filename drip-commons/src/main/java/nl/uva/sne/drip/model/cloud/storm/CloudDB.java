@@ -2,6 +2,8 @@ package nl.uva.sne.drip.model.cloud.storm;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.validation.annotation.Validated;
 
@@ -9,17 +11,48 @@ import org.springframework.validation.annotation.Validated;
  * CloudDB
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-26T13:19:20.152Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-31T12:57:31.148Z")
 
 public class CloudDB {
 
+    /**
+     * Gets or Sets cloudProvider
+     */
+    public enum CloudProviderEnum {
+        EC2("EC2"),
+        EXOGENI("ExoGENI"),
+        EGI("EGI");
+
+        private String value;
+
+        CloudProviderEnum(String value) {
+            this.value = value;
+        }
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        @JsonCreator
+        public static CloudProviderEnum fromValue(String text) {
+            for (CloudProviderEnum b : CloudProviderEnum.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
+    }
+
     @JsonProperty("cloudProvider")
-    private String cloudProvider = null;
+    private CloudProviderEnum cloudProvider = null;
 
     @JsonProperty("dbInfoFile")
     private String dbInfoFile = null;
 
-    public CloudDB cloudProvider(String cloudProvider) {
+    public CloudDB cloudProvider(CloudProviderEnum cloudProvider) {
         this.cloudProvider = cloudProvider;
         return this;
     }
@@ -32,11 +65,11 @@ public class CloudDB {
      */
     @ApiModelProperty(value = "")
 
-    public String getCloudProvider() {
+    public CloudProviderEnum getCloudProvider() {
         return cloudProvider;
     }
 
-    public void setCloudProvider(String cloudProvider) {
+    public void setCloudProvider(CloudProviderEnum cloudProvider) {
         this.cloudProvider = cloudProvider;
     }
 

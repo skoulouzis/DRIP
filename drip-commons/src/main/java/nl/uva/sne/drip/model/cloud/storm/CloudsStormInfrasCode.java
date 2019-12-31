@@ -2,6 +2,8 @@ package nl.uva.sne.drip.model.cloud.storm;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,18 +14,48 @@ import javax.validation.Valid;
  * CloudsStormInfrasCode
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-31T12:42:56.808Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-31T12:57:31.148Z")
 
 public class CloudsStormInfrasCode {
 
+    /**
+     * Gets or Sets mode
+     */
+    public enum ModeEnum {
+        LOCAL("LOCAL"),
+        CTRL("CTRL");
+
+        private String value;
+
+        ModeEnum(String value) {
+            this.value = value;
+        }
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        @JsonCreator
+        public static ModeEnum fromValue(String text) {
+            for (ModeEnum b : ModeEnum.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
+    }
+
     @JsonProperty("Mode")
-    private String mode = null;
+    private ModeEnum mode = null;
 
     @JsonProperty("InfrasCodes")
     @Valid
     private List<InfrasCode> infrasCodes = null;
 
-    public CloudsStormInfrasCode mode(String mode) {
+    public CloudsStormInfrasCode mode(ModeEnum mode) {
         this.mode = mode;
         return this;
     }
@@ -36,11 +68,11 @@ public class CloudsStormInfrasCode {
      */
     @ApiModelProperty(value = "")
 
-    public String getMode() {
+    public ModeEnum getMode() {
         return mode;
     }
 
-    public void setMode(String mode) {
+    public void setMode(ModeEnum mode) {
         this.mode = mode;
     }
 

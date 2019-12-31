@@ -8,7 +8,7 @@
         $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/OpCode.yml#/OpCode"
       Count:
         type: "integer"
-      OpCodes:
-        type: "array"
-        items:
-              $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/OpCode.yml#/OpCode"
+      #OpCodes:
+        #type: "array"
+        #items:
+              #$ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/OpCode.yml#/OpCode"
