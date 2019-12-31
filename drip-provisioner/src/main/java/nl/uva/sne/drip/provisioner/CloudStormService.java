@@ -228,6 +228,7 @@ class CloudStormService {
     private void writeCloudStormInfrasCodeFiles(String infrasCodeTempInputDirPath, List<CloudsStormSubTopology> cloudStormSubtopologies) throws ApiException {
         List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
         int i = 0;
+        InfrasCodes ce =new 
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
             Map<String, Object> provisionInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
             String operation = provisionInterface.keySet().iterator().next();

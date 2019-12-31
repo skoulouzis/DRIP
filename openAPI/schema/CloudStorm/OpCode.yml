@@ -1,15 +1,13 @@
-    OpCode:
-        type: "object"
-        properties:
-            Operation:
-                type: "string"
-            Operation:
-                type: "string"
-            Objects:
-                type: "string"
-            Command:
-                type: "string"
-            Log:
-                type: "boolean"
-            Options:
-                type: $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/Options.yml#/Options"
+  OpCode:
+    type: "object"
+    properties:
+      Operation:
+        type: "string"
+      Objects:
+        type: "string"
+      Command:
+        type: "string"
+      Log:
+        type: "boolean"
+      Options:
+        $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/Options.yml#/Options"
