@@ -31,7 +31,6 @@ import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.cloud.storm.CloudCred;
 import nl.uva.sne.drip.model.cloud.storm.CloudCredentialDB;
-import nl.uva.sne.drip.model.cloud.storm.CloudDB;
 import nl.uva.sne.drip.model.cloud.storm.CloudDB.CloudProviderEnum;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormInfrasCode;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
@@ -55,14 +54,14 @@ class CloudStormService {
 
     private List<Map.Entry> vmTopologies;
 //    private String tempInputDirPath;
-    private final ToscaTemplate toscaTemplate;
+//    private final ToscaTemplate toscaTemplate;
     private final ToscaHelper helper;
     private final CloudStormDAO cloudStormDAO;
     private final ObjectMapper objectMapper;
     private final String cloudStormDBPath;
 
     CloudStormService(Properties properties, ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException {
-        this.toscaTemplate = toscaTemplate;
+//        this.toscaTemplate = toscaTemplate;
         cloudStormDBPath = properties.getProperty("cloud.storm.db.path");
         cloudStormDAO = new CloudStormDAO(cloudStormDBPath);
         String sureToscaBasePath = properties.getProperty("sure-tosca.base.path");
@@ -107,6 +106,8 @@ class CloudStormService {
         }
         List<CloudsStormSubTopology> cloudStormSubtopologies = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
         writeCloudStormInfrasCodeFiles(infrasCodeTempInputDirPath, cloudStormSubtopologies);
+
+        ToscaTemplate toscaTemplate = runCloudStorm(tempInputDirPath);
 
         return toscaTemplate;
     }
@@ -272,6 +273,12 @@ class CloudStormService {
         File srcDir = new File(cloudStormDBPath);
         File destDir = new File(tempInputDirPath);
         FileUtils.copyDirectory(srcDir, destDir);
+    }
+
+    private ToscaTemplate runCloudStorm(String tempInputDirPath) {
+        String[] args = new String[]{"run", tempInputDirPath};
+        standalone.MainAsTool.main(args);
+        return null;
     }
 
 }

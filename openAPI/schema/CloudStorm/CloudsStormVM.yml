@@ -5,7 +5,7 @@
                 type: "string"
             nodeType:
                 type: "string"
-            OSType:
+            OStype:
                 type: "string"
             script:
                 type: "string"
