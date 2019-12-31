@@ -32,6 +32,7 @@ import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.cloud.storm.CloudCred;
 import nl.uva.sne.drip.model.cloud.storm.CloudCredentialDB;
 import nl.uva.sne.drip.model.cloud.storm.CloudDB;
+import nl.uva.sne.drip.model.cloud.storm.CloudDB.CloudProviderEnum;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormInfrasCode;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormTopTopology;
@@ -43,6 +44,7 @@ import nl.uva.sne.drip.model.cloud.storm.VMMetaInfo;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -57,10 +59,11 @@ class CloudStormService {
     private final ToscaHelper helper;
     private final CloudStormDAO cloudStormDAO;
     private final ObjectMapper objectMapper;
+    private final String cloudStormDBPath;
 
     CloudStormService(Properties properties, ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException {
         this.toscaTemplate = toscaTemplate;
-        String cloudStormDBPath = properties.getProperty("cloud.storm.db.path");
+        cloudStormDBPath = properties.getProperty("cloud.storm.db.path");
         cloudStormDAO = new CloudStormDAO(cloudStormDBPath);
         String sureToscaBasePath = properties.getProperty("sure-tosca.base.path");
         this.helper = new ToscaHelper(sureToscaBasePath);
@@ -76,26 +79,35 @@ class CloudStormService {
         if (!(tempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
         }
-        String topologyTempInputDirPath = tempInputDirPath + File.separator + "topology";
+        String topologyTempInputDirPath = tempInputDirPath + File.separator + "Infs" + File.separator + "Topology";
         File topologyTempInputDir = new File(topologyTempInputDirPath);
         if (!(topologyTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
         }
         Map<String, Object> subTopologiesAndVMs = writeCloudStormTopologyFiles(topologyTempInputDirPath);
 
-        String credentialsTempInputDirPath = tempInputDirPath + File.separator + "credentials";
+        String credentialsTempInputDirPath = tempInputDirPath + File.separator + "Infs" + File.separator + "UC";
         File credentialsTempInputDir = new File(credentialsTempInputDirPath);
         if (!(credentialsTempInputDir.mkdirs())) {
-            throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
+            throw new FileNotFoundException("Could not create input directory: " + credentialsTempInputDir.getAbsolutePath());
         }
         writeCloudStormCredentialsFiles(credentialsTempInputDirPath);
-        String infrasCodeTempInputDirPath = tempInputDirPath + File.separator + "infrasCodes";
+
+        String providersDBTempInputDirPath = tempInputDirPath + File.separator + "Infs" + File.separator + "UD";
+        File providersDBTempInputDir = new File(providersDBTempInputDirPath);
+        if (!(providersDBTempInputDir.mkdirs())) {
+            throw new FileNotFoundException("Could not create input directory: " + providersDBTempInputDir.getAbsolutePath());
+        }
+        writeCloudStormProvidersDBFiles(providersDBTempInputDirPath);
+
+        String infrasCodeTempInputDirPath = tempInputDirPath + File.separator + "App";
         File infrasCodeTempInputDir = new File(infrasCodeTempInputDirPath);
         if (!(infrasCodeTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
         }
         List<CloudsStormSubTopology> cloudStormSubtopologies = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
         writeCloudStormInfrasCodeFiles(infrasCodeTempInputDirPath, cloudStormSubtopologies);
+
         return toscaTemplate;
     }
 
@@ -109,7 +121,7 @@ class CloudStormService {
         List<CloudsStormSubTopology> cloudsStormSubTopology = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
         topTopology.setTopologies(cloudsStormSubTopology);
 
-        objectMapper.writeValue(new File(tempInputDirPath + File.separator + "top.yml"), topTopology);
+        objectMapper.writeValue(new File(tempInputDirPath + File.separator + "_top.yml"), topTopology);
 
         return subTopologiesAndVMs;
     }
@@ -142,7 +154,7 @@ class CloudStormService {
             String provider = helper.getTopologyProvider(nodeTemplateMap);
             cloudsStormSubTopology.setDomain(domain);
             cloudsStormSubTopology.setCloudProvider(provider);
-            cloudsStormSubTopology.setTopology("vm_topology" + i);
+            cloudsStormSubTopology.setTopology("sub-topology" + i);
             cloudsStormSubTopology.setStatus(CloudsStormSubTopology.StatusEnum.FRESH);
             CloudsStormVMs cloudsStormVMs = new CloudsStormVMs();
 
@@ -151,8 +163,7 @@ class CloudStormService {
             int j = 0;
             for (NodeTemplateMap vmMap : vmTemplatesMap) {
                 CloudsStormVM cloudsStormVM = new CloudsStormVM();
-                CloudDB.CloudProviderEnum cloudProviderEnum = CloudDB.CloudProviderEnum.valueOf(provider);
-                String vmType = getVMType(vmMap, cloudProviderEnum);
+                String vmType = getVMType(vmMap, provider);
                 cloudsStormVM.setNodeType(vmType);
                 cloudsStormVM.setName("vm" + j);
                 String os = helper.getVMNOS(vmMap);
@@ -161,7 +172,7 @@ class CloudStormService {
                 j++;
             }
             cloudsStormVMs.setVms(vms);
-            objectMapper.writeValue(new File(tempInputDirPath + File.separator + "vm_topology" + i + ".yml"), cloudsStormVMs);
+            objectMapper.writeValue(new File(tempInputDirPath + File.separator + "sub-topology" + i + ".yml"), cloudsStormVMs);
             cloudsStormVMsList.add(cloudsStormVMs);
             cloudsStormSubTopologies.add(cloudsStormSubTopology);
             i++;
@@ -171,14 +182,15 @@ class CloudStormService {
         return cloudsStormMap;
     }
 
-    private String getVMType(NodeTemplateMap vmMap, CloudDB.CloudProviderEnum provider) throws IOException, Exception {
+    private String getVMType(NodeTemplateMap vmMap, String provider) throws IOException, Exception {
         Double numOfCores = helper.getVMNumOfCores(vmMap);
         Double memSize = helper.getVMNMemSize(vmMap);
         String os = helper.getVMNOS(vmMap);
-        List<VMMetaInfo> vmInfos = cloudStormDAO.findVmMetaInfoByProvider(provider);
+
+        List<VMMetaInfo> vmInfos = cloudStormDAO.findVmMetaInfoByProvider(CloudProviderEnum.fromValue(provider));
         for (VMMetaInfo vmInfo : vmInfos) {
-            Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "vmInfo: {0}", vmInfo);
-            Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "numOfCores:{0} memSize: {1} os: {2}", new Object[]{numOfCores, memSize, os});
+            Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "vmInfo: {0}", vmInfo);
+            Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "numOfCores:{0} memSize: {1} os: {2}", new Object[]{numOfCores, memSize, os});
             if (Objects.equals(numOfCores, Double.valueOf(vmInfo.getCPU())) && Objects.equals(memSize, Double.valueOf(vmInfo.getMEM())) && os.toLowerCase().equals(vmInfo.getOS().toLowerCase())) {
                 return vmInfo.getVmType();
             }
@@ -243,15 +255,23 @@ class CloudStormService {
             opCode.setLog(Boolean.FALSE);
             opCode.setObjectType(OpCode.ObjectTypeEnum.SUBTOPOLOGY);
             opCode.setObjects(cloudStormSubtopologies.get(i).getTopology());
+            opCode.setOperation(OpCode.OperationEnum.fromValue(operation));
             InfrasCode infrasCode = new InfrasCode();
             infrasCode.setCodeType(InfrasCode.CodeTypeEnum.SEQ);
             infrasCode.setOpCode(opCode);
+            infrasCodes.add(infrasCode);
         }
         CloudsStormInfrasCode cloudsStormInfrasCode = new CloudsStormInfrasCode();
         cloudsStormInfrasCode.setMode(CloudsStormInfrasCode.ModeEnum.LOCAL);
         cloudsStormInfrasCode.setInfrasCodes(infrasCodes);
 
         objectMapper.writeValue(new File(infrasCodeTempInputDirPath + File.separator + "infrasCode.yml"), cloudsStormInfrasCode);
+    }
+
+    private void writeCloudStormProvidersDBFiles(String tempInputDirPath) throws IOException {
+        File srcDir = new File(cloudStormDBPath);
+        File destDir = new File(tempInputDirPath);
+        FileUtils.copyDirectory(srcDir, destDir);
     }
 
 }
