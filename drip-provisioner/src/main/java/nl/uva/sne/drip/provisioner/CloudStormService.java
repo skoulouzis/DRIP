@@ -31,6 +31,7 @@ import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.cloud.storm.CloudCred;
 import nl.uva.sne.drip.model.cloud.storm.CloudCredentialDB;
+import nl.uva.sne.drip.model.cloud.storm.CloudsStormInfrasCode;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormTopTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVMs;
@@ -228,7 +229,8 @@ class CloudStormService {
     private void writeCloudStormInfrasCodeFiles(String infrasCodeTempInputDirPath, List<CloudsStormSubTopology> cloudStormSubtopologies) throws ApiException {
         List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
         int i = 0;
-        InfrasCodes ce =new 
+        CloudsStormInfrasCode cloudsStormInfrasCode =new  CloudsStormInfrasCode();
+        cloudsStormInfrasCode.setMode("");
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
             Map<String, Object> provisionInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
             String operation = provisionInterface.keySet().iterator().next();

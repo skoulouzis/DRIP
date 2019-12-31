@@ -3,6 +3,7 @@
     properties:
       Mode:
         type: "string"
+        enum: [LOCAL, CTRL]
       InfrasCodes:
         type: "array"
         items:

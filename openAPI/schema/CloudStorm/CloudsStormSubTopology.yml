@@ -9,3 +9,5 @@
                 type: "string"
             status:
                 type: "string"
+                enum: [fresh , running , deleted , failed , stopped]
+                
