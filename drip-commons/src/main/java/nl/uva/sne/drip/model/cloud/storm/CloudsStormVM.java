@@ -19,7 +19,7 @@ public class CloudsStormVM {
     @JsonProperty("nodeType")
     private String nodeType = null;
 
-    @JsonProperty("OSType")
+    @JsonProperty("OStype")
     private String osType = null;
 
     @JsonProperty("script")
@@ -37,7 +37,7 @@ public class CloudsStormVM {
      * Get name
      *
      * @return name
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -58,7 +58,7 @@ public class CloudsStormVM {
      * Get nodeType
      *
      * @return nodeType
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -79,7 +79,7 @@ public class CloudsStormVM {
      * Get osType
      *
      * @return osType
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -100,7 +100,7 @@ public class CloudsStormVM {
      * Get script
      *
      * @return script
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -121,7 +121,7 @@ public class CloudsStormVM {
      * Get publicAddress
      *
      * @return publicAddress
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
