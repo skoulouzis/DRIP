@@ -5,6 +5,7 @@
  */
 package nl.uva.sne.drip.provisioner;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -69,6 +70,7 @@ class CloudStormService {
         this.helper.uploadToscaTemplate(toscaTemplate);
         this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     public ToscaTemplate execute() throws FileNotFoundException, JSchException, IOException, ApiException, Exception {
@@ -218,7 +220,7 @@ class CloudStormService {
         }
         CloudCredentialDB cloudStormCredentials = new CloudCredentialDB();
         cloudStormCredentials.setCloudCreds(cloudStormCredentialList);
-        objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + "CloudStormCredentials.yml"), cloudStormCredentials);
+        objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + "cred.yml"), cloudStormCredentials);
     }
 
     private CredentialInfo getCloudStormCredentialInfo(Credential toscaCredentials, String tmpPath) throws FileNotFoundException {

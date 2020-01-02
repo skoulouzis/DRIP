@@ -63,7 +63,7 @@
         <dependency>
             <groupId>nl.uva.sne.zh</groupId>
             <artifactId>CloudsStorm</artifactId>
-            <version>1.0</version>
+            <version>b.1.0</version>
         </dependency>
     </dependencies>
    

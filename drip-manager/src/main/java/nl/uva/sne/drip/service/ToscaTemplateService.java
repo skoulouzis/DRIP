@@ -5,6 +5,7 @@
  */
 package nl.uva.sne.drip.service;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -33,6 +34,7 @@ public class ToscaTemplateService {
     public ToscaTemplateService() {
         this.objectMapper = new ObjectMapper(new YAMLFactory().disable(Feature.WRITE_DOC_START_MARKER));
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     @Autowired

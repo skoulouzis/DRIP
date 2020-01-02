@@ -28,12 +28,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.DatatypeConverter;
 import nl.uva.sne.drip.Swagger2SpringBoot;
 import nl.uva.sne.drip.configuration.MongoConfig;
 import nl.uva.sne.drip.model.tosca.Credential;
@@ -62,6 +68,7 @@ public class ServiceTests {
     private static final String testApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
     private static final String testUpdatedApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
     private static final String testOutputApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
+    private static final String testCredentialPath = ".." + File.separator + "fake_credentials" + File.separator + "test-geni.jks";
 
     @Autowired
     CredentialService credentialService;
@@ -262,6 +269,53 @@ public class ServiceTests {
     public void testCredentialServiceSave() {
         Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "save");
         saveCredential();
+    }
+
+    @Test
+    public void testCredentialService() throws IOException, NoSuchAlgorithmException {
+        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "testCredentialService");
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(Files.readAllBytes(Paths.get(testCredentialPath)));
+        byte[] digest = md.digest();
+        String fileChecksum = DatatypeConverter
+                .printHexBinary(digest).toUpperCase();
+
+        String keyStore = new String(Files.readAllBytes(Paths.get(testCredentialPath)));
+
+        byte[] encodedBytes = Base64.getEncoder().encode(keyStore.getBytes());
+        String keyStoreEncoded = new String(encodedBytes, "UTF-8");
+
+        Credential credential = new Credential();
+        credential.setCloudProviderName("exogeni");
+        Map<String, String> keys = new HashMap<>();
+        keys.put("keystore", keyStoreEncoded);
+        credential.setKeys(keys);
+        credential.setToken("1234");
+        credential.setTokenType("password");
+        credential.setUser("user");
+
+        byte[] decodedBytes = Base64.getDecoder().decode(keys.get("keystore"));
+        md = MessageDigest.getInstance("MD5");
+        md.update(decodedBytes);        
+        digest = md.digest();
+        String credentialChecksum = DatatypeConverter
+                .printHexBinary(digest).toUpperCase();   
+        
+        assertEquals(fileChecksum, credentialChecksum);
+        
+
+        HashMap<Object, Object> att = new HashMap<>();
+        Map<String, Object> toscaCredential = new HashMap<>();
+        toscaCredential.put("protocol", credential.getProtocol());
+        toscaCredential.put("token_type", credential.getTokenType());
+        toscaCredential.put("token", credential.getToken());
+        toscaCredential.put("keys", credential.getKeys());
+        toscaCredential.put("user", credential.getUser());
+        toscaCredential.put("cloud_provider_name", credential.getCloudProviderName());
+        att.put("credential", toscaCredential);
+
+        
+
     }
 
     public String saveCredential() {

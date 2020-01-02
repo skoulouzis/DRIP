@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.commons.utils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -70,6 +71,8 @@ public class ToscaHelperTest {
         byte[] bytes = Files.readAllBytes(Paths.get(testUpdatedApplicationExampleToscaFilePath));
         String ymlStr = new String(bytes, "UTF-8");
         objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
         toscaTemplate = objectMapper.readValue(ymlStr, ToscaTemplate.class);
         String serviceBasePath = prop.getProperty("sure-tosca.base.path");
         serviceUp = isServiceUp(serviceBasePath);
@@ -228,7 +231,6 @@ public class ToscaHelperTest {
             String operation = "provision";
 
 //            for (NodeTemplateMap vmTopologyMap : vmTopologies) {
-
 //                Map<String, Object> provisionInterface = instance.getProvisionInterface(provisioner, operation);
 //                List<String> objects = new ArrayList<>();
 //                objects.add("subtopology");
@@ -249,7 +251,6 @@ public class ToscaHelperTest {
 //            topology_1 = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology_1");
 //
 //            topology = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology");
-
             instance.uploadToscaTemplate(toscaTemplate);
         }
     }

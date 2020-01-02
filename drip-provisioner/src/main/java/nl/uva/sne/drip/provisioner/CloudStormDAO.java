@@ -5,6 +5,7 @@
  */
 package nl.uva.sne.drip.provisioner;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -34,6 +35,7 @@ class CloudStormDAO {
         this.cloudStormDBPath = cloudStormDBPath;
         this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     List<VMMetaInfo> findVmMetaInfoByProvider(CloudDB.CloudProviderEnum provider) throws IOException {
