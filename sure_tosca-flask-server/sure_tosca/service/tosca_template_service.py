@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import tempfile
+import time
 import uuid
 from builtins import print
 from functools import reduce
@@ -31,6 +32,15 @@ node_template_db = TinyDB(storage=CachingMiddleware(MemoryStorage))
 dsl_definitions_db = TinyDB(storage=CachingMiddleware(MemoryStorage))
 relationship_template_db = TinyDB(storage=CachingMiddleware(MemoryStorage))
 interface_types_db = TinyDB(storage=CachingMiddleware(MemoryStorage))
+logger = logging.getLogger(__name__)
+if not getattr(logger, 'handler_set', None):
+    logger.setLevel(logging.INFO)
+h = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+h.setFormatter(formatter)
+logger.addHandler(h)
+logger.handler_set = True
+
 
 root_key = 'root_key'
 
@@ -50,7 +60,7 @@ def query_db(queries, db=None):
                 res_copy.pop(root_key)
                 node = {key: res_copy}
             else:
-                logging.error(str(res) + ' has no ' + root_key)
+                logger.error(str(res) + ' has no ' + root_key)
             updated_results.append(node)
         return updated_results
     return None
@@ -90,17 +100,27 @@ def purge_all_tables():
 def save(file):
     # try:
     # tosca_template_file_path = os.path.join(db_dir_path, file.filename)
+    start = time.time()
+
+
+
+    logger.info("Got request for tosca template")
     purge_all_tables()
     dictionary = yaml.safe_load(file.stream)
-    print(yaml.dump(dictionary))
+    logger.info("tosca template: \n" + str(yaml.dump(dictionary)))
+    # print(yaml.dump(dictionary))
     tosca_template = ToscaTemplate(yaml_dict_tpl=copy.deepcopy(dictionary))
     # all_custom_def = tosca_template.nodetemplates[0].custom_def
     tosca_template_model = ToscaTemplateModel.from_dict(dictionary)
     doc_id = tosca_templates_db.insert(dictionary)
     # tosca_templates_db.close()
+    logger.info("Returning doc_id: " + str(doc_id))
+    end = time.time()
+    elapsed = end - start
+    logger.info("Time elapsed: " + str(elapsed))
     return doc_id
     # except Exception as e:
-    #     logging.error(str(e))
+    #     logger.error(str(e))
     #     return str(e), 400
 
 

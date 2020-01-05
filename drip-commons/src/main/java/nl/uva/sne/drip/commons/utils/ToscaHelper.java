@@ -68,7 +68,10 @@ public class ToscaHelper {
 
     private void init(String sureToscaBasePath) {
         Configuration.getDefaultApiClient().setBasePath(sureToscaBasePath);
+        Configuration.getDefaultApiClient().setConnectTimeout(1200000);
         api = new DefaultApi(Configuration.getDefaultApiClient());
+        System.err.println("ConnectTimeout: " + api.getApiClient().getConnectTimeout());
+
         this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -186,14 +189,7 @@ public class ToscaHelper {
             if (att == null) {
                 att = new HashMap<>();
             }
-            Map<String, Object> toscaCredential = new HashMap<>();
-            toscaCredential.put("protocol", credential.getProtocol());
-            toscaCredential.put("token_type", credential.getTokenType());
-            toscaCredential.put("token", credential.getToken());
-            toscaCredential.put("keys", credential.getKeys());
-            toscaCredential.put("user", credential.getUser());
-            toscaCredential.put("cloud_provider_name", credential.getCloudProviderName());
-            att.put("credential", toscaCredential);
+            att.put("credential", credential);
             vmTopology.setAttributes(att);
             vmTopologyMap.setNodeTemplate(vmTopology);
             return vmTopologyMap;

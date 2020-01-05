@@ -15,11 +15,21 @@
  */
 package nl.uva.sne.drip.commons.utils;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -49,6 +59,39 @@ public class Converter {
             return map;
         }
         return (Map<String, Object>) object;
+    }
+
+    public static String encodeFileToBase64Binary(String fileName) throws IOException {
+        return encode2Bas64(Files.readAllBytes(Paths.get(fileName)));
+    }
+
+    public static void decodeBase64BToFile(String base64, String fileName) throws IOException {
+        byte[] decodedBytrs = Base64.getDecoder().decode(base64);
+        Files.write(Paths.get(fileName), decodedBytrs);
+    }
+
+    public static String getFileMD5(String filePath) throws NoSuchAlgorithmException, IOException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        String keyStoreContents = new String(Files.readAllBytes(Paths.get(filePath)));
+        md.update(keyStoreContents.getBytes());
+        byte[] digest = md.digest();
+        return new String(digest, StandardCharsets.UTF_8);
+    }
+
+    public static String encodeFileToBase64Binary(MultipartFile file) throws IOException {
+
+        String originalFileName = file.getOriginalFilename();
+        String name = System.currentTimeMillis() + "_" + originalFileName;
+        byte[] bytes = file.getBytes();
+
+        return encode2Bas64(bytes);
+
+    }
+
+    private static String encode2Bas64(byte[] bytes) {
+
+        byte[] encodedBytes = Base64.getEncoder().encode(bytes);
+        return new String(encodedBytes, StandardCharsets.UTF_8);
     }
 
 }

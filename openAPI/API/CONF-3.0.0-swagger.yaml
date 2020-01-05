@@ -234,6 +234,29 @@ paths:
         - read:ToscaTemplate
   /credential:
     post:
+      summary: get credential key file as base64
+      description: get credential key file as base64
+      operationId: getFileasBase64
+      consumes:
+      - multipart/form-data
+      parameters:
+      - name: file
+        in: formData
+        description: credential key file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "405":
+          description: Invalid input
+      security:
+      - auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+    put:
       summary: Create credentials
       description: Creates credentials
       operationId: createCredentials
@@ -247,7 +270,7 @@ paths:
         description: Created user object
         required: true
         schema:
-          $ref: '#/definitions/Credentials'
+          $ref: '#/definitions/Credential'
       responses:
         "200":
           description: successful operation
@@ -458,23 +481,29 @@ definitions:
         type: integer
         format: int32
         description: User Status
-  Credentials:
+  Credential:
     type: object
     properties:
       protocol:
         type: string
+        description: The optional protocol name. e.g. http,xauth,oauth2,ssh
       token_type:
         type: string
+        description: 'The required token type. default: password. e.g. basic_auth,X-Auth-Token, bearer, identifier'
       token:
         type: string
+        description: The required token used as a credential for authorization or access to a networked resource. e.g. mypassword, myusername:mypassword,  604bbe45ac7143a79e14f3158df67091, keypair_id
       keys:
         type: object
+        description: The optional list of protocol-specific keys or assertions.
         additionalProperties:
           type: string
       user:
         type: string
+        description: The optional user (name or ID) used for non-token based credentials.
       cloud_provider_name:
         type: string
+        description: The cloud provider name e.g. ec2.
   NodeTemplate:
     type: object
     properties:
@@ -661,20 +690,15 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/CloudDB'
-  CloudDB:
-    type: object
-    properties:
-      cloudProvider:
-        type: string
-      dbInfoFile:
-        type: string
   DBInfo:
     type: object
     properties:
       GlobalEntry:
         type: string
       DCMetaInfo:
-        $ref: '#/definitions/DCMetaInfo'
+        type: array
+        items:
+          $ref: '#/definitions/DCMetaInfo'
   DCMetaInfo:
     type: object
     properties:
@@ -691,7 +715,9 @@ definitions:
       availability:
         type: string
       VMMetaInfo:
-        $ref: '#/definitions/VMMetaInfo'
+        type: array
+        items:
+          $ref: '#/definitions/VMMetaInfo'
       extraInfo:
         type: object
         additionalProperties:
@@ -706,6 +732,8 @@ definitions:
         type: string
       MEM:
         type: string
+      VMType:
+        type: string
       Price:
         type: string
       DefaultSSHAccount:
@@ -717,6 +745,67 @@ definitions:
         additionalProperties:
           type: object
           properties: {}
+  CloudsStormVMs:
+    type: object
+    properties:
+      VMs:
+        type: array
+        items:
+          $ref: '#/definitions/CloudsStormVM'
+  CloudCredentialDB:
+    type: object
+    properties:
+      cloudCreds:
+        type: array
+        items:
+          $ref: '#/definitions/CloudCred'
+  CredentialInfo:
+    type: object
+    properties:
+      userKeyName:
+        type: string
+      keyAlias:
+        type: string
+      keyPassword:
+        type: string
+      proxyFileName:
+        type: string
+      trustedCertDirName:
+        type: string
+      accessKey:
+        type: string
+      secretKey:
+        type: string
+  NodeTemplateMap:
+    type: object
+    properties:
+      name:
+        type: string
+      nodeTemplate:
+        $ref: '#/definitions/NodeTemplate'
+  Provisioner:
+    type: object
+    properties:
+      name:
+        type: string
+      version:
+        type: string
+      description:
+        type: string
+      tosca_interface_type:
+        type: string
+  CloudsStormInfrasCode:
+    type: object
+    properties:
+      Mode:
+        type: string
+        enum:
+        - LOCAL
+        - CTRL
+      InfrasCodes:
+        type: array
+        items:
+          $ref: '#/definitions/InfrasCode'
   CloudsStormSubTopology:
     type: object
     properties:
@@ -728,6 +817,12 @@ definitions:
         type: string
       status:
         type: string
+        enum:
+        - fresh
+        - running
+        - deleted
+        - failed
+        - stopped
   CloudsStormSubnets:
     type: object
     properties:
@@ -747,4 +842,83 @@ definitions:
       vmName:
         type: string
       address:
+        type: string
+  CloudDB:
+    type: object
+    properties:
+      cloudProvider:
+        type: string
+        enum:
+        - EC2
+        - ExoGENI
+        - EGI
+      dbInfoFile:
+        type: string
+  CloudsStormVM:
+    type: object
+    properties:
+      name:
+        type: string
+      nodeType:
+        type: string
+      OStype:
+        type: string
+      script:
+        type: string
+      publicAddress:
+        type: string
+  CloudCred:
+    type: object
+    properties:
+      cloudProvider:
+        type: string
+      credInfoFile:
+        type: string
+  InfrasCode:
+    type: object
+    properties:
+      CodeType:
+        type: string
+        enum:
+        - SEQ
+        - LOOP
+      OpCode:
+        $ref: '#/definitions/OpCode'
+      Count:
+        type: integer
+  OpCode:
+    type: object
+    properties:
+      Operation:
+        type: string
+        enum:
+        - provision
+        - delete
+        - execute
+        - put
+        - get
+        - vscale
+        - hscale
+        - recover
+        - start
+      ObjectType:
+        type: string
+        enum:
+        - SubTopology
+        - VM
+        - REQ
+      Objects:
+        type: string
+      Command:
+        type: string
+      Log:
+        type: boolean
+      Options:
+        $ref: '#/definitions/Options'
+  Options:
+    type: object
+    properties:
+      Src:
+        type: string
+      Dst:
         type: string

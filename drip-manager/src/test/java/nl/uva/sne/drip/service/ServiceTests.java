@@ -28,20 +28,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.DatatypeConverter;
 import nl.uva.sne.drip.Swagger2SpringBoot;
+import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.configuration.MongoConfig;
+import nl.uva.sne.drip.model.cloud.storm.CloudDB;
 import nl.uva.sne.drip.model.tosca.Credential;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
@@ -274,19 +271,10 @@ public class ServiceTests {
     @Test
     public void testCredentialService() throws IOException, NoSuchAlgorithmException {
         Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "testCredentialService");
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(Files.readAllBytes(Paths.get(testCredentialPath)));
-        byte[] digest = md.digest();
-        String fileChecksum = DatatypeConverter
-                .printHexBinary(digest).toUpperCase();
-
-        String keyStore = new String(Files.readAllBytes(Paths.get(testCredentialPath)));
-
-        byte[] encodedBytes = Base64.getEncoder().encode(keyStore.getBytes());
-        String keyStoreEncoded = new String(encodedBytes, "UTF-8");
+        String keyStoreEncoded = Converter.encodeFileToBase64Binary(testCredentialPath);
 
         Credential credential = new Credential();
-        credential.setCloudProviderName("exogeni");
+        credential.setCloudProviderName("ExoGENI");
         Map<String, String> keys = new HashMap<>();
         keys.put("keystore", keyStoreEncoded);
         credential.setKeys(keys);
@@ -294,28 +282,16 @@ public class ServiceTests {
         credential.setTokenType("password");
         credential.setUser("user");
 
-        byte[] decodedBytes = Base64.getDecoder().decode(keys.get("keystore"));
-        md = MessageDigest.getInstance("MD5");
-        md.update(decodedBytes);        
-        digest = md.digest();
-        String credentialChecksum = DatatypeConverter
-                .printHexBinary(digest).toUpperCase();   
-        
-        assertEquals(fileChecksum, credentialChecksum);
-        
+        String keyStoreEncodedFromCredential = credential.getKeys().get("keystore");
+        assertEquals(keyStoreEncoded, keyStoreEncodedFromCredential);
 
-        HashMap<Object, Object> att = new HashMap<>();
-        Map<String, Object> toscaCredential = new HashMap<>();
-        toscaCredential.put("protocol", credential.getProtocol());
-        toscaCredential.put("token_type", credential.getTokenType());
-        toscaCredential.put("token", credential.getToken());
-        toscaCredential.put("keys", credential.getKeys());
-        toscaCredential.put("user", credential.getUser());
-        toscaCredential.put("cloud_provider_name", credential.getCloudProviderName());
-        att.put("credential", toscaCredential);
+        String copyTestCredentialPath = ".." + File.separator + "fake_credentials" + File.separator + "copy_of_test-geni.jks";
+        Converter.decodeBase64BToFile(keyStoreEncodedFromCredential, copyTestCredentialPath);
 
-        
+        String keystorFileChecksum = Converter.getFileMD5(testCredentialPath);
+        String keystorFileCopyChecksum = Converter.getFileMD5(copyTestCredentialPath);
 
+        assertEquals(keystorFileChecksum, keystorFileCopyChecksum);
     }
 
     public String saveCredential() {
@@ -354,6 +330,7 @@ public class ServiceTests {
         credentialService.deleteByID(id);
         try {
             Credential res = credentialService.findByID(id);
+            assertNotNull(res);
         } catch (Exception ex) {
             if (!(ex instanceof NoSuchElementException)) {
                 fail(ex.getMessage());
