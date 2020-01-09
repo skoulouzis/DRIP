@@ -91,7 +91,7 @@ public class DRIPService {
         this.requestQeueName = requestQeueName;
     }
 
-    private Credential getBestCredential(NodeTemplate vmTopology, List<Credential> credentials) {
+    private Credential getBestCredential(List<Credential> credentials) {
         return credentials.get(0);
     }
 
@@ -100,12 +100,17 @@ public class DRIPService {
         List<Credential> credentials = null;
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {
             String provider = helper.getTopologyProvider(vmTopologyMap);
-            credentials = credentialService.findByProvider(provider.toLowerCase());
-            if (credentials != null && credentials.size() > 0) {
-                Credential credential = getBestCredential(vmTopologyMap.getNodeTemplate(), credentials);
-                vmTopologyMap = helper.setCredentialsInVMTopology(vmTopologyMap, credential);
-                toscaTemplate = helper.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
+            if (needsCredentials(provider)) {
+                credentials = credentialService.findByProvider(provider);
+                if (credentials == null || credentials.size() <= 0) {
+                    throw new Exception("Provider: " + provider + " needs credentials but non clould be found");
+                } else {
+                    Credential credential = getBestCredential(credentials);
+                    vmTopologyMap = helper.setCredentialsInVMTopology(vmTopologyMap, credential);
+                    toscaTemplate = helper.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
+                }
             }
+
         }
         return toscaTemplate;
     }
@@ -142,6 +147,15 @@ public class DRIPService {
             }
         }
         return toscaTemplate;
+    }
+
+    private boolean needsCredentials(String provider) {
+        switch (provider) {
+            case "local":
+                return false;
+            default:
+                return true;
+        }
     }
 
 }

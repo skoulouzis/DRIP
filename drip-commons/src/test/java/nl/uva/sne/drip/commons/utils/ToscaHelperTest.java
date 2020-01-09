@@ -159,6 +159,7 @@ public class ToscaHelperTest {
 
     /**
      * Test of getTemplateVMsForVMTopology method, of class ToscaHelper.
+     * @throws java.lang.Exception
      */
     @Test
     public void testGetTemplateVMsForVMTopology() throws Exception {

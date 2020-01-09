@@ -17,9 +17,7 @@ import com.jcraft.jsch.KeyPair;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +25,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
 import nl.uva.sne.drip.model.NodeTemplateMap;
@@ -60,6 +59,7 @@ class CloudStormService {
     private final CloudStormDAO cloudStormDAO;
     private final ObjectMapper objectMapper;
     private final String cloudStormDBPath;
+    private final String SUB_TOPOLOGY_NAME = "subTopology";
 
     CloudStormService(Properties properties, ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException {
 //        this.toscaTemplate = toscaTemplate;
@@ -157,7 +157,7 @@ class CloudStormService {
             String provider = helper.getTopologyProvider(nodeTemplateMap);
             cloudsStormSubTopology.setDomain(domain);
             cloudsStormSubTopology.setCloudProvider(provider);
-            cloudsStormSubTopology.setTopology("sub-topology" + i);
+            cloudsStormSubTopology.setTopology(SUB_TOPOLOGY_NAME + i);
             cloudsStormSubTopology.setStatus(CloudsStormSubTopology.StatusEnum.FRESH);
             CloudsStormVMs cloudsStormVMs = new CloudsStormVMs();
 
@@ -175,7 +175,7 @@ class CloudStormService {
                 j++;
             }
             cloudsStormVMs.setVms(vms);
-            objectMapper.writeValue(new File(tempInputDirPath + File.separator + "sub-topology" + i + ".yml"), cloudsStormVMs);
+            objectMapper.writeValue(new File(tempInputDirPath + File.separator + SUB_TOPOLOGY_NAME + i + ".yml"), cloudsStormVMs);
             cloudsStormVMsList.add(cloudsStormVMs);
             cloudsStormSubTopologies.add(cloudsStormSubTopology);
             i++;
@@ -207,7 +207,6 @@ class CloudStormService {
         int i = 0;
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
             Credential toscaCredentials = helper.getCredentialsFromVMTopology(vmTopologyMap);
-
             CloudCred cloudStormCredential = new CloudCred();
             cloudStormCredential.setCloudProvider(toscaCredentials.getCloudProviderName());
             String credInfoFile = toscaCredentials.getCloudProviderName() + i + ".yml";
@@ -223,16 +222,15 @@ class CloudStormService {
         objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + "cred.yml"), cloudStormCredentials);
     }
 
-    private CredentialInfo getCloudStormCredentialInfo(Credential toscaCredentials, String tmpPath) throws FileNotFoundException {
+    private CredentialInfo getCloudStormCredentialInfo(Credential toscaCredentials, String tmpPath) throws FileNotFoundException, IOException {
         CredentialInfo cloudStormCredentialInfo = new CredentialInfo();
         switch (toscaCredentials.getCloudProviderName().toLowerCase()) {
             case "exogeni":
 
                 String base64Keystore = toscaCredentials.getKeys().get("keystore");
-                byte[] decoded = Base64.getDecoder().decode(base64Keystore);
-                try (PrintWriter out = new PrintWriter(tmpPath + File.separator + "user.jks")) {
-                    out.println(new String(decoded));
-                }
+
+                Converter.decodeBase64BToFile(base64Keystore, tmpPath + File.separator + "user.jks");
+
                 cloudStormCredentialInfo.setUserKeyName("user.jks");
                 cloudStormCredentialInfo.setKeyAlias(toscaCredentials.getUser());
                 cloudStormCredentialInfo.setKeyPassword(toscaCredentials.getToken());

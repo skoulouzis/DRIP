@@ -38,7 +38,6 @@ import java.util.logging.Logger;
 import nl.uva.sne.drip.Swagger2SpringBoot;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.configuration.MongoConfig;
-import nl.uva.sne.drip.model.cloud.storm.CloudDB;
 import nl.uva.sne.drip.model.tosca.Credential;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
@@ -239,6 +238,7 @@ public class ServiceTests {
 
     /**
      * Test of getAllIds method, of class ToscaTemplateService.
+     * @throws java.lang.Exception
      */
     @Test
     public void testToscaTemplateServiceGetAllIds() throws Exception {
@@ -322,6 +322,7 @@ public class ServiceTests {
 
     /**
      * Test of deleteByID method, of class CredentialService.
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
     public void testCredentialServiceDeleteByID() throws JsonProcessingException {
