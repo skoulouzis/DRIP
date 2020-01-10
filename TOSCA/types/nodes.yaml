@@ -111,7 +111,11 @@ node_types:
         type: string
         required: true
         default: "ExoGENI"
-        description: The name of the provider e.g. EC2, ExoGENI etc.              
+        description: The name of the provider e.g. EC2, ExoGENI etc.    
+      coordinates: 
+        type: tosca.datatypes.ARTICONF.coordinates
+        required: false
+        description: The coordinates of the domain 
     attributes:
       credential:
         type: tosca.datatypes.ARTICONF.Credential
