@@ -70,8 +70,6 @@ public class ToscaHelper {
         Configuration.getDefaultApiClient().setBasePath(sureToscaBasePath);
         Configuration.getDefaultApiClient().setConnectTimeout(1200000);
         api = new DefaultApi(Configuration.getDefaultApiClient());
-        System.err.println("ConnectTimeout: " + api.getApiClient().getConnectTimeout());
-
         this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -217,27 +215,6 @@ public class ToscaHelper {
         return toscaTemplate;
     }
 
-//    public NodeTemplateMap setProvisionerInterfaceInVMTopology(NodeTemplateMap vmTopologyMap, Map<String, Object> provisionInterface) throws ApiException {
-//        vmTopologyMap.getNodeTemplate().setInterfaces(provisionInterface);
-//        return vmTopologyMap;
-//    }
-    private Map<String, Object> getBestProvisionInterfaceDefinition(List<Map<String, Object>> definitions) {
-        for (Map<String, Object> def : definitions) {
-            if (def.containsKey("tosca.interfaces.ARTICONF.CloudsStorm")) {
-                return def;
-            }
-        }
-        return null;
-    }
-
-    private Map<String, Object> getProvisionInterfaceInstanceDefaultValues(Map<String, Object> definition, String operation) throws ApiException {
-        String type = definition.keySet().iterator().next();
-        String[] typeArray = type.split("\\.");
-        Map<String, Object> provisionInterface = api.getDefaultInterface(String.valueOf(id), type, typeArray[typeArray.length - 1], operation);
-//        provisionInterface.remove("")
-        return provisionInterface;
-    }
-
 //    public Map<String, Object> getProvisionInterface(Provisioner provisioner, String operation) throws ApiException {
 //        List<String> toscaInterfaceTypes = new ArrayList<>();
 //        toscaInterfaceTypes.add(provisioner.getToscaInterfaceType());
@@ -251,6 +228,19 @@ public class ToscaHelper {
     }
 
     public NodeTemplateMap setProvisionerInterfaceInVMTopology(NodeTemplateMap vmTopologyMap, Map<String, Object> provisionerInterface) {
+        System.err.println(provisionerInterface);
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public String getVMTopologyUser() throws ApiException {
+        List<NodeTemplateMap> vmTopologyTemplatesMap = getVMTopologyTemplates();
+        for (NodeTemplateMap nodeTemplateMap : vmTopologyTemplatesMap) {
+            List<NodeTemplateMap> vmTemplatesMap = getTemplateVMsForVMTopology(nodeTemplateMap);
+            for (NodeTemplateMap vmMap : vmTemplatesMap) {
+                Map<String, Object> att = vmMap.getNodeTemplate().getAttributes();
+            }
+        }
+
+        return "vm_user";
     }
 }

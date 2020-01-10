@@ -118,7 +118,7 @@ class CloudStormService {
         CloudsStormTopTopology topTopology = new CloudsStormTopTopology();
         String publicKeyPath = buildSSHKeyPair(tempInputDirPath);
         topTopology.setPublicKeyPath(publicKeyPath);
-        topTopology.setUserName(getUserName());
+        topTopology.setUserName(helper.getVMTopologyUser());
 
         Map<String, Object> subTopologiesAndVMs = getCloudsStormSubTopologiesAndVMs(tempInputDirPath);
         List<CloudsStormSubTopology> cloudsStormSubTopology = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
@@ -139,10 +139,6 @@ class CloudStormService {
         kpair.writePublicKey(tempInputDirPath + File.separator + userPublicKeyName, "auto generated user accees keys");
         kpair.dispose();
         return publicKeyPath;
-    }
-
-    private String getUserName() {
-        return "vm_user";
     }
 
     private Map<String, Object> getCloudsStormSubTopologiesAndVMs(String tempInputDirPath) throws ApiException, IOException, Exception {
