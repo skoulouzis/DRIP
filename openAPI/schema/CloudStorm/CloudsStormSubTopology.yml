@@ -21,4 +21,8 @@
             scaledFrom:
               type: object
               additionalProperties:
-                  type: object                  
+                  type: object        
+            connections:
+              type: object
+              additionalProperties:
+                  type: object         

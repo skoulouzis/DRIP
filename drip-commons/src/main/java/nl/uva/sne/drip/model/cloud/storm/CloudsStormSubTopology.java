@@ -16,6 +16,20 @@ import org.springframework.validation.annotation.Validated;
 public class CloudsStormSubTopology {
 
     /**
+     * @return the connections
+     */
+    public Object getConnections() {
+        return connections;
+    }
+
+    /**
+     * @param connections the connections to set
+     */
+    public void setConnections(Object connections) {
+        this.connections = connections;
+    }
+
+    /**
      * @return the scaledFrom
      */
     public Object getScaledFrom() {
@@ -74,8 +88,12 @@ public class CloudsStormSubTopology {
 
     @JsonProperty("sshKeyPairId")
     private String sshKeyPairId;
+   
     @JsonProperty("scaledFrom")
     private Object scaledFrom;
+
+    @JsonProperty("connections")
+    private Object connections;
 
     /**
      * Gets or Sets status
