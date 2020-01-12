@@ -233,29 +233,6 @@ paths:
         - write:ToscaTemplate
         - read:ToscaTemplate
   /credential:
-    post:
-      summary: get credential key file as base64
-      description: get credential key file as base64
-      operationId: getFileasBase64
-      consumes:
-      - multipart/form-data
-      parameters:
-      - name: file
-        in: formData
-        description: credential key file
-        required: true
-        type: file
-      responses:
-        "200":
-          description: successful operation
-          schema:
-            type: string
-        "405":
-          description: Invalid input
-      security:
-      - auth:
-        - write:ToscaTemplate
-        - read:ToscaTemplate
     put:
       summary: Create credentials
       description: Creates credentials
@@ -267,7 +244,7 @@ paths:
       parameters:
       - in: body
         name: body
-        description: Created user object
+        description: Credential
         required: true
         schema:
           $ref: '#/definitions/Credential'
@@ -823,6 +800,21 @@ definitions:
         - deleted
         - failed
         - stopped
+      logsInfo:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      scaledFrom:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      connections:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
   CloudsStormSubnets:
     type: object
     properties:
