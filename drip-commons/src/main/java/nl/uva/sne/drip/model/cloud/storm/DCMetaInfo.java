@@ -3,6 +3,7 @@ package nl.uva.sne.drip.model.cloud.storm;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ import javax.validation.Valid;
  * DCMetaInfo
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-11T15:13:55.016Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-01-12T18:26:54.530Z")
 
 public class DCMetaInfo {
 
@@ -36,6 +37,7 @@ public class DCMetaInfo {
     private String availability = null;
 
     @JsonProperty("VMMetaInfo")
+    @Valid
     private List<CloudsStormVM> vmMetaInfo = null;
 
     @JsonProperty("extraInfo")
@@ -51,7 +53,7 @@ public class DCMetaInfo {
      * Get domain
      *
      * @return domain
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -72,7 +74,7 @@ public class DCMetaInfo {
      * Get endpoint
      *
      * @return endpoint
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -93,7 +95,7 @@ public class DCMetaInfo {
      * Get country
      *
      * @return country
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -114,7 +116,7 @@ public class DCMetaInfo {
      * Get longitude
      *
      * @return longitude
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -135,7 +137,7 @@ public class DCMetaInfo {
      * Get latitude
      *
      * @return latitude
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -156,7 +158,7 @@ public class DCMetaInfo {
      * Get availability
      *
      * @return availability
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -173,11 +175,19 @@ public class DCMetaInfo {
         return this;
     }
 
+    public DCMetaInfo addVmMetaInfoItem(CloudsStormVM vmMetaInfoItem) {
+        if (this.vmMetaInfo == null) {
+            this.vmMetaInfo = new ArrayList<CloudsStormVM>();
+        }
+        this.vmMetaInfo.add(vmMetaInfoItem);
+        return this;
+    }
+
     /**
      * Get vmMetaInfo
      *
      * @return vmMetaInfo
-     *
+  *
      */
     @ApiModelProperty(value = "")
 
@@ -208,7 +218,7 @@ public class DCMetaInfo {
      * Get extraInfo
      *
      * @return extraInfo
-     *
+  *
      */
     @ApiModelProperty(value = "")
 

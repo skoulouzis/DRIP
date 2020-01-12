@@ -12,14 +12,9 @@ import javax.validation.Valid;
  * CloudsStormVMs
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-30T16:13:55.433Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-01-12T18:26:54.530Z")
 
 public class CloudsStormVMs {
-    
-        @JsonProperty("SEngineClass")
-        private String sEngineClass;
-    
-            
 
     @JsonProperty("VMs")
     @Valid

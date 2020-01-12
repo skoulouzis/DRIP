@@ -2,20 +2,17 @@ package nl.uva.sne.drip.model.cloud.storm;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.ArrayList;
 import java.util.List;
-import nl.uva.sne.drip.model.cloud.storm.DCMetaInfo;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 
 /**
  * DBInfo
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-11T15:13:55.016Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-01-12T18:26:54.530Z")
 
 public class DBInfo {
 
@@ -23,6 +20,7 @@ public class DBInfo {
     private String globalEntry = null;
 
     @JsonProperty("DCMetaInfo")
+    @Valid
     private List<DCMetaInfo> dcMetaInfo = null;
 
     public DBInfo globalEntry(String globalEntry) {
@@ -34,7 +32,7 @@ public class DBInfo {
      * Get globalEntry
      *
      * @return globalEntry
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -51,11 +49,19 @@ public class DBInfo {
         return this;
     }
 
+    public DBInfo addDcMetaInfoItem(DCMetaInfo dcMetaInfoItem) {
+        if (this.dcMetaInfo == null) {
+            this.dcMetaInfo = new ArrayList<DCMetaInfo>();
+        }
+        this.dcMetaInfo.add(dcMetaInfoItem);
+        return this;
+    }
+
     /**
      * Get dcMetaInfo
      *
      * @return dcMetaInfo
-  *
+     *
      */
     @ApiModelProperty(value = "")
 

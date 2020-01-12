@@ -31,5 +31,9 @@
                 type: "string"
             availability:
                 type: "string"
+            selfEthAddresses:
+                type: "string"
+                
+                
     
     

@@ -18,6 +18,7 @@ import nl.uva.sne.drip.model.cloud.storm.CloudDB;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
 import nl.uva.sne.drip.model.cloud.storm.DB;
 import nl.uva.sne.drip.model.cloud.storm.DBInfo;
+import nl.uva.sne.drip.model.cloud.storm.DCMetaInfo;
 
 /**
  *
@@ -51,8 +52,8 @@ class CloudStormDAO {
 
             List<CloudsStormVM> vMMetaInfos = new ArrayList<>();
             DBInfo dbInfo = objectMapper.readValue(new File(cloudStormDBPath + File.separator + targetCloudDB.getDbInfoFile()), DBInfo.class);
-            List<CloudsStormVM> metaInfos = dbInfo.getDcMetaInfo();
-            for (CloudsStormVM metaInfo : metaInfos) {
+            List<DCMetaInfo> metaInfos = dbInfo.getDcMetaInfo();
+            for (DCMetaInfo metaInfo : metaInfos) {
                 vMMetaInfos.addAll(metaInfo.getVmMetaInfo());
             }
             return vMMetaInfos;

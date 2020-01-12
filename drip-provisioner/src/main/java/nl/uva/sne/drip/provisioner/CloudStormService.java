@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.utils.Converter;
@@ -176,7 +175,8 @@ class CloudStormService {
                 cloudsStormVM.setNodeType(vmType);
                 cloudsStormVM.setName("vm" + j);
                 String os = helper.getVMNOS(vmMap);
-                cloudsStormVM.setOsType(os);
+                cloudsStormVM.setOS(os);
+                cloudsStormVM.setOstype(os);
                 vms.add(cloudsStormVM);
                 j++;
             }
@@ -200,8 +200,8 @@ class CloudStormService {
         for (CloudsStormVM vmInfo : vmInfos) {
             Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "vmInfo: {0}", vmInfo);
             Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "numOfCores:{0} memSize: {1} os: {2}", new Object[]{numOfCores, memSize, os});
-            if (Objects.equals(numOfCores, Double.valueOf(vmInfo.getCPU())) && 
-                    Objects.equals(memSize, Double.valueOf(vmInfo.getMEM())) && os.toLowerCase().equals(vmInfo.getOS().toLowerCase())) {
+            if (Objects.equals(numOfCores, Double.valueOf(vmInfo.getCPU()))
+                    && Objects.equals(memSize, Double.valueOf(vmInfo.getMEM())) && os.toLowerCase().equals(vmInfo.getOS().toLowerCase())) {
                 return vmInfo.getVmType();
             }
         }
@@ -303,20 +303,6 @@ class CloudStormService {
             }
             att.put("status", subTopology.getStatus().toString());
 
-            CloudsStormVMs cloudsStormVMs = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + subTopology.getTopology()),
-                    CloudsStormVMs.class);
-            List<CloudsStormVM> vms = cloudsStormVMs.getVms();
-            List<NodeTemplateMap> vmTemplatesMap = helper.getTemplateVMsForVMTopology(nodeTemplateMap);
-            int j = 0;
-            for (CloudsStormVM vm : vms) {
-                NodeTemplateMap vmTemplateMap = vmTemplatesMap.get(j);
-                Map<String, Object> vmAttributes = vmTemplateMap.getNodeTemplate().getAttributes();
-                if (vmAttributes==null){
-                    vmAttributes = new HashMap<>();
-                }
-                vmAttributes.put("private_ip", vm.get);
-            }
-
             String rootKeyPairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                     + TOP_TOPOLOGY_FILE_NAME + File.separator + subTopology.getSshKeyPairId();
             Credential rootKeyPairCredential = new Credential();
@@ -329,11 +315,35 @@ class CloudStormService {
             String userKyePairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                     + TOP_TOPOLOGY_FILE_NAME;
             Credential userKeyPairCredential = new Credential();
-            rootKeyPairCredential.setProtocol("ssh");
+            userKeyPairCredential.setProtocol("ssh");
             keys = new HashMap<>();
             keys.put("private_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa"));
             keys.put("public_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa.pub"));
             userKeyPairCredential.setKeys(keys);
+
+            CloudsStormVMs cloudsStormVMs = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + subTopology.getTopology()),
+                    CloudsStormVMs.class);
+            List<CloudsStormVM> vms = cloudsStormVMs.getVms();
+            List<NodeTemplateMap> vmTemplatesMap = helper.getTemplateVMsForVMTopology(nodeTemplateMap);
+            int j = 0;
+            for (CloudsStormVM vm : vms) {
+                NodeTemplateMap vmTemplateMap = vmTemplatesMap.get(j);
+                Map<String, Object> vmAttributes = vmTemplateMap.getNodeTemplate().getAttributes();
+                if (vmAttributes == null) {
+                    vmAttributes = new HashMap<>();
+                }
+                vmAttributes.put("private_ip", vm.getSelfEthAddresses());
+                vmAttributes.put("public_ip", vm.getPublicAddress());
+                if (j > 0) {
+                    vmAttributes.put("role", "master");
+                } else {
+                    vmAttributes.put("role", "worker");
+                }
+                vmAttributes.put("node_type", vm.getNodeType());
+                vmAttributes.put("host_name", vm.getName());
+                vmAttributes.put("root_key_pair", rootKeyPairCredential);
+                vmAttributes.put("user_key_pair", userKeyPairCredential);
+            }
 
         }
         return null;

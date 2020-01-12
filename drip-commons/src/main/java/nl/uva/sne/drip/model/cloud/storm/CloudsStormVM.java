@@ -3,30 +3,31 @@ package nl.uva.sne.drip.model.cloud.storm;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.HashMap;
 import java.util.Map;
-import javax.validation.Valid;
 import org.springframework.validation.annotation.Validated;
+import javax.validation.Valid;
 
 /**
  * CloudsStormVM
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-30T16:13:55.433Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-01-12T18:26:54.530Z")
 
 public class CloudsStormVM {
 
     /**
-     * @return the extraInfo
+     * @return the selfEthAddresses
      */
-    public Map<String, Object> getExtraInfo() {
-        return extraInfo;
+    public String getSelfEthAddresses() {
+        return selfEthAddresses;
     }
 
     /**
-     * @param extraInfo the extraInfo to set
+     * @param selfEthAddresses the selfEthAddresses to set
      */
-    public void setExtraInfo(Map<String, Object> extraInfo) {
-        this.extraInfo = extraInfo;
+    public void setSelfEthAddresses(String selfEthAddresses) {
+        this.selfEthAddresses = selfEthAddresses;
     }
 
     @JsonProperty("name")
@@ -36,7 +37,7 @@ public class CloudsStormVM {
     private String nodeType = null;
 
     @JsonProperty("OStype")
-    private String osType = null;
+    private String ostype = null;
 
     @JsonProperty("script")
     private String script = null;
@@ -46,6 +47,10 @@ public class CloudsStormVM {
 
     @JsonProperty("type")
     private String type = null;
+
+    @JsonProperty("extraInfo")
+    @Valid
+    private Map<String, Object> extraInfo = null;
 
     @JsonProperty("OS")
     private String OS = null;
@@ -57,14 +62,19 @@ public class CloudsStormVM {
     private String MEM = null;
 
     @JsonProperty("VMType")
-    private String VMType = null;
+    private String vmType = null;
 
     @JsonProperty("Price")
-    private String Price = null;
+    private String price = null;
 
-    @JsonProperty("extraInfo")
-    @Valid
-    private Map<String, Object> extraInfo = null;
+    @JsonProperty("DefaultSSHAccount")
+    private String defaultSSHAccount = null;
+
+    @JsonProperty("availability")
+    private String availability = null;
+
+    @JsonProperty("selfEthAddresses")
+    private String selfEthAddresses = null;
 
     public CloudsStormVM name(String name) {
         this.name = name;
@@ -108,25 +118,25 @@ public class CloudsStormVM {
         this.nodeType = nodeType;
     }
 
-    public CloudsStormVM osType(String osType) {
-        this.osType = osType;
+    public CloudsStormVM ostype(String ostype) {
+        this.ostype = ostype;
         return this;
     }
 
     /**
-     * Get osType
+     * Get ostype
      *
-     * @return osType
+     * @return ostype
      *
      */
     @ApiModelProperty(value = "")
 
-    public String getOsType() {
-        return osType;
+    public String getOstype() {
+        return ostype;
     }
 
-    public void setOsType(String osType) {
-        this.osType = osType;
+    public void setOstype(String ostype) {
+        this.ostype = ostype;
     }
 
     public CloudsStormVM script(String script) {
@@ -171,6 +181,203 @@ public class CloudsStormVM {
         this.publicAddress = publicAddress;
     }
 
+    public CloudsStormVM type(String type) {
+        this.type = type;
+        return this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return type
+     *
+     */
+    @ApiModelProperty(value = "")
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public CloudsStormVM extraInfo(Map<String, Object> extraInfo) {
+        this.extraInfo = extraInfo;
+        return this;
+    }
+
+    public CloudsStormVM putExtraInfoItem(String key, Object extraInfoItem) {
+        if (this.extraInfo == null) {
+            this.extraInfo = new HashMap<String, Object>();
+        }
+        this.extraInfo.put(key, extraInfoItem);
+        return this;
+    }
+
+    /**
+     * Get extraInfo
+     *
+     * @return extraInfo
+     *
+     */
+    @ApiModelProperty(value = "")
+
+    public Map<String, Object> getExtraInfo() {
+        return extraInfo;
+    }
+
+    public void setExtraInfo(Map<String, Object> extraInfo) {
+        this.extraInfo = extraInfo;
+    }
+
+    public CloudsStormVM OS(String OS) {
+        this.OS = OS;
+        return this;
+    }
+
+    /**
+     * Get OS
+     *
+     * @return OS
+     *
+     */
+    @ApiModelProperty(value = "")
+
+    public String getOS() {
+        return OS;
+    }
+
+    public void setOS(String OS) {
+        this.OS = OS;
+    }
+
+    public CloudsStormVM CPU(String CPU) {
+        this.CPU = CPU;
+        return this;
+    }
+
+    /**
+     * Get CPU
+     *
+     * @return CPU
+     *
+     */
+    @ApiModelProperty(value = "")
+
+    public String getCPU() {
+        return CPU;
+    }
+
+    public void setCPU(String CPU) {
+        this.CPU = CPU;
+    }
+
+    public CloudsStormVM MEM(String MEM) {
+        this.MEM = MEM;
+        return this;
+    }
+
+    /**
+     * Get MEM
+     *
+     * @return MEM
+     *
+     */
+    @ApiModelProperty(value = "")
+
+    public String getMEM() {
+        return MEM;
+    }
+
+    public void setMEM(String MEM) {
+        this.MEM = MEM;
+    }
+
+    public CloudsStormVM vmType(String vmType) {
+        this.vmType = vmType;
+        return this;
+    }
+
+    /**
+     * Get vmType
+     *
+     * @return vmType
+     *
+     */
+    @ApiModelProperty(value = "")
+
+    public String getVmType() {
+        return vmType;
+    }
+
+    public void setVmType(String vmType) {
+        this.vmType = vmType;
+    }
+
+    public CloudsStormVM price(String price) {
+        this.price = price;
+        return this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return price
+     *
+     */
+    @ApiModelProperty(value = "")
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public CloudsStormVM defaultSSHAccount(String defaultSSHAccount) {
+        this.defaultSSHAccount = defaultSSHAccount;
+        return this;
+    }
+
+    /**
+     * Get defaultSSHAccount
+     *
+     * @return defaultSSHAccount
+     *
+     */
+    @ApiModelProperty(value = "")
+
+    public String getDefaultSSHAccount() {
+        return defaultSSHAccount;
+    }
+
+    public void setDefaultSSHAccount(String defaultSSHAccount) {
+        this.defaultSSHAccount = defaultSSHAccount;
+    }
+
+    public CloudsStormVM availability(String availability) {
+        this.availability = availability;
+        return this;
+    }
+
+    /**
+     * Get availability
+     *
+     * @return availability
+     *
+     */
+    @ApiModelProperty(value = "")
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(String availability) {
+        this.availability = availability;
+    }
+
     @Override
     public boolean equals(java.lang.Object o) {
         if (this == o) {
@@ -182,14 +389,23 @@ public class CloudsStormVM {
         CloudsStormVM cloudsStormVM = (CloudsStormVM) o;
         return Objects.equals(this.name, cloudsStormVM.name)
                 && Objects.equals(this.nodeType, cloudsStormVM.nodeType)
-                && Objects.equals(this.osType, cloudsStormVM.osType)
+                && Objects.equals(this.ostype, cloudsStormVM.ostype)
                 && Objects.equals(this.script, cloudsStormVM.script)
-                && Objects.equals(this.publicAddress, cloudsStormVM.publicAddress);
+                && Objects.equals(this.publicAddress, cloudsStormVM.publicAddress)
+                && Objects.equals(this.type, cloudsStormVM.type)
+                && Objects.equals(this.extraInfo, cloudsStormVM.extraInfo)
+                && Objects.equals(this.OS, cloudsStormVM.OS)
+                && Objects.equals(this.CPU, cloudsStormVM.CPU)
+                && Objects.equals(this.MEM, cloudsStormVM.MEM)
+                && Objects.equals(this.vmType, cloudsStormVM.vmType)
+                && Objects.equals(this.price, cloudsStormVM.price)
+                && Objects.equals(this.defaultSSHAccount, cloudsStormVM.defaultSSHAccount)
+                && Objects.equals(this.availability, cloudsStormVM.availability);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, nodeType, osType, script, publicAddress);
+        return Objects.hash(name, nodeType, ostype, script, publicAddress, type, extraInfo, OS, CPU, MEM, vmType, price, defaultSSHAccount, availability);
     }
 
     @Override
@@ -199,9 +415,18 @@ public class CloudsStormVM {
 
         sb.append("    name: ").append(toIndentedString(name)).append("\n");
         sb.append("    nodeType: ").append(toIndentedString(nodeType)).append("\n");
-        sb.append("    osType: ").append(toIndentedString(osType)).append("\n");
+        sb.append("    ostype: ").append(toIndentedString(ostype)).append("\n");
         sb.append("    script: ").append(toIndentedString(script)).append("\n");
         sb.append("    publicAddress: ").append(toIndentedString(publicAddress)).append("\n");
+        sb.append("    type: ").append(toIndentedString(type)).append("\n");
+        sb.append("    extraInfo: ").append(toIndentedString(extraInfo)).append("\n");
+        sb.append("    OS: ").append(toIndentedString(OS)).append("\n");
+        sb.append("    CPU: ").append(toIndentedString(CPU)).append("\n");
+        sb.append("    MEM: ").append(toIndentedString(MEM)).append("\n");
+        sb.append("    vmType: ").append(toIndentedString(vmType)).append("\n");
+        sb.append("    price: ").append(toIndentedString(price)).append("\n");
+        sb.append("    defaultSSHAccount: ").append(toIndentedString(defaultSSHAccount)).append("\n");
+        sb.append("    availability: ").append(toIndentedString(availability)).append("\n");
         sb.append("}");
         return sb.toString();
     }
@@ -215,21 +440,5 @@ public class CloudsStormVM {
             return "null";
         }
         return o.toString().replace("\n", "\n    ");
-    }
-
-    public String getCPU() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public String getMEM() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public String getVmType() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public String getOS() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
