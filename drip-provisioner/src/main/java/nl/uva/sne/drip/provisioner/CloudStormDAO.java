@@ -14,13 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.uva.sne.drip.model.cloud.storm.CloudDB;
+import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
 import nl.uva.sne.drip.model.cloud.storm.DB;
 import nl.uva.sne.drip.model.cloud.storm.DBInfo;
-import nl.uva.sne.drip.model.cloud.storm.DCMetaInfo;
-import nl.uva.sne.drip.model.cloud.storm.VMMetaInfo;
 
 /**
  *
@@ -38,7 +35,7 @@ class CloudStormDAO {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
-    List<VMMetaInfo> findVmMetaInfoByProvider(CloudDB.CloudProviderEnum provider) throws IOException {
+    List<CloudsStormVM> findVmMetaInfoByProvider(CloudDB.CloudProviderEnum provider) throws IOException {
 
         DB db = objectMapper.readValue(new File(cloudStormDBPath + File.separator + "db.yml"), DB.class);
         List<CloudDB> cloudDBs = db.getCloudDBs();
@@ -52,10 +49,10 @@ class CloudStormDAO {
         }
         if (targetCloudDB != null) {
 
-            List<VMMetaInfo> vMMetaInfos = new ArrayList<>();
+            List<CloudsStormVM> vMMetaInfos = new ArrayList<>();
             DBInfo dbInfo = objectMapper.readValue(new File(cloudStormDBPath + File.separator + targetCloudDB.getDbInfoFile()), DBInfo.class);
-            List<DCMetaInfo> metaInfos = dbInfo.getDcMetaInfo();
-            for (DCMetaInfo metaInfo : metaInfos) {
+            List<CloudsStormVM> metaInfos = dbInfo.getDcMetaInfo();
+            for (CloudsStormVM metaInfo : metaInfos) {
                 vMMetaInfos.addAll(metaInfo.getVmMetaInfo());
             }
             return vMMetaInfos;

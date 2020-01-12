@@ -16,7 +16,7 @@
         VMMetaInfo:
             type: "array"
             items:
-              $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/VMMetaInfo.yml#/VMMetaInfo"
+              $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/CloudsStormVM.yml#/CloudsStormVM"
         extraInfo:
             type: object
             additionalProperties:

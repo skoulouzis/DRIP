@@ -5,6 +5,10 @@
                 type: "string"
             publicKeyPath:
                 type: "string"
+            connections:
+              type: object
+              additionalProperties:
+                  type: object                    
             topologies:
                 type: array
                 items:

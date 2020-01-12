@@ -196,6 +196,12 @@ node_types:
         type: string
         required: true
         default: "vm"
+      root_key_pair:
+        type: tosca.datatypes.ARTICONF.Credential
+        required: false    
+      user_key_pair:
+        type: tosca.datatypes.ARTICONF.Credential
+        required: false           
     interfaces:
       Standard:
         create: dumy.yaml        

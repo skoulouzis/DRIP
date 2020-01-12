@@ -4,17 +4,20 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
+import javax.validation.constraints.*;
 
 /**
  * CloudsStormSubTopology
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-01-12T17:15:38.998Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-01-12T17:21:29.940Z")
 
 public class CloudsStormSubTopology {
 
@@ -67,13 +70,15 @@ public class CloudsStormSubTopology {
     @Valid
     private Map<String, Object> logsInfo = null;
 
+    @JsonProperty("subTopologyClass")
+    private String subTopologyClass = null;
+
+    @JsonProperty("sshKeyPairId")
+    private String sshKeyPairId = null;
+
     @JsonProperty("scaledFrom")
     @Valid
     private Map<String, Object> scaledFrom = null;
-
-    @JsonProperty("connections")
-    @Valid
-    private Map<String, Object> connections = null;
 
     public CloudsStormSubTopology topology(String topology) {
         this.topology = topology;
@@ -84,7 +89,7 @@ public class CloudsStormSubTopology {
      * Get topology
      *
      * @return topology
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -105,7 +110,7 @@ public class CloudsStormSubTopology {
      * Get cloudProvider
      *
      * @return cloudProvider
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -126,7 +131,7 @@ public class CloudsStormSubTopology {
      * Get domain
      *
      * @return domain
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -147,7 +152,7 @@ public class CloudsStormSubTopology {
      * Get status
      *
      * @return status
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -176,7 +181,7 @@ public class CloudsStormSubTopology {
      * Get logsInfo
      *
      * @return logsInfo
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -186,6 +191,48 @@ public class CloudsStormSubTopology {
 
     public void setLogsInfo(Map<String, Object> logsInfo) {
         this.logsInfo = logsInfo;
+    }
+
+    public CloudsStormSubTopology subTopologyClass(String subTopologyClass) {
+        this.subTopologyClass = subTopologyClass;
+        return this;
+    }
+
+    /**
+     * Get subTopologyClass
+     *
+     * @return subTopologyClass
+     *
+     */
+    @ApiModelProperty(value = "")
+
+    public String getSubTopologyClass() {
+        return subTopologyClass;
+    }
+
+    public void setSubTopologyClass(String subTopologyClass) {
+        this.subTopologyClass = subTopologyClass;
+    }
+
+    public CloudsStormSubTopology sshKeyPairId(String sshKeyPairId) {
+        this.sshKeyPairId = sshKeyPairId;
+        return this;
+    }
+
+    /**
+     * Get sshKeyPairId
+     *
+     * @return sshKeyPairId
+     *
+     */
+    @ApiModelProperty(value = "")
+
+    public String getSshKeyPairId() {
+        return sshKeyPairId;
+    }
+
+    public void setSshKeyPairId(String sshKeyPairId) {
+        this.sshKeyPairId = sshKeyPairId;
     }
 
     public CloudsStormSubTopology scaledFrom(Map<String, Object> scaledFrom) {
@@ -205,7 +252,7 @@ public class CloudsStormSubTopology {
      * Get scaledFrom
      *
      * @return scaledFrom
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -215,35 +262,6 @@ public class CloudsStormSubTopology {
 
     public void setScaledFrom(Map<String, Object> scaledFrom) {
         this.scaledFrom = scaledFrom;
-    }
-
-    public CloudsStormSubTopology connections(Map<String, Object> connections) {
-        this.connections = connections;
-        return this;
-    }
-
-    public CloudsStormSubTopology putConnectionsItem(String key, Object connectionsItem) {
-        if (this.connections == null) {
-            this.connections = new HashMap<String, Object>();
-        }
-        this.connections.put(key, connectionsItem);
-        return this;
-    }
-
-    /**
-     * Get connections
-     *
-     * @return connections
-  *
-     */
-    @ApiModelProperty(value = "")
-
-    public Map<String, Object> getConnections() {
-        return connections;
-    }
-
-    public void setConnections(Map<String, Object> connections) {
-        this.connections = connections;
     }
 
     @Override
@@ -260,13 +278,14 @@ public class CloudsStormSubTopology {
                 && Objects.equals(this.domain, cloudsStormSubTopology.domain)
                 && Objects.equals(this.status, cloudsStormSubTopology.status)
                 && Objects.equals(this.logsInfo, cloudsStormSubTopology.logsInfo)
-                && Objects.equals(this.scaledFrom, cloudsStormSubTopology.scaledFrom)
-                && Objects.equals(this.connections, cloudsStormSubTopology.connections);
+                && Objects.equals(this.subTopologyClass, cloudsStormSubTopology.subTopologyClass)
+                && Objects.equals(this.sshKeyPairId, cloudsStormSubTopology.sshKeyPairId)
+                && Objects.equals(this.scaledFrom, cloudsStormSubTopology.scaledFrom);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(topology, cloudProvider, domain, status, logsInfo, scaledFrom, connections);
+        return Objects.hash(topology, cloudProvider, domain, status, logsInfo, subTopologyClass, sshKeyPairId, scaledFrom);
     }
 
     @Override
@@ -279,8 +298,9 @@ public class CloudsStormSubTopology {
         sb.append("    domain: ").append(toIndentedString(domain)).append("\n");
         sb.append("    status: ").append(toIndentedString(status)).append("\n");
         sb.append("    logsInfo: ").append(toIndentedString(logsInfo)).append("\n");
+        sb.append("    subTopologyClass: ").append(toIndentedString(subTopologyClass)).append("\n");
+        sb.append("    sshKeyPairId: ").append(toIndentedString(sshKeyPairId)).append("\n");
         sb.append("    scaledFrom: ").append(toIndentedString(scaledFrom)).append("\n");
-        sb.append("    connections: ").append(toIndentedString(connections)).append("\n");
         sb.append("}");
         return sb.toString();
     }

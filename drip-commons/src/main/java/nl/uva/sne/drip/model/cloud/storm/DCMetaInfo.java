@@ -36,7 +36,7 @@ public class DCMetaInfo {
     private String availability = null;
 
     @JsonProperty("VMMetaInfo")
-    private List<VMMetaInfo> vmMetaInfo = null;
+    private List<CloudsStormVM> vmMetaInfo = null;
 
     @JsonProperty("extraInfo")
     @Valid
@@ -51,7 +51,7 @@ public class DCMetaInfo {
      * Get domain
      *
      * @return domain
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -72,7 +72,7 @@ public class DCMetaInfo {
      * Get endpoint
      *
      * @return endpoint
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -93,7 +93,7 @@ public class DCMetaInfo {
      * Get country
      *
      * @return country
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -114,7 +114,7 @@ public class DCMetaInfo {
      * Get longitude
      *
      * @return longitude
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -135,7 +135,7 @@ public class DCMetaInfo {
      * Get latitude
      *
      * @return latitude
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -156,7 +156,7 @@ public class DCMetaInfo {
      * Get availability
      *
      * @return availability
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -168,7 +168,7 @@ public class DCMetaInfo {
         this.availability = availability;
     }
 
-    public DCMetaInfo vmMetaInfo(List<VMMetaInfo> vmMetaInfo) {
+    public DCMetaInfo vmMetaInfo(List<CloudsStormVM> vmMetaInfo) {
         this.vmMetaInfo = vmMetaInfo;
         return this;
     }
@@ -177,17 +177,17 @@ public class DCMetaInfo {
      * Get vmMetaInfo
      *
      * @return vmMetaInfo
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
     @Valid
 
-    public List<VMMetaInfo> getVmMetaInfo() {
+    public List<CloudsStormVM> getVmMetaInfo() {
         return vmMetaInfo;
     }
 
-    public void setVmMetaInfo(List<VMMetaInfo> vmMetaInfo) {
+    public void setVmMetaInfo(List<CloudsStormVM> vmMetaInfo) {
         this.vmMetaInfo = vmMetaInfo;
     }
 
@@ -208,7 +208,7 @@ public class DCMetaInfo {
      * Get extraInfo
      *
      * @return extraInfo
-  *
+     *
      */
     @ApiModelProperty(value = "")
 

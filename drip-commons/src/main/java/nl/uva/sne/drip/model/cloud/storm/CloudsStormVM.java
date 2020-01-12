@@ -3,6 +3,8 @@ package nl.uva.sne.drip.model.cloud.storm;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Map;
+import javax.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -12,6 +14,20 @@ import org.springframework.validation.annotation.Validated;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-12-30T16:13:55.433Z")
 
 public class CloudsStormVM {
+
+    /**
+     * @return the extraInfo
+     */
+    public Map<String, Object> getExtraInfo() {
+        return extraInfo;
+    }
+
+    /**
+     * @param extraInfo the extraInfo to set
+     */
+    public void setExtraInfo(Map<String, Object> extraInfo) {
+        this.extraInfo = extraInfo;
+    }
 
     @JsonProperty("name")
     private String name = null;
@@ -27,6 +43,28 @@ public class CloudsStormVM {
 
     @JsonProperty("publicAddress")
     private String publicAddress = null;
+
+    @JsonProperty("type")
+    private String type = null;
+
+    @JsonProperty("OS")
+    private String OS = null;
+
+    @JsonProperty("CPU")
+    private String CPU = null;
+
+    @JsonProperty("MEM")
+    private String MEM = null;
+
+    @JsonProperty("VMType")
+    private String VMType = null;
+
+    @JsonProperty("Price")
+    private String Price = null;
+
+    @JsonProperty("extraInfo")
+    @Valid
+    private Map<String, Object> extraInfo = null;
 
     public CloudsStormVM name(String name) {
         this.name = name;
@@ -177,5 +215,21 @@ public class CloudsStormVM {
             return "null";
         }
         return o.toString().replace("\n", "\n    ");
+    }
+
+    public String getCPU() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public String getMEM() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public String getVmType() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public String getOS() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
