@@ -10,4 +10,15 @@
             status:
                 type: "string"
                 enum: [fresh , running , deleted , failed , stopped]
-                
+            subTopologyClass:
+                type: "string"
+            logsInfo:
+              type: object
+              additionalProperties:
+                  type: object     
+            subTopologyClass:
+                type: "sshKeyPairId"
+            scaledFrom:
+              type: object
+              additionalProperties:
+                  type: object                  

@@ -120,6 +120,11 @@ node_types:
       credential:
         type: tosca.datatypes.ARTICONF.Credential
         required: false    
+      status:
+        type: string
+        required: false
+        constraints:
+            - valid_values: [ "fresh" , "running" , "deleted", "failed" , "stopped" ]        
     interfaces:
         CloudsStorm:
             type: tosca.interfaces.ARTICONF.CloudsStorm

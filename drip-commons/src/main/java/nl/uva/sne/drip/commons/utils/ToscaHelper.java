@@ -237,10 +237,12 @@ public class ToscaHelper {
         for (NodeTemplateMap nodeTemplateMap : vmTopologyTemplatesMap) {
             List<NodeTemplateMap> vmTemplatesMap = getTemplateVMsForVMTopology(nodeTemplateMap);
             for (NodeTemplateMap vmMap : vmTemplatesMap) {
-                Map<String, Object> att = vmMap.getNodeTemplate().getAttributes();
+                Map<String, Object> prop = vmMap.getNodeTemplate().getProperties();
+                if (prop != null && prop.containsKey("user_name")) {
+                    return (String) prop.get("user_name");
+                }
             }
         }
-
         return "vm_user";
     }
 }

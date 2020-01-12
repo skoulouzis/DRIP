@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.utils.Converter;
@@ -60,6 +61,12 @@ class CloudStormService {
     private final ObjectMapper objectMapper;
     private final String cloudStormDBPath;
     private final String SUB_TOPOLOGY_NAME = "subTopology";
+    private final String TOPOLOGY_FOLDER_NAME = "Topology";
+    private final String INFS_FOLDER_NAME = "Infs";
+    private final String UC_FOLDER_NAME = "UC";
+    private final String UD_FOLDER_NAME = "UD";
+    private final String APP_FOLDER_NAME = "App";
+    private final String TOP_TOPOLOGY_FILE_NAME = "_top.yml";
 
     CloudStormService(Properties properties, ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException {
 //        this.toscaTemplate = toscaTemplate;
@@ -80,28 +87,29 @@ class CloudStormService {
         if (!(tempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
         }
-        String topologyTempInputDirPath = tempInputDirPath + File.separator + "Infs" + File.separator + "Topology";
+        String topologyTempInputDirPath = tempInputDirPath + File.separator + INFS_FOLDER_NAME + File.separator + TOPOLOGY_FOLDER_NAME;
+
         File topologyTempInputDir = new File(topologyTempInputDirPath);
         if (!(topologyTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
         }
         Map<String, Object> subTopologiesAndVMs = writeCloudStormTopologyFiles(topologyTempInputDirPath);
 
-        String credentialsTempInputDirPath = tempInputDirPath + File.separator + "Infs" + File.separator + "UC";
+        String credentialsTempInputDirPath = tempInputDirPath + File.separator + INFS_FOLDER_NAME + File.separator + UC_FOLDER_NAME;
         File credentialsTempInputDir = new File(credentialsTempInputDirPath);
         if (!(credentialsTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + credentialsTempInputDir.getAbsolutePath());
         }
         writeCloudStormCredentialsFiles(credentialsTempInputDirPath);
 
-        String providersDBTempInputDirPath = tempInputDirPath + File.separator + "Infs" + File.separator + "UD";
+        String providersDBTempInputDirPath = tempInputDirPath + File.separator + INFS_FOLDER_NAME + File.separator + UD_FOLDER_NAME;
         File providersDBTempInputDir = new File(providersDBTempInputDirPath);
         if (!(providersDBTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + providersDBTempInputDir.getAbsolutePath());
         }
         writeCloudStormProvidersDBFiles(providersDBTempInputDirPath);
 
-        String infrasCodeTempInputDirPath = tempInputDirPath + File.separator + "App";
+        String infrasCodeTempInputDirPath = tempInputDirPath + File.separator + APP_FOLDER_NAME;
         File infrasCodeTempInputDir = new File(infrasCodeTempInputDirPath);
         if (!(infrasCodeTempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
@@ -124,7 +132,7 @@ class CloudStormService {
         List<CloudsStormSubTopology> cloudsStormSubTopology = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
         topTopology.setTopologies(cloudsStormSubTopology);
 
-        objectMapper.writeValue(new File(tempInputDirPath + File.separator + "_top.yml"), topTopology);
+        objectMapper.writeValue(new File(tempInputDirPath + File.separator + TOP_TOPOLOGY_FILE_NAME), topTopology);
 
         return subTopologiesAndVMs;
     }
@@ -271,9 +279,17 @@ class CloudStormService {
         FileUtils.copyDirectory(srcDir, destDir);
     }
 
-    private ToscaTemplate runCloudStorm(String tempInputDirPath) {
-        String[] args = new String[]{"run", tempInputDirPath};
-        standalone.MainAsTool.main(args);
+    private ToscaTemplate runCloudStorm(String tempInputDirPath) throws IOException, ApiException {
+//        String[] args = new String[]{"run", tempInputDirPath};
+//        standalone.MainAsTool.main(args);
+        tempInputDirPath = "/tmp/Input-87672007429577";
+
+        CloudsStormTopTopology _top = objectMapper.readValue(new File(tempInputDirPath
+                + File.separator + INFS_FOLDER_NAME + File.separator
+                + TOPOLOGY_FOLDER_NAME + File.separator + TOP_TOPOLOGY_FILE_NAME),
+                CloudsStormTopTopology.class);
+
+        List<CloudsStormSubTopology> subTopologies = _top.getTopologies();
         return null;
     }
 

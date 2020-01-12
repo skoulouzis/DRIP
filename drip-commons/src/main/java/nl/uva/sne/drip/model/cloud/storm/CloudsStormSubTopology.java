@@ -15,6 +15,48 @@ import org.springframework.validation.annotation.Validated;
 
 public class CloudsStormSubTopology {
 
+    /**
+     * @return the scaledFrom
+     */
+    public Object getScaledFrom() {
+        return scaledFrom;
+    }
+
+    /**
+     * @param scaledFrom the scaledFrom to set
+     */
+    public void setScaledFrom(Object scaledFrom) {
+        this.scaledFrom = scaledFrom;
+    }
+
+    /**
+     * @return the sshKeyPairId
+     */
+    public String getSshKeyPairId() {
+        return sshKeyPairId;
+    }
+
+    /**
+     * @param sshKeyPairId the sshKeyPairId to set
+     */
+    public void setSshKeyPairId(String sshKeyPairId) {
+        this.sshKeyPairId = sshKeyPairId;
+    }
+
+    /**
+     * @return the subTopologyClass
+     */
+    public String getSubTopologyClass() {
+        return subTopologyClass;
+    }
+
+    /**
+     * @param subTopologyClass the subTopologyClass to set
+     */
+    public void setSubTopologyClass(String subTopologyClass) {
+        this.subTopologyClass = subTopologyClass;
+    }
+
     @JsonProperty("topology")
     private String topology = null;
 
@@ -23,6 +65,17 @@ public class CloudsStormSubTopology {
 
     @JsonProperty("domain")
     private String domain = null;
+
+    @JsonProperty("subTopologyClass")
+    private String subTopologyClass = null;
+
+    @JsonProperty("logsInfo")
+    private Object logsInfo;
+
+    @JsonProperty("sshKeyPairId")
+    private String sshKeyPairId;
+    @JsonProperty("scaledFrom")
+    private Object scaledFrom;
 
     /**
      * Gets or Sets status
@@ -69,7 +122,7 @@ public class CloudsStormSubTopology {
      * Get topology
      *
      * @return topology
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -90,7 +143,7 @@ public class CloudsStormSubTopology {
      * Get cloudProvider
      *
      * @return cloudProvider
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -111,7 +164,7 @@ public class CloudsStormSubTopology {
      * Get domain
      *
      * @return domain
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
@@ -132,7 +185,7 @@ public class CloudsStormSubTopology {
      * Get status
      *
      * @return status
-  *
+     *
      */
     @ApiModelProperty(value = "")
 
