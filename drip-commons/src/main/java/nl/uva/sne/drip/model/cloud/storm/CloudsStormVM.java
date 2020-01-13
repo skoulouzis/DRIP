@@ -18,6 +18,90 @@ import javax.validation.Valid;
 public class CloudsStormVM {
 
     /**
+     * @return the vEngineClass
+     */
+    public String getvEngineClass() {
+        return vEngineClass;
+    }
+
+    /**
+     * @param vEngineClass the vEngineClass to set
+     */
+    public void setvEngineClass(String vEngineClass) {
+        this.vEngineClass = vEngineClass;
+    }
+
+    /**
+     * @return the vNFType
+     */
+    public String getvNFType() {
+        return vNFType;
+    }
+
+    /**
+     * @param vNFType the vNFType to set
+     */
+    public void setvNFType(String vNFType) {
+        this.vNFType = vNFType;
+    }
+
+    /**
+     * @return the scaledFrom
+     */
+    public String getScaledFrom() {
+        return scaledFrom;
+    }
+
+    /**
+     * @param scaledFrom the scaledFrom to set
+     */
+    public void setScaledFrom(String scaledFrom) {
+        this.scaledFrom = scaledFrom;
+    }
+
+    /**
+     * @return the fake
+     */
+    public String getFake() {
+        return fake;
+    }
+
+    /**
+     * @param fake the fake to set
+     */
+    public void setFake(String fake) {
+        this.fake = fake;
+    }
+
+    /**
+     * @return the OS_URL
+     */
+    public String getOS_URL() {
+        return OS_URL;
+    }
+
+    /**
+     * @param OS_URL the OS_URL to set
+     */
+    public void setOS_URL(String OS_URL) {
+        this.OS_URL = OS_URL;
+    }
+
+    /**
+     * @return the OS_GUID
+     */
+    public String getOS_GUID() {
+        return OS_GUID;
+    }
+
+    /**
+     * @param OS_GUID the OS_GUID to set
+     */
+    public void setOS_GUID(String OS_GUID) {
+        this.OS_GUID = OS_GUID;
+    }
+
+    /**
      * @return the VEngineClass
      */
     public String getVEngineClass() {
@@ -51,7 +135,7 @@ public class CloudsStormVM {
     @JsonProperty("nodeType")
     private String nodeType = null;
     @JsonProperty("VEngineClass")
-    private String VEngineClass = null;    
+    private String VEngineClass = null;
 
     @JsonProperty("OStype")
     @JsonAlias({"os", "OS"})
@@ -62,9 +146,6 @@ public class CloudsStormVM {
 
     @JsonProperty("publicAddress")
     private String publicAddress = null;
-//
-//    @JsonProperty("type")
-//    private String type = null;
 
     @JsonProperty("extraInfo")
     @Valid
@@ -93,6 +174,24 @@ public class CloudsStormVM {
 
     @JsonProperty("selfEthAddresses")
     private String selfEthAddresses = null;
+
+    @JsonProperty("VEngineClass")
+    private String vEngineClass = null;
+
+    @JsonProperty("VNFType")
+    private String vNFType = null;
+
+    @JsonProperty("scaledFrom")
+    private String scaledFrom = null;
+
+    @JsonProperty("fake")
+    private String fake = null;
+
+    @JsonProperty("OS_URL")
+    private String OS_URL = null;
+
+    @JsonProperty("OS_GUID")
+    private String OS_GUID = null;
 
     public CloudsStormVM name(String name) {
         this.name = name;

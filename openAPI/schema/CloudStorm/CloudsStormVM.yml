@@ -31,6 +31,18 @@
                 type: "string"
             VEngineClass:
                 type: "string"
+            VNFType:
+                type: "string"
+            scaledFrom:
+                type: "string"
+            fake:
+                type: "string"
+            OS_URL:
+                type: "string"
+            OS_GUID:
+                type: "string"
+                
+                
                 
                 
     
