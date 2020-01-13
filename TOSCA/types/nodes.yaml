@@ -70,11 +70,13 @@ node_types:
     derived_from: tosca.nodes.ARTICONF.Orchestrator
     description: Kubernetes orchestrator
     interfaces:
-      Standard:
-        create: 
-            inputs:
-                inventory-file: k8s_hosts
-                playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/install_k8s.yml
+        Kubernetes:
+            type: tosca.interfaces.ARTICONF.Kubernetes
+            install:
+                inputs:
+                    inventory_file: k8s_hosts
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/install_k8s.yml
+                    
         
   #tosca.nodes.ARTICONF.Orchestrator.Swarm:
     #derived_from: tosca.nodes.ARTICONF.Orchestrator

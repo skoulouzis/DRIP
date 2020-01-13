@@ -58,4 +58,21 @@ interface_types:
       description: Recover some failed sub-topologies. ObjectType can be SubTopology or REQ.
     provision:
       description: Provision the defined objects (resources). ObjectType can be SubTopology or VM.
+      
+      
+      
+      
+  tosca.interfaces.ARTICONF.Kubernetes:
+    derived_from: tosca.interfaces.node.lifecycle.Standard
+    inputs:
+      inventory_file:
+        type: string
+        required: true
+        default: k8s_hosts
+      playbook:
+        type: string
+        required: true
+        default: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/install_k8s.yml
+    install:
+      description: install Kubernetes    
   
