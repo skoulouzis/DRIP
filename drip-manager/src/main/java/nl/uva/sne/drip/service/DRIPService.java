@@ -106,7 +106,7 @@ public class DRIPService {
                 } else {
                     Credential credential = getBestCredential(credentials);
                     vmTopologyMap = helper.setCredentialsInVMTopology(vmTopologyMap, credential);
-                    toscaTemplate = helper.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
+                    toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
                 }
             }
 
@@ -142,7 +142,7 @@ public class DRIPService {
                 provisionMap.put("inputs", inputsMap);
                 provisionerInterface.put(operation, caller);
                 vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisionerInterface);
-                toscaTemplate = helper.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
+                toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
             }
         }
         return toscaTemplate;

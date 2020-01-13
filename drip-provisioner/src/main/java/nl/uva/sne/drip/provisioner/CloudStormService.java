@@ -68,9 +68,10 @@ class CloudStormService {
 
     private final String TOPOLOGY_RELATIVE_PATH = File.separator
             + INFS_FOLDER_NAME + File.separator + TOPOLOGY_FOLDER_NAME + File.separator;
+    private ToscaTemplate toscaTemplate;
 
     CloudStormService(Properties properties, ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException {
-//        this.toscaTemplate = toscaTemplate;
+        this.toscaTemplate = toscaTemplate;
         cloudStormDBPath = properties.getProperty("cloud.storm.db.path");
         cloudStormDAO = new CloudStormDAO(cloudStormDBPath);
         String sureToscaBasePath = properties.getProperty("sure-tosca.base.path");
@@ -119,7 +120,7 @@ class CloudStormService {
         writeCloudStormInfrasCodeFiles(infrasCodeTempInputDirPath, cloudStormSubtopologies);
 
         ToscaTemplate toscaTemplate = runCloudStorm(tempInputDirPath);
-
+        helper.uploadToscaTemplate(toscaTemplate);
         return toscaTemplate;
     }
 
@@ -296,8 +297,9 @@ class CloudStormService {
         List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
         int i = 0;
         for (CloudsStormSubTopology subTopology : subTopologies) {
-            NodeTemplateMap nodeTemplateMap = vmTopologiesMaps.get(i);
-            Map<String, Object> att = nodeTemplateMap.getNodeTemplate().getAttributes();
+            NodeTemplateMap vmTopologyMap = vmTopologiesMaps.get(i);
+
+            Map<String, Object> att = vmTopologyMap.getNodeTemplate().getAttributes();
             if (att == null) {
                 att = new HashMap<>();
             }
@@ -320,10 +322,10 @@ class CloudStormService {
             keys.put("public_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa.pub"));
             userKeyPairCredential.setKeys(keys);
 
-            CloudsStormVMs cloudsStormVMs = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + subTopology.getTopology()+".yml"),
+            CloudsStormVMs cloudsStormVMs = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + subTopology.getTopology() + ".yml"),
                     CloudsStormVMs.class);
             List<CloudsStormVM> vms = cloudsStormVMs.getVms();
-            List<NodeTemplateMap> vmTemplatesMap = helper.getTemplateVMsForVMTopology(nodeTemplateMap);
+            List<NodeTemplateMap> vmTemplatesMap = helper.getTemplateVMsForVMTopology(vmTopologyMap);
             int j = 0;
             for (CloudsStormVM vm : vms) {
                 NodeTemplateMap vmTemplateMap = vmTemplatesMap.get(j);
@@ -334,18 +336,21 @@ class CloudStormService {
                 vmAttributes.put("private_ip", vm.getSelfEthAddresses());
                 vmAttributes.put("public_ip", vm.getPublicAddress());
                 if (j > 0) {
-                    vmAttributes.put("role", "master");
-                } else {
                     vmAttributes.put("role", "worker");
+                } else {
+                    vmAttributes.put("role", "master");
                 }
                 vmAttributes.put("node_type", vm.getNodeType());
                 vmAttributes.put("host_name", vm.getName());
                 vmAttributes.put("root_key_pair", rootKeyPairCredential);
                 vmAttributes.put("user_key_pair", userKeyPairCredential);
+                vmTemplateMap.getNodeTemplate().setAttributes(vmAttributes);
+                toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTemplateMap);
             }
+            toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
 
         }
-        return null;
+        return toscaTemplate;
     }
 
 }

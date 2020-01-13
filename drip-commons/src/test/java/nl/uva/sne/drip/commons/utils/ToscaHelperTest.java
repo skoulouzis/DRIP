@@ -203,7 +203,7 @@ public class ToscaHelperTest {
                 credential.setTokenType("passwrd");
                 credential.setUser("user");
                 vmTopologyMap = instance.setCredentialsInVMTopology(vmTopologyMap, credential);
-                toscaTemplateWithCredentials = instance.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
+                toscaTemplateWithCredentials = instance.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
 
             }
             instance.uploadToscaTemplate(toscaTemplateWithCredentials);
@@ -246,7 +246,7 @@ public class ToscaHelperTest {
 //                    }
 //                }
 //                vmTopologyMap = instance.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisionInterface);
-//                toscaTemplateWithInterface = instance.setVMTopologyInToscaTemplate(toscaTemplate, vmTopologyMap);
+//                toscaTemplateWithInterface = instance.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
 ////            }
 //            instance.uploadToscaTemplate(toscaTemplateWithInterface);
 //            topology_1 = toscaTemplateWithCredentials.getTopologyTemplate().getNodeTemplates().get("topology_1");

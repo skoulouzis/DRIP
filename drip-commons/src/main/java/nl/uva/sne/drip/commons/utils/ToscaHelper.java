@@ -209,20 +209,12 @@ public class ToscaHelper {
         }
     }
 
-    public ToscaTemplate setVMTopologyInToscaTemplate(ToscaTemplate toscaTemplate, NodeTemplateMap vmTopologyMap) {
+    public ToscaTemplate setNodeInToscaTemplate(ToscaTemplate toscaTemplate, NodeTemplateMap node) {
         Map<String, NodeTemplate> nodes = toscaTemplate.getTopologyTemplate().getNodeTemplates();
-        nodes.put(vmTopologyMap.getName(), vmTopologyMap.getNodeTemplate());
+        nodes.put(node.getName(), node.getNodeTemplate());
         return toscaTemplate;
     }
-
-//    public Map<String, Object> getProvisionInterface(Provisioner provisioner, String operation) throws ApiException {
-//        List<String> toscaInterfaceTypes = new ArrayList<>();
-//        toscaInterfaceTypes.add(provisioner.getToscaInterfaceType());
-//        List<Map<String, Object>> definitions = getProvisionInterfaceDefinitions(toscaInterfaceTypes);
-//        Map<String, Object> definition = getBestProvisionInterfaceDefinition(definitions);
-//        Map<String, Object> provisionInterface = getProvisionInterfaceInstanceDefaultValues(definition, operation);
-//        return provisionInterface;
-//    }
+    
     public Map<String, Object> getProvisionerInterfaceFromVMTopology(NodeTemplateMap vmTopologyMap) {
         return (Map<String, Object>) vmTopologyMap.getNodeTemplate().getInterfaces().get("CloudsStorm");
     }
