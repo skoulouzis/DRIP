@@ -29,4 +29,8 @@
                 type: "string"
             selfEthAddresses:
                 type: "string"
+            VEngineClass:
+                type: "string"
+                
+                
     

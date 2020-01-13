@@ -18,6 +18,20 @@ import javax.validation.Valid;
 public class CloudsStormVM {
 
     /**
+     * @return the VEngineClass
+     */
+    public String getVEngineClass() {
+        return VEngineClass;
+    }
+
+    /**
+     * @param VEngineClass the VEngineClass to set
+     */
+    public void setVEngineClass(String VEngineClass) {
+        this.VEngineClass = VEngineClass;
+    }
+
+    /**
      * @return the selfEthAddresses
      */
     public String getSelfEthAddresses() {
@@ -36,6 +50,8 @@ public class CloudsStormVM {
 
     @JsonProperty("nodeType")
     private String nodeType = null;
+    @JsonProperty("VEngineClass")
+    private String VEngineClass = null;    
 
     @JsonProperty("OStype")
     @JsonAlias({"os", "OS"})
@@ -69,6 +85,7 @@ public class CloudsStormVM {
     private String price = null;
 
     @JsonProperty("DefaultSSHAccount")
+    @JsonAlias({"defaultSSHAccount"})
     private String defaultSSHAccount = null;
 
     @JsonProperty("availability")
