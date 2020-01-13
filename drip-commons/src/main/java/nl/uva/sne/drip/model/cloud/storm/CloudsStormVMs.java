@@ -18,6 +18,34 @@ import javax.validation.Valid;
 public class CloudsStormVMs {
 
     /**
+     * @return the sliceName
+     */
+    public String getSliceName() {
+        return sliceName;
+    }
+
+    /**
+     * @param sliceName the sliceName to set
+     */
+    public void setSliceName(String sliceName) {
+        this.sliceName = sliceName;
+    }
+
+    /**
+     * @return the duration
+     */
+    public Float getDuration() {
+        return duration;
+    }
+
+    /**
+     * @param duration the duration to set
+     */
+    public void setDuration(Float duration) {
+        this.duration = duration;
+    }
+
+    /**
      * @return the extraInfo
      */
     public Map<String, Object> getExtraInfo() {
@@ -56,6 +84,14 @@ public class CloudsStormVMs {
     @JsonProperty("SEngineClass")
     @Valid
     private String sEngineClass = null;
+
+    @JsonProperty("sliceName")
+    @Valid
+    private String sliceName = null;
+
+    @JsonProperty("duration")
+    @Valid
+    private Float duration = null;
 
     public CloudsStormVMs vms(List<CloudsStormVM> vms) {
         this.vms = vms;

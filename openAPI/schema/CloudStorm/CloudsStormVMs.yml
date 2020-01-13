@@ -6,7 +6,11 @@
         extraInfo:
             type: object
             additionalProperties:
-                type: object            
+                type: object       
+        sliceName:
+            type: "string"
+        duration:
+            type: "float"
         VMs:
             type: "array"
             items:
