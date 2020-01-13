@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import nl.uva.sne.drip.service.DRIPService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
@@ -23,6 +27,12 @@ public class DeployerApiController implements DeployerApi {
 
     private final HttpServletRequest request;
 
+    @Value("${message.broker.queue.deployer}")
+    private String queueName;
+
+    @Autowired
+    private DRIPService dripService;
+
     @org.springframework.beans.factory.annotation.Autowired
     public DeployerApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
@@ -33,12 +43,11 @@ public class DeployerApiController implements DeployerApi {
     public ResponseEntity<String> deployProvisionToscaTemplateByID(@ApiParam(value = "ID of topolog template to deploy", required = true) @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("")) {
-            try {
-                return new ResponseEntity<>(objectMapper.readValue("", String.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type ", e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+
+            dripService.setRequestQeueName(queueName);
+            String planedYemplateId = dripService.deploy(id);
+            return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
+
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }

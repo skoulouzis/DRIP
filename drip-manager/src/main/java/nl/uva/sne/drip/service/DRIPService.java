@@ -157,4 +157,8 @@ public class DRIPService {
         }
     }
 
+    public String deploy(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
