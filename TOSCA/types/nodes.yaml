@@ -71,26 +71,10 @@ node_types:
     description: Kubernetes orchestrator
     interfaces:
       Standard:
-        configure: https://raw.githubusercontent.com/skoulouzis/k8s_cluster_setup/master/install_k8s.yml?token=ACJ3NYOHQHDUUVYRDUHOZZS6DSMQ2
-
-    description: Standard lifecycle create operation.
-
-  configure:
-
-    description: Standard lifecycle configure operation.
-
-  start:
-
-    description: Standard lifecycle start operation.
-
-  stop:
-
-    description: Standard lifecycle stop operation.
-
-  delete:
-
-    description: Standard lifecycle delete operation.
-        create: interfaces/playbooks/kubernetes_install.yaml
+        create: 
+            inputs:
+                inventory-file: k8s_hosts
+                playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/install_k8s.yml
         
   #tosca.nodes.ARTICONF.Orchestrator.Swarm:
     #derived_from: tosca.nodes.ARTICONF.Orchestrator
