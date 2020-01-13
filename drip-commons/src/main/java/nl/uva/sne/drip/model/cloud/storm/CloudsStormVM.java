@@ -54,13 +54,11 @@ public class CloudsStormVM {
     @Valid
     private Map<String, Object> extraInfo = null;
 
-//    @JsonProperty("OS")
-//    @JsonAlias({"os", "mybkcat"})
-//    private String OS = null;
     @JsonProperty("CPU")
     private String CPU = null;
 
     @JsonProperty("MEM")
+    @JsonAlias({"Mem"})
     private String MEM = null;
 
     @JsonProperty("VMType")
