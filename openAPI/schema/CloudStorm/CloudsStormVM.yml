@@ -17,7 +17,7 @@
                 type: object
                 additionalProperties:
                     type: object
-            OS:
+            os:
                 type: "string"
             CPU:
                 type: "string"

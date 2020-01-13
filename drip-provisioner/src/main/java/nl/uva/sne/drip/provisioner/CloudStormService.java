@@ -175,7 +175,7 @@ class CloudStormService {
                 cloudsStormVM.setNodeType(vmType);
                 cloudsStormVM.setName("vm" + j);
                 String os = helper.getVMNOS(vmMap);
-                cloudsStormVM.setOS(os);
+//                cloudsStormVM.setOS(os);
                 cloudsStormVM.setOstype(os);
                 vms.add(cloudsStormVM);
                 j++;
@@ -201,7 +201,7 @@ class CloudStormService {
             Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "vmInfo: {0}", vmInfo);
             Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "numOfCores:{0} memSize: {1} os: {2}", new Object[]{numOfCores, memSize, os});
             if (Objects.equals(numOfCores, Double.valueOf(vmInfo.getCPU()))
-                    && Objects.equals(memSize, Double.valueOf(vmInfo.getMEM())) && os.toLowerCase().equals(vmInfo.getOS().toLowerCase())) {
+                    && Objects.equals(memSize, Double.valueOf(vmInfo.getMEM())) && os.toLowerCase().equals(vmInfo.getOstype().toLowerCase())) {
                 return vmInfo.getVmType();
             }
         }
@@ -283,9 +283,9 @@ class CloudStormService {
     }
 
     private ToscaTemplate runCloudStorm(String tempInputDirPath) throws IOException, ApiException {
-//        String[] args = new String[]{"run", tempInputDirPath};
-//        standalone.MainAsTool.main(args);
-        tempInputDirPath = "/tmp/Input-87672007429577";
+        String[] args = new String[]{"run", tempInputDirPath};
+        standalone.MainAsTool.main(args);
+//        tempInputDirPath = "/tmp/Input-87672007429577";
 
         CloudsStormTopTopology _top = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                 + TOP_TOPOLOGY_FILE_NAME),
