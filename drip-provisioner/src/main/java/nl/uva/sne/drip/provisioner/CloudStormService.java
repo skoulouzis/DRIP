@@ -284,8 +284,8 @@ class CloudStormService {
 
     private ToscaTemplate runCloudStorm(String tempInputDirPath) throws IOException, ApiException {
         String[] args = new String[]{"run", tempInputDirPath};
-        standalone.MainAsTool.main(args);
-//        tempInputDirPath = "/tmp/Input-87672007429577";
+//        standalone.MainAsTool.main(args);
+        tempInputDirPath = "/tmp/Input-166590762352547";
 
         CloudsStormTopTopology _top = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                 + TOP_TOPOLOGY_FILE_NAME),
@@ -304,7 +304,7 @@ class CloudStormService {
             att.put("status", subTopology.getStatus().toString());
 
             String rootKeyPairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH
-                    + TOP_TOPOLOGY_FILE_NAME + File.separator + subTopology.getSshKeyPairId();
+                    + File.separator + subTopology.getSshKeyPairId();
             Credential rootKeyPairCredential = new Credential();
             rootKeyPairCredential.setProtocol("ssh");
             Map<String, String> keys = new HashMap<>();
@@ -312,8 +312,7 @@ class CloudStormService {
             keys.put("public_key", Converter.encodeFileToBase64Binary(rootKeyPairFolder + File.separator + "id_rsa.pub"));
             rootKeyPairCredential.setKeys(keys);
 
-            String userKyePairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH
-                    + TOP_TOPOLOGY_FILE_NAME;
+            String userKyePairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH;
             Credential userKeyPairCredential = new Credential();
             userKeyPairCredential.setProtocol("ssh");
             keys = new HashMap<>();
@@ -321,7 +320,7 @@ class CloudStormService {
             keys.put("public_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa.pub"));
             userKeyPairCredential.setKeys(keys);
 
-            CloudsStormVMs cloudsStormVMs = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + subTopology.getTopology()),
+            CloudsStormVMs cloudsStormVMs = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + subTopology.getTopology()+".yml"),
                     CloudsStormVMs.class);
             List<CloudsStormVM> vms = cloudsStormVMs.getVms();
             List<NodeTemplateMap> vmTemplatesMap = helper.getTemplateVMsForVMTopology(nodeTemplateMap);

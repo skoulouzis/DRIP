@@ -1,6 +1,12 @@
   CloudsStormVMs:
       type: "object"
       properties:
+        SEngineClass:
+            type: "string"
+        extraInfo:
+            type: object
+            additionalProperties:
+                type: object            
         VMs:
             type: "array"
             items:

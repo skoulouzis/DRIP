@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 
@@ -16,9 +17,45 @@ import javax.validation.Valid;
 
 public class CloudsStormVMs {
 
+    /**
+     * @return the extraInfo
+     */
+    public Map<String, Object> getExtraInfo() {
+        return extraInfo;
+    }
+
+    /**
+     * @param extraInfo the extraInfo to set
+     */
+    public void setExtraInfo(Map<String, Object> extraInfo) {
+        this.extraInfo = extraInfo;
+    }
+
+    /**
+     * @return the sEngineClass
+     */
+    public String getsEngineClass() {
+        return sEngineClass;
+    }
+
+    @JsonProperty("extraInfo")
+    @Valid
+    private Map<String, Object> extraInfo = null;
+
+    /**
+     * @param sEngineClass the sEngineClass to set
+     */
+    public void setsEngineClass(String sEngineClass) {
+        this.sEngineClass = sEngineClass;
+    }
+
     @JsonProperty("VMs")
     @Valid
     private List<CloudsStormVM> vms = null;
+
+    @JsonProperty("SEngineClass")
+    @Valid
+    private String sEngineClass = null;
 
     public CloudsStormVMs vms(List<CloudsStormVM> vms) {
         this.vms = vms;
@@ -37,7 +74,7 @@ public class CloudsStormVMs {
      * Get vms
      *
      * @return vms
-  *
+     *
      */
     @ApiModelProperty(value = "")
 

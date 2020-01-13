@@ -11,14 +11,10 @@
                 type: "string"
             publicAddress:
                 type: "string"
-            type:
-                type: "string"
             extraInfo:
                 type: object
                 additionalProperties:
                     type: object
-            os:
-                type: "string"
             CPU:
                 type: "string"
             MEM:
@@ -33,7 +29,4 @@
                 type: "string"
             selfEthAddresses:
                 type: "string"
-                
-                
-    
     
