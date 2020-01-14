@@ -285,7 +285,8 @@ class CloudStormService {
 
     private ToscaTemplate runCloudStorm(String tempInputDirPath) throws IOException, ApiException {
         String[] args = new String[]{"run", tempInputDirPath};
-        standalone.MainAsTool.main(args);
+//        standalone.MainAsTool.main(args);
+        tempInputDirPath = "/tmp/Input-174407085024744";
 
         CloudsStormTopTopology _top = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                 + TOP_TOPOLOGY_FILE_NAME),
@@ -345,9 +346,10 @@ class CloudStormService {
                 vmAttributes.put("user_key_pair", userKeyPairCredential);
                 vmTemplateMap.getNodeTemplate().setAttributes(vmAttributes);
                 toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTemplateMap);
+                j++;
             }
             toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
-
+            i++;
         }
         return toscaTemplate;
     }

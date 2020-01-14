@@ -95,7 +95,7 @@ def handle_delivery(message):
 
     conf = {'url': "http://host"}
     spec_service = SpecService(conf)
-    test_planner = Planner(tosca_path=input_tosca_file_path,spec_service=spec_service)
+    test_planner = Planner(tosca_path=input_tosca_file_path, spec_service=spec_service)
     tosca_template = test_planner.resolve_requirements()
     tosca_template = test_planner.set_infrastructure_specifications()
     template_dict = tosca_helper.get_tosca_template_2_topology_template_dictionary(tosca_template)

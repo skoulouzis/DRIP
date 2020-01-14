@@ -12,7 +12,7 @@ import yaml
 import sys
 
 from service import tosca
-
+from service import ansible_service
 
 
 logger = logging.getLogger(__name__)
@@ -74,7 +74,7 @@ def handle_delivery(message):
 
     interfaces = tosca.get_interfaces(tosca_template_json)
 
-
+    template_dict = {}
     logger.info("template ----: \n" + yaml.dump(template_dict))
 
     response = {'toscaTemplate': template_dict}
@@ -88,8 +88,24 @@ def handle_delivery(message):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
-    channel = init_chanel(sys.argv)
-    global queue_name
-    queue_name = sys.argv[2]
-    start(channel)
+    if sys.argv[1] == "test_local":
+        tosca_path = "../TOSCA/"
+        input_tosca_file_path = tosca_path + '/application_example_provisioned.yaml'
+
+        with open(input_tosca_file_path) as f:
+            # use safe_load instead load
+            tosca_template_json = yaml.safe_load(f)
+
+        interfaces = tosca.get_interfaces(tosca_template_json)
+        vms = tosca.get_vms(tosca_template_json)
+
+        ansible_service.run(interfaces,vms)
+
+
+
+    else:
+        logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
+        channel = init_chanel(sys.argv)
+        global queue_name
+        queue_name = sys.argv[2]
+        start(channel)

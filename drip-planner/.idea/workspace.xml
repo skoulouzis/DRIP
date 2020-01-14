@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="" />
+    <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../drip-deployer/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-deployer/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip-deployer/service/ansible_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-deployer/service/ansible_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip-deployer/service/tosca.py" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-deployer/service/tosca.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__main__.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -307,10 +313,10 @@
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state x="679" y="283" key="SettingsEditor/67.34.2493.1406@67.34.2493.1406" timestamp="1575885393075" />
-    <state x="681" y="400" key="com.intellij.ide.util.TipDialog" timestamp="1578326162404">
+    <state x="681" y="400" key="com.intellij.ide.util.TipDialog" timestamp="1579003208514">
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
-    <state x="681" y="400" key="com.intellij.ide.util.TipDialog/67.34.1853.1046@67.34.1853.1046" timestamp="1578326162404" />
+    <state x="681" y="400" key="com.intellij.ide.util.TipDialog/67.34.1853.1046@67.34.1853.1046" timestamp="1579003208514" />
     <state x="893" y="526" key="com.intellij.ide.util.TipDialog/67.34.2493.1406@67.34.2493.1406" timestamp="1577206106759" />
     <state x="882" y="239" width="862" height="993" key="find.popup" timestamp="1576090708880">
       <screen x="67" y="34" width="2493" height="1406" />
