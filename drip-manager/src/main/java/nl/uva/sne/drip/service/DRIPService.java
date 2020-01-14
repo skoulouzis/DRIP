@@ -115,16 +115,12 @@ public class DRIPService {
     }
 
     public String plan(String id) throws ApiException, Exception {
-        String ymlToscaTemplate = toscaTemplateService.findByID(id);
-        ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
-        helper.uploadToscaTemplate(toscaTemplate);
+        ToscaTemplate toscaTemplate = initExecution(id);
         return execute(toscaTemplate);
     }
 
     public String provision(String id) throws JsonProcessingException, NotFoundException, IOException, Exception {
-        String ymlToscaTemplate = toscaTemplateService.findByID(id);
-        ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
-        helper.uploadToscaTemplate(toscaTemplate);
+        ToscaTemplate toscaTemplate = initExecution(id);
         toscaTemplate = addCredentials(toscaTemplate);
         toscaTemplate = setProvisionOperation(toscaTemplate, OPERATION_PROVISION);
         return execute(toscaTemplate);
@@ -157,8 +153,16 @@ public class DRIPService {
         }
     }
 
-    public String deploy(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String deploy(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException, Exception {
+        ToscaTemplate toscaTemplate = initExecution(id);
+        return execute(toscaTemplate);
+    }
+
+    private ToscaTemplate initExecution(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException {
+        String ymlToscaTemplate = toscaTemplateService.findByID(id);
+        ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
+        helper.uploadToscaTemplate(toscaTemplate);
+        return toscaTemplate;
     }
 
 }

@@ -122,7 +122,7 @@ node_types:
         required: false
         description: The coordinates of the domain 
     attributes:
-      credential:
+      ssh_keys:
         type: tosca.datatypes.ARTICONF.Credential
         required: false    
       status:

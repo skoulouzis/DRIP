@@ -342,6 +342,7 @@ class CloudStormService {
                 }
                 vmAttributes.put("node_type", vm.getNodeType());
                 vmAttributes.put("host_name", vm.getName());
+                
                 vmAttributes.put("root_key_pair", rootKeyPairCredential);
                 vmAttributes.put("user_key_pair", userKeyPairCredential);
                 vmTemplateMap.getNodeTemplate().setAttributes(vmAttributes);
