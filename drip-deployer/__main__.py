@@ -11,9 +11,8 @@ import pika
 import yaml
 import sys
 
-from service import tosca
+from service import tosca, k8s_service
 from service import ansible_service
-
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +30,7 @@ def init_chanel(args):
     global rabbitmq_host
     if len(args) > 1:
         rabbitmq_host = args[1]
-        queue_name = args[2]  # deployer_qeue
+        queue_name = args[2]  # deployer
     else:
         rabbitmq_host = '127.0.0.1'
 
@@ -70,9 +69,11 @@ def handle_delivery(message):
     tosca_file_name = 'tosca_template'
     tosca_template_json = parsed_json_message['toscaTemplate']
 
-    input_current_milli_time = lambda: int(round(time.time() * 1000))
-
     interfaces = tosca.get_interfaces(tosca_template_json)
+    vms = tosca.get_vms(tosca_template_json)
+    ansible_service.run(interfaces, vms)
+    k8s_service.run(tosca_template_json)
+
 
     template_dict = {}
     logger.info("template ----: \n" + yaml.dump(template_dict))
@@ -98,8 +99,8 @@ if __name__ == "__main__":
 
         interfaces = tosca.get_interfaces(tosca_template_json)
         vms = tosca.get_vms(tosca_template_json)
-
-        ansible_service.run(interfaces,vms)
+        ansible_service.run(interfaces, vms)
+        k8s_service.run(tosca_template_json)
 
 
 

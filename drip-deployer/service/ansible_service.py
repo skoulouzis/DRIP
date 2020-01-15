@@ -4,6 +4,10 @@ import tempfile
 import shutil
 from stat import S_IREAD
 import requests
+from subprocess import Popen, PIPE
+
+from numpy.distutils.system_info import openblas64__info
+
 
 def write_ansible_files(vms, interfaces, tmp_path):
     workers = []
@@ -37,8 +41,8 @@ def write_ansible_files(vms, interfaces, tmp_path):
         for worker in workers:
             print(worker, file=k8s_hosts_file)
         print('\n', file=k8s_hosts_file)
-        print('[cluster: children]', file=k8s_hosts_file)
-        print('k8 - master', file=k8s_hosts_file)
+        print('[cluster:children]', file=k8s_hosts_file)
+        print('k8-master', file=k8s_hosts_file)
         print('worker', file=k8s_hosts_file)
         print('\n', file=k8s_hosts_file)
         print('[cluster:vars]', file=k8s_hosts_file)
@@ -56,4 +60,11 @@ def write_ansible_files(vms, interfaces, tmp_path):
 def run(interfaces, vms):
     tmp_path = tempfile.mkdtemp()
     write_ansible_files(vms, interfaces, tmp_path)
+
+    p = Popen(["ansible-playbook", "-i", tmp_path+"/k8s_hosts", tmp_path+"/playbook.yml"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    output, err = p.communicate()
+    print(output)
+    print(err)
+    rc = p.returncode
+
     return tmp_path

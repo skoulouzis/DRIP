@@ -17,12 +17,17 @@ import com.jcraft.jsch.KeyPair;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.utils.Converter;
@@ -148,6 +153,11 @@ class CloudStormService {
         kpair.writePrivateKey(tempInputDirPath + File.separator + userPrivateName);
         kpair.writePublicKey(tempInputDirPath + File.separator + userPublicKeyName, "auto generated user accees keys");
         kpair.dispose();
+
+        Set<PosixFilePermission> perms = new HashSet<>();
+        perms.add(PosixFilePermission.OWNER_READ);
+        Files.setPosixFilePermissions(Paths.get(tempInputDirPath + File.separator + userPrivateName), perms);
+
         return publicKeyPath;
     }
 
@@ -285,8 +295,8 @@ class CloudStormService {
 
     private ToscaTemplate runCloudStorm(String tempInputDirPath) throws IOException, ApiException {
         String[] args = new String[]{"run", tempInputDirPath};
-//        standalone.MainAsTool.main(args);
-        tempInputDirPath = "/tmp/Input-174407085024744";
+        standalone.MainAsTool.main(args);
+//        tempInputDirPath = "/tmp/Input-174407085024744";
 
         CloudsStormTopTopology _top = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                 + TOP_TOPOLOGY_FILE_NAME),
@@ -342,7 +352,7 @@ class CloudStormService {
                 }
                 vmAttributes.put("node_type", vm.getNodeType());
                 vmAttributes.put("host_name", vm.getName());
-                
+
                 vmAttributes.put("root_key_pair", rootKeyPairCredential);
                 vmAttributes.put("user_key_pair", userKeyPairCredential);
                 vmTemplateMap.getNodeTemplate().setAttributes(vmAttributes);
