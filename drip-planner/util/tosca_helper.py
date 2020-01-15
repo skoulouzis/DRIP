@@ -151,7 +151,7 @@ def get_tosca_template_2_topology_template_dictionary(template):
 
 
 def contains_node_type(node_types_list, node_type_name):
-    if node_types_list is None:
+    if not node_types_list:
         return False
     for node_type in node_types_list:
         if isinstance(node_type, NodeTemplate):

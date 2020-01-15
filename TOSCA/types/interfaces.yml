@@ -71,8 +71,16 @@ interface_types:
         default: k8s_hosts
       playbook:
         type: string
-        required: true
+        required: false
         default: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/install_k8s.yml
     install:
       description: install Kubernetes    
+    k8s_scale:
+      description: Set the number of replicas for a Deployment, ReplicaSet, or Replication Controller, or the parallelism attribute of a Job.
+    k8s_create:
+      description: create deployment on a k8s cluster
+    k8s_delete:
+      description: delete deployment on a k8s cluster      
+    k8s_info:
+      description: get information on pods,services or deployments
   

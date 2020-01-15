@@ -129,16 +129,19 @@ class SimpleAnalyzer(SpecificationAnalyzer):
         if default_properties:
             for default_property in default_properties:
                 affected_node.get_properties_objects().append(default_property)
+            node_name = next(iter(affected_node.templates))
+            if 'properties' in affected_node.templates[node_name]:
+                for prop_name in affected_node.templates[node_name]['properties']:
+                    if isinstance(affected_node.templates[node_name]['properties'][prop_name], dict) or \
+                            isinstance(affected_node.templates[node_name]['properties'][prop_name], str):
+                        if 'required' in affected_node.templates[node_name]['properties'][prop_name] and \
+                                affected_node.templates[node_name]['properties'][prop_name]['required'] and \
+                                'default' in affected_node.templates[node_name]['properties'][prop_name] and \
+                                prop_name not in default_properties:
+                            default_properties[prop_name] = affected_node.templates[node_name]['properties'][prop_name]['default']
 
-            if 'properties' in affected_node.templates[next(iter(affected_node.templates))]:
-                for prop_name in affected_node.templates[next(iter(affected_node.templates))]['properties']:
-                    if 'required' not in affected_node.templates[next(iter(affected_node.templates))]['properties'][
-                        prop_name] and 'type' not in \
-                            affected_node.templates[next(iter(affected_node.templates))]['properties'][prop_name]:
-                        default_properties[prop_name] = \
-                            affected_node.templates[next(iter(affected_node.templates))]['properties'][prop_name]
-
-            affected_node.templates[next(iter(affected_node.templates))]['properties'] = default_properties
+            logging.info('Adding to : ' + str(affected_node.templates[node_name])+ ' properties: '+str(default_properties))
+            affected_node.templates[node_name]['properties'] = default_properties
 
             return affected_node
         else:

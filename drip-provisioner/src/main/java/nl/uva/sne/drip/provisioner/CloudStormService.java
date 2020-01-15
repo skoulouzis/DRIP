@@ -317,20 +317,21 @@ class CloudStormService {
 
             String rootKeyPairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                     + File.separator + subTopology.getSshKeyPairId();
+            
             Credential rootKeyPairCredential = new Credential();
             rootKeyPairCredential.setProtocol("ssh");
-            Map<String, String> keys = new HashMap<>();
-            keys.put("private_key", Converter.encodeFileToBase64Binary(rootKeyPairFolder + File.separator + "id_rsa"));
-            keys.put("public_key", Converter.encodeFileToBase64Binary(rootKeyPairFolder + File.separator + "id_rsa.pub"));
-            rootKeyPairCredential.setKeys(keys);
+            Map<String, String> rootKeys = new HashMap<>();
+            rootKeys.put("private_key", Converter.encodeFileToBase64Binary(rootKeyPairFolder + File.separator + "id_rsa"));
+            rootKeys.put("public_key", Converter.encodeFileToBase64Binary(rootKeyPairFolder + File.separator + "id_rsa.pub"));
+            rootKeyPairCredential.setKeys(rootKeys);
 
             String userKyePairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH;
             Credential userKeyPairCredential = new Credential();
             userKeyPairCredential.setProtocol("ssh");
-            keys = new HashMap<>();
-            keys.put("private_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa"));
-            keys.put("public_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa.pub"));
-            userKeyPairCredential.setKeys(keys);
+            Map<String, String> userKyes = new HashMap<>();
+            userKyes.put("private_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa"));
+            userKyes.put("public_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa.pub"));
+            userKeyPairCredential.setKeys(userKyes);
 
             CloudsStormVMs cloudsStormVMs = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + subTopology.getTopology() + ".yml"),
                     CloudsStormVMs.class);

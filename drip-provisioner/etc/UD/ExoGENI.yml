@@ -1,5 +1,11 @@
 #http://geni-images.renci.org/images/standard/ubuntu-comet/
 #https://wiki.exogeni.net/doku.php?id=public:experimenters:resource_types:start
+# To add image:
+#1 got to http://geni-images.renci.org/images/standard/ 
+#2 select descriptionimage e.g. : http://geni-images.renci.org/images/standard/centos-comet/centos7.6.1810.v3/centos7.6.1810.v3.xml
+#3 download it: wget http://geni-images.renci.org/images/standard/centos-comet/centos7.6.1810.v3/centos7.6.1810.v3.xml
+#4 get hash: sha1sum centos7.6.1810.v3.xml
+#5 Add entry below 
 GlobalEntry: "https://geni.renci.org:11443/orca/xmlrpc"
 DCMetaInfo: 
 - domain: "UvA (Amsterdam, The Netherlands) XO Rack"
@@ -70,6 +76,46 @@ DCMetaInfo:
     extraInfo:
       OS_URL: "http://geni-images.renci.org/images/standard/ubuntu-comet/ubuntu-18.04/ubuntu-18.04.xml"
       OS_GUID: "fe66b08bffa14c385ad64edd124350a2da826af9"
+      DiskSize: 50        
+  - OS: "Centos 7.6"
+    CPU: 4
+    MEM: 12
+    VMType: "XOXLarge"
+    Price: null
+    DefaultSSHAccount: "root"
+    extraInfo:
+      OS_URL: "http://geni-images.renci.org/images/standard/centos-comet/centos7.6.1810.v3/centos7.6.1810.v3.xml"
+      OS_GUID: "c8aebe4cda3fd8d4272147297848007f719f2b87"
+      DiskSize: 75      
+  - OS: "Centos 7.6"
+    CPU: 2
+    MEM: 6
+    VMType: "XOLarge"
+    Price: null
+    DefaultSSHAccount: "root"
+    extraInfo:
+      OS_URL: "http://geni-images.renci.org/images/standard/centos-comet/centos7.6.1810.v3/centos7.6.1810.v3.xml"
+      OS_GUID: "c8aebe4cda3fd8d4272147297848007f719f2b87"
+      DiskSize: 50     
+  - OS: "Ubuntu 19.04"
+    CPU: 4
+    MEM: 12
+    VMType: "XOXLarge"
+    Price: null
+    DefaultSSHAccount: "root"
+    extraInfo:
+      OS_URL: "http://geni-images.renci.org/images/standard/ubuntu-comet/ubuntu-19.04.v4/ubuntu-19.04.v4.xml"
+      OS_GUID: "c7baea709ee9c4b354a175a315c6cf74a1c1a1f5"
+      DiskSize: 75      
+  - OS: "Ubuntu 19.04"
+    CPU: 2
+    MEM: 6
+    VMType: "XOLarge"
+    Price: null
+    DefaultSSHAccount: "root"
+    extraInfo:
+      OS_URL: "http://geni-images.renci.org/images/standard/ubuntu-comet/ubuntu-19.04.v4/ubuntu-19.04.v4.xml"
+      OS_GUID: "c7baea709ee9c4b354a175a315c6cf74a1c1a1f5"
       DiskSize: 50        
 - domain: "BBN/GPO (Boston, MA USA) XO Rack"
   endpoint: "bbnvmsite.rdf#bbnvmsite"

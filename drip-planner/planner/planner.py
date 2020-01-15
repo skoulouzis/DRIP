@@ -1,8 +1,9 @@
 import logging
+
+import yaml
 from toscaparser.nodetemplate import NodeTemplate
 from toscaparser.tosca_template import ToscaTemplate
 from toscaparser.topology_template import TopologyTemplate
-
 
 import operator
 # import matplotlib.pyplot as plt
@@ -19,6 +20,7 @@ class Planner:
             self.tosca_template = ToscaTemplate(tosca_path)
         elif yaml_dict_tpl:
             self.yaml_dict_tpl = yaml_dict_tpl
+            logging.info('yaml_dict_tpl:\n' + str(yaml.dump(yaml_dict_tpl)))
             self.tosca_template = ToscaTemplate(yaml_dict_tpl=yaml_dict_tpl)
 
         self.tosca_node_types = self.tosca_template.nodetemplates[0].type_definition.TOSCA_DEF
@@ -102,10 +104,10 @@ class Planner:
         # Only add node that is not in node_templates
         matching_node_type_name = next(iter(matching_node))
         matching_node_template = tosca_helper.node_type_2_node_template(matching_node, self.all_custom_def)
-
         # Add the requirements to the node we analyzed. e.g. docker needed host now we added the type and name of host
         node = self.add_requirements(node, all_requirements, matching_node_template.name)
-        if not tosca_helper.contains_node_type(self.required_nodes, matching_node_type_name):
+        if not tosca_helper.contains_node_type(self.required_nodes, matching_node_type_name) and \
+                not tosca_helper.contains_node_type(self.tosca_template.nodetemplates, matching_node_type_name):
             logging.info('  Adding: ' + str(matching_node_template.name))
             self.required_nodes.append(matching_node)
         # Find matching nodes for the new node's requirements
@@ -139,9 +141,10 @@ class Planner:
             else:
                 for all_requirement in all_requirements:
                     for parent_requirement in parent_requirements:
-                        all_requirement_key =  next(iter(all_requirement))
+                        all_requirement_key = next(iter(all_requirement))
                         parent_requirement_key = next(iter(parent_requirement))
-                        if all_requirement_key != parent_requirement_key and all_requirement[all_requirement_key]['capability'] != parent_requirement[parent_requirement_key]['capability']:
+                        if all_requirement_key != parent_requirement_key and all_requirement[all_requirement_key][
+                            'capability'] != parent_requirement[parent_requirement_key]['capability']:
                             all_requirements.append(parent_requirement)
 
             logging.debug('      all_requirements: ' + str(all_requirements))

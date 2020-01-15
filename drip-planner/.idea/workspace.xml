@@ -2,11 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../drip-deployer/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-deployer/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TOSCA/types/interfaces.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/types/interfaces.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../drip-deployer/service/ansible_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-deployer/service/ansible_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../drip-deployer/service/tosca.py" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-deployer/service/tosca.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planner/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/planner/planner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/simple_spec_alayzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/service/simple_spec_alayzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/tosca_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/util/tosca_helper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip-provisioner/etc/UD/ExoGENI.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-provisioner/etc/UD/ExoGENI.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drip-provisioner/src/main/java/nl/uva/sne/drip/provisioner/CloudStormService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../drip-provisioner/src/main/java/nl/uva/sne/drip/provisioner/CloudStormService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -264,51 +267,51 @@
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state x="925" y="283" width="767" height="906" key="#__main__/67.34.2493.1406@67.34.2493.1406" timestamp="1575885420596" />
-    <state width="2155" height="582" key="DebuggerActiveHint" timestamp="1577715024259">
+    <state width="2155" height="582" key="DebuggerActiveHint" timestamp="1579096948545">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="2155" height="582" key="DebuggerActiveHint/67.34.2493.1406@67.34.2493.1406" timestamp="1577715024259" />
+    <state width="2155" height="582" key="DebuggerActiveHint/67.34.2493.1406@67.34.2493.1406" timestamp="1579096948545" />
     <state x="792" y="334" width="827" height="663" key="FileChooserDialogImpl" timestamp="1578326180157">
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
     <state x="792" y="334" width="827" height="663" key="FileChooserDialogImpl/67.34.1853.1046@67.34.1853.1046" timestamp="1578326180157" />
     <state x="1043" y="437" width="530" height="598" key="FileChooserDialogImpl/67.34.2493.1406@67.34.2493.1406" timestamp="1575907769017" />
-    <state width="2465" height="381" key="GridCell.Tab.0.bottom" timestamp="1578935126552">
+    <state width="2437" height="407" key="GridCell.Tab.0.bottom" timestamp="1579098700843">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state width="1825" height="263" key="GridCell.Tab.0.bottom/67.34.1853.1046@67.34.1853.1046" timestamp="1578584059031" />
-    <state width="2465" height="381" key="GridCell.Tab.0.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1578935126552" />
-    <state width="2465" height="381" key="GridCell.Tab.0.center" timestamp="1578935126549">
+    <state width="2437" height="407" key="GridCell.Tab.0.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1579098700843" />
+    <state width="2437" height="407" key="GridCell.Tab.0.center" timestamp="1579098700843">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state width="1825" height="263" key="GridCell.Tab.0.center/67.34.1853.1046@67.34.1853.1046" timestamp="1578584059030" />
-    <state width="2465" height="381" key="GridCell.Tab.0.center/67.34.2493.1406@67.34.2493.1406" timestamp="1578935126549" />
-    <state width="2465" height="381" key="GridCell.Tab.0.left" timestamp="1578935126545">
+    <state width="2437" height="407" key="GridCell.Tab.0.center/67.34.2493.1406@67.34.2493.1406" timestamp="1579098700843" />
+    <state width="2437" height="407" key="GridCell.Tab.0.left" timestamp="1579098700842">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state width="1825" height="263" key="GridCell.Tab.0.left/67.34.1853.1046@67.34.1853.1046" timestamp="1578584059030" />
-    <state width="2465" height="381" key="GridCell.Tab.0.left/67.34.2493.1406@67.34.2493.1406" timestamp="1578935126545" />
-    <state width="2465" height="381" key="GridCell.Tab.0.right" timestamp="1578935126550">
+    <state width="2437" height="407" key="GridCell.Tab.0.left/67.34.2493.1406@67.34.2493.1406" timestamp="1579098700842" />
+    <state width="2437" height="407" key="GridCell.Tab.0.right" timestamp="1579098700843">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state width="1825" height="263" key="GridCell.Tab.0.right/67.34.1853.1046@67.34.1853.1046" timestamp="1578584059030" />
-    <state width="2465" height="381" key="GridCell.Tab.0.right/67.34.2493.1406@67.34.2493.1406" timestamp="1578935126550" />
-    <state width="2465" height="413" key="GridCell.Tab.1.bottom" timestamp="1577720249209">
+    <state width="2437" height="407" key="GridCell.Tab.0.right/67.34.2493.1406@67.34.2493.1406" timestamp="1579098700843" />
+    <state width="2437" height="407" key="GridCell.Tab.1.bottom" timestamp="1579098700844">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="2465" height="413" key="GridCell.Tab.1.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1577720249209" />
-    <state width="2465" height="413" key="GridCell.Tab.1.center" timestamp="1577720249207">
+    <state width="2437" height="407" key="GridCell.Tab.1.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1579098700844" />
+    <state width="2437" height="407" key="GridCell.Tab.1.center" timestamp="1579098700843">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="2465" height="413" key="GridCell.Tab.1.center/67.34.2493.1406@67.34.2493.1406" timestamp="1577720249207" />
-    <state width="2465" height="413" key="GridCell.Tab.1.left" timestamp="1577720249206">
+    <state width="2437" height="407" key="GridCell.Tab.1.center/67.34.2493.1406@67.34.2493.1406" timestamp="1579098700843" />
+    <state width="2437" height="407" key="GridCell.Tab.1.left" timestamp="1579098700843">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="2465" height="413" key="GridCell.Tab.1.left/67.34.2493.1406@67.34.2493.1406" timestamp="1577720249206" />
-    <state width="2465" height="413" key="GridCell.Tab.1.right" timestamp="1577720249208">
+    <state width="2437" height="407" key="GridCell.Tab.1.left/67.34.2493.1406@67.34.2493.1406" timestamp="1579098700843" />
+    <state width="2437" height="407" key="GridCell.Tab.1.right" timestamp="1579098700843">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="2465" height="413" key="GridCell.Tab.1.right/67.34.2493.1406@67.34.2493.1406" timestamp="1577720249208" />
+    <state width="2437" height="407" key="GridCell.Tab.1.right/67.34.2493.1406@67.34.2493.1406" timestamp="1579098700843" />
     <state x="679" y="283" key="SettingsEditor" timestamp="1575885393075">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
@@ -327,34 +330,19 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/planner/planner.py</url>
-          <line>72</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/planner/planner.py</url>
-          <line>67</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/test/test_planner.py</url>
           <line>22</line>
           <option name="timeStamp" value="21" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/planner/planner.py</url>
-          <line>21</line>
-          <option name="timeStamp" value="22" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/toscaparser/tosca_template.py</url>
-          <line>114</line>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/test/test_planner.py</url>
           <line>36</line>
           <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/service/simple_spec_alayzer.py</url>
+          <line>142</line>
+          <option name="timeStamp" value="68" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
