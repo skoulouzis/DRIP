@@ -2,6 +2,9 @@
   become: yes
   tasks:
   
+    - name: replace DNS
+      shell: sed "s/nameserver.*/nameserver 8.8.8.8/g" /etc/resolv.conf
+  
     - name: Update and upgrade apt packages
       become: true
       apt:

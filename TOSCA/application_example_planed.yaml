@@ -6,7 +6,7 @@ topology_template:
         disk_size: "50000 MB"
         mem_size: "6000 MB"
         num_cores: 2
-        os: "Ubuntu 19.04"
+        os: "Centos 7.6"
         user_name: "vm_user"
       interfaces:
         Standard:
@@ -17,7 +17,7 @@ topology_template:
         disk_size: "50000 MB"
         mem_size: "6000 MB"
         num_cores: 2
-        os: "Ubuntu 19.04"
+        os: "Centos 7.6"
         user_name: "vm_user"
       interfaces:
         Standard:
