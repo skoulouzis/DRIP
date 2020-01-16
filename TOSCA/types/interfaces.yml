@@ -67,8 +67,7 @@ interface_types:
     inputs:
       inventory_file:
         type: string
-        required: true
-        default: k8s_hosts
+        required: false
       playbook:
         type: string
         required: false

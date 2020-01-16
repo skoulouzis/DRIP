@@ -163,3 +163,60 @@ DCMetaInfo:
     extraInfo:
       AMI: "ami-2581aa40"
    
+   
+   
+- domain: "Frankfurt"
+  endpoint: "ec2.eu-central-1.amazonaws.com"
+  country: Germany
+  longitude: "50.1109"
+  latitude: "8.68213"
+  availability: null 
+  VMMetaInfo:
+  - OS: "Ubuntu 18.04"
+    CPU: 1
+    MEM: 0.5
+    VMType: "t2.nano"
+    Price: 0.0058
+    DefaultSSHAccount: "ubuntu"
+    extraInfo:
+      AMI: "ami-0b418580298265d5c"
+  - OS: "Ubuntu 18.04"
+    CPU: 1
+    MEM: 1
+    VMType: "t2.micro"
+    Price: 0.0116
+    DefaultSSHAccount: "ubuntu"
+    extraInfo:
+      AMI: "ami-0b418580298265d5c"
+  - OS: "Ubuntu 18.04"
+    CPU: 1
+    MEM: 2
+    VMType: "t2.small"
+    Price: 0.0116
+    DefaultSSHAccount: "ubuntu"
+    extraInfo:
+      AMI: "ami-0b418580298265d5c"
+  - OS: "Ubuntu 18.04"
+    CPU: 2
+    MEM: 4
+    VMType: "t2.medium"
+    Price: 0.0464
+    DefaultSSHAccount: "ubuntu"
+    extraInfo:
+      AMI: "ami-0b418580298265d5c"
+  - OS: "Ubuntu 18.04"
+    CPU: 2
+    MEM: 8
+    VMType: "t2.large"
+    Price: 0.0464
+    DefaultSSHAccount: "ubuntu"
+    extraInfo:
+      AMI: "ami-0b418580298265d5c"
+  - OS: "Ubuntu 18.04"
+    CPU: 4
+    MEM: 16
+    VMType: "t2.xlarge"
+    Price: 0.0464
+    DefaultSSHAccount: "ubuntu"
+    extraInfo:
+      AMI: "ami-0b418580298265d5c"
