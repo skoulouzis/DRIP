@@ -76,6 +76,10 @@ node_types:
                 inputs:
                     inventory_file: k8s_hosts
                     playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/install_k8s.yml
+            create:
+                inputs:
+                    inventory_file: k8s_hosts
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/install_k8s.yml                    
                     
         
   #tosca.nodes.ARTICONF.Orchestrator.Swarm:

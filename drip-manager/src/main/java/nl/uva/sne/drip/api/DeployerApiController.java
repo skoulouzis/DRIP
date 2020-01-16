@@ -9,9 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.Level;
 import nl.uva.sne.drip.service.DRIPService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,9 +41,14 @@ public class DeployerApiController implements DeployerApi {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("")) {
 
-            dripService.setRequestQeueName(queueName);
-            String planedYemplateId = dripService.deploy(id);
-            return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
+            try {
+                dripService.setRequestQeueName(queueName);
+                String planedYemplateId = dripService.deploy(id);
+                return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
+
+            } catch (Exception ex) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
 
         }
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
