@@ -57,7 +57,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/__main__.py" />
-      <option name="PARAMETERS" value="test_local" />
+      <option name="PARAMETERS" value="localhost planner" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -256,10 +256,10 @@
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state x="808" y="316" width="1000" height="839" key="#Inspections/67.34.2493.1406@67.34.2493.1406" timestamp="1575885366203" />
-    <state x="925" y="283" width="767" height="906" key="#__main__" timestamp="1580077031791">
+    <state x="925" y="283" width="767" height="906" key="#__main__" timestamp="1580078755897">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state x="925" y="283" width="767" height="906" key="#__main__/67.34.2493.1406@67.34.2493.1406" timestamp="1580077031791" />
+    <state x="925" y="283" width="767" height="906" key="#__main__/67.34.2493.1406@67.34.2493.1406" timestamp="1580078755897" />
     <state width="2155" height="582" key="DebuggerActiveHint" timestamp="1579096948545">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
@@ -309,11 +309,11 @@
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state x="679" y="283" key="SettingsEditor/67.34.2493.1406@67.34.2493.1406" timestamp="1575885393075" />
-    <state x="893" y="526" key="com.intellij.ide.util.TipDialog" timestamp="1580076986712">
+    <state x="893" y="526" key="com.intellij.ide.util.TipDialog" timestamp="1580077838363">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state x="681" y="400" key="com.intellij.ide.util.TipDialog/67.34.1853.1046@67.34.1853.1046" timestamp="1579175096269" />
-    <state x="893" y="526" key="com.intellij.ide.util.TipDialog/67.34.2493.1406@67.34.2493.1406" timestamp="1580076986712" />
+    <state x="893" y="526" key="com.intellij.ide.util.TipDialog/67.34.2493.1406@67.34.2493.1406" timestamp="1580077838363" />
     <state x="882" y="239" width="862" height="993" key="find.popup" timestamp="1576090708880">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
