@@ -25,16 +25,16 @@ topology_template:
             volumes:
                 - db_data:/var/lib/mongo
             environment:
-                MONGO_INITDB_ROOT_USERNAME: rootUser
                 MONGO_INITDB_ROOT_PASSWORD: rootPassword
                 MONGO_INITDB_DATABASE: databaseName
+                MONGO_INITDB_ROOT_USERNAME: rootUser
                 MONGO_USERNAME: databaseUser
-                MONGO_PASSWORD:password
+                MONGO_PASSWORD: password
         artifacts:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
                 file: lakshminp/mongo:4.2.1
-                repository: docker_hub  
+                repository: docker_hub    
                 
         
     logspout:
@@ -51,7 +51,7 @@ topology_template:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
                 file: gliderlabs/logspout:latest
-                repository: docker_hub         
+                repository: docker_hub                    
                 
   policies:
     - scalability:

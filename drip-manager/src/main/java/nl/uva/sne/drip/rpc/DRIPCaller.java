@@ -51,6 +51,7 @@ public class DRIPCaller implements AutoCloseable {
 
     public DRIPCaller(ConnectionFactory factory) throws IOException, TimeoutException {
         this.factory = factory;
+        Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "ConnectionFactory host: {0}", factory.getHost());
         //        factory.setHost(messageBrokerHost);
 //        factory.setPort(AMQP.PROTOCOL.PORT);
 //        factory.setUsername(username);

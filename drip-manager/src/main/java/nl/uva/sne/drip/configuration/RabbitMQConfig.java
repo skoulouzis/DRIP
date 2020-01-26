@@ -9,6 +9,8 @@ import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,6 +32,7 @@ public class RabbitMQConfig {
         connectionFactory.setHost(messageBrokerHost);
         connectionFactory.setUsername(messageBrokerUsername);
         connectionFactory.setPassword(messageBrokerPassword);
+        Logger.getLogger(RabbitMQConfig.class.getName()).log(Level.INFO, "ConnectionFactory host: {0}", connectionFactory.getHost());
         return connectionFactory;
     }
 

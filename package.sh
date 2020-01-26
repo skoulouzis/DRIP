@@ -1,6 +1,8 @@
 #!/bin/bash
 
-cd drip-manager && mvn -Dmaven.test.skip=true install dockerfile:build
+cd drip-manager && mvn -Dmaven.test.skip=true dockerfile:build
+cd ../
+cd drip-planner && mvn -Dmaven.test.skip=true dockerfile:build
 cd ../
 cd sure_tosca-flask-server && docker build -t sure-tosca:3.0.0 .
 
