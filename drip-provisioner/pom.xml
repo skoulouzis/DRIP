@@ -85,7 +85,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>nl.uva.sne.drip.drip.provisioner.RPCServer</mainClass>
+                            <mainClass>nl.uva.sne.drip.provisioner.RPCServer</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
