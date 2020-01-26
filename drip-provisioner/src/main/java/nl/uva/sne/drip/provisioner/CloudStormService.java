@@ -80,7 +80,7 @@ class CloudStormService {
         this.toscaTemplate = toscaTemplate;
         cloudStormDBPath = properties.getProperty("cloud.storm.db.path");
         cloudStormDAO = new CloudStormDAO(cloudStormDBPath);
-        String sureToscaBasePath = properties.getProperty("sure-tosca.base.path");
+        String sureToscaBasePath = properties.getProperty("sure_tosca.base.path");
         this.helper = new ToscaHelper(sureToscaBasePath);
         this.helper.uploadToscaTemplate(toscaTemplate);
         this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
