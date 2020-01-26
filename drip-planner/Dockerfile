@@ -9,4 +9,4 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . /usr/src/app
 
-CMD ["python3 __main__.py $RABBITMQ_HOST planner"]
+CMD python3 __main__.py $RABBITMQ_HOST planner
