@@ -9,6 +9,4 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . /usr/src/app
 
-EXPOSE 8081
-
-ENTRYPOINT ["python3 __main__.py $RABBITMQ_HOST planner_queue"]
+CMD ["python3 __main__.py $RABBITMQ_HOST planner"]

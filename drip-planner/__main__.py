@@ -132,6 +132,7 @@ if __name__ == "__main__":
         test_response = {'toscaTemplate': template_dict}
         logger.info("Output message:" + json.dumps(test_response))
     else:
+        print("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         channel = init_chanel(sys.argv)
         global queue_name
