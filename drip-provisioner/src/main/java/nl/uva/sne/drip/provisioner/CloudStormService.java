@@ -49,6 +49,7 @@ import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.math3.ml.distance.EuclideanDistance;
 
 /**
  *
@@ -181,14 +182,9 @@ class CloudStormService {
             List<NodeTemplateMap> vmTemplatesMap = helper.getTemplateVMsForVMTopology(nodeTemplateMap);
             int j = 0;
             for (NodeTemplateMap vmMap : vmTemplatesMap) {
-                CloudsStormVM cloudsStormVM = new CloudsStormVM();
-                String vmType = getVMType(vmMap, provider);
-                cloudsStormVM.setNodeType(vmType);
-                cloudsStormVM.setName("vm" + j);
-                String os = helper.getVMNOS(vmMap);
-//                cloudsStormVM.setOS(os);
-                cloudsStormVM.setOstype(os);
-                vms.add(cloudsStormVM);
+                CloudsStormVM cloudStromVM = getBestMatchingCloudStormVM(vmMap, provider);
+                cloudStromVM.setName("vm" + j);
+                vms.add(cloudStromVM);
                 j++;
             }
             cloudsStormVMs.setVms(vms);
@@ -202,21 +198,27 @@ class CloudStormService {
         return cloudsStormMap;
     }
 
-    private String getVMType(NodeTemplateMap vmMap, String provider) throws IOException, Exception {
+    private CloudsStormVM getBestMatchingCloudStormVM(NodeTemplateMap vmMap, String provider) throws IOException, Exception {
         Double numOfCores = helper.getVMNumOfCores(vmMap);
         Double memSize = helper.getVMNMemSize(vmMap);
         String os = helper.getVMNOS(vmMap);
-
+        double[] requestedVector = convert2ArrayofDoubles(numOfCores, memSize);
+        double min = Double.MAX_VALUE;
+        CloudsStormVM bestMatchingVM = null;
         List<CloudsStormVM> vmInfos = cloudStormDAO.findVmMetaInfoByProvider(CloudProviderEnum.fromValue(provider));
         for (CloudsStormVM vmInfo : vmInfos) {
-            Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "vmInfo: {0}", vmInfo);
-            Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "numOfCores:{0} memSize: {1} os: {2}", new Object[]{numOfCores, memSize, os});
-            if (Objects.equals(numOfCores, Double.valueOf(vmInfo.getCPU()))
-                    && Objects.equals(memSize, Double.valueOf(vmInfo.getMEM())) && os.toLowerCase().equals(vmInfo.getOstype().toLowerCase())) {
-                return vmInfo.getVmType();
+
+            if (os.toLowerCase().equals(vmInfo.getOstype().toLowerCase())) {
+                double[] aveliableVector = convert2ArrayofDoubles(Double.valueOf(vmInfo.getCPU()), Double.valueOf(vmInfo.getMEM()));
+                EuclideanDistance dist = new EuclideanDistance();
+                double res = dist.compute(requestedVector, aveliableVector);
+                if (res < min) {
+                    min = res;
+                    bestMatchingVM = vmInfo;
+                }
             }
         }
-        return null;
+        return bestMatchingVM;
     }
 
     private void writeCloudStormCredentialsFiles(String credentialsTempInputDirPath) throws ApiException, Exception {
@@ -244,17 +246,15 @@ class CloudStormService {
         CredentialInfo cloudStormCredentialInfo = new CredentialInfo();
         switch (toscaCredentials.getCloudProviderName().toLowerCase()) {
             case "exogeni":
-
                 String base64Keystore = toscaCredentials.getKeys().get("keystore");
-
                 Converter.decodeBase64BToFile(base64Keystore, tmpPath + File.separator + "user.jks");
-
                 cloudStormCredentialInfo.setUserKeyName("user.jks");
                 cloudStormCredentialInfo.setKeyAlias(toscaCredentials.getUser());
                 cloudStormCredentialInfo.setKeyPassword(toscaCredentials.getToken());
                 return cloudStormCredentialInfo;
             case "ec2":
-//                cloudStormCredentialInfo.setAccessKey(toscaCredentials.get);
+                cloudStormCredentialInfo.setSecretKey(toscaCredentials.getToken());
+                cloudStormCredentialInfo.setAccessKey(toscaCredentials.getKeys().get("aws_access_key_id"));
                 return cloudStormCredentialInfo;
 
         }
@@ -317,7 +317,7 @@ class CloudStormService {
 
             String rootKeyPairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                     + File.separator + subTopology.getSshKeyPairId();
-            
+
             Credential rootKeyPairCredential = new Credential();
             rootKeyPairCredential.setProtocol("ssh");
             Map<String, String> rootKeys = new HashMap<>();
@@ -364,6 +364,11 @@ class CloudStormService {
             i++;
         }
         return toscaTemplate;
+    }
+
+    private double[] convert2ArrayofDoubles(Double numOfCores, Double memSize) {
+        double[] vector = new double[]{numOfCores, memSize};
+        return vector;
     }
 
 }

@@ -16,46 +16,25 @@ description: >
 
 topology_template:
 
-  node_templates:
-    wordpress:
-      type: tosca.nodes.ARTICONF.Container.Application.Docker
-      requirements:
-        - service:
-            node: mysql
-            relationship:
-                type: tosca.relationships.ConnectsTo
-                type: tosca.relationships.DependsOn
-      artifacts:
-        image:
-          file: wordpress:latest
-          type: tosca.artifacts.Deployment.Image.Container.Docker
-          repository: docker_hub
-      properties:
-        ports: 
-          - "8000:80"
-        environment:
-          WORDPRESS_DB_HOST: mysql:3306
-          WORDPRESS_DB_USER: wordpress
-          WORDPRESS_DB_PASSWORD: wordpress
-          WORDPRESS_DB_NAME: wordpress
-        
-    mysql:
+  node_templates:        
+    mongo:
         type: tosca.nodes.ARTICONF.Container.Application.Docker
         properties:
             ports: 
-            - "3306:3306"   
+            - "27017:27017"   
             volumes:
-                - db_data:/var/lib/mysql
+                - db_data:/var/lib/mongo
             environment:
-                MYSQL_ROOT_PASSWORD: somewordpress
-                MYSQL_DATABASE: wordpress
-                MYSQL_USER: wordpress
-                MYSQL_PASSWORD: wordpress
+                MONGO_INITDB_ROOT_USERNAME: rootUser
+                MONGO_INITDB_ROOT_PASSWORD: rootPassword
+                MONGO_INITDB_DATABASE: databaseName
+                MONGO_USERNAME: databaseUser
+                MONGO_PASSWORD:password
         artifacts:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
-                file: mysql:5.7
-                repository: docker_hub    
+                file: lakshminp/mongo:4.2.1
+                repository: docker_hub  
                 
         
     logspout:
@@ -72,18 +51,18 @@ topology_template:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
                 file: gliderlabs/logspout:latest
-                repository: docker_hub                    
+                repository: docker_hub         
                 
   policies:
     - scalability:
         type: tosca.policies.ARTICONF.Performance.CPU
-        targets: [ wordpress ]
+        targets: [ mongo ]
         properties:
             constraint_name: cpu_load
             max_value: 90
     - faultTolerance:
         type: tosca.policies.ARTICONF.FaultTolerance
-        targets: [ mysql ]     
+        targets: [ mongo ]     
         properties:
             level: 1
               

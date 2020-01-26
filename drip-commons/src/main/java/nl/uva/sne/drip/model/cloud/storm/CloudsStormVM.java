@@ -134,6 +134,7 @@ public class CloudsStormVM {
 
     @JsonProperty("nodeType")
     private String nodeType = null;
+    
     @JsonProperty("VEngineClass")
     private String VEngineClass = null;
 
@@ -152,6 +153,7 @@ public class CloudsStormVM {
     private Map<String, Object> extraInfo = null;
 
     @JsonProperty("CPU")
+    @JsonAlias({"cpu"})
     private String CPU = null;
 
     @JsonProperty("MEM")

@@ -11,12 +11,12 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 
 /**
- * DCMetaInfo
+ * CloudStormDCMetaInfo
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2020-01-12T18:26:54.530Z")
 
-public class DCMetaInfo {
+public class CloudStormDCMetaInfo {
 
     @JsonProperty("domain")
     private String domain = null;
@@ -44,7 +44,7 @@ public class DCMetaInfo {
     @Valid
     private Map<String, Object> extraInfo = null;
 
-    public DCMetaInfo domain(String domain) {
+    public CloudStormDCMetaInfo domain(String domain) {
         this.domain = domain;
         return this;
     }
@@ -65,7 +65,7 @@ public class DCMetaInfo {
         this.domain = domain;
     }
 
-    public DCMetaInfo endpoint(String endpoint) {
+    public CloudStormDCMetaInfo endpoint(String endpoint) {
         this.endpoint = endpoint;
         return this;
     }
@@ -86,7 +86,7 @@ public class DCMetaInfo {
         this.endpoint = endpoint;
     }
 
-    public DCMetaInfo country(String country) {
+    public CloudStormDCMetaInfo country(String country) {
         this.country = country;
         return this;
     }
@@ -107,7 +107,7 @@ public class DCMetaInfo {
         this.country = country;
     }
 
-    public DCMetaInfo longitude(String longitude) {
+    public CloudStormDCMetaInfo longitude(String longitude) {
         this.longitude = longitude;
         return this;
     }
@@ -128,7 +128,7 @@ public class DCMetaInfo {
         this.longitude = longitude;
     }
 
-    public DCMetaInfo latitude(String latitude) {
+    public CloudStormDCMetaInfo latitude(String latitude) {
         this.latitude = latitude;
         return this;
     }
@@ -149,7 +149,7 @@ public class DCMetaInfo {
         this.latitude = latitude;
     }
 
-    public DCMetaInfo availability(String availability) {
+    public CloudStormDCMetaInfo availability(String availability) {
         this.availability = availability;
         return this;
     }
@@ -170,12 +170,12 @@ public class DCMetaInfo {
         this.availability = availability;
     }
 
-    public DCMetaInfo vmMetaInfo(List<CloudsStormVM> vmMetaInfo) {
+    public CloudStormDCMetaInfo vmMetaInfo(List<CloudsStormVM> vmMetaInfo) {
         this.vmMetaInfo = vmMetaInfo;
         return this;
     }
 
-    public DCMetaInfo addVmMetaInfoItem(CloudsStormVM vmMetaInfoItem) {
+    public CloudStormDCMetaInfo addVmMetaInfoItem(CloudsStormVM vmMetaInfoItem) {
         if (this.vmMetaInfo == null) {
             this.vmMetaInfo = new ArrayList<CloudsStormVM>();
         }
@@ -201,12 +201,12 @@ public class DCMetaInfo {
         this.vmMetaInfo = vmMetaInfo;
     }
 
-    public DCMetaInfo extraInfo(Map<String, Object> extraInfo) {
+    public CloudStormDCMetaInfo extraInfo(Map<String, Object> extraInfo) {
         this.extraInfo = extraInfo;
         return this;
     }
 
-    public DCMetaInfo putExtraInfoItem(String key, Object extraInfoItem) {
+    public CloudStormDCMetaInfo putExtraInfoItem(String key, Object extraInfoItem) {
         if (this.extraInfo == null) {
             this.extraInfo = new HashMap<String, Object>();
         }
@@ -238,7 +238,7 @@ public class DCMetaInfo {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DCMetaInfo dcMetaInfo = (DCMetaInfo) o;
+        CloudStormDCMetaInfo dcMetaInfo = (CloudStormDCMetaInfo) o;
         return Objects.equals(this.domain, dcMetaInfo.domain)
                 && Objects.equals(this.endpoint, dcMetaInfo.endpoint)
                 && Objects.equals(this.country, dcMetaInfo.country)

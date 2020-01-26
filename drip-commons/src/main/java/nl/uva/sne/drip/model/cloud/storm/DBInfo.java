@@ -21,7 +21,7 @@ public class DBInfo {
 
     @JsonProperty("DCMetaInfo")
     @Valid
-    private List<DCMetaInfo> dcMetaInfo = null;
+    private List<CloudStormDCMetaInfo> dcMetaInfo = null;
 
     public DBInfo globalEntry(String globalEntry) {
         this.globalEntry = globalEntry;
@@ -44,14 +44,14 @@ public class DBInfo {
         this.globalEntry = globalEntry;
     }
 
-    public DBInfo dcMetaInfo(List<DCMetaInfo> dcMetaInfo) {
+    public DBInfo dcMetaInfo(List<CloudStormDCMetaInfo> dcMetaInfo) {
         this.dcMetaInfo = dcMetaInfo;
         return this;
     }
 
-    public DBInfo addDcMetaInfoItem(DCMetaInfo dcMetaInfoItem) {
+    public DBInfo addDcMetaInfoItem(CloudStormDCMetaInfo dcMetaInfoItem) {
         if (this.dcMetaInfo == null) {
-            this.dcMetaInfo = new ArrayList<DCMetaInfo>();
+            this.dcMetaInfo = new ArrayList<CloudStormDCMetaInfo>();
         }
         this.dcMetaInfo.add(dcMetaInfoItem);
         return this;
@@ -67,11 +67,11 @@ public class DBInfo {
 
     @Valid
 
-    public List<DCMetaInfo> getDcMetaInfo() {
+    public List<CloudStormDCMetaInfo> getDcMetaInfo() {
         return dcMetaInfo;
     }
 
-    public void setDcMetaInfo(List<DCMetaInfo> dcMetaInfo) {
+    public void setDcMetaInfo(List<CloudStormDCMetaInfo> dcMetaInfo) {
         this.dcMetaInfo = dcMetaInfo;
     }
 
