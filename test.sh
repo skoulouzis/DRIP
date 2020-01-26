@@ -2,8 +2,8 @@
 
 mvn test
 
-cd drip-planner && venv/bin/python3.7 -m unittest discover
+cd drip-planner && venv/bin/python3 -m unittest discover
 cd ../
-cd sure_tosca-flask-server && venv/bin/python3.7 -m unittest discover
+cd sure_tosca-flask-server && venv/bin/python3 -m unittest discover
 
 
