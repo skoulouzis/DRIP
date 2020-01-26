@@ -21,11 +21,11 @@ policy_types:
   
   tosca.policies.ARTICONF.Performance.CPU:
     derived_from: tosca.policies.ARTICONF.Performance
-    description: CPU load constraint as %  
+    description: CPU load constraint as percentage  
 
   tosca.policies.ARTICONF.Performance.Mem:
     derived_from: tosca.policies.Performance
-    description: Memory load constraint as %
+    description: Memory load constraint as percentage
     
   tosca.policies.ARTICONF.Performance.Disk:
     derived_from: tosca.policies.Performance

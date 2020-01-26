@@ -104,7 +104,8 @@ def save(file):
     
     logger.info("Got request for tosca template")
     purge_all_tables()
-    dictionary = yaml.safe_load(file.stream)
+    # dictionary = yaml.safe_load(file.stream)
+    dictionary = yaml.load(file.stream)
     logger.info("tosca template: \n" + str(yaml.dump(dictionary)))
     # print(yaml.dump(dictionary))
     tosca_template = ToscaTemplate(yaml_dict_tpl=copy.deepcopy(dictionary))
