@@ -15,7 +15,6 @@ description: >
   
 
 topology_template:
-
   node_templates:        
     mongo:
         type: tosca.nodes.ARTICONF.Container.Application.Docker
@@ -34,7 +33,7 @@ topology_template:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
                 file: lakshminp/mongo:4.2.1
-                repository: docker_hub    
+                repository: docker_hub
                 
         
     logspout:
