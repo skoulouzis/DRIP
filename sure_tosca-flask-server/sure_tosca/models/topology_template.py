@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
+from sure_tosca.models import NodeTemplateModel
 from sure_tosca.models.base_model_ import Model
 from sure_tosca import util
-from sure_tosca.models.node_template import NodeTemplateModel
 
 
 class TopologyTemplateModel(Model):
@@ -74,7 +74,7 @@ class TopologyTemplateModel(Model):
         :param dikt: A dict.
         :type: dict
         :return: The TopologyTemplate of this TopologyTemplate.  # noqa: E501
-        :rtype: TopologyTemplate
+        :rtype: TopologyTemplateModel
         """
         return util.deserialize_model(dikt, cls)
 

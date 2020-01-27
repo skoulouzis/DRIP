@@ -318,7 +318,7 @@ class TestDefaultController(BaseTestCase):
 
     def upload_file(self):
         tosca_path = "../../../TOSCA/"
-        file_name = 'application_example_updated.yaml'  # 'application_example_2_topologies.yaml'
+        file_name = 'application_example_2_topologies.yaml' #'application_example_updated.yaml'  # 'application_example_2_topologies.yaml'
         input_tosca_file_path = tosca_path + '/' + file_name
         if not os.path.exists(input_tosca_file_path):
             tosca_path = "../TOSCA/"

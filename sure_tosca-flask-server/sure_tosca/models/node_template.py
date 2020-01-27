@@ -83,11 +83,9 @@ class NodeTemplateModel(Model):
         :param dikt: A dict.
         :type: dict
         :return: The NodeTemplate of this NodeTemplate.  # noqa: E501
-        :rtype: NodeTemplate
+        :rtype: NodeTemplateModel
         """
         return util.deserialize_model(dikt, cls)
-
-
 
     @property
     def derived_from(self):
