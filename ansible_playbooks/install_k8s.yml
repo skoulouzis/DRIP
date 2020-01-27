@@ -2,14 +2,14 @@
   become: yes
   tasks:
   
-    #- name: replace DNS
-      #shell: sed -i "s/nameserver.*/nameserver 8.8.8.8/g" 
+    - name: replace DNS
+      shell: sed -i "s/nameserver.*/nameserver 8.8.8.8/g" /etc/resolv.conf
     
-    - name: Replace a localhost entry with our own
-      lineinfile:
-        path: /etc/resolv.conf
-        regexp: 'nameserver.*'
-        line: nameserver 8.8.8.8
+    #- name: replace DNS
+      #lineinfile:
+        #path: /etc/resolv.conf
+        #regexp: 'nameserver.*'
+        #line: nameserver 8.8.8.8
   
     - name: Update and upgrade apt packages
       become: true

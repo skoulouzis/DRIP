@@ -4,13 +4,9 @@
     <list default="true" id="e478ccae-5352-4e8e-9efb-3f5cda44e877" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../TOSCA/application_example_updated.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/node_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/node_template.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/topology_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/topology_template.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/tosca_template.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/models/tosca_template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/service/tosca_template_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/service/tosca_template_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/test/test_default_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/test/test_default_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/test-requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/test-requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -277,26 +273,26 @@
     </state>
     <state x="792" y="334" width="827" height="663" key="FileChooserDialogImpl/67.34.1853.1046@67.34.1853.1046" timestamp="1578326180157" />
     <state x="1043" y="437" width="530" height="598" key="FileChooserDialogImpl/67.34.2493.1406@67.34.2493.1406" timestamp="1575907769017" />
-    <state width="2465" height="491" key="GridCell.Tab.0.bottom" timestamp="1580081355073">
+    <state width="2465" height="341" key="GridCell.Tab.0.bottom" timestamp="1580135261557">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="1825" height="454" key="GridCell.Tab.0.bottom/67.34.1853.1046@67.34.1853.1046" timestamp="1579191653154" />
-    <state width="2465" height="491" key="GridCell.Tab.0.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1580081355073" />
-    <state width="2465" height="491" key="GridCell.Tab.0.center" timestamp="1580081355070">
+    <state width="1825" height="341" key="GridCell.Tab.0.bottom/67.34.1853.1046@67.34.1853.1046" timestamp="1580127646320" />
+    <state width="2465" height="341" key="GridCell.Tab.0.bottom/67.34.2493.1406@67.34.2493.1406" timestamp="1580135261557" />
+    <state width="2465" height="341" key="GridCell.Tab.0.center" timestamp="1580135261557">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="1825" height="454" key="GridCell.Tab.0.center/67.34.1853.1046@67.34.1853.1046" timestamp="1579191653153" />
-    <state width="2465" height="491" key="GridCell.Tab.0.center/67.34.2493.1406@67.34.2493.1406" timestamp="1580081355070" />
-    <state width="2465" height="491" key="GridCell.Tab.0.left" timestamp="1580081355068">
+    <state width="1825" height="341" key="GridCell.Tab.0.center/67.34.1853.1046@67.34.1853.1046" timestamp="1580127646318" />
+    <state width="2465" height="341" key="GridCell.Tab.0.center/67.34.2493.1406@67.34.2493.1406" timestamp="1580135261557" />
+    <state width="2465" height="341" key="GridCell.Tab.0.left" timestamp="1580135261556">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="1825" height="454" key="GridCell.Tab.0.left/67.34.1853.1046@67.34.1853.1046" timestamp="1579191653152" />
-    <state width="2465" height="491" key="GridCell.Tab.0.left/67.34.2493.1406@67.34.2493.1406" timestamp="1580081355068" />
-    <state width="2465" height="491" key="GridCell.Tab.0.right" timestamp="1580081355072">
+    <state width="1825" height="341" key="GridCell.Tab.0.left/67.34.1853.1046@67.34.1853.1046" timestamp="1580127646317" />
+    <state width="2465" height="341" key="GridCell.Tab.0.left/67.34.2493.1406@67.34.2493.1406" timestamp="1580135261556" />
+    <state width="2465" height="341" key="GridCell.Tab.0.right" timestamp="1580135261557">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
-    <state width="1825" height="454" key="GridCell.Tab.0.right/67.34.1853.1046@67.34.1853.1046" timestamp="1579191653154" />
-    <state width="2465" height="491" key="GridCell.Tab.0.right/67.34.2493.1406@67.34.2493.1406" timestamp="1580081355072" />
+    <state width="1825" height="341" key="GridCell.Tab.0.right/67.34.1853.1046@67.34.1853.1046" timestamp="1580127646319" />
+    <state width="2465" height="341" key="GridCell.Tab.0.right/67.34.2493.1406@67.34.2493.1406" timestamp="1580135261557" />
     <state width="2465" height="407" key="GridCell.Tab.1.bottom" timestamp="1580077545495">
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
@@ -317,10 +313,10 @@
       <screen x="67" y="34" width="2493" height="1406" />
     </state>
     <state x="679" y="283" key="SettingsEditor/67.34.2493.1406@67.34.2493.1406" timestamp="1580078850367" />
-    <state x="893" y="526" key="com.intellij.ide.util.TipDialog" timestamp="1580077838363">
-      <screen x="67" y="34" width="2493" height="1406" />
+    <state x="669" y="394" key="com.intellij.ide.util.TipDialog" timestamp="1580127405434">
+      <screen x="67" y="34" width="1853" height="1046" />
     </state>
-    <state x="681" y="400" key="com.intellij.ide.util.TipDialog/67.34.1853.1046@67.34.1853.1046" timestamp="1579175096269" />
+    <state x="669" y="394" key="com.intellij.ide.util.TipDialog/67.34.1853.1046@67.34.1853.1046" timestamp="1580127405434" />
     <state x="893" y="526" key="com.intellij.ide.util.TipDialog/67.34.2493.1406@67.34.2493.1406" timestamp="1580077838363" />
     <state x="882" y="239" width="862" height="993" key="find.popup" timestamp="1576090708880">
       <screen x="67" y="34" width="2493" height="1406" />

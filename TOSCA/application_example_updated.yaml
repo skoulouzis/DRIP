@@ -15,25 +15,25 @@ description: >
   
 
 topology_template:
+
   node_templates:        
-    mongo:
+    mysql:
         type: tosca.nodes.ARTICONF.Container.Application.Docker
         properties:
             ports: 
-            - "27017:27017"   
+            - "3306:3306"   
             volumes:
-                - db_data:/var/lib/mongo
+                - db_data:/var/lib/mysql
             environment:
-                MONGO_INITDB_ROOT_PASSWORD: rootPassword
-                MONGO_INITDB_DATABASE: databaseName
-                MONGO_INITDB_ROOT_USERNAME: rootUser
-                MONGO_USERNAME: databaseUser
-                MONGO_PASSWORD: password
+                MYSQL_ROOT_PASSWORD: somewordpress
+                MYSQL_DATABASE: wordpress
+                MYSQL_USER: wordpress
+                MYSQL_PASSWORD: wordpress
         artifacts:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
-                file: lakshminp/mongo:4.2.1
-                repository: docker_hub
+                file: mysql:5.7
+                repository: docker_hub    
                 
         
     logspout:
@@ -55,20 +55,12 @@ topology_template:
   policies:
     - scalability:
         type: tosca.policies.ARTICONF.Performance.CPU
-        targets: [ mongo ]
+        targets: [ mysql ]
         properties:
             constraint_name: cpu_load
             max_value: 90
     - faultTolerance:
         type: tosca.policies.ARTICONF.FaultTolerance
-        targets: [ mongo ]     
+        targets: [ mysql ]     
         properties:
             level: 1
-              
-            
-        
-        
-          
-          
-          
-          

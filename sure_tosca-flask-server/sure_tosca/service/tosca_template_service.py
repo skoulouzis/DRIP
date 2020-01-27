@@ -41,7 +41,6 @@ h.setFormatter(formatter)
 logger.addHandler(h)
 logger.handler_set = True
 
-
 root_key = 'root_key'
 
 
@@ -101,7 +100,7 @@ def save(file):
     # try:
     # tosca_template_file_path = os.path.join(db_dir_path, file.filename)
     start = time.time()
-    
+
     logger.info("Got request for tosca template")
     purge_all_tables()
     dictionary = yaml.safe_load(file.stream)
