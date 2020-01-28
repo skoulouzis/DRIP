@@ -296,8 +296,8 @@ class CloudStormService {
 
     private ToscaTemplate runCloudStorm(String tempInputDirPath) throws IOException, ApiException {
         String[] args = new String[]{"run", tempInputDirPath};
-        standalone.MainAsTool.main(args);
-//        tempInputDirPath = "/tmp/Input-174407085024744";
+//        standalone.MainAsTool.main(args);
+        tempInputDirPath = "/tmp/Input-26386504078656";
 
         CloudsStormTopTopology _top = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                 + TOP_TOPOLOGY_FILE_NAME),

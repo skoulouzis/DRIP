@@ -14,7 +14,7 @@
     </properties>
     <parent>
         <groupId>nl.uva.sne.drip</groupId>
-        <artifactId>drip</artifactId>
+        <artifactId>conf</artifactId>
         <version>3.0.0</version>
     </parent>
     <build>
@@ -120,7 +120,7 @@
         
         <dependency>
             <groupId>nl.uva.sne.drip</groupId>
-            <artifactId>drip-commons</artifactId>
+            <artifactId>commons</artifactId>
             <version>3.0.0</version>
             <type>jar</type>
         </dependency>
@@ -142,14 +142,7 @@
             <version>1.0.12</version>
             <scope>test</scope>
         </dependency>
-        
-        
-        <!--        <dependency>
-            <groupId>nl.uva.sne.drip</groupId>
-            <artifactId>drip-manager-services</artifactId>
-            <version>3.0.0</version>
-            <type>jar</type>
-        </dependency>        -->
+       
         
     </dependencies>
 </project>

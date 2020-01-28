@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>nl.uva.sne.drip</groupId>
-            <artifactId>drip-commons</artifactId>
+            <artifactId>commons</artifactId>
             <version>3.0.0</version>
             <type>jar</type>
         </dependency>
