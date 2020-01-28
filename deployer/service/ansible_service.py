@@ -65,6 +65,7 @@ def write_ansible_files(vms, interfaces, tmp_path):
         print('ansible_ssh_user=' + ansible_ssh_user, file=k8s_hosts_file)
 
     image_url = interfaces['Kubernetes']['install']['inputs']['playbook']
+
     r = requests.get(image_url)
     with open(tmp_path + "/install.yml", 'wb') as f:
         f.write(r.content)
@@ -90,11 +91,13 @@ def run(interfaces, vms):
     p = Popen(["ansible-playbook", "-i", tmp_path + "/k8s_hosts", tmp_path + "/create.yml"], stdin=PIPE, stdout=PIPE,
               stderr=PIPE)
     output, err = p.communicate()
-    print(output.decode('utf-8'))
-    print(err.decode('utf-8'))
+    out = output.decode('utf-8')
+    err = err.decode('utf-8')
+    print(out)
+    print(err)
     rc = p.returncode
-
-    return tmp_path
+    api_key = out
+    return api_key
 
 
 def execute_playbook(hosts, playbook_path, user, ssh_key_file, extra_vars, passwords):
