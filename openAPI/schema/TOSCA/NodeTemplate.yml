@@ -1,0 +1,44 @@
+  NodeTemplate:
+      type: "object"
+      properties:
+          derived_from:
+              type: "string"
+          properties:
+              type: object
+              additionalProperties:
+                  type: object    
+          requirements:
+              type: "array"
+              items:
+                type: object
+                additionalProperties:
+                    type: object  
+          interfaces:
+              type: object
+              additionalProperties:
+                  type: object      
+          capabilities:
+              type: object
+              additionalProperties:
+                  type: object                         
+          type:
+              type: "string"
+          description:
+              type: "string"
+          directives:
+              type: "array"
+              items:
+                type: string    
+          attributes:
+              type: object
+              additionalProperties:
+                  type: object     
+          artifacts:
+              type: object
+              additionalProperties:
+                  type: object                               
+
+     
+ 
+     
+    

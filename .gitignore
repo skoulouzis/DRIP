@@ -17,6 +17,7 @@
 /drip_planner2/nbproject/private/
 /drip-deployer/deployer_files/
 /drip_planner2 (copy)/nbproject/private/
+/drip_planner2/venv
 /drip_util/nbproject/private/
 /drip_transformer/nbproject/private/
 /drip_parser/nbproject/private/
@@ -24,3 +25,29 @@
 /drip-provisioner (copy)/target/
 /drip_parser.tar.gz
 /docs/playbooks/set_dockerhub_credentials.yml
+/drip_planner2/src/planner/__pycache__/
+/winery_service/nbproject/private/
+/winery_service/src/winery/__pycache__/
+/tosca_service/nbproject/private/
+/tosca_service/src/winery/__pycache__/
+/drip-deployer/venv/
+/drip/target/
+/drip-manager/target/
+/drip-manager/nbproject/
+/.idea/
+/drip-manager/.idea/
+/drip-planner/service/__pycache__/
+/drip-planner/planner/__pycache__/
+/drip-planner/util/__pycache__/
+/drip-planner/test/__pycache__/
+/drip-manager-old/nbproject/
+/drip-manager-old/target/
+/spring-server-generated/target/
+/manager-services/target/
+/drip-manager-services/nbproject/
+/drip-manager-services/target/
+/drip-provisioner/nbproject/
+/fake_credentials/copy_of_test-geni.jks
+/manager/target/
+/provisioner/nbproject/
+/provisioner/target/

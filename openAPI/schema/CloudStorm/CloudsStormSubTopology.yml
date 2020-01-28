@@ -1,0 +1,26 @@
+    CloudsStormSubTopology:
+        type: "object"
+        properties:
+            topology:
+                type: "string"
+            cloudProvider:
+                type: "string"
+            domain:
+                type: "string"
+            status:
+                type: "string"
+                enum: [fresh , running , deleted , failed , stopped]
+            subTopologyClass:
+                type: "string"
+            logsInfo:
+              type: object
+              additionalProperties:
+                  type: object     
+            subTopologyClass:
+                type: "string"
+            sshKeyPairId:
+                type: "string"
+            scaledFrom:
+              type: object
+              additionalProperties:
+                  type: object     

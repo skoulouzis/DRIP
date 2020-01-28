@@ -1,0 +1,10 @@
+  CloudsStormInfrasCode:
+    type: "object"
+    properties:
+      Mode:
+        type: "string"
+        enum: [LOCAL, CTRL]
+      InfrasCodes:
+        type: "array"
+        items:
+          $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/InfrasCode.yml#/InfrasCode"

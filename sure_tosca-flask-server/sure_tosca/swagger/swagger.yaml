@@ -1,0 +1,1102 @@
+---
+swagger: "2.0"
+info:
+  description: "TOSCA Simple qUeRy sErvice (SURE). "
+  version: "1.0.0"
+  title: "tosca-sure"
+  contact:
+    email: "S.Koulouzis@uva.nl"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+basePath: "/tosca-sure/1.0.0"
+schemes:
+- "https"
+- "http"
+paths:
+  /tosca_template:
+    post:
+      summary: "upload a tosca template description file"
+      description: "upload and validate a tosca template description file"
+      operationId: "upload_tosca_template"
+      consumes:
+      - "multipart/form-data"
+      parameters:
+      - name: "file"
+        in: "formData"
+        description: "tosca Template description"
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}:
+    get:
+      description: ""
+      operationId: "get_tosca_template"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ToscaTemplate"
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/imports:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "get_imports"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              additionalProperties:
+                type: "object"
+                properties: {}
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/dsl_definitions:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "get_dsl_definitions"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "anchors"
+        in: "query"
+        description: "the anchors the definition is for"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+      - name: "derived_from"
+        in: "query"
+        description: "derived from"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              additionalProperties:
+                type: "object"
+                properties: {}
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/interface/{interface_type}/default:
+    get:
+      summary: ""
+      description: "returns an interface instance with the default required values."
+      operationId: "get_default_interface"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "interface_type"
+        in: "path"
+        description: "type to instantiate"
+        required: true
+        type: "string"
+      - name: "instance_name"
+        in: "query"
+        description: "the name of the instance to retrun"
+        required: true
+        type: "string"
+      - name: "operation_name"
+        in: "query"
+        description: "the name of operation"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            additionalProperties:
+              type: "object"
+              properties: {}
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/node_types/{node_type}/default:
+    get:
+      summary: ""
+      description: "returns an node templaye instance with the default required values."
+      operationId: "get_default_node_type"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "node_type"
+        in: "path"
+        description: "type to instantiate"
+        required: true
+        type: "string"
+      - name: "instance_name"
+        in: "query"
+        description: "the name of tghe instance to retrun"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/NodeTemplateMap"
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/types:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "get_types"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "kind_of_type"
+        in: "query"
+        description: "the type we are looking for e.g. capability_types, artifact_types.\
+          \ etc."
+        required: false
+        type: "string"
+        enum:
+        - "node_types"
+        - "relationship_types"
+        - "capability_types"
+        - "artifact_types"
+        - "data_types"
+        - "interface_types"
+        - "policy_types"
+        - "group_types"
+      - name: "has_interfaces"
+        in: "query"
+        description: "filter if has interfaces"
+        required: false
+        type: "boolean"
+      - name: "type_name"
+        in: "query"
+        description: "The type_name"
+        required: false
+        type: "string"
+      - name: "has_properties"
+        in: "query"
+        description: "filter if has properties"
+        required: false
+        type: "boolean"
+      - name: "has_attributes"
+        in: "query"
+        description: "filter if has attributes"
+        required: false
+        type: "boolean"
+      - name: "has_requirements"
+        in: "query"
+        description: "filter if has requirements"
+        required: false
+        type: "boolean"
+      - name: "has_capabilities"
+        in: "query"
+        description: "filter if has capabilities"
+        required: false
+        type: "boolean"
+      - name: "has_artifacts"
+        in: "query"
+        description: "filter if has artifacts"
+        required: false
+        type: "boolean"
+      - name: "derived_from"
+        in: "query"
+        description: "derived from"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              additionalProperties:
+                type: "object"
+                properties: {}
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/relationship_templates:
+    get:
+      summary: ""
+      description: "returns the interface types"
+      operationId: "get_relationship_templates"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "type_name"
+        in: "query"
+        description: "The relationship type"
+        required: false
+        type: "string"
+      - name: "derived_from"
+        in: "query"
+        description: "derived from"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              additionalProperties:
+                type: "object"
+                properties: {}
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/topology_template:
+    get:
+      description: "r"
+      operationId: "get_topology_template"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/TopologyTemplate"
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/topology_template/node_templates:
+    get:
+      description: "returns nodes templates in topology"
+      operationId: "get_node_templates"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "type_name"
+        in: "query"
+        description: "The type"
+        required: false
+        type: "string"
+      - name: "node_name"
+        in: "query"
+        description: "the name"
+        required: false
+        type: "string"
+      - name: "has_interfaces"
+        in: "query"
+        description: "filter if has interfaces"
+        required: false
+        type: "boolean"
+      - name: "has_properties"
+        in: "query"
+        description: "filter if has properties"
+        required: false
+        type: "boolean"
+      - name: "has_attributes"
+        in: "query"
+        description: "filter if has attributes"
+        required: false
+        type: "boolean"
+      - name: "has_requirements"
+        in: "query"
+        description: "filter if has requirements"
+        required: false
+        type: "boolean"
+      - name: "has_capabilities"
+        in: "query"
+        description: "filter if has capabilities"
+        required: false
+        type: "boolean"
+      - name: "has_artifacts"
+        in: "query"
+        description: "filter if has artifacts"
+        required: false
+        type: "boolean"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/NodeTemplateMap"
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/type_name:
+    get:
+      summary: ""
+      description: ""
+      operationId: "get_node_type_name"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "node_name"
+        in: "path"
+        description: "node_name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/requirements:
+    get:
+      description: "Returns  the requirements for an input node as described in the\
+        \ template not in the node's definition "
+      operationId: "get_node_requirements"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "node_name"
+        in: "path"
+        description: "node_name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            additionalProperties:
+              type: "object"
+              properties: {}
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/derived_from:
+    get:
+      summary: ""
+      description: ""
+      operationId: "get_parent_type_name"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "node_name"
+        in: "path"
+        description: "node_name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_requirements:
+    get:
+      summary: ""
+      description: "Recursively get all requirements all the way to the ROOT including\
+        \ the input node's"
+      operationId: "get_ancestors_requirements"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "node_name"
+        in: "path"
+        description: "node_name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            additionalProperties:
+              type: "object"
+              properties: {}
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_types:
+    get:
+      summary: ""
+      description: "Recursively get all requirements all the way to the ROOT including\
+        \ the input node's"
+      operationId: "get_all_ancestor_types"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "node_name"
+        in: "path"
+        description: "node_name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_properties:
+    get:
+      summary: ""
+      description: "Recursively get all requirements all the way to the ROOT including\
+        \ the input node's"
+      operationId: "get_all_ancestor_properties"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "node_name"
+        in: "path"
+        description: "node_name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              additionalProperties:
+                type: "object"
+                properties: {}
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/properties:
+    get:
+      summary: ""
+      description: "s"
+      operationId: "get_node_properties"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "node_name"
+        in: "path"
+        description: "node_name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            additionalProperties:
+              type: "object"
+              properties: {}
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+    put:
+      summary: ""
+      description: "s"
+      operationId: "set_node_properties"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "properties"
+        required: true
+        schema:
+          type: "object"
+          additionalProperties:
+            type: "object"
+            properties: {}
+      - name: "node_name"
+        in: "path"
+        description: "node_name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/outputs:
+    get:
+      summary: ""
+      description: "s"
+      operationId: "get_node_outputs"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "node_name"
+        in: "path"
+        description: "node_name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "object"
+              additionalProperties:
+                type: "object"
+                properties: {}
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/related:
+    get:
+      summary: ""
+      description: "s"
+      operationId: "get_related_nodes"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "node_name"
+        in: "path"
+        description: "node_name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/NodeTemplateMap"
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+  /tosca_template/{id}/topology_template/node_templates/{node_name}/attributes:
+    get:
+      operationId: "get_node_attributes"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - name: "node_name"
+        in: "path"
+        description: "node_name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            additionalProperties:
+              type: "object"
+              properties: {}
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+    put:
+      operationId: "set_node_attributes"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of topolog template uplodaed"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "properties"
+        required: true
+        schema:
+          type: "object"
+          additionalProperties:
+            type: "object"
+            properties: {}
+      - name: "node_name"
+        in: "path"
+        description: "node_name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+        "404":
+          description: "Not found"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "sure_tosca.controllers.default_controller"
+definitions:
+  ToscaTemplate:
+    type: "object"
+    properties:
+      tosca_definitions_version:
+        type: "string"
+      tosca_default_namespace:
+        type: "string"
+      template_name:
+        type: "string"
+      topology_template:
+        $ref: "#/definitions/TopologyTemplate"
+      template_author:
+        type: "string"
+      template_version:
+        type: "string"
+      description:
+        type: "string"
+      imports:
+        type: "array"
+        items:
+          type: "object"
+          additionalProperties:
+            type: "object"
+            properties: {}
+      dsl_definitions:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      node_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      relationship_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      relationship_templates:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      capability_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      artifact_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      data_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      interface_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      policy_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      group_types:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      repositories:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+    example:
+      node_types:
+        key: "{}"
+      policy_types:
+        key: "{}"
+      topology_template:
+        outputs:
+          key: "{}"
+        substitution_mappings:
+          key: "{}"
+        inputs:
+          key: "inputs"
+        node_templates:
+          key:
+            requirements:
+            - key: "{}"
+            - key: "{}"
+            interfaces:
+              key: "{}"
+            capabilities:
+              key: "{}"
+            directives:
+            - "directives"
+            - "directives"
+            derived_from: "derived_from"
+            description: "description"
+            attributes:
+              key: "{}"
+            type: "type"
+            properties:
+              key: "{}"
+            artifacts:
+              key: "{}"
+        policies:
+        - key: "{}"
+        - key: "{}"
+        description: "description"
+        groups:
+          key: "{}"
+        relationship_templates:
+          key: "{}"
+      template_version: "template_version"
+      imports:
+      - key: "{}"
+      - key: "{}"
+      template_author: "template_author"
+      group_types:
+        key: "{}"
+      description: "description"
+      template_name: "template_name"
+      artifact_types:
+        key: "{}"
+      capability_types:
+        key: "{}"
+      repositories:
+        key: "{}"
+      tosca_definitions_version: "tosca_definitions_version"
+      dsl_definitions:
+        key: "{}"
+      interface_types:
+        key: "{}"
+      relationship_types:
+        key: "{}"
+      tosca_default_namespace: "tosca_default_namespace"
+      relationship_templates:
+        key: "{}"
+      data_types:
+        key: "{}"
+  TopologyTemplate:
+    type: "object"
+    properties:
+      description:
+        type: "string"
+      inputs:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      node_templates:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/NodeTemplate"
+      relationship_templates:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      outputs:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      groups:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      substitution_mappings:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      policies:
+        type: "array"
+        items:
+          type: "object"
+          additionalProperties:
+            type: "object"
+            properties: {}
+    example:
+      outputs:
+        key: "{}"
+      substitution_mappings:
+        key: "{}"
+      inputs:
+        key: "inputs"
+      node_templates:
+        key:
+          requirements:
+          - key: "{}"
+          - key: "{}"
+          interfaces:
+            key: "{}"
+          capabilities:
+            key: "{}"
+          directives:
+          - "directives"
+          - "directives"
+          derived_from: "derived_from"
+          description: "description"
+          attributes:
+            key: "{}"
+          type: "type"
+          properties:
+            key: "{}"
+          artifacts:
+            key: "{}"
+      policies:
+      - key: "{}"
+      - key: "{}"
+      description: "description"
+      groups:
+        key: "{}"
+      relationship_templates:
+        key: "{}"
+  NodeTemplate:
+    type: "object"
+    properties:
+      derived_from:
+        type: "string"
+      properties:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      requirements:
+        type: "array"
+        items:
+          type: "object"
+          additionalProperties:
+            type: "object"
+            properties: {}
+      interfaces:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      capabilities:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      type:
+        type: "string"
+      description:
+        type: "string"
+      directives:
+        type: "array"
+        items:
+          type: "string"
+      attributes:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+      artifacts:
+        type: "object"
+        additionalProperties:
+          type: "object"
+          properties: {}
+    example:
+      requirements:
+      - key: "{}"
+      - key: "{}"
+      interfaces:
+        key: "{}"
+      capabilities:
+        key: "{}"
+      directives:
+      - "directives"
+      - "directives"
+      derived_from: "derived_from"
+      description: "description"
+      attributes:
+        key: "{}"
+      type: "type"
+      properties:
+        key: "{}"
+      artifacts:
+        key: "{}"
+  NodeTemplateMap:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      nodeTemplate:
+        $ref: "#/definitions/NodeTemplate"
+    example:
+      name: "name"
+      nodeTemplate:
+        requirements:
+        - key: "{}"
+        - key: "{}"
+        interfaces:
+          key: "{}"
+        capabilities:
+          key: "{}"
+        directives:
+        - "directives"
+        - "directives"
+        derived_from: "derived_from"
+        description: "description"
+        attributes:
+          key: "{}"
+        type: "type"
+        properties:
+          key: "{}"
+        artifacts:
+          key: "{}"

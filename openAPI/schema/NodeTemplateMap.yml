@@ -1,0 +1,7 @@
+  NodeTemplateMap:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      nodeTemplate:
+        $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/TOSCA/NodeTemplate.yml#/NodeTemplate"

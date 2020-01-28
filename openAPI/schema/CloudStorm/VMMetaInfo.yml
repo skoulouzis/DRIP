@@ -1,0 +1,21 @@
+  VMMetaInfo:
+      type: "object"
+      properties:
+        OS:
+            type: "string"
+        CPU:
+            type: "string"
+        MEM:
+            type: "string"
+        VMType:
+            type: "string"
+        Price:
+            type: "string"
+        DefaultSSHAccount:
+            type: "string"
+        availability:
+            type: "string"
+        extraInfo:
+            type: object
+            additionalProperties:
+                type: object 

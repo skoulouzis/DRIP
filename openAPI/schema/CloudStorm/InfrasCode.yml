@@ -1,0 +1,14 @@
+  InfrasCode:
+    type: "object"
+    properties:
+      CodeType:
+        type: "string"
+        enum: [SEQ, LOOP]
+      OpCode:
+        $ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/OpCode.yml#/OpCode"
+      Count:
+        type: "integer"
+      #OpCodes:
+        #type: "array"
+        #items:
+              #$ref: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/openAPI/schema/CloudStorm/OpCode.yml#/OpCode"

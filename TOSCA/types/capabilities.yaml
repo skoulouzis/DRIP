@@ -1,0 +1,38 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+capability_types:
+
+  tosca.capabilities.ARTICONF.Orchestrator:
+    derived_from: tosca.capabilities.Container
+    properties:
+      some_properties:
+        type: string
+        required: no
+        
+  tosca.capabilities.ARTICONF.VM:
+    derived_from: tosca.capabilities.Compute
+    properties:
+      some_properties:
+        type: string
+        required: no
+        
+  tosca.capabilities.ARTICONF.VM.topology:
+    derived_from: tosca.capabilities.Compute
+    properties:
+      some_properties:
+        type: string
+        required: no        
+
+  tosca.capabilities.ARTICONF.Useless:
+    properties:
+      some_properties:
+        type: string
+        required: no 
+     
+        
+  tosca.capabilities.Compute:
+    derived_from: tosca.capabilities.Container
+    properties:
+      some_properties:
+        type: string
+        required: no      

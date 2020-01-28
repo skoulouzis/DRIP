@@ -1,0 +1,76 @@
+openapi: 3.0.0
+info:
+  title: Simple Inventory API
+  description: This is a simple API
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/skoulouzis/CloudStorm/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /topology:
+    get:
+      summary: return topology
+      description: return topology
+      operationId: getTopology
+      parameters:
+      - name: searchString
+        in: query
+        description: pass an optional search string for looking up inventory
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 50
+          type: string
+      responses:
+        "200":
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudsStormTopTopology'
+        "400":
+          description: bad input parameter
+components:
+  schemas:
+    CloudsStormTopTopology:
+      type: object
+      properties:
+        userName:
+          type: string
+        publicKeyPath:
+          type: string
+        topologies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudsStormSubTopology'
+    CloudsStormSubTopology:
+      type: object
+      properties:
+        VMs:
+          type: array
+          items:
+            $ref: '#/components/schemas/CloudsStormVM'
+    CloudsStormVM:
+      type: object
+      properties:
+        name:
+          type: string
+        nodeType:
+          type: string
+        OSType:
+          type: string
+        script:
+          type: string
+        publicAddress:
+          type: string

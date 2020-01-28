@@ -1,0 +1,8 @@
+  CloudDB:
+      type: "object"
+      properties:
+        cloudProvider:
+            type: "string"
+            enum: [EC2 , ExoGENI , EGI]
+        dbInfoFile:
+            type: "string"

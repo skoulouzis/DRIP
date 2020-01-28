@@ -1,0 +1,48 @@
+    CloudsStormVM:
+        type: "object"
+        properties:
+            name:
+                type: "string"
+            nodeType:
+                type: "string"
+            OStype:
+                type: "string"
+            script:
+                type: "string"
+            publicAddress:
+                type: "string"
+            extraInfo:
+                type: object
+                additionalProperties:
+                    type: object
+            CPU:
+                type: "string"
+            MEM:
+                type: "string"
+            VMType:
+                type: "string"
+            Price:
+                type: "string"
+            DefaultSSHAccount:
+                type: "string"
+            availability:
+                type: "string"
+            selfEthAddresses:
+                type: "string"
+            VEngineClass:
+                type: "string"
+            VNFType:
+                type: "string"
+            scaledFrom:
+                type: "string"
+            fake:
+                type: "string"
+            OS_URL:
+                type: "string"
+            OS_GUID:
+                type: "string"
+                
+                
+                
+                
+    

@@ -1,0 +1,916 @@
+---
+swagger: "2.0"
+info:
+  description: CONF allows application developers to seamlessly plan a customized virtual infrastructure based on application level constraints on QoS and resource budgets, provisioning the virtual infrastructure, deploy application components onto the virtual infrastructure, and start execution on demand using TOSCA.
+  version: 3.0.0
+  title: CONF
+  contact:
+    email: z.zhao@uva.nl
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+basePath: /conf-api/3.0
+schemes:
+- https
+- http
+paths:
+  /tosca_template:
+    post:
+      summary: upload a tosca template description file
+      description: uploads and validates TOSCA template file
+      operationId: uploadToscaTemplate
+      consumes:
+      - multipart/form-data
+      parameters:
+      - name: file
+        in: formData
+        description: tosca Template description
+        required: true
+        type: file
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "405":
+          description: Invalid input
+      security:
+      - auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /tosca_template/ids:
+    get:
+      summary: Get all topolog template IDs
+      description: Returns all IDs
+      operationId: getToscaTemplateIDs
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: ToscaTemplate not found
+        "405":
+          description: Invalid input
+      security:
+      - auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /tosca_template/{id}:
+    get:
+      summary: Find topolog template by ID
+      description: Returns a single topolog template
+      operationId: getToscaTemplateByID
+      produces:
+      - text/plain
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template to return
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: ToscaTemplate not found
+        "405":
+          description: Invalid input
+      security:
+      - auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+    put:
+      summary: Updates exisintg topolog template
+      description: ""
+      operationId: updateToscaTemplateByID
+      consumes:
+      - multipart/form-data
+      produces:
+      - text/plain
+      parameters:
+      - name: file
+        in: formData
+        description: tosca Template description
+        required: false
+        type: file
+      - name: id
+        in: path
+        description: ID of topolog template to return
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: ToscaTemplate not found
+        "405":
+          description: Invalid input
+      security:
+      - auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+    delete:
+      summary: Deletes a tosca topology template
+      description: ""
+      operationId: deleteToscaTemplateByID
+      parameters:
+      - name: id
+        in: path
+        description: ID of topology template to return
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: ToscaTemplate not found
+      security:
+      - auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /planner/plan/{id}:
+    get:
+      summary: plan tosca template
+      description: Returns the ID of the planed topolog template
+      operationId: planToscaTemplateByID
+      produces:
+      - text/plain
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template to plan
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: ToscaTemplate not found
+        "405":
+          description: Invalid input
+      security:
+      - auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /provisioner/provision/{id}:
+    get:
+      summary: provision tosca template
+      description: 'provosions the operationId: Plan Tosca Template Returns the provision ID'
+      operationId: provisionPlanToscaTemplateByID
+      produces:
+      - text/plain
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template to plan
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: ToscaTemplate not found
+        "405":
+          description: Invalid input
+      security:
+      - auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /deployer/deploy/{id}:
+    get:
+      summary: deploy the software tosca template
+      description: Returns the deployment ID
+      operationId: deployProvisionToscaTemplateByID
+      produces:
+      - text/plain
+      parameters:
+      - name: id
+        in: path
+        description: ID of topolog template to deploy
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: ToscaTemplate not found
+        "405":
+          description: Invalid input
+      security:
+      - auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /credential:
+    put:
+      summary: Create credentials
+      description: Creates credentials
+      operationId: createCredentials
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Credential
+        required: true
+        schema:
+          $ref: '#/definitions/Credential'
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: ToscaTemplate not found
+        "405":
+          description: Invalid input
+      security:
+      - auth:
+        - write:Credentials
+        - read:Credentials
+  /credential/ids:
+    get:
+      summary: Get all credential IDs
+      description: 'Returns all IDss '
+      operationId: getCredentialIDs
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              type: string
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: ToscaTemplate not found
+        "405":
+          description: Invalid input
+      security:
+      - auth:
+        - write:ToscaTemplate
+        - read:ToscaTemplate
+  /user:
+    post:
+      summary: Create user
+      description: This can only be done by admin.
+      operationId: createUser
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Created user object
+        required: true
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: string
+        "409":
+          description: already exists
+      security:
+      - auth:
+        - admin:User
+  /user/login:
+    get:
+      tags:
+      - user
+      summary: Logs user into the system
+      description: ""
+      produces:
+      - application/json
+      parameters:
+      - name: username
+        in: query
+        description: The user name for login
+        required: true
+        type: string
+      - name: password
+        in: query
+        description: The password for login in clear text
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              type: integer
+              format: int32
+              description: calls per hour allowed by the user
+            X-Expires-After:
+              type: string
+              format: date-time
+              description: date in UTC when token expires
+          schema:
+            type: string
+        "400":
+          description: Invalid username/password supplied
+  /user/logout:
+    get:
+      summary: Logs out current logged in user session
+      description: ""
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        default:
+          description: successful operation
+  /user/{username}:
+    get:
+      summary: Get user by user name
+      description: ""
+      produces:
+      - application/json
+      parameters:
+      - name: username
+        in: path
+        description: 'The name that needs to be fetched. Use user1 for testing. '
+        required: true
+        type: string
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/User'
+        "400":
+          description: Invalid username supplied
+        "404":
+          description: User not found
+      security:
+      - auth:
+        - admin:User
+    put:
+      tags:
+      - user
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      produces:
+      - application/json
+      parameters:
+      - name: username
+        in: path
+        description: name that need to be updated
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: Updated user object
+        required: true
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        "400":
+          description: Invalid user supplied
+        "404":
+          description: User not found
+      security:
+      - auth:
+        - admin:User
+    delete:
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      produces:
+      - application/json
+      parameters:
+      - name: username
+        in: path
+        description: The name that needs to be deleted
+        required: true
+        type: string
+      responses:
+        "400":
+          description: Invalid username supplied
+        "404":
+          description: User not found
+      security:
+      - auth:
+        - admin:User
+securityDefinitions:
+  auth:
+    type: oauth2
+    authorizationUrl: http://localhost/oauth/dialog
+    flow: implicit
+    scopes:
+      write:ToscaTemplate: modify topolog template in your account
+      read:ToscaTemplate: read your topolog template
+      admin:User: Grants access to admin operations
+      write:Credentials: modify cloud credentials in your account
+      read:Credentials: read your cloud credentials
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+      username:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      userStatus:
+        type: integer
+        format: int32
+        description: User Status
+  Credential:
+    type: object
+    properties:
+      protocol:
+        type: string
+        description: The optional protocol name. e.g. http,xauth,oauth2,ssh
+      token_type:
+        type: string
+        description: 'The required token type. default: password. e.g. basic_auth,X-Auth-Token, bearer, identifier'
+      token:
+        type: string
+        description: The required token used as a credential for authorization or access to a networked resource. e.g. mypassword, myusername:mypassword,  604bbe45ac7143a79e14f3158df67091, keypair_id
+      keys:
+        type: object
+        description: The optional list of protocol-specific keys or assertions.
+        additionalProperties:
+          type: string
+      user:
+        type: string
+        description: The optional user (name or ID) used for non-token based credentials.
+      cloud_provider_name:
+        type: string
+        description: The cloud provider name e.g. ec2.
+  NodeTemplate:
+    type: object
+    properties:
+      derived_from:
+        type: string
+      properties:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      requirements:
+        type: array
+        items:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+      interfaces:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      capabilities:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      type:
+        type: string
+      description:
+        type: string
+      directives:
+        type: array
+        items:
+          type: string
+      attributes:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      artifacts:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+  TopologyTemplate:
+    type: object
+    properties:
+      description:
+        type: string
+      inputs:
+        type: object
+        additionalProperties:
+          type: string
+      node_templates:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/NodeTemplate'
+      relationship_templates:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      outputs:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      groups:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      substitution_mappings:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      policies:
+        type: array
+        items:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+  ToscaTemplate:
+    type: object
+    properties:
+      tosca_definitions_version:
+        type: string
+      tosca_default_namespace:
+        type: string
+      template_name:
+        type: string
+      topology_template:
+        $ref: '#/definitions/TopologyTemplate'
+      template_author:
+        type: string
+      template_version:
+        type: string
+      description:
+        type: string
+      imports:
+        type: array
+        items:
+          type: object
+          additionalProperties:
+            type: object
+            properties: {}
+      dsl_definitions:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      node_types:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      relationship_types:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      relationship_templates:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      capability_types:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      artifact_types:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      data_types:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      interface_types:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      policy_types:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      group_types:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      repositories:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+  CloudsStormTopTopology:
+    type: object
+    properties:
+      userName:
+        type: string
+      publicKeyPath:
+        type: string
+      topologies:
+        type: array
+        items:
+          $ref: '#/definitions/CloudsStormSubTopology'
+      subnets:
+        type: array
+        items:
+          $ref: '#/definitions/CloudsStormSubnets'
+  DB:
+    type: object
+    properties:
+      cloudDBs:
+        type: array
+        items:
+          $ref: '#/definitions/CloudDB'
+  DBInfo:
+    type: object
+    properties:
+      GlobalEntry:
+        type: string
+      DCMetaInfo:
+        type: array
+        items:
+          $ref: '#/definitions/DCMetaInfo'
+  DCMetaInfo:
+    type: object
+    properties:
+      domain:
+        type: string
+      endpoint:
+        type: string
+      country:
+        type: string
+      longitude:
+        type: string
+      latitude:
+        type: string
+      availability:
+        type: string
+      VMMetaInfo:
+        type: array
+        items:
+          $ref: '#/definitions/VMMetaInfo'
+      extraInfo:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+  VMMetaInfo:
+    type: object
+    properties:
+      OS:
+        type: string
+      CPU:
+        type: string
+      MEM:
+        type: string
+      VMType:
+        type: string
+      Price:
+        type: string
+      DefaultSSHAccount:
+        type: string
+      availability:
+        type: string
+      extraInfo:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+  CloudsStormVMs:
+    type: object
+    properties:
+      VMs:
+        type: array
+        items:
+          $ref: '#/definitions/CloudsStormVM'
+  CloudCredentialDB:
+    type: object
+    properties:
+      cloudCreds:
+        type: array
+        items:
+          $ref: '#/definitions/CloudCred'
+  CredentialInfo:
+    type: object
+    properties:
+      userKeyName:
+        type: string
+      keyAlias:
+        type: string
+      keyPassword:
+        type: string
+      proxyFileName:
+        type: string
+      trustedCertDirName:
+        type: string
+      accessKey:
+        type: string
+      secretKey:
+        type: string
+  NodeTemplateMap:
+    type: object
+    properties:
+      name:
+        type: string
+      nodeTemplate:
+        $ref: '#/definitions/NodeTemplate'
+  Provisioner:
+    type: object
+    properties:
+      name:
+        type: string
+      version:
+        type: string
+      description:
+        type: string
+      tosca_interface_type:
+        type: string
+  CloudsStormInfrasCode:
+    type: object
+    properties:
+      Mode:
+        type: string
+        enum:
+        - LOCAL
+        - CTRL
+      InfrasCodes:
+        type: array
+        items:
+          $ref: '#/definitions/InfrasCode'
+  CloudsStormSubTopology:
+    type: object
+    properties:
+      topology:
+        type: string
+      cloudProvider:
+        type: string
+      domain:
+        type: string
+      status:
+        type: string
+        enum:
+        - fresh
+        - running
+        - deleted
+        - failed
+        - stopped
+      logsInfo:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      scaledFrom:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+      connections:
+        type: object
+        additionalProperties:
+          type: object
+          properties: {}
+  CloudsStormSubnets:
+    type: object
+    properties:
+      name:
+        type: string
+      subnet:
+        type: string
+      netmask:
+        type: string
+      members:
+        type: array
+        items:
+          $ref: '#/definitions/CloudsStormSubMembers'
+  CloudsStormSubMembers:
+    type: object
+    properties:
+      vmName:
+        type: string
+      address:
+        type: string
+  CloudDB:
+    type: object
+    properties:
+      cloudProvider:
+        type: string
+        enum:
+        - EC2
+        - ExoGENI
+        - EGI
+      dbInfoFile:
+        type: string
+  CloudsStormVM:
+    type: object
+    properties:
+      name:
+        type: string
+      nodeType:
+        type: string
+      OStype:
+        type: string
+      script:
+        type: string
+      publicAddress:
+        type: string
+  CloudCred:
+    type: object
+    properties:
+      cloudProvider:
+        type: string
+      credInfoFile:
+        type: string
+  InfrasCode:
+    type: object
+    properties:
+      CodeType:
+        type: string
+        enum:
+        - SEQ
+        - LOOP
+      OpCode:
+        $ref: '#/definitions/OpCode'
+      Count:
+        type: integer
+  OpCode:
+    type: object
+    properties:
+      Operation:
+        type: string
+        enum:
+        - provision
+        - delete
+        - execute
+        - put
+        - get
+        - vscale
+        - hscale
+        - recover
+        - start
+      ObjectType:
+        type: string
+        enum:
+        - SubTopology
+        - VM
+        - REQ
+      Objects:
+        type: string
+      Command:
+        type: string
+      Log:
+        type: boolean
+      Options:
+        $ref: '#/definitions/Options'
+  Options:
+    type: object
+    properties:
+      Src:
+        type: string
+      Dst:
+        type: string
