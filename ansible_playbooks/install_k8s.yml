@@ -2,8 +2,8 @@
   become: yes
   tasks:
   
-    - name: replace DNS
-      shell: sed -i "s/nameserver.*/nameserver 8.8.8.8/g" /etc/resolv.conf
+    #- name: replace DNS
+      #shell: sed -i "s/nameserver.*/nameserver 8.8.8.8/g" /etc/resolv.conf
     
     #- name: replace DNS
       #lineinfile:

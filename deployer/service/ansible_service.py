@@ -66,7 +66,12 @@ def write_ansible_files(vms, interfaces, tmp_path):
 
     image_url = interfaces['Kubernetes']['install']['inputs']['playbook']
     r = requests.get(image_url)
-    with open(tmp_path + "/playbook.yml", 'wb') as f:
+    with open(tmp_path + "/install.yml", 'wb') as f:
+        f.write(r.content)
+
+    image_url = interfaces['Kubernetes']['create']['inputs']['playbook']
+    r = requests.get(image_url)
+    with open(tmp_path + "/create.yml", 'wb') as f:
         f.write(r.content)
     return tmp_path
 
@@ -75,7 +80,14 @@ def run(interfaces, vms):
     tmp_path = tempfile.mkdtemp()
     write_ansible_files(vms, interfaces, tmp_path)
 
-    p = Popen(["ansible-playbook", "-i", tmp_path + "/k8s_hosts", tmp_path + "/playbook.yml"], stdin=PIPE, stdout=PIPE,
+    p = Popen(["ansible-playbook", "-i", tmp_path + "/k8s_hosts", tmp_path + "/install.yml"], stdin=PIPE, stdout=PIPE,
+              stderr=PIPE)
+    output, err = p.communicate()
+    print(output.decode('utf-8'))
+    print(err.decode('utf-8'))
+    rc = p.returncode
+
+    p = Popen(["ansible-playbook", "-i", tmp_path + "/k8s_hosts", tmp_path + "/create.yml"], stdin=PIPE, stdout=PIPE,
               stderr=PIPE)
     output, err = p.communicate()
     print(output.decode('utf-8'))

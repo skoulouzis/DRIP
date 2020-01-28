@@ -238,6 +238,7 @@ public class ServiceTests {
 
     /**
      * Test of getAllIds method, of class ToscaTemplateService.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -322,6 +323,7 @@ public class ServiceTests {
 
     /**
      * Test of deleteByID method, of class CredentialService.
+     *
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test

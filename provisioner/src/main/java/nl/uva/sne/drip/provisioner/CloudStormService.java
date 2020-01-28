@@ -25,11 +25,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
@@ -296,8 +293,8 @@ class CloudStormService {
 
     private ToscaTemplate runCloudStorm(String tempInputDirPath) throws IOException, ApiException {
         String[] args = new String[]{"run", tempInputDirPath};
-//        standalone.MainAsTool.main(args);
-        tempInputDirPath = "/tmp/Input-26386504078656";
+        standalone.MainAsTool.main(args);
+//        tempInputDirPath = "/tmp/Input-26386504078656";
 
         CloudsStormTopTopology _top = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                 + TOP_TOPOLOGY_FILE_NAME),
