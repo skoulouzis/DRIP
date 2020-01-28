@@ -50,6 +50,7 @@ import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
+import org.apache.maven.shared.utils.io.DirectoryScanner;
 
 /**
  *
@@ -322,7 +323,15 @@ class CloudStormService {
             rootKeyPairCredential.setProtocol("ssh");
             Map<String, String> rootKeys = new HashMap<>();
             rootKeys.put("private_key", Converter.encodeFileToBase64Binary(rootKeyPairFolder + File.separator + "id_rsa"));
-            rootKeys.put("public_key", Converter.encodeFileToBase64Binary(rootKeyPairFolder + File.separator + "id_rsa.pub"));
+
+            DirectoryScanner scanner = new DirectoryScanner();
+            scanner.setIncludes(new String[]{"**/*.pub"});
+            scanner.setBasedir(rootKeyPairFolder + File.separator);
+            scanner.setCaseSensitive(false);
+            scanner.scan();
+            String[] fileNames = scanner.getIncludedFiles();
+
+            rootKeys.put("public_key", Converter.encodeFileToBase64Binary(rootKeyPairFolder + File.separator + File.separator + fileNames[0]));
             rootKeyPairCredential.setKeys(rootKeys);
 
             String userKyePairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH;

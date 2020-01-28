@@ -18,6 +18,20 @@ import javax.validation.Valid;
 public class CloudsStormVMs {
 
     /**
+     * @return the whetherCreateVPC
+     */
+    public Boolean getWhetherCreateVPC() {
+        return whetherCreateVPC;
+    }
+
+    /**
+     * @param whetherCreateVPC the whetherCreateVPC to set
+     */
+    public void setWhetherCreateVPC(Boolean whetherCreateVPC) {
+        this.whetherCreateVPC = whetherCreateVPC;
+    }
+
+    /**
      * @return the sliceName
      */
     public String getSliceName() {
@@ -80,6 +94,10 @@ public class CloudsStormVMs {
     @JsonProperty("VMs")
     @Valid
     private List<CloudsStormVM> vms = null;
+
+    @JsonProperty("WhetherCreateVPC")
+    @Valid
+    private Boolean whetherCreateVPC;
 
     @JsonProperty("SEngineClass")
     @Valid
