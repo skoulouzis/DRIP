@@ -69,6 +69,16 @@ node_types:
   tosca.nodes.ARTICONF.Orchestrator.Kubernetes:
     derived_from: tosca.nodes.ARTICONF.Orchestrator
     description: Kubernetes orchestrator
+    attributes:
+      api_key:
+        type: string
+        required: false
+      join_token:
+        type: string
+        required: false     
+      discovery_token_ca_cert_hash:
+        type: string
+        required: false
     interfaces:
         Kubernetes:
             type: tosca.interfaces.ARTICONF.Kubernetes

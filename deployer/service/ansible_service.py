@@ -13,6 +13,8 @@ from ansible.executor.playbook_executor import PlaybookExecutor
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 
+import re
+
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
     logger.setLevel(logging.INFO)
@@ -23,7 +25,7 @@ if not getattr(logger, 'handler_set', None):
     logger.handler_set = True
 
 
-def write_ansible_files(vms, interfaces, tmp_path):
+def write_inventory_file(tmp_path, vms):
     workers = []
     k8_master = None
     ansible_ssh_private_key_file_path = None
@@ -47,6 +49,7 @@ def write_ansible_files(vms, interfaces, tmp_path):
         if ansible_ssh_user is None:
             ansible_ssh_user = vms[vm_name]['properties']['user_name']
     k8s_hosts_path = tmp_path + "/k8s_hosts"
+
     with open(k8s_hosts_path, "w") as k8s_hosts_file:
         print('[k8-master]', file=k8s_hosts_file)
         print(k8_master, file=k8s_hosts_file)
@@ -63,41 +66,63 @@ def write_ansible_files(vms, interfaces, tmp_path):
         print('ansible_ssh_private_key_file=' + ansible_ssh_private_key_file_path, file=k8s_hosts_file)
         print('ansible_ssh_common_args=\'-o StrictHostKeyChecking=no\'', file=k8s_hosts_file)
         print('ansible_ssh_user=' + ansible_ssh_user, file=k8s_hosts_file)
-
-    image_url = interfaces['Kubernetes']['install']['inputs']['playbook']
-
-    r = requests.get(image_url)
-    with open(tmp_path + "/install.yml", 'wb') as f:
-        f.write(r.content)
-
-    image_url = interfaces['Kubernetes']['create']['inputs']['playbook']
-    r = requests.get(image_url)
-    with open(tmp_path + "/create.yml", 'wb') as f:
-        f.write(r.content)
-    return tmp_path
+    return k8s_hosts_path
 
 
-def run(interfaces, vms):
-    tmp_path = tempfile.mkdtemp()
-    write_ansible_files(vms, interfaces, tmp_path)
+def write_playbooks(tmp_path, interface):
+    playbook_paths = []
+    interface_stage_list = ['install','create']
+    # for interface_stage in interface:
+    for interface_stage in interface_stage_list:
+        playbook_url = interface[interface_stage]['inputs']['playbook']
+        r = requests.get(playbook_url)
+        playbook_path = tmp_path + "/" + interface_stage + '.yaml'
+        with open(playbook_path, 'wb') as f:
+            f.write(r.content)
+        playbook_paths.append(playbook_path)
+    return playbook_paths
 
-    p = Popen(["ansible-playbook", "-i", tmp_path + "/k8s_hosts", tmp_path + "/install.yml"], stdin=PIPE, stdout=PIPE,
-              stderr=PIPE)
+
+def write_playbooks_from_tosca_interface(interfaces, tmp_path):
+    playbook_paths = []
+    for interface_name in interfaces:
+        playbook_paths = playbook_paths + write_playbooks(tmp_path, interfaces[interface_name])
+    return playbook_paths
+
+
+def run(inventory_path, playbook_path):
+    p = Popen(["ansible-playbook", "-i", inventory_path, playbook_path], stdin=PIPE, stdout=PIPE,
+                  stderr=PIPE)
     output, err = p.communicate()
     print(output.decode('utf-8'))
     print(err.decode('utf-8'))
     rc = p.returncode
+    return output, err
 
-    p = Popen(["ansible-playbook", "-i", tmp_path + "/k8s_hosts", tmp_path + "/create.yml"], stdin=PIPE, stdout=PIPE,
-              stderr=PIPE)
-    output, err = p.communicate()
-    out = output.decode('utf-8')
-    err = err.decode('utf-8')
-    print(out)
-    print(err)
-    rc = p.returncode
-    api_key = out
-    return api_key
+
+def parse_tokens(out):
+    api_key = re.search("^msg.*", out)
+    join_token = re.search("^\"stdout\": \"$", out)
+
+    m = re.search('Join command is kubeadm join(.+?)\"', out)
+    if m:
+        found = m.group(1)
+    m = re.search('--token (.+?)     --discovery-token-ca-cert-hash', found)
+    if m:
+        join_token = m.group(1)
+
+    m = re.search('--discovery-token-ca-cert-hash (.+?) "}', out)
+    if m:
+        discovery_token_ca_cert_hash = m.group(1)
+
+    m = re.search('--token (.+?)     --discovery-token-ca-cert-hash', found)
+    if m:
+        join_token = m.group(1)
+
+    m = re.search('"stdout": "      (.+?)",', out)
+    if m:
+        api_key = m.group(1)
+    return api_key, join_token, discovery_token_ca_cert_hash
 
 
 def execute_playbook(hosts, playbook_path, user, ssh_key_file, extra_vars, passwords):
