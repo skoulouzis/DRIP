@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="350a2cb3-d21f-4a78-bd8c-7614f85494cc" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../deployer/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../deployer/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../deployer/service/ansible_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/../deployer/service/ansible_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../deployer/service/k8s_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/../deployer/service/k8s_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../provisioner/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../provisioner/pom.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1XDOwMpLrjLoOX7wa6ziawR8wDT" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../deployer" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="350a2cb3-d21f-4a78-bd8c-7614f85494cc" name="Default Changelist" comment="" />
+      <created>1580577435383</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1580577435383</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1043" y="437" width="530" height="598" key="FileChooserDialogImpl" timestamp="1580577475090">
+      <screen x="67" y="34" width="2493" height="1406" />
+    </state>
+    <state x="1043" y="437" width="530" height="598" key="FileChooserDialogImpl/67.34.2493.1406@67.34.2493.1406" timestamp="1580577475090" />
+  </component>
+</project>

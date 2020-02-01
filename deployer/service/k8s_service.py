@@ -65,28 +65,30 @@ def write_ansible_k8s_files(tosca_template_json, tmp_path):
     dockers = get_dockers(tosca_template_json)
     k8s_definitions = get_k8s_definitions(dockers)
     services = k8s_definitions['services']
-    deployments  = k8s_definitions['deployments']
+    deployments = k8s_definitions['deployments']
     i = 0
     tasks = []
     for services_def in services:
+        task = {'name': 'Create a Service object' + str(i)}
         k8s = {'state': 'present', 'definition': services_def}
-        task = {'name': 'Create a Service object' + str(i), 'become': 'yes', 'k8s': k8s}
+        task['k8s'] = k8s
         i += 1
         tasks.append(task)
 
     i = 0
-    tasks = []
     for deployments_def in deployments:
-        k8s = {'state': 'present', 'definition': services_def}
-        task = {'name': 'Create a Service object' + str(i), 'become': 'yes', 'k8s': k8s}
+        task = {'name': 'Create a deployment object' + str(i)}
+        k8s = {'state': 'present', 'definition': deployments_def}
+        task['k8s'] = k8s
         i += 1
         tasks.append(task)
 
-    ansible_playbook = {'hosts': 'k8-master', 'tasks': tasks}
+    ansible_playbook = []
+    plays = {'hosts': 'k8-master', 'tasks': tasks}
+    ansible_playbook.append(plays)
     print(yaml.safe_dump(ansible_playbook))
-    ansible_playbook_path = tmp_path+'/'+'k8s_playbook.yml'
-    f = open(ansible_playbook_path, "w")
-    yaml.dump(yaml.safe_dump(ansible_playbook), f)
-    f.close()
+    ansible_playbook_path = tmp_path + '/' + 'k8s_playbook.yml'
 
+    with open(ansible_playbook_path, 'w') as file:
+        documents = yaml.dump(ansible_playbook, file)
     return ansible_playbook_path

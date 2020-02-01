@@ -71,7 +71,7 @@ def write_inventory_file(tmp_path, vms):
 
 def write_playbooks(tmp_path, interface):
     playbook_paths = []
-    interface_stage_list = ['install','create']
+    interface_stage_list = ['install', 'create']
     # for interface_stage in interface:
     for interface_stage in interface_stage_list:
         playbook_url = interface[interface_stage]['inputs']['playbook']
@@ -92,7 +92,7 @@ def write_playbooks_from_tosca_interface(interfaces, tmp_path):
 
 def run(inventory_path, playbook_path):
     p = Popen(["ansible-playbook", "-i", inventory_path, playbook_path], stdin=PIPE, stdout=PIPE,
-                  stderr=PIPE)
+              stderr=PIPE)
     output, err = p.communicate()
     print(output.decode('utf-8'))
     print(err.decode('utf-8'))
@@ -101,27 +101,31 @@ def run(inventory_path, playbook_path):
 
 
 def parse_tokens(out):
-    api_key = re.search("^msg.*", out)
-    join_token = re.search("^\"stdout\": \"$", out)
+    api_key = None
+    join_token = None
+    discovery_token_ca_cert_hash = None
+    if 'Join command is kubeadm join' in out:
+        api_key = re.search("^msg.*", out)
+        join_token = re.search("^\"stdout\": \"$", out)
 
-    m = re.search('Join command is kubeadm join(.+?)\"', out)
-    if m:
-        found = m.group(1)
-    m = re.search('--token (.+?)     --discovery-token-ca-cert-hash', found)
-    if m:
-        join_token = m.group(1)
+        m = re.search('Join command is kubeadm join(.+?)\"', out)
+        if m:
+            found = m.group(1)
+        m = re.search('--token (.+?)     --discovery-token-ca-cert-hash', found)
+        if m:
+            join_token = m.group(1)
 
-    m = re.search('--discovery-token-ca-cert-hash (.+?) "}', out)
-    if m:
-        discovery_token_ca_cert_hash = m.group(1)
+        m = re.search('--discovery-token-ca-cert-hash (.+?) "}', out)
+        if m:
+            discovery_token_ca_cert_hash = m.group(1)
 
-    m = re.search('--token (.+?)     --discovery-token-ca-cert-hash', found)
-    if m:
-        join_token = m.group(1)
+        m = re.search('--token (.+?)     --discovery-token-ca-cert-hash', found)
+        if m:
+            join_token = m.group(1)
 
-    m = re.search('"stdout": "      (.+?)",', out)
-    if m:
-        api_key = m.group(1)
+        m = re.search('"stdout": "      (.+?)",', out)
+        if m:
+            api_key = m.group(1)
     return api_key, join_token, discovery_token_ca_cert_hash
 
 
