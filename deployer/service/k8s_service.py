@@ -1,3 +1,5 @@
+from _ast import mod
+
 import yaml
 
 yaml.Dumper.ignore_aliases = lambda *args: True
@@ -68,6 +70,11 @@ def write_ansible_k8s_files(tosca_template_json, tmp_path):
     deployments = k8s_definitions['deployments']
     i = 0
     tasks = []
+    pip_task = {'name': 'install kubernetes'}
+    modules = ['setuptools', 'kubernetes', 'pkg_resources']
+    pip = {'name': modules}
+    pip_task['pip'] = pip
+    tasks.append(pip_task)
     for services_def in services:
         task = {'name': 'Create a Service object' + str(i)}
         k8s = {'state': 'present', 'definition': services_def}

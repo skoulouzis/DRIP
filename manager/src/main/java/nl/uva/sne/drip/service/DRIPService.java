@@ -111,6 +111,7 @@ public class DRIPService {
             }
 
         }
+        Logger.getLogger(ToscaHelper.class.getName()).log(Level.FINE, "Added credetials to ToscaTemplate");
         return toscaTemplate;
     }
 
@@ -160,8 +161,10 @@ public class DRIPService {
 
     private ToscaTemplate initExecution(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException {
         String ymlToscaTemplate = toscaTemplateService.findByID(id);
+         Logger.getLogger(DRIPService.class.getName()).log(Level.FINE,"Found ToscaTemplate with id: "+id);
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
         helper.uploadToscaTemplate(toscaTemplate);
+       
         return toscaTemplate;
     }
 

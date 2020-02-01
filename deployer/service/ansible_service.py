@@ -66,6 +66,7 @@ def write_inventory_file(tmp_path, vms):
         print('ansible_ssh_private_key_file=' + ansible_ssh_private_key_file_path, file=k8s_hosts_file)
         print('ansible_ssh_common_args=\'-o StrictHostKeyChecking=no\'', file=k8s_hosts_file)
         print('ansible_ssh_user=' + ansible_ssh_user, file=k8s_hosts_file)
+    logger.info("Returning inventory file at: " + str(k8s_hosts_path))
     return k8s_hosts_path
 
 
@@ -87,15 +88,19 @@ def write_playbooks_from_tosca_interface(interfaces, tmp_path):
     playbook_paths = []
     for interface_name in interfaces:
         playbook_paths = playbook_paths + write_playbooks(tmp_path, interfaces[interface_name])
+    logger.info("Returning playbook paths file at: " + str(playbook_paths))
     return playbook_paths
 
 
 def run(inventory_path, playbook_path):
+    logger.info("Executing playbook: " + str(playbook_path))
     p = Popen(["ansible-playbook", "-i", inventory_path, playbook_path], stdin=PIPE, stdout=PIPE,
               stderr=PIPE)
     output, err = p.communicate()
-    print(output.decode('utf-8'))
-    print(err.decode('utf-8'))
+    # print(output.decode('utf-8'))
+    # print(err.decode('utf-8'))
+    logger.info("Playbook output: " + str(output.decode('utf-8')))
+    logger.info("Playbook err: " + str(err.decode('utf-8')))
     rc = p.returncode
     return output, err
 

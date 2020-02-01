@@ -69,6 +69,7 @@ public class Consumer extends DefaultConsumer {
                     .build();
 
             Message message = objectMapper.readValue(new String(body, "UTF-8"), Message.class);
+            logger.log(Level.INFO, "Got Request: '{'0'}'{0}", message.getToscaTemplate());
 
             String tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
             File tempInputDir = new File(tempInputDirPath);

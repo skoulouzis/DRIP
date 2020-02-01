@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.tosca.Credential;
@@ -82,6 +84,7 @@ public class ToscaHelper {
         FileUtils.writeByteArrayToFile(toscaTemplateFile, ymlStr.getBytes());
         String resp = api.uploadToscaTemplate(toscaTemplateFile);
         id = Integer.valueOf(resp);
+        Logger.getLogger(ToscaHelper.class.getName()).log(Level.FINE, "Uploaded ToscaTemplate to sure-tosca service got back id: " + id);
     }
 
     public List<Map<String, Object>> getProvisionInterfaceDefinitions(List<String> toscaInterfaceTypes) throws ApiException {
@@ -214,7 +217,7 @@ public class ToscaHelper {
         nodes.put(node.getName(), node.getNodeTemplate());
         return toscaTemplate;
     }
-    
+
     public Map<String, Object> getProvisionerInterfaceFromVMTopology(NodeTemplateMap vmTopologyMap) {
         return (Map<String, Object>) vmTopologyMap.getNodeTemplate().getInterfaces().get("CloudsStorm");
     }
