@@ -49,8 +49,10 @@ public class ProvisionerApiController implements ProvisionerApi {
                 String planedYemplateId = dripService.provision(id);
                 return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
             } catch (ApiException ex) {
+                java.util.logging.Logger.getLogger(ProvisionerApiController.class.getName()).log(Level.SEVERE, null, ex);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(ProvisionerApiController.class.getName()).log(Level.SEVERE, null, ex);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }

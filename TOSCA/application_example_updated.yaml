@@ -17,22 +17,22 @@ description: >
 topology_template:
 
   node_templates:        
-    mysql:
+    mongo:
         type: tosca.nodes.ARTICONF.Container.Application.Docker
         properties:
             ports: 
-            - "3306:3306"   
+            - "27017:27017"   
             volumes:
-                - db_data:/var/lib/mysql
+                - db-data:/data/db
             environment:
-                MYSQL_ROOT_PASSWORD: somewordpress
-                MYSQL_DATABASE: wordpress
-                MYSQL_USER: wordpress
-                MYSQL_PASSWORD: wordpress
+                ROOT_PASSWORD: somewordpress
+                DATABASE: db
+                USER: user
+                PASSWORD: passwd
         artifacts:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
-                file: mysql:5.7
+                file:  mongo:3
                 repository: docker_hub    
                 
         
@@ -40,27 +40,27 @@ topology_template:
         type: tosca.nodes.ARTICONF.Container.Application.Docker
         properties:
             ports: 
-            - "8000:80"   
+            - "30000:80"   
             volumes:
                 - /etc/hostname:/etc/host_hostname:ro
                 - /var/run/docker.sock:/var/run/docker.sock
             environment:
-                publish: "127.0.0.1:8000:80"
+                publish: "127.0.0.1:30000:80"
         artifacts:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
                 file: gliderlabs/logspout:latest
-                repository: docker_hub                    
+                repository: docker_hub       
                 
   policies:
     - scalability:
         type: tosca.policies.ARTICONF.Performance.CPU
-        targets: [ mysql ]
+        targets: [ mongo ]
         properties:
             constraint_name: cpu_load
             max_value: 90
     - faultTolerance:
         type: tosca.policies.ARTICONF.FaultTolerance
-        targets: [ mysql ]     
+        targets: [ mongo ]     
         properties:
             level: 1

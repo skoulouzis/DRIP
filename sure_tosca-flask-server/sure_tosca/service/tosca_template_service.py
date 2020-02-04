@@ -76,7 +76,13 @@ def get_tosca_template_model_by_id(id):
 
 
 def get_tosca_template(tosca_template_dict):
-    return ToscaTemplate(yaml_dict_tpl=copy.deepcopy(tosca_template_dict))
+    start = time.time()
+    logger.info("Checking  ToscaTemplate validity")
+    tt = ToscaTemplate(yaml_dict_tpl=copy.deepcopy(tosca_template_dict))
+    end = time.time()
+    elapsed = end - start
+    logger.info("Time elapsed: " + str(elapsed))
+    return tt
 
 
 def get_tosca_template_dict_by_id(id):
@@ -107,7 +113,7 @@ def save(file):
     # dictionary = yaml.load(file.stream)
     logger.info("tosca template: \n" + str(yaml.dump(dictionary)))
     # print(yaml.dump(dictionary))
-    tosca_template = ToscaTemplate(yaml_dict_tpl=copy.deepcopy(dictionary))
+    tosca_template = get_tosca_template(dictionary)
     # all_custom_def = tosca_template.nodetemplates[0].custom_def
     tosca_template_model = ToscaTemplateModel.from_dict(dictionary)
     doc_id = tosca_templates_db.insert(dictionary)
@@ -390,7 +396,7 @@ def get_node_type_name(id, node_name):
 
 
 def update(id, tosca_template_dict):
-    tosca_template = ToscaTemplate(yaml_dict_tpl=copy.deepcopy(tosca_template_dict))
+    tosca_template = get_tosca_template(tosca_template_dict)
     tosca_template_model = ToscaTemplateModel.from_dict(tosca_template_dict)
     doc_id = tosca_templates_db.update(tosca_template_dict, doc_ids=[int(id)])
     return doc_id

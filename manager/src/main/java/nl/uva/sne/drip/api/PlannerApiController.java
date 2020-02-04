@@ -2,6 +2,7 @@ package nl.uva.sne.drip.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -45,8 +46,10 @@ public class PlannerApiController implements PlannerApi {
                 String planedYemplateId = dripService.plan(id);
                 return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
             } catch (ApiException ex) {
+                java.util.logging.Logger.getLogger(PlannerApiController.class.getName()).log(Level.SEVERE, null, ex);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(PlannerApiController.class.getName()).log(Level.SEVERE, null, ex);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }

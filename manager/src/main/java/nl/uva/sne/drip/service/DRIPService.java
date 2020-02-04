@@ -128,7 +128,6 @@ public class DRIPService {
     }
 
     private ToscaTemplate setProvisionOperation(ToscaTemplate toscaTemplate, String operation) throws IOException, JsonProcessingException, ApiException, Exception {
-//        helper.uploadToscaTemplate(toscaTemplate);
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {
             Map<String, Object> provisionerInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);

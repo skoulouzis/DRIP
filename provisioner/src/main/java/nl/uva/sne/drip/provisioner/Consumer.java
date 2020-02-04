@@ -61,15 +61,16 @@ public class Consumer extends DefaultConsumer {
 
     @Override
     public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException, FileNotFoundException, JsonProcessingException {
+        Message responceMessage = null;
+        AMQP.BasicProperties replyProps = new AMQP.BasicProperties.Builder()
+                .correlationId(properties.getCorrelationId())
+                .build();
         try {
             //Create the reply properties which tells us where to reply, and which id to use.
             //No need to change anything here
-            AMQP.BasicProperties replyProps = new AMQP.BasicProperties.Builder()
-                    .correlationId(properties.getCorrelationId())
-                    .build();
 
             Message message = objectMapper.readValue(new String(body, "UTF-8"), Message.class);
-            logger.log(Level.INFO, "Got Request: '{'0'}'{0}", message.getToscaTemplate());
+            logger.log(Level.INFO, "Got Request: {0}", objectMapper.writeValueAsString(message));
 
             String tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
             File tempInputDir = new File(tempInputDirPath);
@@ -80,21 +81,27 @@ public class Consumer extends DefaultConsumer {
             CloudStormService service = new CloudStormService(this.properties, message.getToscaTemplate());
             ToscaTemplate toscaTemplate = service.execute();
 
-            Message responceMessage = new Message();
+            responceMessage = new Message();
             responceMessage.setCreationDate(System.currentTimeMillis());
             responceMessage.setToscaTemplate(toscaTemplate);
-
+        } catch (Exception ex) {
+            responceMessage = handleException(ex);
+//            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
             String response = objectMapper.writeValueAsString(responceMessage);
 
             logger.log(Level.INFO, "Sending Response: '{'0'}'{0}", response);
             channel.basicPublish("", properties.getReplyTo(), replyProps, response.getBytes("UTF-8"));
             channel.basicAck(envelope.getDeliveryTag(), false);
-        } catch (JSchException | ApiException ex) {
-            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    private Message handleException(Exception ex) {
+        Message errorMessage = new Message();
+        errorMessage.setCreationDate(System.currentTimeMillis());
+        errorMessage.setExeption(new ApiException(ex));
+        return errorMessage;
     }
 
 }

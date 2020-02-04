@@ -82,9 +82,11 @@ public class ToscaHelper {
         String ymlStr = objectMapper.writeValueAsString(toscaTemplate);
         File toscaTemplateFile = File.createTempFile("temp-toscaTemplate", ".yml");
         FileUtils.writeByteArrayToFile(toscaTemplateFile, ymlStr.getBytes());
+        Logger.getLogger(ToscaHelper.class.getName()).log(Level.INFO, "Uploading ToscaTemplate to sure-tosca service....");
         String resp = api.uploadToscaTemplate(toscaTemplateFile);
         id = Integer.valueOf(resp);
-        Logger.getLogger(ToscaHelper.class.getName()).log(Level.FINE, "Uploaded ToscaTemplate to sure-tosca service got back id: " + id);
+        toscaTemplateFile.deleteOnExit();
+        Logger.getLogger(ToscaHelper.class.getName()).log(Level.INFO, "Uploaded ToscaTemplate to sure-tosca service got back id: {0}", id);
     }
 
     public List<Map<String, Object>> getProvisionInterfaceDefinitions(List<String> toscaInterfaceTypes) throws ApiException {

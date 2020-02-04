@@ -83,4 +83,8 @@ public class Message implements Serializable {
         this.toscaTemplate = toscaTemplate;
     }
 
+    public void setExeption(Exception exception) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

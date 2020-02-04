@@ -57,6 +57,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
                 return new ResponseEntity<>(ymlStr, HttpStatus.OK);
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type ", e);
+                java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, e);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (NotFoundException ex) {
                 java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
@@ -78,6 +79,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
                 return new ResponseEntity<>(id, HttpStatus.OK);
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type ", e);
+                java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, e);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
@@ -93,6 +95,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
                 String id = toscaTemplateService.saveFile(file);
                 return new ResponseEntity<>(id, HttpStatus.OK);
             } catch (IOException e) {
+                java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, e);
                 log.error("Couldn't serialize response for content type application/json", e);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }

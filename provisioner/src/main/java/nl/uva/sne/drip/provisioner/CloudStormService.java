@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
@@ -139,7 +141,7 @@ class CloudStormService {
         topTopology.setTopologies(cloudsStormSubTopology);
 
         objectMapper.writeValue(new File(tempInputDirPath + File.separator + TOP_TOPOLOGY_FILE_NAME), topTopology);
-
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote CloudStorm topology files in: " + tempInputDirPath + File.separator + TOP_TOPOLOGY_FILE_NAME);
         return subTopologiesAndVMs;
     }
 
@@ -156,7 +158,7 @@ class CloudStormService {
         Set<PosixFilePermission> perms = new HashSet<>();
         perms.add(PosixFilePermission.OWNER_READ);
         Files.setPosixFilePermissions(Paths.get(tempInputDirPath + File.separator + userPrivateName), perms);
-
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote ssh keys in: " + tempInputDirPath + File.separator + userPrivateName);
         return publicKeyPath;
     }
 
@@ -216,6 +218,7 @@ class CloudStormService {
                 }
             }
         }
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Found best matching VM: " + bestMatchingVM);
         return bestMatchingVM;
     }
 
@@ -238,6 +241,7 @@ class CloudStormService {
         CloudCredentialDB cloudStormCredentials = new CloudCredentialDB();
         cloudStormCredentials.setCloudCreds(cloudStormCredentialList);
         objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + "cred.yml"), cloudStormCredentials);
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote  cloudStorm credentials at : " + credentialsTempInputDirPath + File.separator + "cred.yml");
     }
 
     private CredentialInfo getCloudStormCredentialInfo(Credential toscaCredentials, String tmpPath) throws FileNotFoundException, IOException {
