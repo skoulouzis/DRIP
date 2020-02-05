@@ -48,6 +48,7 @@ def write_inventory_file(tmp_path, vms):
             os.chmod(ansible_ssh_private_key_file_path, S_IREAD)
         if ansible_ssh_user is None:
             ansible_ssh_user = vms[vm_name]['properties']['user_name']
+
     k8s_hosts_path = tmp_path + "/k8s_hosts"
 
     with open(k8s_hosts_path, "w") as k8s_hosts_file:
@@ -105,7 +106,16 @@ def run(inventory_path, playbook_path):
     return output, err
 
 
-def parse_tokens(out):
+def parse_dashboard_tokens(out):
+    token = None
+    if 'admin-user-token' in out:
+        m = re.search('\"token:      (.+?)\"', out)
+        if m:
+            token = m.group(1).strip()
+    return token
+
+
+def parse_api_tokens(out):
     api_key = None
     join_token = None
     discovery_token_ca_cert_hash = None

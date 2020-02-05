@@ -65,20 +65,21 @@ node_types:
             - greater_or_equal: 1
         
     
-    
   tosca.nodes.ARTICONF.Orchestrator.Kubernetes:
     derived_from: tosca.nodes.ARTICONF.Orchestrator
     description: Kubernetes orchestrator
     attributes:
-      api_key:
+      tokens:
+        type: list
+            entry_schema:
+                description: simple contact information
+                type: tosca.datatypes.Credential
+        required: false
+        description: list of tokens to access the kubernetes dashboard and other kubernetes resources 
+      dashboard_url:
         type: string
         required: false
-      join_token:
-        type: string
-        required: false     
-      discovery_token_ca_cert_hash:
-        type: string
-        required: false
+        description: the dashboard access url  
     interfaces:
         Kubernetes:
             type: tosca.interfaces.ARTICONF.Kubernetes

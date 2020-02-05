@@ -241,7 +241,7 @@ class CloudStormService {
         CloudCredentialDB cloudStormCredentials = new CloudCredentialDB();
         cloudStormCredentials.setCloudCreds(cloudStormCredentialList);
         objectMapper.writeValue(new File(credentialsTempInputDirPath + File.separator + "cred.yml"), cloudStormCredentials);
-        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote  cloudStorm credentials at : " + credentialsTempInputDirPath + File.separator + "cred.yml");
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote  cloudStorm credentials at : {0}{1}cred.yml", new Object[]{credentialsTempInputDirPath, File.separator});
     }
 
     private CredentialInfo getCloudStormCredentialInfo(Credential toscaCredentials, String tmpPath) throws FileNotFoundException, IOException {

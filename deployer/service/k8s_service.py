@@ -6,15 +6,19 @@ import yaml
 yaml.Dumper.ignore_aliases = lambda *args: True
 
 
-def get_template_dictionary(file_name):
+def get_templates_directory_path(file_name):
     template_path = "./k8s/"
     template_file_path = template_path + file_name
     if not os.path.exists(template_file_path):
         template_path = "../k8s/"
         template_file_path = template_path + file_name
+    return os.path.abspath(template_file_path)
+
+
+def get_yaml_data(file_name):
+    template_file_path = get_templates_directory_path(file_name)
     with open(template_file_path, 'r') as stream:
         data = yaml.safe_load(stream)
-
     return data
 
 
@@ -29,33 +33,19 @@ def get_dockers(tosca_template_json):
 
 
 def create_service_definition(docker_name, docker):
-    k8s_service = get_template_dictionary('template-service.yaml')
+    k8s_service = get_yaml_data('template-service.yaml')
     k8s_service['metadata']['labels']['app'] = docker_name
     k8s_service['metadata']['name'] = docker_name
     docker_ports = docker[docker_name]['properties']['ports'][0].split(':')
     k8s_service['spec']['ports'][0]['port'] = int(docker_ports[1])
     k8s_service['spec']['ports'][0]['nodePort'] = int(docker_ports[0])
     k8s_service['spec']['selector']['app'] = docker_name
-
-    # k8s_service = {'apiVersion': 'v1', 'kind': 'Service'}
-    # labels = {'app': docker_name}
-    # metadata = {'labels': labels, 'name': docker_name, 'namespace': 'application'}
-    # k8s_service['metadata'] = metadata
-    # spec = {'type': 'NodePort'}
-
-    # port = {'port': docker_ports[1], 'nodePort': docker_ports[0]}
-    # ports = [port]
-    # spec['ports'] = ports
-    # app = {'app': docker_name}
-    # spec['selector'] = app
-    # k8s_service['spec'] = spec
-    # # print(yaml.safe_dump(k8s_service))
     return k8s_service
 
 
 def create_deployment_definition(docker_name, docker):
     docker_ports = docker[docker_name]['properties']['ports'][0].split(':')
-    deployment = get_template_dictionary('template-deployment.yaml')
+    deployment = get_yaml_data('template-deployment.yaml')
     deployment['metadata']['labels']['app'] = docker_name
     deployment['metadata']['name'] = docker_name
     deployment['spec']['selector']['matchLabels']['app'] = docker_name
@@ -69,29 +59,6 @@ def create_deployment_definition(docker_name, docker):
             k8s_env = {'name': env, 'value': docker[docker_name]['properties']['environment'][env]}
             env_list.append(k8s_env)
         deployment['spec']['template']['spec']['containers'][0]['env'] = env_list
-    # labels = {'app': docker_name}
-    # metadata = {'labels': labels, 'name': docker_name, 'namespace': 'application'}
-    # deployment = {'apiVersion': 'apps/v1', 'kind': 'Deployment', 'metadata': metadata}
-    #
-    # match_labels = {'app': docker_name}
-    # selector = {'matchLabels': match_labels}
-    # spec = {'selector': selector, 'replicas': 1}
-    # labels = {'app': docker_name}
-    # metadata = {'labels': labels}
-    # template = {'metadata': metadata}
-    #
-    # containers = []
-    # container = {'image': docker[docker_name]['artifacts']['image']['file'], 'name': docker_name}
-    # docker_ports = docker[docker_name]['properties']['ports'][0].split(':')
-    # ports = {'containerPort': docker_ports[1]}
-    # container['ports'] = ports
-    # containers.append(container)
-    # template_spec = {'containers': containers}
-    # template['spec'] = template_spec
-    #
-    # spec['template'] = template
-    #
-    # deployment['spec'] = spec
     return deployment
 
 
@@ -142,18 +109,46 @@ def create_namespace_task():
     return task
 
 
-def create_dashboard_task():
-    task = {'name': 'create dashboard'}
-    k8s = {'src': '/tmp/recommended.yaml', 'state': 'present'}
+def create_dashboard_task(def_src):
+    task = {'name': 'create_dashboard'}
+    k8s = {'state': 'present', 'src': def_src}
     task['k8s'] = k8s
     return task
 
 
-def create_download_dashboard_task():
-    task = {'name': 'Download dashboard'}
-    get_url = {'url': 'https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc3/aio/deploy/recommended.yaml',
-               'dest': '/tmp/recommended.yaml'}
-    task['get_url'] = get_url
+def create_admin_dashboard_task():
+    admin_service_account_def = get_yaml_data("admin_service_account.yaml")
+    task = {'name': 'create_admin_dashboard'}
+    k8s = {'state': 'present', 'definition': admin_service_account_def}
+    task['k8s'] = k8s
+    return task
+
+
+def create_admin_cluster_role_binding_task():
+    admin_cluster_role_binding_def = get_yaml_data("admin_cluster_role_binding.yaml")
+    task = {'name': 'create_admin_cluster_role_binding'}
+    k8s = {'state': 'present', 'definition': admin_cluster_role_binding_def}
+    task['k8s'] = k8s
+    return task
+
+
+def create_copy_task(src, dest):
+    copy = {'src': src, 'dest': dest}
+    task = {'name': 'copy task src: ' + src + ' dest: ' + dest, 'copy': copy}
+    return task
+
+
+def create_get_admin_token_task():
+    task = {'name': 'get token',
+            'shell': 'kubectl describe secret $(kubectl get secret | grep admin-user | awk \'{print $1}\')',
+            'register': 'dashboard_token'}
+    return task
+
+
+def create_print_admin_token_task():
+    var = {'var': 'dashboard_token'}
+    task = {'name': 'print token',
+            'debug': var}
     return task
 
 
@@ -170,11 +165,25 @@ def write_ansible_k8s_files(tosca_template_json, tmp_path):
     # namespace_task = create_namespace_task()
     # tasks.append(namespace_task)
 
-    download_dashboard_task = create_download_dashboard_task()
-    tasks.append(download_dashboard_task)
+    def_src = '/tmp/dashboard.yaml'
+    copy_task = create_copy_task(get_templates_directory_path('dashboard.yaml'), def_src)
+    tasks.append(copy_task)
 
-    dashboard_task = create_dashboard_task()
+    dashboard_task = create_dashboard_task(def_src)
     tasks.append(dashboard_task)
+
+    dashboard_admin_task = create_admin_dashboard_task()
+    tasks.append(dashboard_admin_task)
+
+    admin_cluster_role_binding_task = create_admin_cluster_role_binding_task()
+    tasks.append(admin_cluster_role_binding_task)
+
+    get_admin_token_task = create_get_admin_token_task()
+    tasks.append(get_admin_token_task)
+
+    print_admin_token_task = create_print_admin_token_task()
+    tasks.append(print_admin_token_task)
+
     for services_def in services:
         task = create_service_task(i, services_def)
         i += 1
@@ -189,10 +198,27 @@ def write_ansible_k8s_files(tosca_template_json, tmp_path):
     ansible_playbook = []
     plays = {'hosts': 'k8-master', 'tasks': tasks}
     ansible_playbook.append(plays)
-    print(yaml.safe_dump(ansible_playbook))
+    # print(yaml.safe_dump(ansible_playbook))
     ansible_playbook_path = tmp_path + '/' + 'k8s_playbook.yml'
 
     with open(ansible_playbook_path, 'w') as file:
         documents = yaml.dump(ansible_playbook, file)
 
     return ansible_playbook_path
+
+
+def get_dashboard_url(vms):
+    dashboard_tasks_path = get_templates_directory_path('dashboard.yaml')
+    with open(dashboard_tasks_path, 'r') as stream:
+        tasks = yaml.load_all(stream)
+    for task in tasks:
+        if task['kind'] == 'Service' and 'name' in task['metadata'] and task['metadata']['name'] and task['metadata'][
+            'name'] == 'kubernetes-dashboard':
+            dashboard_port = task['port']['ports'][0]['nodePort']
+    for vm_name in vms:
+        attributes = vms[vm_name]['attributes']
+        role = attributes['role']
+        if role == 'master':
+            k8_master = attributes['public_ip']
+    url = 'https://' + k8_master + ':' + str(dashboard_port)
+    return url

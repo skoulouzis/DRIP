@@ -62,9 +62,9 @@ public class DRIPService {
 
         caller.setRequestQeueName(requestQeueName);
         Message plannerResponse = caller.call(message);
-        ToscaTemplate plannedToscaTemplate = plannerResponse.getToscaTemplate();
+        ToscaTemplate updatedToscaTemplate = plannerResponse.getToscaTemplate();
         caller.close();
-        return toscaTemplateService.save(plannedToscaTemplate);
+        return toscaTemplateService.save(updatedToscaTemplate);
 
     }
 

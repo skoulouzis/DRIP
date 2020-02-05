@@ -21,7 +21,7 @@ topology_template:
         type: tosca.nodes.ARTICONF.Container.Application.Docker
         properties:
             ports: 
-            - "27017:27017"   
+            - "30001:27017"   
             volumes:
                 - db-data:/data/db
             environment:

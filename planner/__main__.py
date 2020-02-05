@@ -106,7 +106,6 @@ def handle_delivery(message):
     response = {'toscaTemplate': template_dict}
     output_current_milli_time = int(round(time.time() * 1000))
     response["creationDate"] = output_current_milli_time
-    response["parameters"] = []
     if queue_name == "planner_queue":
         logger.info("Planning")
     logger.info("Returning plan")

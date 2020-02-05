@@ -67,25 +67,35 @@ def handle_delivery(message):
     parsed_json_message = json.loads(message)
     owner = parsed_json_message['owner']
     tosca_file_name = 'tosca_template'
-    tosca_template_json = parsed_json_message['toscaTemplate']
+    tosca_template_dict = parsed_json_message['toscaTemplate']
 
-    interfaces = tosca.get_interfaces(tosca_template_json)
+    tosca_interfaces = tosca.get_interfaces(tosca_template_dict)
     tmp_path = tempfile.mkdtemp()
-    vms = tosca.get_vms(tosca_template_json)
+    vms = tosca.get_vms(tosca_template_dict)
     inventory_path = ansible_service.write_inventory_file(tmp_path, vms)
-    paths = ansible_service.write_playbooks_from_tosca_interface(interfaces, tmp_path)
-    # for playbook_path in paths:
-    #     out,err = ansible_service.run(inventory_path,playbook_path)
-        # api_key, join_token, discovery_token_ca_cert_hash = ansible_service.parse_tokens(out.decode("utf-8"))
+    paths = ansible_service.write_playbooks_from_tosca_interface(tosca_interfaces, tmp_path)
+    tokens = {}
+    for playbook_path in paths:
+        out, err = ansible_service.run(inventory_path, playbook_path)
+        api_key, join_token, discovery_token_ca_cert_hash = ansible_service.parse_api_tokens(out.decode("utf-8"))
+        if api_key:
+            tokens['api_key'] = api_key
+        if join_token:
+            tokens['join_token'] = join_token
+        if discovery_token_ca_cert_hash:
+            tokens['discovery_token_ca_cert_hash'] = discovery_token_ca_cert_hash
 
-    ansible_playbook_path = k8s_service.write_ansible_k8s_files(tosca_template_json, tmp_path)
+    ansible_playbook_path = k8s_service.write_ansible_k8s_files(tosca_template_dict, tmp_path)
     out, err = ansible_service.run(inventory_path, ansible_playbook_path)
+    dashboard_token = ansible_service.parse_dashboard_tokens(out.decode("utf-8"))
 
+    tokens['dashboard_token'] = dashboard_token
 
-    template_dict = {}
-    logger.info("template ----: \n" + yaml.dump(template_dict))
+    tosca_template_dict = tosca.add_tokens(tokens, tosca_template_dict)
 
-    response = {'toscaTemplate': template_dict}
+    tosca_template_dict = tosca.add_dashboard_url(k8s_service.get_dashboard_url(vms),tosca_template_dict)
+
+    response = {'toscaTemplate': tosca_template_dict}
     output_current_milli_time = int(round(time.time() * 1000))
     response["creationDate"] = output_current_milli_time
     response["parameters"] = []
@@ -108,10 +118,7 @@ if __name__ == "__main__":
         vms = tosca.get_vms(tosca_template_json)
         ansible_service.run(interfaces, vms)
 
-
         k8s_service.write_ansible_k8s_files(tosca_template_json)
-
-
 
     else:
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
