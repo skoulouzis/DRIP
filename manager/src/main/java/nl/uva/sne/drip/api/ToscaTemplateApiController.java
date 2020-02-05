@@ -43,28 +43,28 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
         if (accept != null && accept.contains("*/*")) {
             toscaTemplateService.deleteByID(id);
             return new ResponseEntity<>("", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
-
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
     public ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("text/plain")) {
+
             try {
                 String ymlStr = toscaTemplateService.findByID(id);
                 return new ResponseEntity<>(ymlStr, HttpStatus.OK);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type ", e);
-                java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            } catch (NotFoundException ex) {
+            } catch (JsonProcessingException | NotFoundException ex) {
                 java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
+
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -82,9 +82,10 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
                 java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, e);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -99,9 +100,10 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
                 log.error("Couldn't serialize response for content type application/json", e);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -110,9 +112,10 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
         if (accept != null && accept.contains("application/json")) {
             List<String> ids = toscaTemplateService.getAllIds();
             return new ResponseEntity<>(ids, HttpStatus.NOT_IMPLEMENTED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 }

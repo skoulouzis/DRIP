@@ -141,7 +141,7 @@ class CloudStormService {
         topTopology.setTopologies(cloudsStormSubTopology);
 
         objectMapper.writeValue(new File(tempInputDirPath + File.separator + TOP_TOPOLOGY_FILE_NAME), topTopology);
-        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote CloudStorm topology files in: " + tempInputDirPath + File.separator + TOP_TOPOLOGY_FILE_NAME);
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote CloudStorm topology files in: " + TOP_TOPOLOGY_FILE_NAME, new Object[]{tempInputDirPath, File.separator});
         return subTopologiesAndVMs;
     }
 

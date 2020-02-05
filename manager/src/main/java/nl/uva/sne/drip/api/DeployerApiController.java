@@ -52,7 +52,9 @@ public class DeployerApiController implements DeployerApi {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 }

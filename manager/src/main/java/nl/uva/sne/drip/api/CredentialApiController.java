@@ -47,8 +47,10 @@ public class CredentialApiController implements CredentialApi {
         if (accept != null && accept.contains("application/json")) {
             String id = credentialService.save(body);
             return new ResponseEntity<>(id, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
     @Override

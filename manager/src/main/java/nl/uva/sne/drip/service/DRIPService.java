@@ -107,7 +107,7 @@ public class DRIPService {
         return toscaTemplate;
     }
 
-    public String plan(String id) throws ApiException, Exception {
+    public String plan(String id) throws ApiException, NotFoundException, IOException, JsonProcessingException, TimeoutException, InterruptedException {
         ToscaTemplate toscaTemplate = initExecution(id);
         return execute(toscaTemplate);
     }
@@ -150,7 +150,7 @@ public class DRIPService {
         return execute(toscaTemplate);
     }
 
-    private ToscaTemplate initExecution(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException {
+    private ToscaTemplate initExecution(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException  {
         String ymlToscaTemplate = toscaTemplateService.findByID(id);
         Logger.getLogger(DRIPService.class.getName()).log(Level.FINE, "Found ToscaTemplate with id: {0}", id);
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
