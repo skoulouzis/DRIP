@@ -100,7 +100,7 @@ public class Consumer extends DefaultConsumer {
     private Message handleException(Exception ex) {
         Message errorMessage = new Message();
         errorMessage.setCreationDate(System.currentTimeMillis());
-        errorMessage.setExeption(new ApiException(ex));
+        errorMessage.setException(ex);
         return errorMessage;
     }
 

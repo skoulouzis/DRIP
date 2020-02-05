@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.tosca.Credential;
@@ -167,25 +168,25 @@ public class ToscaHelper {
         }
     }
 
-    public String getTopologyDomain(NodeTemplateMap nodeTemplateMap) throws Exception {
+    public String getTopologyDomain(NodeTemplateMap nodeTemplateMap) throws TypeExeption {
         NodeTemplate nodeTemplate = nodeTemplateMap.getNodeTemplate();
         if (nodeTemplate.getType().equals(VM_TOPOLOGY)) {
             return (String) nodeTemplate.getProperties().get("domain");
         } else {
-            throw new Exception("NodeTemplateMap is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
+            throw new TypeExeption("NodeTemplateMap is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
         }
     }
 
-    public String getTopologyProvider(NodeTemplateMap nodeTemplateMap) throws Exception {
+    public String getTopologyProvider(NodeTemplateMap nodeTemplateMap) throws TypeExeption {
         NodeTemplate nodeTemplate = nodeTemplateMap.getNodeTemplate();
         if (nodeTemplate.getType().equals(VM_TOPOLOGY)) {
             return (String) nodeTemplate.getProperties().get("provider");
         } else {
-            throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
+            throw new TypeExeption("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
         }
     }
 
-    public NodeTemplateMap setCredentialsInVMTopology(NodeTemplateMap vmTopologyMap, Credential credential) throws Exception {
+    public NodeTemplateMap setCredentialsInVMTopology(NodeTemplateMap vmTopologyMap, Credential credential) throws TypeExeption  {
         NodeTemplate vmTopology = vmTopologyMap.getNodeTemplate();
         if (vmTopology.getType().equals(VM_TOPOLOGY)) {
             Map<String, Object> att = vmTopology.getAttributes();
@@ -197,7 +198,7 @@ public class ToscaHelper {
             vmTopologyMap.setNodeTemplate(vmTopology);
             return vmTopologyMap;
         } else {
-            throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + vmTopology.getType());
+            throw new TypeExeption("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + vmTopology.getType());
         }
     }
 

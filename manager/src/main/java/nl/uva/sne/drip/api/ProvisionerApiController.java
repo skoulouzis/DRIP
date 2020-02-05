@@ -2,6 +2,8 @@ package nl.uva.sne.drip.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
+import nl.uva.sne.drip.model.Exceptions.MissingCredentialsException;
+import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.service.DRIPService;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +52,7 @@ public class ProvisionerApiController implements ProvisionerApi {
                 dripService.setRequestQeueName(queueName);
                 String planedYemplateId = dripService.provision(id);
                 return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
-            } catch (ApiException ex) {
-                java.util.logging.Logger.getLogger(ProvisionerApiController.class.getName()).log(Level.SEVERE, null, ex);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            } catch (Exception ex) {
+            } catch (ApiException | MissingCredentialsException | TypeExeption | IOException | TimeoutException | InterruptedException | NotFoundException ex) {
                 java.util.logging.Logger.getLogger(ProvisionerApiController.class.getName()).log(Level.SEVERE, null, ex);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }

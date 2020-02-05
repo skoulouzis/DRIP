@@ -30,25 +30,33 @@ import javax.validation.constraints.NotNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Message implements Serializable {
 
+    /**
+     * @return the exception
+     */
+    public Exception getException() {
+        return exception;
+    }
+
+    /**
+     * @param exception the exception to set
+     */
+    public void setException(Exception exception) {
+        this.exception = exception;
+    }
+
     @NotNull
     private String owner;
     @NotNull
     private Long creationDate;
 
-    private List<MessageParameter> parameters;
-
+//    private List<MessageParameter> parameters;
     private ToscaTemplate toscaTemplate;
+    
+    
+    private Exception exception;
 
     public Long getCreationDate() {
         return this.creationDate;
-    }
-
-    public void setParameters(List<MessageParameter> parameters) {
-        this.parameters = parameters;
-    }
-
-    public List<MessageParameter> getParameters() {
-        return this.parameters;
     }
 
     public void setCreationDate(Long creationDate) {
@@ -81,10 +89,6 @@ public class Message implements Serializable {
      */
     public void setToscaTemplate(ToscaTemplate toscaTemplate) {
         this.toscaTemplate = toscaTemplate;
-    }
-
-    public void setExeption(Exception exception) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

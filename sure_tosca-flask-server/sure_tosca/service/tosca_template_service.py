@@ -87,7 +87,6 @@ def get_tosca_template(tosca_template_dict):
 
 def get_tosca_template_dict_by_id(id):
     tosca_template_dict = tosca_templates_db.get(doc_id=int(id))
-
     return tosca_template_dict
 
 
@@ -119,9 +118,6 @@ def save(file):
     doc_id = tosca_templates_db.insert(dictionary)
     # tosca_templates_db.close()
     logger.info("Returning doc_id: " + str(doc_id))
-    end = time.time()
-    elapsed = end - start
-    logger.info("Time elapsed: " + str(elapsed))
     return doc_id
     # except Exception as e:
     #     logger.error(str(e))

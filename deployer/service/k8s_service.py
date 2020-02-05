@@ -33,8 +33,8 @@ def create_service_definition(docker_name, docker):
     k8s_service['metadata']['labels']['app'] = docker_name
     k8s_service['metadata']['name'] = docker_name
     docker_ports = docker[docker_name]['properties']['ports'][0].split(':')
-    k8s_service['spec']['ports'][0]['port'] = docker_ports[1]
-    k8s_service['spec']['ports'][0]['nodePort'] = docker_ports[0]
+    k8s_service['spec']['ports'][0]['port'] = int(docker_ports[1])
+    k8s_service['spec']['ports'][0]['nodePort'] = int(docker_ports[0])
     k8s_service['spec']['selector']['app'] = docker_name
 
     # k8s_service = {'apiVersion': 'v1', 'kind': 'Service'}
@@ -61,7 +61,7 @@ def create_deployment_definition(docker_name, docker):
     deployment['spec']['selector']['matchLabels']['app'] = docker_name
     deployment['spec']['template']['metadata']['labels']['app'] = docker_name
     deployment['spec']['template']['spec']['containers'][0]['image'] = docker[docker_name]['artifacts']['image']['file']
-    deployment['spec']['template']['spec']['containers'][0]['ports'][0]['containerPort'] = docker_ports[1]
+    deployment['spec']['template']['spec']['containers'][0]['ports'][0]['containerPort'] = int(docker_ports[1])
     deployment['spec']['template']['spec']['containers'][0]['name'] = docker_name
     if docker[docker_name]['properties'] and 'environment' in docker[docker_name]['properties']:
         env_list = []
@@ -114,7 +114,7 @@ def get_k8s_definitions(dockers):
 
 
 def create_pip_task():
-    pip_task = {'name': 'install kubernetes'}
+    pip_task = {'name': 'install pip modules'}
     modules = ['setuptools', 'kubernetes', 'openshift']
     pip = {'name': modules}
     pip_task['pip'] = pip
@@ -142,6 +142,21 @@ def create_namespace_task():
     return task
 
 
+def create_dashboard_task():
+    task = {'name': 'create dashboard'}
+    k8s = {'src': '/tmp/recommended.yaml', 'state': 'present'}
+    task['k8s'] = k8s
+    return task
+
+
+def create_download_dashboard_task():
+    task = {'name': 'Download dashboard'}
+    get_url = {'url': 'https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc3/aio/deploy/recommended.yaml',
+               'dest': '/tmp/recommended.yaml'}
+    task['get_url'] = get_url
+    return task
+
+
 def write_ansible_k8s_files(tosca_template_json, tmp_path):
     dockers = get_dockers(tosca_template_json)
     k8s_definitions = get_k8s_definitions(dockers)
@@ -152,9 +167,14 @@ def write_ansible_k8s_files(tosca_template_json, tmp_path):
     pip_task = create_pip_task()
     tasks.append(pip_task)
 
-    namespace_task = create_namespace_task()
-    tasks.append(namespace_task)
+    # namespace_task = create_namespace_task()
+    # tasks.append(namespace_task)
 
+    download_dashboard_task = create_download_dashboard_task()
+    tasks.append(download_dashboard_task)
+
+    dashboard_task = create_dashboard_task()
+    tasks.append(dashboard_task)
     for services_def in services:
         task = create_service_task(i, services_def)
         i += 1

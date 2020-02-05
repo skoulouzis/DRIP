@@ -15,6 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.api.NotFoundException;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
+import nl.uva.sne.drip.model.Exceptions.MissingCredentialsException;
+import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.tosca.Credential;
@@ -49,31 +51,21 @@ public class DRIPService {
     ProvisionerService provisionerService;
     private static final String OPERATION_PROVISION = "provision";
 
-    private String execute(ToscaTemplate toscaTemplate) throws JsonProcessingException, ApiException, Exception {
+    private String execute(ToscaTemplate toscaTemplate) throws JsonProcessingException, ApiException, IOException, TimeoutException, InterruptedException {
 
-        try {
-            caller.init();
-            Logger.getLogger(DRIPService.class.getName()).log(Level.INFO, "toscaTemplate:\n{0}", toscaTemplate);
-            Message message = new Message();
-            message.setOwner("user");
-            message.setCreationDate(System.currentTimeMillis());
-            message.setToscaTemplate(toscaTemplate);
+        caller.init();
+        Logger.getLogger(DRIPService.class.getName()).log(Level.INFO, "toscaTemplate:\n{0}", toscaTemplate);
+        Message message = new Message();
+        message.setOwner("user");
+        message.setCreationDate(System.currentTimeMillis());
+        message.setToscaTemplate(toscaTemplate);
 
-            caller.setRequestQeueName(requestQeueName);
-            Message plannerResponse = caller.call(message);
-            ToscaTemplate plannedToscaTemplate = plannerResponse.getToscaTemplate();
+        caller.setRequestQeueName(requestQeueName);
+        Message plannerResponse = caller.call(message);
+        ToscaTemplate plannedToscaTemplate = plannerResponse.getToscaTemplate();
+        caller.close();
+        return toscaTemplateService.save(plannedToscaTemplate);
 
-            return toscaTemplateService.save(plannedToscaTemplate);
-        } catch (IOException | TimeoutException | InterruptedException ex) {
-            Logger.getLogger(DRIPService.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                caller.close();
-            } catch (IOException | TimeoutException ex) {
-                Logger.getLogger(DRIPService.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return null;
     }
 
     /**
@@ -94,7 +86,7 @@ public class DRIPService {
         return credentials.get(0);
     }
 
-    private ToscaTemplate addCredentials(ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException, Exception {
+    private ToscaTemplate addCredentials(ToscaTemplate toscaTemplate) throws MissingCredentialsException, ApiException, TypeExeption {
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         List<Credential> credentials = null;
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {
@@ -102,7 +94,7 @@ public class DRIPService {
             if (needsCredentials(provider)) {
                 credentials = credentialService.findByProvider(provider);
                 if (credentials == null || credentials.size() <= 0) {
-                    throw new Exception("Provider: " + provider + " needs credentials but non clould be found");
+                    throw new MissingCredentialsException("Provider: " + provider + " needs credentials but non clould be found");
                 } else {
                     Credential credential = getBestCredential(credentials);
                     vmTopologyMap = helper.setCredentialsInVMTopology(vmTopologyMap, credential);
@@ -120,14 +112,14 @@ public class DRIPService {
         return execute(toscaTemplate);
     }
 
-    public String provision(String id) throws JsonProcessingException, NotFoundException, IOException, Exception {
+    public String provision(String id) throws MissingCredentialsException, ApiException, TypeExeption, IOException, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException {
         ToscaTemplate toscaTemplate = initExecution(id);
         toscaTemplate = addCredentials(toscaTemplate);
         toscaTemplate = setProvisionOperation(toscaTemplate, OPERATION_PROVISION);
         return execute(toscaTemplate);
     }
 
-    private ToscaTemplate setProvisionOperation(ToscaTemplate toscaTemplate, String operation) throws IOException, JsonProcessingException, ApiException, Exception {
+    private ToscaTemplate setProvisionOperation(ToscaTemplate toscaTemplate, String operation) throws IOException, JsonProcessingException, ApiException {
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {
             Map<String, Object> provisionerInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
@@ -160,10 +152,10 @@ public class DRIPService {
 
     private ToscaTemplate initExecution(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException {
         String ymlToscaTemplate = toscaTemplateService.findByID(id);
-         Logger.getLogger(DRIPService.class.getName()).log(Level.FINE,"Found ToscaTemplate with id: "+id);
+        Logger.getLogger(DRIPService.class.getName()).log(Level.FINE, "Found ToscaTemplate with id: {0}", id);
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
         helper.uploadToscaTemplate(toscaTemplate);
-       
+
         return toscaTemplate;
     }
 
