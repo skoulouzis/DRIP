@@ -57,7 +57,7 @@ node_types:
             default: 1
             constraints:
             - greater_or_equal: 1
-        min_workers_num:
+        min_workers_num:            
             type: integer
             required: true
             default: 1
@@ -73,7 +73,7 @@ node_types:
         type: list
         required: false
         entry_schema:
-            type: string
+            type: tosca.datatypes.Credential
         description: list of tokens to access the kubernetes dashboard and other kubernetes resources 
       dashboard_url:
         type: string
