@@ -33,24 +33,7 @@ topology_template:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
                 file:  mongo:3
-                repository: docker_hub    
-                
-        
-    logspout:
-        type: tosca.nodes.ARTICONF.Container.Application.Docker
-        properties:
-            ports: 
-            - "30000:80"   
-            volumes:
-                - /etc/hostname:/etc/host_hostname:ro
-                - /var/run/docker.sock:/var/run/docker.sock
-            environment:
-                publish: "127.0.0.1:30000:80"
-        artifacts:
-            image:
-                type: tosca.artifacts.Deployment.Image.Container.Docker
-                file: gliderlabs/logspout:latest
-                repository: docker_hub       
+                repository: docker_hub     
                 
   policies:
     - scalability:
