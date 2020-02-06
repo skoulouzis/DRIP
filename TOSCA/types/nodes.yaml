@@ -88,6 +88,9 @@ node_types:
             create:
                 inputs:
                     playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/create_k8s.yml   
+            configure:
+                inputs:
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/create_k8s.yml            
                     
         
   #tosca.nodes.ARTICONF.Orchestrator.Swarm:
