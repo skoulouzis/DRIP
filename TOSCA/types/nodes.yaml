@@ -71,9 +71,8 @@ node_types:
     attributes:
       tokens:
         type: list
-            entry_schema:
-                description: simple contact information
-                type: tosca.datatypes.Credential
+        entry_schema:
+            type: tosca.datatypes.Credential
         required: false
         description: list of tokens to access the kubernetes dashboard and other kubernetes resources 
       dashboard_url:
