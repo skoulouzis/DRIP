@@ -14,14 +14,14 @@ spec:
       env:
         - name: VAR
           value: VAL
-      #ports: 
-        #- containerPort: 27017
-          #name: mongo
-      volumeMounts:
-        - name: mongo-persistent-storage
-          mountPath: /var/lib/mongo
-  volumes:
-    - name: mongo-persistent-storage
-      gcePersistentDisk:
-        pdName: mongo-disk
-        fsType: ext4
+      ##ports: 
+        ##- containerPort: 27017
+          ##name: mongo
+      #volumeMounts:
+        #- name: mongo-persistent-storage
+          #mountPath: /var/lib/mongo
+  #volumes:
+    #- name: mongo-persistent-storage
+      #gcePersistentDisk:
+        #pdName: mongo-disk
+        #fsType: ext4

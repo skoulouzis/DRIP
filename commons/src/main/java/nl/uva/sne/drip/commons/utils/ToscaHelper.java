@@ -72,6 +72,7 @@ public class ToscaHelper {
     private void init(String sureToscaBasePath) {
         Configuration.getDefaultApiClient().setBasePath(sureToscaBasePath);
         Configuration.getDefaultApiClient().setConnectTimeout(1200000);
+        Logger.getLogger(ToscaHelper.class.getName()).log(Level.FINE, "sureToscaBasePath: {0}", Configuration.getDefaultApiClient().getBasePath());
         api = new DefaultApi(Configuration.getDefaultApiClient());
         this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -186,7 +187,7 @@ public class ToscaHelper {
         }
     }
 
-    public NodeTemplateMap setCredentialsInVMTopology(NodeTemplateMap vmTopologyMap, Credential credential) throws TypeExeption  {
+    public NodeTemplateMap setCredentialsInVMTopology(NodeTemplateMap vmTopologyMap, Credential credential) throws TypeExeption {
         NodeTemplate vmTopology = vmTopologyMap.getNodeTemplate();
         if (vmTopology.getType().equals(VM_TOPOLOGY)) {
             Map<String, Object> att = vmTopology.getAttributes();

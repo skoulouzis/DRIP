@@ -155,7 +155,6 @@ public class DRIPService {
         Logger.getLogger(DRIPService.class.getName()).log(Level.FINE, "Found ToscaTemplate with id: {0}", id);
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
         helper.uploadToscaTemplate(toscaTemplate);
-
         return toscaTemplate;
     }
 

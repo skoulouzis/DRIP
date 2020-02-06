@@ -1,5 +1,7 @@
 FROM python:3.7-buster
 
+RUN apt-get install ansible
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 

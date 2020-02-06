@@ -78,7 +78,7 @@ node_types:
       dashboard_url:
         type: string
         required: false
-        description: the dashboard access url  
+        description: the dashboard access url
     interfaces:
         Kubernetes:
             type: tosca.interfaces.ARTICONF.Kubernetes
@@ -90,7 +90,7 @@ node_types:
                     playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/create_k8s.yml   
             configure:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/create_k8s.yml            
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/dashboard.yaml    
                     
         
   #tosca.nodes.ARTICONF.Orchestrator.Swarm:

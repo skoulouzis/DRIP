@@ -210,11 +210,11 @@ def write_ansible_k8s_files(tosca_template_json, tmp_path):
 def get_dashboard_url(vms):
     dashboard_tasks_path = get_templates_directory_path('dashboard.yaml')
     with open(dashboard_tasks_path, 'r') as stream:
-        tasks = yaml.load_all(stream)
+        tasks = list(yaml.load_all(stream))
     for task in tasks:
         if task['kind'] == 'Service' and 'name' in task['metadata'] and task['metadata']['name'] and task['metadata'][
             'name'] == 'kubernetes-dashboard':
-            dashboard_port = task['port']['ports'][0]['nodePort']
+            dashboard_port = task['spec']['ports'][0]['nodePort']
     for vm_name in vms:
         attributes = vms[vm_name]['attributes']
         role = attributes['role']

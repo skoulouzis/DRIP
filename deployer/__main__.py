@@ -98,8 +98,7 @@ def handle_delivery(message):
     response = {'toscaTemplate': tosca_template_dict}
     output_current_milli_time = int(round(time.time() * 1000))
     response["creationDate"] = output_current_milli_time
-    response["parameters"] = []
-    logger.info("Returning plan")
+    logger.info("Returning Deployment")
     logger.info("Output message:" + json.dumps(response))
     return json.dumps(response)
 

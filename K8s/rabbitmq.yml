@@ -9,7 +9,7 @@ spec:
     - resources:
         limits :
           cpu: 0.5
-      image: rabbitmq:3-management
+      image: rabbitmq:3.8-management
       name: rabbitmq
       env:
         - name: VAR
