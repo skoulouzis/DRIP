@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.jcraft.jsch.JSchException;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
@@ -33,7 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
-import nl.uva.sne.drip.sure.tosca.client.ApiException;
 
 /**
  *
@@ -86,7 +84,7 @@ public class Consumer extends DefaultConsumer {
             responceMessage.setToscaTemplate(toscaTemplate);
         } catch (Exception ex) {
             responceMessage = handleException(ex);
-//            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             String response = objectMapper.writeValueAsString(responceMessage);
 

@@ -12,7 +12,7 @@ services:
             - "5671-5672:5671-5672"      
             - "15672:15672"
             - "4369:4369"
-            - "15671:15671"            
+            - "15671:15671"    
         
     
     planner:
@@ -51,12 +51,12 @@ services:
             MONGO_HOST: mongo
             SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
         ports:
-            - "30001:8080"
+            - "30000:8080"
             
     sure-tosca:
         image: alogo53/sure-tosca:3.0.0
         ports: 
-            - "8081:8081"
+            - "30001:8081"
         
     logspout:
         ports: 

@@ -84,7 +84,7 @@ public class ToscaHelper {
         String ymlStr = objectMapper.writeValueAsString(toscaTemplate);
         File toscaTemplateFile = File.createTempFile("temp-toscaTemplate", ".yml");
         FileUtils.writeByteArrayToFile(toscaTemplateFile, ymlStr.getBytes());
-        Logger.getLogger(ToscaHelper.class.getName()).log(Level.INFO, "Uploading ToscaTemplate to sure-tosca service....");
+        Logger.getLogger(ToscaHelper.class.getName()).log(Level.INFO, "Uploading ToscaTemplate to sure-tosca service: {0}", api.getApiClient().getBasePath());
         String resp = api.uploadToscaTemplate(toscaTemplateFile);
         id = Integer.valueOf(resp);
         toscaTemplateFile.deleteOnExit();
