@@ -1,6 +1,6 @@
-FROM python:3.7-buster
+FROM python:3.8-buster
 
-RUN apt-get install ansible
+RUN apt update -y && apt-get install ansible -y
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -11,6 +11,4 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . /usr/src/app
 
-EXPOSE 8081
-
-ENTRYPOINT ["python3 __main__.py $RABBITMQ_HOST deployer_queue"]
+CMD python3 __main__.py $RABBITMQ_HOST deployer

@@ -41,10 +41,13 @@ def init_chanel(args):
 
 
 def start(this_channel):
-    this_channel.basic_qos(prefetch_count=1)
-    this_channel.basic_consume(queue=queue_name, on_message_callback=on_request)
-    logger.info(" [x] Awaiting RPC requests")
-    this_channel.start_consuming()
+    try:
+        this_channel.basic_qos(prefetch_count=1)
+        this_channel.basic_consume(queue=queue_name, on_message_callback=on_request)
+        logger.info(" [x] Awaiting RPC requests")
+        this_channel.start_consuming()
+    except:
+        exit(-1)
 
 
 def on_request(ch, method, props, body):
@@ -93,7 +96,7 @@ def handle_delivery(message):
 
     tosca_template_dict = tosca.add_tokens(tokens, tosca_template_dict)
 
-    tosca_template_dict = tosca.add_dashboard_url(k8s_service.get_dashboard_url(vms),tosca_template_dict)
+    tosca_template_dict = tosca.add_dashboard_url(k8s_service.get_dashboard_url(vms), tosca_template_dict)
 
     response = {'toscaTemplate': tosca_template_dict}
     output_current_milli_time = int(round(time.time() * 1000))

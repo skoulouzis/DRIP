@@ -1,10 +1,10 @@
-version: '3'
+version: '3.7'
 
 services:
     mongo:
         image: mongo:4
         ports:
-            - "27017:27017"
+            - "27017:27017"        
     
     rabbit:
         image: rabbitmq:3.8-management
@@ -12,8 +12,7 @@ services:
             - "5671-5672:5671-5672"      
             - "15672:15672"
             - "4369:4369"
-            - "15671:15671"    
-        
+            - "15671:15671"                
     
     planner:
         depends_on:
@@ -21,8 +20,8 @@ services:
             - sure-tosca
         image: alogo53/planner:3.0.0
         environment:
-            RABBITMQ_HOST: rabbit
-            
+            RABBITMQ_HOST: rabbit            
+    
     provisioner:
         depends_on:
             - rabbit
@@ -38,7 +37,7 @@ services:
             - sure-tosca
         image: alogo53/deployer:3.0.0
         environment:
-            RABBITMQ_HOST: rabbit 
+            RABBITMQ_HOST: rabbit        
             
     manager:
         depends_on:
@@ -51,12 +50,12 @@ services:
             MONGO_HOST: mongo
             SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
         ports:
-            - "30000:8080"
+            - "30000:8080"              
             
     sure-tosca:
         image: alogo53/sure-tosca:3.0.0
         ports: 
-            - "30001:8081"
+            - "30001:8081"          
         
     logspout:
         ports: 
@@ -66,9 +65,4 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         environment:
             publish: "127.0.0.1:30002:80"
-        image: gliderlabs/logspout:latest
-          
-        
-        
-#docker-compose build
-#docker-compose up -d
+        image: gliderlabs/logspout:latest 

@@ -7,10 +7,15 @@ import os.path
 import tempfile
 import time
 import logging
+from concurrent.futures import thread
+from threading import Thread
+
 import pika
 import yaml
 import sys
 import copy
+
+from time import sleep
 
 from toscaparser.tosca_template import ToscaTemplate
 
@@ -20,7 +25,6 @@ from util import tosca_helper
 
 logger = logging.getLogger(__name__)
 
-
 # if not getattr(logger, 'handler_set', None):
 # logger.setLevel(logging.INFO)
 # h = logging.StreamHandler()
@@ -28,6 +32,8 @@ logger = logging.getLogger(__name__)
 # h.setFormatter(formatter)
 # logger.addHandler(h)
 # logger.handler_set = True
+
+done = False
 
 
 def init_chanel(args):
@@ -41,7 +47,7 @@ def init_chanel(args):
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
     channel = connection.channel()
     channel.queue_declare(queue=queue_name)
-    return channel
+    return channel, connection
 
 
 def start(this_channel):
@@ -113,6 +119,12 @@ def handle_delivery(message):
     return json.dumps(response)
 
 
+def threaded_function(args):
+    while not done:
+        connection.process_data_events()
+        sleep(5)
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     if sys.argv[1] == "test_local":
@@ -133,7 +145,20 @@ if __name__ == "__main__":
     else:
         print("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
-        channel = init_chanel(sys.argv)
+        global channel
+        global connection
+        channel, connection = init_chanel(sys.argv)
         global queue_name
         queue_name = sys.argv[2]
-        start(channel)
+        # start(channel)
+        thread = Thread(target=threaded_function, args=(1,))
+        thread.start()
+
+        logger.info("Awaiting RPC requests")
+        try:
+            channel.start_consuming()
+        except KeyboardInterrupt:
+            # thread.stop()
+            done = True
+            thread.join()
+            logger.info("Threads successfully closed")
