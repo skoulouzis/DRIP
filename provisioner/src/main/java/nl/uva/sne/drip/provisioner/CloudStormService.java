@@ -79,9 +79,15 @@ class CloudStormService {
     CloudStormService(Properties properties, ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException {
         this.toscaTemplate = toscaTemplate;
         cloudStormDBPath = properties.getProperty("cloud.storm.db.path");
+        if (cloudStormDBPath == null) {
+            throw new NullPointerException("cloudStormDBPath cannot be null");
+        }
         cloudStormDAO = new CloudStormDAO(cloudStormDBPath);
         String sureToscaBasePath = properties.getProperty("sure-tosca.base.path");
-        Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "sureToscaBasePath: {0}",sureToscaBasePath);
+        if (sureToscaBasePath == null) {
+            throw new NullPointerException("sureToscaBasePath cannot be null");
+        }
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "sureToscaBasePath: {0}", sureToscaBasePath);
         this.helper = new ToscaHelper(sureToscaBasePath);
         this.helper.uploadToscaTemplate(toscaTemplate);
         this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
