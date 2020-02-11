@@ -20,7 +20,7 @@ services:
             - sure-tosca
         image: alogo53/planner:3.0.0
         environment:
-            RABBITMQ_HOST: rabbit            
+            RABBITMQ_HOST: rabbit
     
     provisioner:
         depends_on:

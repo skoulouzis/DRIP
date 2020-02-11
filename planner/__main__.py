@@ -68,12 +68,13 @@ def on_request(ch, method, props, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
-def handle_delivery(message):
+def handle_delivery(message, sys=None):
     logger.info("Got: " + str(message))
     try:
         message = message.decode()
     except (UnicodeDecodeError, AttributeError):
-        pass
+        e = sys.exc_info()[0]
+        logger.info("Parsing Error: " + str(e))
     parsed_json_message = json.loads(message)
     owner = parsed_json_message['owner']
     tosca_file_name = 'tosca_template'
@@ -143,22 +144,20 @@ if __name__ == "__main__":
         test_response = {'toscaTemplate': template_dict}
         logger.info("Output message:" + json.dumps(test_response))
     else:
-        print("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         logger.info("Input args: " + sys.argv[0] + ' ' + sys.argv[1] + ' ' + sys.argv[2])
         global channel
         global connection
         channel, connection = init_chanel(sys.argv)
         global queue_name
         queue_name = sys.argv[2]
-        # start(channel)
-        thread = Thread(target=threaded_function, args=(1,))
-        thread.start()
+
+        # thread = Thread(target=threaded_function, args=(1,))
+        # thread.start()
 
         logger.info("Awaiting RPC requests")
         try:
-            channel.start_consuming()
-        except KeyboardInterrupt:
-            # thread.stop()
-            done = True
-            thread.join()
-            logger.info("Threads successfully closed")
+            start(channel)
+        except:
+            e = sys.exc_info()[0]
+            logger.info("Error: " + str(e))
+            exit(-1)
