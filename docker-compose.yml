@@ -55,7 +55,7 @@ services:
     sure-tosca:
         image: alogo53/sure-tosca:3.0.0
         ports: 
-            - "30001:8081"          
+            - "8081:8081"
         
     #logspout:
         #ports: 
