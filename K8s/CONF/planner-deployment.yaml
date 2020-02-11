@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file docker-compose.yml convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: planner
+  name: planner
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: planner
+    spec:
+      containers:
+      - env:
+        - name: RABBITMQ_HOST
+          value: rabbit
+        image: alogo53/planner:3.0.0
+        name: planner
+        resources: {}
+      restartPolicy: Always
+status: {}
