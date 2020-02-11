@@ -10,6 +10,9 @@ metadata:
   name: sure-tosca
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: sure-tosca    
   strategy: {}
   template:
     metadata:
@@ -20,8 +23,6 @@ spec:
       containers:
       - image: alogo53/sure-tosca:3.0.0
         name: sure-tosca
-        ports:
-        - containerPort: 8081
         resources: {}
       restartPolicy: Always
 status: {}
