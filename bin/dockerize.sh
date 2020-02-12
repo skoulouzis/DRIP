@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ../
 echo "----------Building manager Docker--------------"
 cd manager && mvn -Dmaven.test.skip=true dockerfile:build
 status=$?
