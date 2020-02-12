@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cd ../
 mvn test
 status=$?
 [ $status -eq 0 ] && echo "build successful" || exit -1
