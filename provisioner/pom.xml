@@ -113,7 +113,7 @@
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>1.4.13</version>
                 <configuration>
-                                        <repository>${docker.image.prefix}/${project.artifactId}</repository>
+                    <repository>${docker.image.prefix}/${project.artifactId}</repository>
                     <!--<repository>${project.artifactId}</repository>-->
                     <tag>${project.version}</tag>
                 </configuration>
@@ -133,6 +133,13 @@
             <id>zh-releases</id>
             <url>https://raw.githubusercontent.com/CloudsStorm/mvn-repo/master/releases</url>
         </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>releases</id>
+            <url>https://raw.githubusercontent.com/skoulouzis/mvn-repo/master/releases</url>
+        </repository>        
     </repositories>
     <name>provisioner</name>
 </project>
