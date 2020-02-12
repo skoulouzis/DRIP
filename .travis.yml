@@ -1,0 +1,22 @@
+sudo: required
+services:
+- docker
+matrix:
+  include:
+    - language: python
+      python: 3.8
+      before_script:
+        - cd planner
+        - pip install -r requirements.txt
+      script:
+        - python -m unittest discover
+
+    - language: java
+      jdk: openjdk-11-jre-headless
+      #before_script:
+        #- cd manager
+      script:
+        - mvn -Dmaven.test.skip=true install
+    
+#after_success:
+#- docker login -u $DOCKER_USER -p $DOCKER_PASS
