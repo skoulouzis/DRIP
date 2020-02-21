@@ -28,17 +28,3 @@ topology_template:
                 file:  alogo53/ws-pema-lifewatch
                 repository: docker_hub     
                 
-  #policies:
-    #- location:
-        #type: tosca.policies.ARTICONF.Requirement.Provider
-        #targets: [ ws-pema-lifewatch ]
-        #properties:
-            #accepted_providers: 
-                #- ExoGENI
-    #- orchestrator:
-        #type: tosca.policies.ARTICONF.Requirement.docker.Orchestrator
-        #targets: [ ws-pema-lifewatch ]
-        #properties:
-            #accepted_orchestrator_types: 
-                #- tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes                
-

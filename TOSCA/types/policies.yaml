@@ -39,24 +39,3 @@ policy_types:
         type: integer
         required: false
         description: the minimum acceptable value
-        
-        
-  tosca.policies.ARTICONF.Requirement.Provider:
-    derived_from: tosca.policies.Root
-    description: defines cloud provider where vm topology can be deployed 
-    properties:
-      accepted_providers:
-        type: list
-        description: list of the acceptable providers
-        schema_entry:
-          type: string 
-          
-  tosca.policies.ARTICONF.Requirement.docker.Orchestrator:
-    derived_from: tosca.policies.Root
-    description: defines type of docker.Orchestrator 
-    properties:
-      accepted_orchestrator_types:
-        type: list
-        description: list of the acceptable orchestrator types e.g. tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes                
-        schema_entry:
-          type: string           

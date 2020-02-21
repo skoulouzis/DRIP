@@ -51,6 +51,9 @@ class SpecificationAnalyzer(metaclass=ABCMeta):
 
     @abstractmethod
     def set_node_specifications(self):
+        """set the node_specifications
+        :rtype: list
+        """
         raise NotImplementedError('Must implement upload in subclasses')
 
     @abstractmethod
