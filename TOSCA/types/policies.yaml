@@ -39,3 +39,14 @@ policy_types:
         type: integer
         required: false
         description: the minimum acceptable value
+        
+        
+  tosca.policies.ARTICONF.Placement.Requirement.Provider:
+    derived_from: tosca.policies.Placement
+    description: defines cloud providr where vm topology can be deployed 
+    properties:
+      accepted_providers:
+        type: list
+        description: list of the acceptable providers
+        schema_entry:
+          type: string 
