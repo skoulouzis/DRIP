@@ -31,11 +31,11 @@ node_types:
         required: false
     requirements:
       - host:
-          capability: tosca.capabilities.ARTICONF.Orchestrator
-          node: tosca.nodes.ARTICONF.Orchestrator
+          capability: tosca.capabilities.ARTICONF.docker.Orchestrator
+          node: tosca.nodes.ARTICONF.docker.Orchestrator
           relationship: tosca.relationships.HostedOn         
           
-  tosca.nodes.ARTICONF.Orchestrator:
+  tosca.nodes.ARTICONF.docker.Orchestrator:
     derived_from: tosca.nodes.ARTICONF.Root
     description: a container orchestrator
     requirements:
@@ -45,7 +45,7 @@ node_types:
           relationship: tosca.relationships.HostedOn
     capabilities:
       orchestrator:
-        type: tosca.capabilities.ARTICONF.Orchestrator
+        type: tosca.capabilities.ARTICONF.docker.Orchestrator
       host:
         type: tosca.capabilities.Container.Docker
       container:
@@ -65,8 +65,8 @@ node_types:
             - greater_or_equal: 1
         
     
-  tosca.nodes.ARTICONF.Orchestrator.Kubernetes:
-    derived_from: tosca.nodes.ARTICONF.Orchestrator
+  tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes:
+    derived_from: tosca.nodes.ARTICONF.docker.Orchestrator
     description: Kubernetes orchestrator
     attributes:
       tokens:
@@ -93,12 +93,12 @@ node_types:
                     playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/dashboard.yaml    
                     
         
-  #tosca.nodes.ARTICONF.Orchestrator.Swarm:
-    #derived_from: tosca.nodes.ARTICONF.Orchestrator
-    #description: swarm orchestrator
-    #interfaces:
-      #Standard:
-        #create: interfaces/playbooks/docker_swarm_install.yaml            
+  tosca.nodes.ARTICONF.docker.Orchestrator.Swarm:
+    derived_from: tosca.nodes.ARTICONF.docker.Orchestrator
+    description: swarm orchestrator
+    interfaces:
+      Standard:
+        create: interfaces/playbooks/docker_swarm_install.yaml            
         
   tosca.nodes.ARTICONF.VM.topology:
     derived_from: tosca.nodes.ARTICONF.Infrastructure

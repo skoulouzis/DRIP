@@ -52,9 +52,7 @@ class MyTestCase(unittest.TestCase):
     #     print("Output message:" + json.dumps(response))
     #     self.assertEqual(True, True)
 
-
-
-    def test_planner2(self):
+    def test_planner_policies(self):
         logger = logging.getLogger(__name__)
 
         input_tosca_file_path = get_tosca_files_path('lifeWatch_vre1.yaml')
@@ -70,12 +68,13 @@ class MyTestCase(unittest.TestCase):
         template_dict = tosca_helper.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
         logger.info("template ----: \n" + yaml.dump(template_dict))
         ToscaTemplate(yaml_dict_tpl=copy.deepcopy(template_dict))
-
+        print(yaml.dump(template_dict))
         test_response = {'toscaTemplate': template_dict}
 
         response = {'toscaTemplate': template_dict}
         output_current_milli_time = int(round(time.time() * 1000))
         response["creationDate"] = output_current_milli_time
         response["parameters"] = []
-        print("Output message:" + json.dumps(response))
+        # print("Output message:" + json.dumps(response))
+
         self.assertEqual(True, True)

@@ -1,11 +1,11 @@
 tosca_definitions_version: tosca_simple_yaml_1_0
 
 imports:
-  - nodes: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/nodes.yaml
+  - nodes: https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/nodes.yaml
   - data: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/TOSCA/types/data.yml
-  - capabilities: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/capabilities.yaml
-  - policies: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/policies.yaml
-  - interfaces: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/interfaces.yml
+  - capabilities: https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/capabilities.yaml
+  - policies: https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/policies.yaml
+  - interfaces: https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/interfaces.yml
   
 repositories:
   docker_hub: https://hub.docker.com/  
@@ -35,3 +35,9 @@ topology_template:
         properties:
             accepted_providers: 
                 - ExoGENI
+    - docker_orchestrator:
+        type: tosca.policies.ARTICONF.Requirement.docker.Orchestrator
+        targets: [ ws-pema-lifewatch ]
+        properties:
+            accepted_orchestrator_types: 
+                - tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes
