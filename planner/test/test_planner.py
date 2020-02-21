@@ -67,8 +67,9 @@ class MyTestCase(unittest.TestCase):
         test_tosca_template = test_planner.set_infrastructure_specifications()
         template_dict = tosca_helper.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
         logger.info("template ----: \n" + yaml.dump(template_dict))
-        ToscaTemplate(yaml_dict_tpl=copy.deepcopy(template_dict))
         print(yaml.dump(template_dict))
+        ToscaTemplate(yaml_dict_tpl=copy.deepcopy(template_dict))
+
         test_response = {'toscaTemplate': template_dict}
 
         response = {'toscaTemplate': template_dict}

@@ -19,7 +19,7 @@ class SimpleAnalyzer(SpecificationAnalyzer):
         return_nodes = []
         # nodes_with_occurrences_in_requirements = tosca_util.get_nodes_with_occurrences_in_requirements(
         # self.tosca_template.nodetemplates)
-        orchestrator_nodes = tosca_helper.get_nodes_by_type('tosca.nodes.ARTICONF.Orchestrator',
+        orchestrator_nodes = tosca_helper.get_nodes_by_type('tosca.nodes.ARTICONF.docker.Orchestrator',
                                                             self.tosca_template.nodetemplates, self.all_node_types,
                                                             self.all_custom_def)
 
@@ -115,7 +115,7 @@ class SimpleAnalyzer(SpecificationAnalyzer):
         logging.info('Setting properties for: ' + str(affected_node.type))
 
         # ancestors_types = tosca_helper.get_all_ancestors_types(affected_node, self.all_node_types, self.all_custom_def)
-        # if 'tosca.nodes.ARTICONF.Orchestrator' in ancestors_types:
+        # if 'tosca.nodes.ARTICONF.docker.Orchestrator' in ancestors_types:
         #     logging.info('Do Something')
         ancestors_properties = tosca_helper.get_all_ancestors_properties(affected_node, self.all_node_types,
                                                                          self.all_custom_def)

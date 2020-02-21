@@ -33,7 +33,7 @@ node_types:
       - host:
           capability: tosca.capabilities.ARTICONF.docker.Orchestrator
           node: tosca.nodes.ARTICONF.docker.Orchestrator
-          relationship: tosca.relationships.HostedOn         
+          relationship: tosca.relationships.HostedOn
           
   tosca.nodes.ARTICONF.docker.Orchestrator:
     derived_from: tosca.nodes.ARTICONF.Root
@@ -84,13 +84,13 @@ node_types:
             type: tosca.interfaces.ARTICONF.Kubernetes
             install:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/install_k8s.yml
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml
             create:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/create_k8s.yml   
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/create_k8s.yml   
             configure:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/dashboard.yaml    
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/dashboard.yaml    
                     
         
   tosca.nodes.ARTICONF.docker.Orchestrator.Swarm:

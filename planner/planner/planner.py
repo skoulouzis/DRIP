@@ -179,6 +179,9 @@ class Planner:
     def find_best_node_for_requirements(self, all_requirements):
         """Returns  the 'best' node for a set of requirements. Here we count the number of requiremets that the node
         can cover and return the one which covers the most """
+
+        # Check if we have a preference from policies
+
         matching_nodes = {}
         number_of_matching_requirement = {}
         # Loop requirements to find nodes per requirement
