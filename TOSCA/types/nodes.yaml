@@ -35,7 +35,7 @@ node_types:
           node: osca.nodes.ARTICONF.docker.Orchestrator
           relationship: tosca.relationships.HostedOn         
           
-  osca.nodes.ARTICONF.docker.Orchestrator:
+  tosca.nodes.ARTICONF.docker.Orchestrator:
     derived_from: tosca.nodes.ARTICONF.Root
     description: a container orchestrator
     requirements:
@@ -65,7 +65,7 @@ node_types:
             - greater_or_equal: 1
         
     
-  osca.nodes.ARTICONF.docker.Orchestrator.Kubernetes:
+  tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes:
     derived_from: osca.nodes.ARTICONF.docker.Orchestrator
     description: Kubernetes orchestrator
     attributes:
