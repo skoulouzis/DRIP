@@ -66,10 +66,10 @@ topology_template:
         Kubernetes:
           create:
             inputs:
-              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/create_k8s.yml"
+              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/create_k8s.yml"
           install:
             inputs:
-              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/ansible_playbooks/install_k8s.yml"
+              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml"
       type: "tosca.nodes.ARTICONF.Orchestrator.Kubernetes"
     logspout:
       properties:
@@ -157,8 +157,8 @@ topology_template:
       type: "tosca.policies.ARTICONF.FaultTolerance"
 description: "TOSCA example"
 imports:
-- nodes: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/nodes.yaml"
-- data: "https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/TOSCA/types/data.yml"
-- capabilities: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/capabilities.yaml"
-- policies: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/policies.yaml"
-- interfaces: "https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/interfaces.yml"
+- nodes: "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/nodes.yaml"
+- data: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/data.yml"
+- capabilities: "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/capabilities.yaml"
+- policies: "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/policies.yaml"
+- interfaces: "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/interfaces.yml"
