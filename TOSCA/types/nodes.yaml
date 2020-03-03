@@ -32,7 +32,7 @@ node_types:
     requirements:
       - host:
           capability: tosca.capabilities.ARTICONF.docker.Orchestrator
-          node: osca.nodes.ARTICONF.docker.Orchestrator
+          node: tosca.nodes.ARTICONF.docker.Orchestrator
           relationship: tosca.relationships.HostedOn         
           
   tosca.nodes.ARTICONF.docker.Orchestrator:
@@ -66,7 +66,7 @@ node_types:
         
     
   tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes:
-    derived_from: osca.nodes.ARTICONF.docker.Orchestrator
+    derived_from: tosca.nodes.ARTICONF.docker.Orchestrator
     description: Kubernetes orchestrator
     attributes:
       tokens:
@@ -94,7 +94,7 @@ node_types:
                     
         
   #osca.nodes.ARTICONF.docker.Orchestrator.Swarm:
-    #derived_from: osca.nodes.ARTICONF.docker.Orchestrator
+    #derived_from: tosca.nodes.ARTICONF.docker.Orchestrator
     #description: swarm orchestrator
     #interfaces:
       #Standard:

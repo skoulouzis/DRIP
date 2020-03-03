@@ -184,12 +184,16 @@ class Planner:
         for tosca_node_type in self.all_node_types:
             if tosca_node_type.startswith('tosca.nodes') and 'capabilities' in self.all_node_types[tosca_node_type]:
                 logging.debug('      Node: ' + str(tosca_node_type))
+                print('      Node: ' + str(tosca_node_type))
                 for caps in self.all_node_types[tosca_node_type]['capabilities']:
                     logging.debug('          ' + str(
+                        self.all_node_types[tosca_node_type]['capabilities'][caps]['type']) + ' == ' + cap)
+                    print('          ' + str(
                         self.all_node_types[tosca_node_type]['capabilities'][caps]['type']) + ' == ' + cap)
                     if self.all_node_types[tosca_node_type]['capabilities'][caps]['type'] == cap:
                         candidate_nodes[tosca_node_type] = self.all_node_types[tosca_node_type]
                         logging.debug('          candidate_node: ' + str(tosca_node_type))
+                        print('          candidate_node: ' + str(tosca_node_type))
 
         candidate_child_nodes = {}
         for node in candidate_nodes:
@@ -212,7 +216,6 @@ class Planner:
         for req in all_requirements:
             if 'capability' in req[next(iter(req))]:
                 capability = req[next(iter(req))]['capability']
-
                 # Find nodes in node_templates that have the capability
                 logging.info('  Looking for nodes in node_templates with capability: ' + capability)
                 capable_nodes = self.get_node_templates_by_capability(capability)
@@ -251,6 +254,8 @@ class Planner:
         child_nodes = {}
         for tosca_node_type in self.all_node_types:
             if tosca_node_type.startswith('tosca.nodes') and 'derived_from' in self.all_node_types[tosca_node_type]:
+                print(parent_node_type_name)
+                print(tosca_node_type)
                 if parent_node_type_name == self.all_node_types[tosca_node_type]['derived_from']:
                     child_nodes[tosca_node_type] = self.all_node_types[tosca_node_type]
         return child_nodes
