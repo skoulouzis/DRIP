@@ -12,6 +12,33 @@ from service.simple_spec_alayzer import SimpleAnalyzer
 from util import tosca_helper
 
 
+def add_requirements(node, missing_requirements, capable_node_name):
+    """Add the requirements to the node """
+    for req in missing_requirements:
+        req[next(iter(req))]['node'] = capable_node_name
+        if isinstance(node, NodeTemplate):
+            contains_requirement = False
+            for node_requirement in node.requirements:
+                if node_requirement == req:
+                    contains_requirement = True
+                    break
+            if not contains_requirement:
+                node.requirements.append(req)
+        elif isinstance(node, dict):
+            type_name = next(iter(node))
+            if 'requirements' not in node[type_name]:
+                node[type_name]['requirements'] = []
+            node_requirements = node[type_name]['requirements']
+            contains_requirement = False
+            for node_requirement in node_requirements:
+                if node_requirement == req:
+                    contains_requirement = True
+                    break
+            if not contains_requirement:
+                node[type_name]['requirements'].append(req)
+    return node
+
+
 class Planner:
 
     def __init__(self, tosca_path=None, yaml_dict_tpl=None, spec_service=None):
@@ -105,7 +132,7 @@ class Planner:
         matching_node_type_name = next(iter(matching_node))
         matching_node_template = tosca_helper.node_type_2_node_template(matching_node, self.all_custom_def)
         # Add the requirements to the node we analyzed. e.g. docker needed host now we added the type and name of host
-        node = self.add_requirements(node, all_requirements, matching_node_template.name)
+        node = add_requirements(node, all_requirements, matching_node_template.name)
         if not tosca_helper.contains_node_type(self.required_nodes, matching_node_type_name) and \
                 not tosca_helper.contains_node_type(self.tosca_template.nodetemplates, matching_node_type_name):
             logging.info('  Adding: ' + str(matching_node_template.name))
@@ -179,11 +206,15 @@ class Planner:
     def find_best_node_for_requirements(self, all_requirements):
         """Returns  the 'best' node for a set of requirements. Here we count the number of requiremets that the node
         can cover and return the one which covers the most """
-
-        # Check if we have a preference from policies
-
         matching_nodes = {}
         number_of_matching_requirement = {}
+        for req in all_requirements:
+            if 'capability' in req[next(iter(req))]:
+                capability = req[next(iter(req))]['capability']
+                logging.info('  Looking for nodes with capability: ' + capability)
+                # Check if we already cover the requirements within the topology
+                capable_nodes = self.get_node_templates_by_capability(capability)
+
         # Loop requirements to find nodes per requirement
         for req in all_requirements:
             if 'capability' in req[next(iter(req))]:
@@ -226,28 +257,9 @@ class Planner:
                     child_nodes[tosca_node_type] = self.all_node_types[tosca_node_type]
         return child_nodes
 
-    def add_requirements(self, node, missing_requirements, capable_node_name):
-        """Add the requirements to the node """
-        for req in missing_requirements:
-            req[next(iter(req))]['node'] = capable_node_name
-            if isinstance(node, NodeTemplate):
-                contains_requirement = False
-                for node_requirement in node.requirements:
-                    if node_requirement == req:
-                        contains_requirement = True
-                        break
-                if not contains_requirement:
-                    node.requirements.append(req)
-            elif isinstance(node, dict):
-                type_name = next(iter(node))
-                if 'requirements' not in node[type_name]:
-                    node[type_name]['requirements'] = []
-                node_requirements = node[type_name]['requirements']
-                contains_requirement = False
-                for node_requirement in node_requirements:
-                    if node_requirement == req:
-                        contains_requirement = True
-                        break
-                if not contains_requirement:
-                    node[type_name]['requirements'].append(req)
-        return node
+    def get_node_templates_by_capability(self, capability):
+        candidate_nodes = {}
+        for node in self.tosca_template.nodetemplates:
+            if node.type.startswith('tosca.nodes'):
+                tosca_helper.get_all_ancestors_types()
+        return capable_nodes

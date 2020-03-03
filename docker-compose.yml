@@ -14,13 +14,13 @@ services:
             - "4369:4369"
             - "15671:15671"                
     
-    planner:
-        depends_on:
-            - rabbit
-            - sure-tosca
-        image: alogo53/planner:3.0.0
-        environment:
-            RABBITMQ_HOST: rabbit
+    #planner:
+        #depends_on:
+            #- rabbit
+            #- sure-tosca
+        #image: alogo53/planner:3.0.0
+        #environment:
+            #RABBITMQ_HOST: rabbit
     
     provisioner:
         depends_on:
@@ -52,17 +52,17 @@ services:
         ports:
             - "30000:8080"              
             
-    sure-tosca:
-        image: alogo53/sure-tosca:3.0.0
-        ports: 
-            - "8081:8081"
-        
-    #logspout:
+    #sure-tosca:
+        #image: alogo53/sure-tosca:3.0.0
         #ports: 
-            #- "30002:80"   
-        #volumes:
-            #- /etc/hostname:/etc/host_hostname:ro
-            #- /var/run/docker.sock:/var/run/docker.sock
-        #environment:
-            #publish: "127.0.0.1:30002:80"
-        #image: gliderlabs/logspout:latest 
+            #- "8081:8081"
+        
+    logspout:
+        ports: 
+            - "30002:80"   
+        volumes:
+            - /etc/hostname:/etc/host_hostname:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+            publish: "127.0.0.1:30002:80"
+        image: gliderlabs/logspout:latest 

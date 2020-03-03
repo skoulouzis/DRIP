@@ -6,7 +6,7 @@ node_types:
     description: root ARTICONF node
 
   tosca.nodes.ARTICONF.Container.Application.Docker:
-    derived_from:  tosca.nodes.ARTICONF.Root
+    derived_from: tosca.nodes.ARTICONF.Root
     description: description of container
     properties:
       ports:
