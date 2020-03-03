@@ -1,12 +1,11 @@
 tosca_definitions_version: tosca_simple_yaml_1_0
-description: TOSCA example
+
 imports:
-<<<<<<< HEAD
-  - nodes: https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/nodes.yaml
-  - data: https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/data.yml
-  - capabilities: https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/capabilities.yaml
-  - policies: https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/policies.yaml
-  - interfaces: https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/interfaces.yml
+  - nodes: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/nodes.yaml
+  - data: https://raw.githubusercontent.com/skoulouzis/CONF/DRIP_3.0/TOSCA/types/data.yml
+  - capabilities: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/capabilities.yaml
+  - policies: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/policies.yaml
+  - interfaces: https://raw.githubusercontent.com/skoulouzis/DRIP/DRIP_3.0/TOSCA/types/interfaces.yml
   
 repositories:
   docker_hub: https://hub.docker.com/  
@@ -14,63 +13,24 @@ repositories:
 description: >
   TOSCA example
   
+
 topology_template:
-  node_templates:
 
-
-
-    #topology:
-      #interfaces:
-        #CloudsStorm:
-          #provision:
-            #inputs:
-              #code_type: SEQ
-              #object_type: SubTopology
-      #properties:
-        #domain: UvA (Amsterdam, The Netherlands) XO Rack
-        #provider: ExoGENI
-      #type: tosca.nodes.ARTICONF.VM.topology
-
-          
-    ws-pema-lifewatch:
+  node_templates:        
+    mongo:
         type: tosca.nodes.ARTICONF.Container.Application.Docker
         properties:
             ports: 
-            - "30001:8080"   
+            - "30001:27017"   
+            volumes:
+                - db-data:/data/db
+            environment:
+                ROOT_PASSWORD: root_passwd
+                DATABASE: db
+                USER: user
+                PASSWORD: passwd
         artifacts:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
-                file:  alogo53/ws-pema-lifewatch
-                repository: docker_hub      
-        requirements:
-        - host:
-            capability: tosca.capabilities.ARTICONF.docker.Orchestrator
-            node: kubernetes
-            relationship: tosca.relationships.HostedOn
-          
-          
-    kubernetes:
-        type: tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes
-        properties:
-            min_masters_num: 1
-            min_workers_num: 1
-        interfaces:
-            Kubernetes:
-                create:
-                    inputs:
-                        playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/create_k8s.yml"
-                install:
-                    inputs:
-                        playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml"
-      
-    #topology:
-        #type: tosca.nodes.ARTICONF.VM.topology
-        #properties:
-            #domain: "UvA (Amsterdam, The Netherlands) XO Rack"
-            #provider: "ExoGENI"
-        #interfaces:
-            #CloudsStorm:
-                #provision:
-                    #inputs:
-                        #code_type: "SEQ"
-                        #object_type: "SubTopology"
+                file:  mongo:3
+                repository: docker_hub     
