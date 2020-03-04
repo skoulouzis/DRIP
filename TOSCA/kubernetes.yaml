@@ -1,0 +1,29 @@
+description: TOSCA example
+imports:
+- nodes: https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/nodes.yaml
+- data: https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/data.yml
+- capabilities: https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/capabilities.yaml
+- policies: https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/policies.yaml
+- interfaces: https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/interfaces.yml
+topology_template:
+  node_templates:
+    
+    kubernetes:
+      interfaces:
+        Kubernetes:
+          configure:
+            inputs:
+              playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/dashboard.yaml
+          create:
+            inputs:
+              playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/create_k8s.yml
+          install:
+            inputs:
+              playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml
+      properties:
+        min_masters_num: 1
+        min_workers_num: 1
+      type: tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes
+    
+      
+tosca_definitions_version: tosca_simple_yaml_1_0

@@ -17,7 +17,7 @@ topology_template:
           protocol: "ssh"
           keys:
             public_key: "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFBZ1FDV3l6VEoxS1pycDVvVHVBVm15dmxKL2prMnRNdktZSlAvSWtHZ1JKeTVFNUgrbjl0eU1QRXdyUDN4c0lUMVZzRjlVNVhLTkkvVDVpZDgxNko5RmxjbEhOSHVrbEFTMlhqV3QzNnlZekorMkhsa3JET0I4Q25DdmgvQlQ5K2liNkpjVFpUd21Xb1FQbjFuVXpSelRSVGU5NUlyOUl4djgrTnNLVWYxdVYzNDBRPT0gYXV0byBnZW5lcmF0ZWQgdXNlciBhY2NlZXMga2V5cwo="
-            private_key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlDV3dJQkFBS0JnUUNXeXpUSjFLWnJwNW9UdUFWbXl2bEovamsydE12S1lKUC9Ja0dnUkp5NUU1SCtuOXR5Ck1QRXdyUDN4c0lUMVZzRjlVNVhLTkkvVDVpZDgxNko5RmxjbEhOSHVrbEFTMlhqV3QzNnlZekorMkhsa3JET0IKOENuQ3ZoL0JUOStpYjZKY1RaVHdtV29RUG4xblV6UnpUUlRlOTVJcjlJeHY4K05zS1VmMXVWMzQwUUlEQVFBQgpBb0dBSUJDMStQVXZMbFZGZmt2eldoaHZTankxRGQwRU9OU3dvK0EwOUUraXcvaFZZeis2K2wxTjdIdmN4RGcxCkRiYVZEb0ZucU1ma2picXpTdWpQdEttN2ZlVThldjF3a21aOHNRdzhac1JNdXd3NUxDUzZpMENnem5RMlJ3WmIKU2dqSlVrLy81VVF2Z2x2YkFEMXJpUlJ1TzR5N0cwTFZpa2Y4b3UvM0pBM21iQUVDUVFESm1VY2dBQjJONmpSYQpydWxhNklnYzFYYjdTUGl0TEpFQjFNZytyUW5EZDZWWXZqcVVGaW9zWVdhYlJSdGtPQ1VPdWt5cklLY1puZ3Q4CjdrdHN6T1c1QWtFQXYzeEFHYUdyWkk1KzdjSTF4Si9NaWVRa1pkaFFWTEpEUnpwT3FJVjVKaFIzbCt2R3N2R2MKWWhwUG9IL1VoN3hsV3NLUVF2Q3Y2azhyaVh1dmZ6aTMyUUpBQTJDb0NtYzJGNHlXOS9YNlB1V3FjaUU1YnhoWAo0ajdlNXhMemorbENRcDRjalJJUzFTeFI1SkIxTWFERXhyY1NGOThUTGNMTVNlZVY5YS9nWDZCSE1RSkFadHNVCkIzQ2JBdW16N255cXF4SjNLUDUrT3FLbUM4aXhjTm8yRkRtVjZNbUhyL2c3QkRYYUhhd3FaM2tpclVLYVl0VXQKN25jZzEwaHRoMjBEeU4rcmlRSkFRMHVvNW9HaUxJSHNEQUR5Nkw1azdrNTZjVUlhZnhpeVRHdzlWQ2tUY3puVQpPS1liYXFVM3lyaDRqbzRYTHlGd3JYcHJOdkNsb29pY1JIMTdSUkMxUHc9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo="
+            private_key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlDV3dJQkFBS0JnUUNXeXpUSjFLWnJwNW9UdUFWbXl2bEovamsydE12S1lKUC9Ja0dnUkp5NUU1SCtuOXR5Ck1QRXdyUDN4c0lUMVZzRjlVNVhLTkkvVDVpZDgxNko5RmxjbEhOSHVrbEFTMlhqV3QzNnlZekorMkhsa3JET0IKOENuQ3ZoL0JUOStpYjZKY1RaVHdtV29RUG4xblV6UnpUUlRlOTVJcjlJeHY4K05zS1VmMXVWMzQwUUlEQVFBQgpBb0dBSUJDMStQVXZMbFZGZmt2eldoaHZTankxRGQwRU9OU3dvK0EwOUUraXcvaFZZeis2K2wxTjdIdmN4RGcxCkRiYVZEb0ZucU1ma2picXpTdWpQdEttN2ZlVThldjF3a21aOHNRdzhac1JNdXd3NUxDUzZpMENnem5RMlJ3WmIKU2dqSlVrLy81VVF2Z2x2YkFEMXJpUlJ1TzR5N0cwTFZpa2Y4b3UvM0pBM21iQUVDUVFESm1VY2dBQjJONmpSYQpydWxhNklnYzFYYjdTUGl0TEpFQjFNZytyUW5EZDZWWXZqcVVGaW9zWVdhYlJSdGtPQ1VPdWt5cklLY1puZ3Q4CjdrdHN6T1c1QWtFQXYzeEFHYUdyWkk1KzdjSTF4Si9NaWVRa1pkaFFWTEpEUnpwT3FJVjVKaFIzbCt2R3N2R2MKWWhwUG9IL1VoN3hsV3NLUVF2Q3Y2azhyaVh1dmZ6aTMyUUpBQTJDb0NtYzJGNHlXOS9YNlB1V3FjaUU1YnhoWAo0ajdlNXhMemorbENRcDRjalJJUzFTeFI1SkIxTWFERXhyY1NGOThUTGNMTVNlZVY5YS9nWDZCSE1RSkFadHNVCkIzQ2JBdW16N255cXF4SjNLUDUrT3FLbUM4aXhjTm8yRkRtVjZNbUhyL2c3QkRYYUhhd3FaM2tpclVLYVl0VXQKN25jZzEwaHRoMjBEeU4rcmlRSkFRMHVvNWf9HaUxJSHNEQUR5Nkw1azdrNTZjVUlhZnhpeVRHdzlWQ2tUY3puVQpPS1liYXFVM3lyaDRqbzRYTHlGd3JYcHJOdkNsb29pY1JIMTdSUkMxUHc9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo="
         public_ip: "192.125.18.246"
         role: "master"
         node_type: "t2.medium"
@@ -82,7 +82,7 @@ topology_template:
         - "/var/run/docker.sock:/var/run/docker.sock"
       requirements:
       - host:
-          capability: "tosca.capabilities.ARTICONF.Orchestrator"
+          capability: "tosca.capabilities.ARTICONF.docker.Orchestrator"
           node: "kubernetes"
           relationship: "tosca.relationships.HostedOn"
       type: "tosca.nodes.ARTICONF.Container.Application.Docker"
@@ -104,7 +104,7 @@ topology_template:
         - "db_data:/var/lib/mysql"
       requirements:
       - host:
-          capability: "tosca.capabilities.ARTICONF.Orchestrator"
+          capability: "tosca.capabilities.ARTICONF.docker.Orchestrator"
           node: "kubernetes"
           relationship: "tosca.relationships.HostedOn"
       type: "tosca.nodes.ARTICONF.Container.Application.Docker"

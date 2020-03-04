@@ -1,36 +1,67 @@
-tosca_definitions_version: tosca_simple_yaml_1_0
-
+tosca_definitions_version: "tosca_simple_yaml_1_0"
+description: "TOSCA example"
 imports:
-  - nodes: https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/nodes.yaml
-  - data: https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/data.yml
-  - capabilities: https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/capabilities.yaml
-  - policies: https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/policies.yaml
-  - interfaces: https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/interfaces.yml
-  
-repositories:
-  docker_hub: https://hub.docker.com/  
-
-description: >
-  TOSCA example
-  
+- nodes: "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/nodes.yaml"
+- data: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/data.yml"
+- capabilities: "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/capabilities.yaml"
+- policies: "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/policies.yaml"
+- interfaces: "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/interfaces.yml"
 
 topology_template:
-
-  node_templates:        
-    mongo:
-        type: tosca.nodes.ARTICONF.Container.Application.Docker
-        properties:
-            ports: 
-            - "30001:27017"   
-            volumes:
-                - db-data:/data/db
-            environment:
-                ROOT_PASSWORD: root_passwd
-                DATABASE: db
-                USER: user
-                PASSWORD: passwd
-        artifacts:
-            image:
-                type: tosca.artifacts.Deployment.Image.Container.Docker
-                file:  mongo:3
-                repository: docker_hub     
+  node_templates:
+    
+    kubernetes:
+      properties:
+        min_masters_num: 1
+        min_workers_num: 1
+      #requirements:
+      #- host:
+          #capability: "tosca.capabilities.ARTICONF.VM.topology"
+          #node: "topology"
+          #relationship: "tosca.relationships.HostedOn"
+      interfaces:
+        Kubernetes:
+          create:
+            inputs:
+              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/create_k8s.yml"
+          install:
+            inputs:
+              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml"
+      type: "tosca.nodes.ARTICONF.Orchestrator.Kubernetes"
+    
+    #mysql:
+      #type: "tosca.nodes.ARTICONF.Container.Application.Docker"
+      #properties:
+        #environment:
+          #MYSQL_DATABASE: "wordpress"
+          #MYSQL_PASSWORD: "wordpress"
+          #MYSQL_ROOT_PASSWORD: "somewordpress"
+          #MYSQL_USER: "wordpress"
+        #ports:
+        #- "3306:3306"
+        #volumes:
+        #- "db_data:/var/lib/mysql"
+      #requirements:
+      #- host:
+          #capability: "tosca.capabilities.ARTICONF.docker.Orchestrator"
+          #node: "kubernetes"
+          #relationship: "tosca.relationships.HostedOn"
+      #artifacts:
+        #image:
+          #file: "mysql:5.7"
+          #repository: "docker_hub"
+          #type: "tosca.artifacts.Deployment.Image.Container.Docker"
+    
+    #topology:
+      #properties:
+        #domain: "Frankfurt"
+        #provider: "EC2"
+      #interfaces:
+        #CloudsStorm:
+          #provision:
+            #inputs:
+              #code_type: "SEQ"
+              #object_type: "SubTopology"
+      #type: "tosca.nodes.ARTICONF.VM.topology"
+  
+  

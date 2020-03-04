@@ -104,7 +104,7 @@ def handle_delivery(message, sys=None):
     spec_service = SpecService(conf)
     test_planner = Planner(tosca_path=input_tosca_file_path, spec_service=spec_service)
     tosca_template = test_planner.resolve_requirements()
-    tosca_template = test_planner.set_infrastructure_specifications()
+    tosca_template = test_planner.set_node_templates_properties()
     template_dict = tosca_helper.get_tosca_template_2_topology_template_dictionary(tosca_template)
 
     Planner(yaml_dict_tpl=template_dict, spec_service=spec_service)
@@ -135,7 +135,7 @@ if __name__ == "__main__":
         spec_service = SpecService(conf)
         test_planner = Planner(input_tosca_file_path, spec_service)
         test_tosca_template = test_planner.resolve_requirements()
-        test_tosca_template = test_planner.set_infrastructure_specifications()
+        test_tosca_template = test_planner.set_node_templates_properties()
         template_dict = tosca_helper.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
         logger.info("template ----: \n" + yaml.dump(template_dict))
 
