@@ -258,13 +258,9 @@ class Planner:
         for req in all_requirements:
             if 'capability' in req[next(iter(req))]:
                 capability = req[next(iter(req))]['capability']
-                # Find nodes in node_templates that have the capability
-                logger.info('  Looking for nodes in node_templates with capability: ' + capability)
-                capable_nodes = self.get_node_templates_by_capability(capability)
-                if not capable_nodes:
-                    # Find all nodes in the definitions that have the capability: capability
-                    logger.info('  Looking for nodes in node types with capability: ' + capability)
-                    capable_nodes = self.get_node_types_by_capability(capability)
+                # Find all nodes in the definitions that have the capability: capability
+                logger.info('  Looking for nodes in node types with capability: ' + capability)
+                capable_nodes = self.get_node_types_by_capability(capability)
                 if capable_nodes:
                     # Add number of matching capabilities for each node.
                     # Try to score matching_nodes to return one. The more requirements a node meets the better
@@ -299,10 +295,3 @@ class Planner:
                 if parent_node_type_name == self.all_node_types[tosca_node_type]['derived_from']:
                     child_nodes[tosca_node_type] = self.all_node_types[tosca_node_type]
         return child_nodes
-
-    def get_node_templates_by_capability(self, capability):
-        # capable_nodes = []
-        # for node_template in self.tosca_template.nodetemplates:
-        #     for node_capability in node_template.get_capabilities():
-        #         print(node_capability)
-        return None
