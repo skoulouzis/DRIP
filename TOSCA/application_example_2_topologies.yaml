@@ -49,7 +49,7 @@ topology_template:
           capability: tosca.capabilities.ARTICONF.VM.topology
           node: topology
           relationship: tosca.relationships.HostedOn
-      type: tosca.nodes.ARTICONF.Orchestrator.Kubernetes
+      type: tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes
     logspout:
       artifacts:
         image:
@@ -66,7 +66,7 @@ topology_template:
         - /var/run/docker.sock:/var/run/docker.sock
       requirements:
       - host:
-          capability: tosca.capabilities.ARTICONF.Orchestrator
+          capability: tosca.capabilities.ARTICONF.docker.Orchestrator
           node: kubernetes
           relationship: tosca.relationships.HostedOn
       type: tosca.nodes.ARTICONF.Container.Application.Docker
@@ -88,7 +88,7 @@ topology_template:
         - db_data:/var/lib/mysql
       requirements:
       - host:
-          capability: tosca.capabilities.ARTICONF.Orchestrator
+          capability: tosca.capabilities.ARTICONF.docker.Orchestrator
           node: kubernetes
           relationship: tosca.relationships.HostedOn
       type: tosca.nodes.ARTICONF.Container.Application.Docker
@@ -148,7 +148,7 @@ topology_template:
           relationship:
             type: tosca.relationships.DependsOn
       - host:
-          capability: tosca.capabilities.ARTICONF.Orchestrator
+          capability: tosca.capabilities.ARTICONF.docker.Orchestrator
           node: kubernetes
           relationship: tosca.relationships.HostedOn
       type: tosca.nodes.ARTICONF.Container.Application.Docker
