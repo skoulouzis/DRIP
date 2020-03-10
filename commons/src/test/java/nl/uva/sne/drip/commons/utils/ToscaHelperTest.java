@@ -74,7 +74,7 @@ public class ToscaHelperTest {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         toscaTemplate = objectMapper.readValue(ymlStr, ToscaTemplate.class);
-        String serviceBasePath = prop.getProperty("sure_tosca.base.path");
+        String serviceBasePath = prop.getProperty("sure-tosca.base.path");
         serviceUp = isServiceUp(serviceBasePath);
         if (serviceUp) {
             instance = new ToscaHelper(serviceBasePath);
