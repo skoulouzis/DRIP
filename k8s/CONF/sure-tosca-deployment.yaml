@@ -23,6 +23,7 @@ spec:
       containers:
       - image: alogo53/sure-tosca:3.0.0
         name: sure-tosca
+        imagePullPolicy: Always
         resources: {}
       restartPolicy: Always
 status: {}

@@ -25,6 +25,7 @@ spec:
         - name: RABBITMQ_HOST
           value: rabbit
         image: alogo53/planner:3.0.0
+        imagePullPolicy: Always
         name: planner
         resources: {}
       restartPolicy: Always

@@ -26,6 +26,7 @@ spec:
           value: rabbit
         image: alogo53/deployer:3.0.0
         name: deployer
+        imagePullPolicy: Always
         resources: {}
       restartPolicy: Always
 status: {}
