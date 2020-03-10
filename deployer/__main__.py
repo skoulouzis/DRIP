@@ -82,6 +82,7 @@ def handle_delivery(message):
     vms = tosca.get_vms(tosca_template_dict)
     inventory_path = ansible_service.write_inventory_file(tmp_path, vms)
     paths = ansible_service.write_playbooks_from_tosca_interface(tosca_interfaces, tmp_path)
+
     tokens = {}
     for playbook_path in paths:
         out, err = ansible_service.run(inventory_path, playbook_path)
