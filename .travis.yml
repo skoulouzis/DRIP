@@ -10,6 +10,7 @@ matrix:
         - pip install -r requirements.txt
       script:
         - python -m unittest discover
+        - docker build -t alogo53/planner:3.0.0 .
         
     - language: python
       python: 3.8
@@ -18,7 +19,8 @@ matrix:
         - pip install -r requirements.txt
         - pip install -r test-requirements.txt
       script:
-        - python -m unittest discover        
+        - python -m unittest discover     
+        - docker build -t alogo53/sure-tosca:3.0.0 .
         
     - language: python
       python: 3.8
@@ -26,7 +28,8 @@ matrix:
         - cd deployer
         - pip install -r requirements.txt
       script:
-        - python -m unittest discover                
+        - python -m unittest discover  
+        - docker build -t alogo53/deployer:3.0.0 .
 
     - language: java
       jdk: openjdk11
@@ -34,6 +37,9 @@ matrix:
         - mvn -Dmaven.test.skip=true install
       script:
         - mvn test
-    
+        - cd manager
+        - mvn -Dmaven.test.skip=true dockerfile:build
+        - cd ../provisioner
+        - mvn -Dmaven.test.skip=true dockerfile:build
 #after_success:
 #- docker login -u $DOCKER_USER -p $DOCKER_PASS
