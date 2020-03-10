@@ -89,7 +89,6 @@ def deserialize_datetime(string):
     except ImportError:
         return string
 
-
 def deserialize_model(data, klass):
     """Deserializes list or dict to model.
 
@@ -104,13 +103,38 @@ def deserialize_model(data, klass):
         return data
 
     for attr, attr_type in six.iteritems(instance.swagger_types):
-        if data is not None \
-                and instance.attribute_map[attr] in data \
-                and isinstance(data, (list, dict)):
-            value = data[instance.attribute_map[attr]]
+        if data is not None and isinstance(data, (list, dict)):
+            value = None
+            if instance.attribute_map[attr] in data:
+                value = data[instance.attribute_map[attr]]
+            elif attr in data:
+                value = data[attr]
+
             setattr(instance, attr, _deserialize(value, attr_type))
 
     return instance
+
+# def deserialize_model(data, klass):
+#     """Deserializes list or dict to model.
+#
+#     :param data: dict, list.
+#     :type data: dict | list
+#     :param klass: class literal.
+#     :return: model object.
+#     """
+#     instance = klass()
+#
+#     if not instance.swagger_types:
+#         return data
+#
+#     for attr, attr_type in six.iteritems(instance.swagger_types):
+#         if data is not None \
+#                 and instance.attribute_map[attr] in data \
+#                 and isinstance(data, (list, dict)):
+#             value = data[instance.attribute_map[attr]]
+#             setattr(instance, attr, _deserialize(value, attr_type))
+#
+#     return instance
 
 
 def _deserialize_list(data, boxed_type):

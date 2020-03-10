@@ -30,7 +30,6 @@ class TestDefaultController(BaseTestCase):
         self.assertTrue(response.is_json)
         self.assertIsInstance(response.json, list)
 
-
     def test_get_all_ancestor_types(self):
         """Test case for get_all_ancestor_types
 

@@ -45,6 +45,7 @@ root_key = 'root_key'
 
 
 def query_db(queries, db=None):
+    results = db.all()
     if queries:
         query = reduce(lambda a, b: a & b, queries)
         results = db.search(query)
@@ -220,6 +221,7 @@ def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, 
         query = Query()
         prop = None
         queries.append(query.artifacts != prop)
+
 
     query_results = query_db(queries, db=node_template_db)
     return change_to_node_template_model(query_results)

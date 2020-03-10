@@ -294,6 +294,3 @@ def get_node_template_dict(node_template):
     #        print(node_template.templates)
 
     return node_template_dict
-
-
-
