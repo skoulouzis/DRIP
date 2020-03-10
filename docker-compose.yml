@@ -109,13 +109,13 @@ services:
     ports: 
       - "8081:8081"
     
-  planner:
-    depends_on:
-      - rabbit
-      - sure-tosca
-    image: alogo53/planner:3.0.0
-    environment:
-      RABBITMQ_HOST: rabbit
+  #planner:
+    #depends_on:
+      #- rabbit
+      #- sure-tosca
+    #image: alogo53/planner:3.0.0
+    #environment:
+      #RABBITMQ_HOST: rabbit
     
   provisioner:
     depends_on:

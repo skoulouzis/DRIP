@@ -157,7 +157,8 @@ if __name__ == "__main__":
         logger.info("Awaiting RPC requests")
         try:
             start(channel)
-        except:
+        except Exception as e:
             e = sys.exc_info()[0]
             logger.info("Error: " + str(e))
+            print(e)
             exit(-1)
