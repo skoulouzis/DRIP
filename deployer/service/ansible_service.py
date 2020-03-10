@@ -95,8 +95,8 @@ def write_playbooks_from_tosca_interface(interfaces, tmp_path):
 
 def run(inventory_path, playbook_path):
     logger.info("Executing playbook: " + str(playbook_path))
-    p = Popen(["ansible-playbook", "-i", inventory_path, playbook_path], stdin=PIPE, stdout=PIPE,
-              stderr=PIPE)
+    p = Popen(["ansible-playbook", "-i", inventory_path, playbook_path,'--ssh-common-args=\'-o '
+                                                                       'StrictHostKeyChecking=no\''], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     output, err = p.communicate()
     # print(output.decode('utf-8'))
     # print(err.decode('utf-8'))

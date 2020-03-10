@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 def get_interfaces(tosca_template_dict):
     node_templates = tosca_template_dict['topology_template']['node_templates']
     for node_name in node_templates:
-        if node_templates[node_name]['type'] == 'tosca.nodes.ARTICONF.Orchestrator.Kubernetes':
+        if node_templates[node_name]['type'] == 'tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes':
             logger.info("Returning interfaces from tosca_template: " + str(node_templates[node_name]['interfaces']))
             return node_templates[node_name]['interfaces']
 

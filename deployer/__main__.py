@@ -144,8 +144,9 @@ if __name__ == "__main__":
             thread = Thread(target=threaded_function, args=(1,))
             thread.start()
             start(channel)
-        except:
+        except Exception as e:
             done = True
             e = sys.exc_info()[0]
             logger.info("Error: " + str(e))
+            print(e)
             exit(-1)
