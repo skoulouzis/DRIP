@@ -81,15 +81,15 @@ services:
       
       
       
-  logspout:
-    ports: 
-      - "30002:80"   
-    volumes:
-      - /etc/hostname:/etc/host_hostname:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      publish: "127.0.0.1:30002:80"
-    image: gliderlabs/logspout:latest 
+  #logspout:
+    #ports: 
+      #- "30002:80"   
+    #volumes:
+      #- /etc/hostname:/etc/host_hostname:ro
+      #- /var/run/docker.sock:/var/run/docker.sock
+    #environment:
+      #publish: "127.0.0.1:30002:80"
+    #image: gliderlabs/logspout:latest
         
       
   mongo:
@@ -97,10 +97,10 @@ services:
     ports:
       - "27017:27017"         
         
-  #jupyter:
-    #ports: 
-      #- "30003:8888"   
-    #image: jupyter/base-notebook    
+  jupyter:
+    ports: 
+      - "30003:8888"   
+    image: jupyter/base-notebook    
     
     
   manager:
@@ -138,13 +138,13 @@ services:
       RABBITMQ_HOST: rabbit      
       SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
     
-  #deployer:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: alogo53/deployer:3.0.0
-    #environment:
-      #RABBITMQ_HOST: rabbit           
+  deployer:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: alogo53/deployer:3.0.0
+    environment:
+      RABBITMQ_HOST: rabbit           
 
       
 #volumes:

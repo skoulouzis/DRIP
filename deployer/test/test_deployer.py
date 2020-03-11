@@ -74,6 +74,7 @@ class TestDeployer(unittest.TestCase):
         response["creationDate"] = output_current_milli_time
         logger.info("Returning Deployment")
         logger.info("Output message:" + json.dumps(response))
+        print(json.dumps(response))
 
 
 if __name__ == '__main__':
