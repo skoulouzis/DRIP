@@ -70,7 +70,7 @@ topology_template:
           install:
             inputs:
               playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml"
-      type: "tosca.nodes.ARTICONF.Orchestrator.Kubernetes"
+      type: "tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes"
     logspout:
       properties:
         environment:

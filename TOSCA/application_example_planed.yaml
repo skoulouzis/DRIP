@@ -38,7 +38,7 @@ topology_template:
             inputs:
               inventory-file: "k8s_hosts"
               playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml"
-      type: "tosca.nodes.ARTICONF.Orchestrator.Kubernetes"
+      type: "tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes"
     logspout:
       properties:
         environment:
