@@ -21,7 +21,14 @@ spec:
         io.kompose.service: jupyter
     spec:
       containers:
-        image: jupyter/base-notebook    
+      - env:
+        - name: MONGO_HOST
+          value: mongo
+        - name: RABBITMQ_HOST
+          value: rabbit
+        - name: SURE_TOSCA_BASE_PATH
+          value: http://sure-tosca:8081/tosca-sure/1.0.0
+        image: jupyter/base-notebook
         name: jupyter
         ports:
         - containerPort: 8888
