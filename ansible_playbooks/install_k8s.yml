@@ -10,6 +10,10 @@
         #path: /etc/resolv.conf
         #regexp: 'nameserver.*'
         #line: nameserver 8.8.8.8
+
+    - name: Kill running processes
+      shell: "killall apt apt-get"
+      ignore_errors: yes
   
     - name: Update and upgrade apt packages
       become: true
