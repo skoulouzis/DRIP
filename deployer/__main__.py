@@ -97,12 +97,11 @@ def handle_delivery(message):
     ansible_playbook_path = k8s_service.write_ansible_k8s_files(tosca_template_dict, tmp_path)
     out, err = ansible_service.run(inventory_path, ansible_playbook_path)
     dashboard_token = ansible_service.parse_dashboard_tokens(out.decode("utf-8"))
-
     tokens['dashboard_token'] = dashboard_token
 
     tosca_template_dict = tosca.add_tokens(tokens, tosca_template_dict)
-
     tosca_template_dict = tosca.add_dashboard_url(k8s_service.get_dashboard_url(vms), tosca_template_dict)
+    tosca_template_dict = tosca.add_service_url(k8s_service.get_service_urls(vms,tosca_template_dict), tosca_template_dict)
 
     response = {'toscaTemplate': tosca_template_dict}
     output_current_milli_time = int(round(time.time() * 1000))

@@ -222,3 +222,21 @@ def get_dashboard_url(vms):
             k8_master = attributes['public_ip']
     url = 'https://' + k8_master + ':' + str(dashboard_port)
     return url
+
+
+def get_service_urls(vms, tosca_template_json):
+    dockers = get_dockers(tosca_template_json)
+    for vm_name in vms:
+        attributes = vms[vm_name]['attributes']
+        role = attributes['role']
+        if role == 'master':
+            k8_master = attributes['public_ip']
+            break
+    urls = {}
+    for docker in dockers:
+        docker_name = next(iter(docker))
+        docker_ports = docker[docker_name]['properties']['ports'][0].split(':')
+        node_port = int(docker_ports[0])
+        url = 'https://' + k8_master + ':' + str(node_port)
+        urls[docker_name] = url
+    return urls

@@ -34,6 +34,11 @@ node_types:
           capability: tosca.capabilities.ARTICONF.docker.Orchestrator
           node: tosca.nodes.ARTICONF.docker.Orchestrator
           relationship: tosca.relationships.HostedOn         
+    attributes:
+      service_url:
+        type: string
+        required: false
+        description: url of the service 
           
   tosca.nodes.ARTICONF.docker.Orchestrator:
     derived_from: tosca.nodes.ARTICONF.Root
