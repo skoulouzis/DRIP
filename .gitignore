@@ -40,6 +40,9 @@
 /planner/planner/__pycache__/
 /planner/util/__pycache__/
 /planner/test/__pycache__/
+/planner/planner/__pycache__/
+/planner/service/__pycache__/
+/planner/util/__pycache__/
 /manager-old/nbproject/
 /manager-old/target/
 /spring-server-generated/target/
