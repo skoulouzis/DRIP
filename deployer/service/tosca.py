@@ -24,7 +24,7 @@ def get_vms(tosca_template_json):
 def add_tokens(tokens, tosca_template_dict):
     node_templates = tosca_template_dict['topology_template']['node_templates']
     for node_name in node_templates:
-        if node_templates[node_name]['type'] == 'tosca.nodes.ARTICONF.Orchestrator.Kubernetes':
+        if node_templates[node_name]['type'] == 'tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes':
             creds = []
             for token_name in tokens:
                 cred = {'token_type': 'k8s_token', 'token': tokens[token_name], 'user': token_name}
@@ -39,7 +39,7 @@ def add_tokens(tokens, tosca_template_dict):
 def add_dashboard_url(dashboard_url, tosca_template_dict):
     node_templates = tosca_template_dict['topology_template']['node_templates']
     for node_name in node_templates:
-        if node_templates[node_name]['type'] == 'tosca.nodes.ARTICONF.Orchestrator.Kubernetes':
+        if node_templates[node_name]['type'] == 'tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes':
             if 'attributes' not in node_templates[node_name]:
                 node_templates[node_name]['attributes'] = {}
             attributes = node_templates[node_name]['attributes']
