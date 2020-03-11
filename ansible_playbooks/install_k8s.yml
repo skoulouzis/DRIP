@@ -11,9 +11,11 @@
         #regexp: 'nameserver.*'
         #line: nameserver 8.8.8.8
 
-    - name: Kill running processes
-      shell: "killall apt apt-get"
-      ignore_errors: yes
+    - name: Wait for automatic system updates
+      shell: while sudo fuser /var/lib/dpkg/{{ item }} >/dev/null 2>&1; do sleep 1; done;
+      with_items:
+        - lock
+        - lock-frontend
   
     - name: Update and upgrade apt packages
       become: true
