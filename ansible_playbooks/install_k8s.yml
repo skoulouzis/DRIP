@@ -12,7 +12,7 @@
         #line: nameserver 8.8.8.8
 
     - name: Wait for automatic system updates
-      shell: while sudo fuser /var/lib/dpkg/{{ item }} >/dev/null 2>&1; do sleep 1; done;
+      shell: while sudo fuser /var/lib/dpkg/{{ item }} >/dev/null 2>&1; do sleep 3; done;
       with_items:
         - lock
         - lock-frontend

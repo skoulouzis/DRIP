@@ -47,12 +47,12 @@ def add_dashboard_url(dashboard_url, tosca_template_dict):
     return tosca_template_dict
 
 
-def add_service_url(serviceurls_url, tosca_template_dict):
+def add_service_url(serviceu_urls, tosca_template_dict):
     node_templates = tosca_template_dict['topology_template']['node_templates']
     for node_name in node_templates:
-        if node_templates[node_name]['type'] == '"tosca.nodes.ARTICONF.Container.Application.Docker':
+        if node_templates[node_name]['type'] == 'tosca.nodes.ARTICONF.Container.Application.Docker':
             if 'attributes' not in node_templates[node_name]:
                 node_templates[node_name]['attributes'] = {}
             attributes = node_templates[node_name]['attributes']
-            attributes['service_url'] = serviceurls_url[node_name]
+            attributes['service_url'] = serviceu_urls[node_name]
     return tosca_template_dict

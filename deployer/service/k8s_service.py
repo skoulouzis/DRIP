@@ -237,6 +237,6 @@ def get_service_urls(vms, tosca_template_json):
         docker_name = next(iter(docker))
         docker_ports = docker[docker_name]['properties']['ports'][0].split(':')
         node_port = int(docker_ports[0])
-        url = 'https://' + k8_master + ':' + str(node_port)
+        url = 'http://' + k8_master + ':' + str(node_port)
         urls[docker_name] = url
     return urls
