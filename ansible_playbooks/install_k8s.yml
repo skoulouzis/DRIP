@@ -55,7 +55,7 @@
       filesystem:
         fstype: xfs
         dev: /dev/xvdh
-      when: mount_volume.stat.exists == True 
+      when: mount_volume.stat.exists == True
     
     
     - name: Creates directory
@@ -63,22 +63,50 @@
         path: /data
         state: directory
       when: mount_volume.stat.exists == True         
+       
     
-
     - name: Mount 
       mount:
         path: /data
         src: /dev/xvdh
         state: present
         fstype: xfs
-      when: mount_volume.stat.exists == True         
-
+      when: mount_volume.stat.exists == True      
+     
+     
+    - name: check Mount 
+      command: mountpoint -q /data
+      register: volume_stat
+      failed_when: False
+      changed_when: False
+      
+    - debug:
+        msg: volume_stat.rc {{ volume_stat.rc }} 
+      when: mount_volume.stat.exists        
+      
+      
+    - name: Mount manualy
+      shell: 'mount /dev/xvdh /data'
+      when: mount_volume.stat.exists        
+      ignore_errors: yes
         
     - name: Change data-root location in /etc/docker/daemon.json
       shell: |
         echo '{"data-root": "/data"}' > /etc/docker/daemon.json
       when: mount_volume.stat.exists == True
       
+    - name: Restart service docker, in all cases
+      service:
+        name: docker
+        state: restarted     
+        ignore_errors: yes
+      
+      
+    #- name: Get size 
+      #shell: 'df -h'
+      #register: output
+      #when: mount_volume.stat.exists == True    
+        
     
     - name: Add Docker GPG apt Key
       apt_key:
