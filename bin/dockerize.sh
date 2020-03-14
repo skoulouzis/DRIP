@@ -10,13 +10,16 @@ cd provisioner && mvn -Dmaven.test.skip=true dockerfile:build
 [ $status -eq 0 ] && echo "build successful" || exit -1
 cd ../
 echo "----------Building sure_tosca-flask-server Docker--------------"
-cd sure_tosca-flask-server && docker build -t alogo53/sure-tosca:3.0.0 .
+# cd sure_tosca-flask-server && docker build -t alogo53/sure-tosca:3.0.0 .
+cd sure_tosca-flask-server && docker build -t sure-tosca:3.0.0 .
 [ $status -eq 0 ] && echo "build successful" || exit -1
 echo "----------Building planner Docker--------------"
 cd ../
-cd planner && docker build -t alogo53/planner:3.0.0 .
+# cd planner && docker build -t alogo53/planner:3.0.0 .
+cd planner && docker build -t planner:3.0.0 .
 [ $status -eq 0 ] && echo "build successful" || exit -1
 echo "----------Building deployer Docker--------------"
 cd ../
-cd deployer && docker build -t alogo53/deployer:3.0.0 .
+# cd deployer && docker build -t alogo53/deployer:3.0.0 .
+cd deployer && docker build -t deployer:3.0.0 .
 [ $status -eq 0 ] && echo "build successful" || exit -1

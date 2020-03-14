@@ -108,7 +108,7 @@ services:
       - rabbit
       - mongo
       - sure-tosca
-    image: alogo53/manager:3.0.0
+    image: manager:3.0.0
     environment:
       RABBITMQ_HOST: rabbit
       MONGO_HOST: mongo
@@ -117,7 +117,7 @@ services:
       - "30000:8080"       
             
   sure-tosca:
-    image: alogo53/sure-tosca:3.0.0
+    image: sure-tosca:3.0.0
     ports: 
       - "8081:8081"
     
@@ -125,24 +125,24 @@ services:
     depends_on:
       - rabbit
       - sure-tosca
-    image: alogo53/planner:3.0.0
+    image: planner:3.0.0
     environment:
       RABBITMQ_HOST: rabbit
     
-  #provisioner:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: alogo53/provisioner:3.0.0
-    #environment:
-      #RABBITMQ_HOST: rabbit      
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+  provisioner:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: provisioner:3.0.0
+    environment:
+      RABBITMQ_HOST: rabbit      
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
     
   deployer:
     depends_on:
       - rabbit
       - sure-tosca
-    image: alogo53/deployer:3.0.0
+    image: deployer:3.0.0
     environment:
       RABBITMQ_HOST: rabbit           
 

@@ -18,7 +18,6 @@
         - lock-frontend
   
     - name: Update and upgrade apt packages
-      become: true
       apt:
         upgrade: yes
         update_cache: yes
@@ -41,6 +40,46 @@
         - python-pip      
         - virtualenv
         
+        
+
+    - name: Check that the /dev/xvdh exists
+      stat:
+        path: /dev/xvdh
+      register: mount_volume
+      
+    - debug:
+        msg: "/dev/xvdh exists"
+      when: mount_volume.stat.exists
+        
+    - name: Create a xfs
+      filesystem:
+        fstype: xfs
+        dev: /dev/xvdh
+      when: mount_volume.stat.exists == True 
+    
+    
+    - name: Creates directory
+      file:
+        path: /data
+        state: directory
+      when: mount_volume.stat.exists == True         
+    
+
+    - name: Mount 
+      mount:
+        path: /data
+        src: /dev/xvdh
+        state: present
+        fstype: xfs
+      when: mount_volume.stat.exists == True         
+
+        
+    - name: Change data-root location in /etc/docker/daemon.json
+      shell: |
+        echo '{"data-root": "/data"}' > /etc/docker/daemon.json
+      when: mount_volume.stat.exists == True
+      
+    
     - name: Add Docker GPG apt Key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
@@ -56,7 +95,6 @@
       apt: update_cache=yes name=docker-ce state=latest           
            
     - name: Update and upgrade apt packages
-      become: true
       apt:
         upgrade: yes
         update_cache: yes
