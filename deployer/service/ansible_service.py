@@ -34,6 +34,9 @@ def write_inventory_file(tmp_path, vms):
     for vm_name in vms:
         attributes = vms[vm_name]['attributes']
         role = attributes['role']
+        if 'public_ip' not in attributes:
+            raise ValueError('VM: ' + vm_name + ' has no public_ip attribute')
+
         if role == 'master':
             k8_master = attributes['public_ip']
         else:

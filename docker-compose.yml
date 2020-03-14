@@ -100,7 +100,7 @@ services:
   #jupyter:
     #ports: 
       #- "30003:8888"   
-    #image: jupyter/base-notebook    
+    #image: jupyter_base-notebook    
     
     
   manager:
@@ -129,22 +129,22 @@ services:
     environment:
       RABBITMQ_HOST: rabbit
     
-  provisioner:
-    depends_on:
-      - rabbit
-      - sure-tosca
-    image: alogo53/provisioner:3.0.0
-    environment:
-      RABBITMQ_HOST: rabbit      
-      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-    
-  #deployer:
+  #provisioner:
     #depends_on:
       #- rabbit
       #- sure-tosca
-    #image: alogo53/deployer:3.0.0
+    #image: alogo53/provisioner:3.0.0
     #environment:
-      #RABBITMQ_HOST: rabbit           
+      #RABBITMQ_HOST: rabbit      
+      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+    
+  deployer:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: alogo53/deployer:3.0.0
+    environment:
+      RABBITMQ_HOST: rabbit           
 
       
 #volumes:

@@ -209,14 +209,21 @@ class CloudStormService {
         Double numOfCores = helper.getVMNumOfCores(vmMap);
         Double memSize = helper.getVMNMemSize(vmMap);
         String os = helper.getVMNOS(vmMap);
-        double[] requestedVector = convert2ArrayofDoubles(numOfCores, memSize);
+        Double diskSize = helper.getVMNDiskSize(vmMap);
+        double[] requestedVector = convert2ArrayofDoubles(numOfCores, memSize, diskSize);
         double min = Double.MAX_VALUE;
         CloudsStormVM bestMatchingVM = null;
         List<CloudsStormVM> vmInfos = cloudStormDAO.findVmMetaInfoByProvider(CloudProviderEnum.fromValue(provider));
         for (CloudsStormVM vmInfo : vmInfos) {
 
             if (os.toLowerCase().equals(vmInfo.getOstype().toLowerCase())) {
-                double[] aveliableVector = convert2ArrayofDoubles(Double.valueOf(vmInfo.getCPU()), Double.valueOf(vmInfo.getMEM()));
+                Double cloudsStormVMdiskSize = null;
+                if (vmInfo.getDiskSize() == null) {
+                    cloudsStormVMdiskSize = Double.valueOf(7.0);
+                } else {
+                    cloudsStormVMdiskSize = Double.valueOf(vmInfo.getDiskSize());
+                }
+                double[] aveliableVector = convert2ArrayofDoubles(Double.valueOf(vmInfo.getCPU()), Double.valueOf(vmInfo.getMEM()), cloudsStormVMdiskSize);
                 EuclideanDistance dist = new EuclideanDistance();
                 double res = dist.compute(requestedVector, aveliableVector);
                 if (res < min) {
@@ -225,7 +232,10 @@ class CloudStormService {
                 }
             }
         }
-        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Found best matching VM: " + bestMatchingVM);
+        if (bestMatchingVM != null && bestMatchingVM.getDiskSize() == null){
+            bestMatchingVM.setDiskSize(diskSize.intValue());
+        }
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Found best matching VM: {0}", bestMatchingVM);
         return bestMatchingVM;
     }
 
@@ -383,8 +393,8 @@ class CloudStormService {
         return toscaTemplate;
     }
 
-    private double[] convert2ArrayofDoubles(Double numOfCores, Double memSize) {
-        double[] vector = new double[]{numOfCores, memSize};
+    private double[] convert2ArrayofDoubles(Double numOfCores, Double memSize, Double diskSize) {
+        double[] vector = new double[]{numOfCores, memSize, diskSize};
         return vector;
     }
 

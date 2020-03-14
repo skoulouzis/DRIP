@@ -53,6 +53,7 @@ public class ToscaHelper {
     private static final String VM_TYPE = "tosca.nodes.ARTICONF.VM.Compute";
     private static final String VM_NUM_OF_CORES = "num_cores";
     private static final String MEM_SIZE = "mem_size";
+    private static final String DISK_SIZE = "disk_size";
     private static final String VM_OS = "os";
     private static final String VM_TOPOLOGY = "tosca.nodes.ARTICONF.VM.topology";
     private Integer id;
@@ -141,6 +142,21 @@ public class ToscaHelper {
             String memUnit = memScalarArray[1];
             Double memSizeInGB = convertToGB(Integer.valueOf(memSize), memUnit);
             return memSizeInGB;
+        } else {
+            throw new Exception("NodeTemplate is not of type: " + VM_TYPE + " it is of type: " + vm.getType());
+        }
+
+    }
+
+    public Double getVMNDiskSize(NodeTemplateMap vmMap) throws Exception {
+        NodeTemplate vm = vmMap.getNodeTemplate();
+        if (vm.getType().equals(VM_TYPE)) {
+            String memScalar = (String) vm.getProperties().get(DISK_SIZE);
+            String[] memScalarArray = memScalar.split(" ");
+            String memSize = memScalarArray[0];
+            String memUnit = memScalarArray[1];
+            Double sizeInGB = convertToGB(Integer.valueOf(memSize), memUnit);
+            return sizeInGB;
         } else {
             throw new Exception("NodeTemplate is not of type: " + VM_TYPE + " it is of type: " + vm.getType());
         }
@@ -244,4 +260,5 @@ public class ToscaHelper {
         }
         return "vm_user";
     }
+
 }

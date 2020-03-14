@@ -26,17 +26,18 @@ topology_template:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
                 file:  alogo53/ws-pema-lifewatch
-                repository: docker_hub        
+                repository: docker_hub                        
+                
       
-    topology:
-        type: tosca.nodes.ARTICONF.VM.topology
-        interfaces:
-            CloudsStorm:
-                provision:
-                    inputs:
-                        code_type: SEQ
-                        object_type: SubTopology
-        properties:
-            domain: UvA (Amsterdam, The Netherlands) XO Rack
-            provider: ExoGENI
+    #topology:
+        #type: tosca.nodes.ARTICONF.VM.topology
+        #interfaces:
+            #CloudsStorm:
+                #provision:
+                    #inputs:
+                        #code_type: SEQ
+                        #object_type: SubTopology
+        #properties:
+            #domain: UvA (Amsterdam, The Netherlands) XO Rack
+            #provider: ExoGENI
       
