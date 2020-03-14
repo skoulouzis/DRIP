@@ -89,24 +89,7 @@
       shell: 'mount /dev/xvdh /data'
       when: mount_volume.stat.exists        
       ignore_errors: yes
-        
-    - name: Change data-root location in /etc/docker/daemon.json
-      shell: |
-        echo '{"data-root": "/data"}' > /etc/docker/daemon.json
-      when: mount_volume.stat.exists == True
-      
-    - name: Restart service docker, in all cases
-      service:
-        name: docker
-        state: restarted     
-        ignore_errors: yes
-      
-      
-    #- name: Get size 
-      #shell: 'df -h'
-      #register: output
-      #when: mount_volume.stat.exists == True    
-        
+              
     
     - name: Add Docker GPG apt Key
       apt_key:
@@ -120,7 +103,19 @@
         state: present   
             
     - name: Update apt and install docker-ce
-      apt: update_cache=yes name=docker-ce state=latest           
+      apt: update_cache=yes name=docker-ce state=latest        
+      
+    - name: Change data-root location in /etc/docker/daemon.json
+      shell: |
+        echo '{"data-root": "/data"}' > /etc/docker/daemon.json
+      when: mount_volume.stat.exists == True
+      
+    - name: Restart service docker, in all cases
+      service:
+        name: docker
+        state: restarted     
+        ignore_errors: yes
+      when: mount_volume.stat.exists == True      
            
     - name: Update and upgrade apt packages
       apt:
