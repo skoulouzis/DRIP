@@ -41,5 +41,6 @@ matrix:
         - mvn -Dmaven.test.skip=true dockerfile:build
         - cd ../provisioner
         - mvn -Dmaven.test.skip=true dockerfile:build
-#after_success:
-#- docker login -u $DOCKER_USER -p $DOCKER_PASS
+
+after_success:
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
