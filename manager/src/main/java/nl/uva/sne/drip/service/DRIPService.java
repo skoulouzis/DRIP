@@ -167,7 +167,8 @@ public class DRIPService {
         return toscaTemplate;
     }
 
-    void deleteActions(ToscaTemplate toscaTemplate) throws ApiException, TypeExeption {
+    void deleteActions(ToscaTemplate toscaTemplate) throws ApiException, TypeExeption, IOException {
+        helper.uploadToscaTemplate(toscaTemplate);
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         for (NodeTemplateMap vmTopology : vmTopologies){
             CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);

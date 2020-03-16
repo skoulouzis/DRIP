@@ -28,6 +28,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
@@ -37,12 +39,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.Swagger2SpringBoot;
 import nl.uva.sne.drip.commons.utils.Converter;
+import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.configuration.MongoConfig;
 import nl.uva.sne.drip.model.tosca.Credential;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -72,6 +76,9 @@ public class ServiceTests {
     @Autowired
     private WebApplicationContext wac;
     private MockMvc mockMvc;
+
+    @Value("${sure-tosca.base.path}")
+    private String sureToscaBasePath;
 
     private static final MongodStarter starter = MongodStarter.getDefaultInstance();
     private static MongodExecutable _mongodExe;
@@ -213,27 +220,43 @@ public class ServiceTests {
      */
     @Test
     public void testToscaTemplateServiceDeleteByID() {
-        try {
-            Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "deleteByID");
-            if (toscaTemplateID == null) {
-                testToscaTemplateServiceSaveFile();
-            }
-            toscaTemplateService.deleteByID(toscaTemplateID);
-            String id = toscaTemplateService.findByID(toscaTemplateID);
-        } catch (Exception ex) {
-            if (!(ex instanceof NoSuchElementException)) {
-                fail(ex.getMessage());
-                Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-        } finally {
+        if (isServiceUp(sureToscaBasePath)) {
             try {
-                testToscaTemplateServiceSaveFile();
+                Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "deleteByID");
+                if (toscaTemplateID == null) {
+                    testToscaTemplateServiceSaveFile();
+                }
+                toscaTemplateService.deleteByID(toscaTemplateID);
+                String id = toscaTemplateService.findByID(toscaTemplateID);
             } catch (Exception ex) {
-                fail(ex.getMessage());
-                Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+                if (!(ex instanceof NoSuchElementException)) {
+                    fail(ex.getMessage());
+                    Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            } finally {
+                try {
+                    testToscaTemplateServiceSaveFile();
+                } catch (Exception ex) {
+                    fail(ex.getMessage());
+                    Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
+
+    }
+
+    public static Boolean isServiceUp(String serviceBasePath) {
+        try {
+            URL serviceUrl = new URL(serviceBasePath);
+            HttpURLConnection connection = (HttpURLConnection) serviceUrl.openConnection();
+            //Set request to header to reduce load as Subirkumarsao said.
+            connection.setRequestMethod("HEAD");
+            int code = connection.getResponseCode();
+        } catch (IOException ex) {
+            return false;
+        }
+        return true;
     }
 
     /**
