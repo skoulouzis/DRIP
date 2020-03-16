@@ -43,7 +43,6 @@ matrix:
         - mvn -Dmaven.test.skip=true dockerfile:build
 after_success:
   - docker stack deploy conf -c docker-compose.yml
-  - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081); do printf '.' && sleep 3 && count=$((count+1)) && if [ $count -gt 5 ]; then break;
-  fi; done
+  - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081); do printf '.' && sleep 3 && count=$((count+1)) && if [ $count -gt 5 ]; then break; fi; done
   - mvn test
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
