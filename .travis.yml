@@ -43,6 +43,17 @@ matrix:
         - mvn -Dmaven.test.skip=true dockerfile:build
 after_success:
   - docker stack deploy conf -c docker-compose.yml
-  - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081); do printf '.' && sleep 3 && count=$((count+1)) && if [ $count -gt 5 ]; then break; fi; done
+  - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081); do printf '.' && sleep 5 && count=$((count+1)) && if [ $count -gt 5 ]; then break; fi; done
   - mvn test
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  - docker tag manager:3.0.0 alogo53/manager:3.0.0
+  - docker push alogo53/manager:3.0.0
+  - docker tag sure-tosca:3.0.0 alogo53/sure-tosca:3.0.0
+  - docker push alogo53/sure-tosca:3.0.0
+  - docker tag planner:3.0.0 alogo53/planner:3.0.0
+  - docker push alogo53/planner:3.0.0  
+  - docker tag provisioner:3.0.0 alogo53/provisioner:3.0.0
+  - docker push alogo53/provisioner:3.0.0   
+  - docker tag deployer:3.0.0 alogo53/deployer:3.0.0
+  - docker push alogo53/deployer:3.0.0
+
