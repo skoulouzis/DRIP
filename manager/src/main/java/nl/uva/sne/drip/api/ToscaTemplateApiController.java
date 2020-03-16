@@ -17,7 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
+import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.service.ToscaTemplateService;
+import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
@@ -41,8 +43,13 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
     public ResponseEntity<String> deleteToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("*/*")) {
-            toscaTemplateService.deleteByID(id);
-            return new ResponseEntity<>("", HttpStatus.OK);
+            try {
+                toscaTemplateService.deleteByID(id);
+                return new ResponseEntity<>("", HttpStatus.OK);
+            } catch (NotFoundException | IOException | ApiException | TypeExeption ex) {
+                java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }

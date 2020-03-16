@@ -19,6 +19,7 @@ import nl.uva.sne.drip.model.Exceptions.MissingCredentialsException;
 import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.NodeTemplateMap;
+import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.rpc.DRIPCaller;
@@ -49,7 +50,14 @@ public class DRIPService {
 
     @Autowired
     ProvisionerService provisionerService;
-    private static final String OPERATION_PROVISION = "provision";
+
+    enum PROVISIONER_OPERATION {
+        PROVISION, DELETE, START, STOP, H_SCALE, V_SCALE, CONFIGURE
+    }
+
+    enum DELETE_ACTIONS {
+        PROVISION, DEPLOYMENT
+    }
 
     private String execute(ToscaTemplate toscaTemplate) throws JsonProcessingException, ApiException, IOException, TimeoutException, InterruptedException {
 
@@ -115,22 +123,23 @@ public class DRIPService {
     public String provision(String id) throws MissingCredentialsException, ApiException, TypeExeption, IOException, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException {
         ToscaTemplate toscaTemplate = initExecution(id);
         toscaTemplate = addCredentials(toscaTemplate);
-        toscaTemplate = setProvisionOperation(toscaTemplate, OPERATION_PROVISION);
+        toscaTemplate = setProvisionerOperation(toscaTemplate, PROVISIONER_OPERATION.PROVISION);
         return execute(toscaTemplate);
     }
 
-    private ToscaTemplate setProvisionOperation(ToscaTemplate toscaTemplate, String operation) throws IOException, JsonProcessingException, ApiException {
+    private ToscaTemplate setProvisionerOperation(ToscaTemplate toscaTemplate, PROVISIONER_OPERATION operation) throws IOException, JsonProcessingException, ApiException {
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {
             Map<String, Object> provisionerInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
-            if (!provisionerInterface.containsKey("provision")) {
-                Map<String, Object> inputsMap = new HashMap<>();
-                inputsMap.put(operation, caller);
-                Map<String, Object> provisionMap = new HashMap<>();
-                provisionMap.put("inputs", inputsMap);
-                provisionerInterface.put(operation, caller);
-                vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisionerInterface);
-                toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
+            if (!provisionerInterface.containsKey(operation.toString().toLowerCase())) {
+                throw new RuntimeException("Fix this code. We are adding wrong interfaces");
+//                Map<String, Object> inputsMap = new HashMap<>();
+//                inputsMap.put(operation.toString().toLowerCase(), caller);
+//                Map<String, Object> provisionMap = new HashMap<>();
+//                provisionMap.put("inputs", inputsMap);
+//                provisionerInterface.put(operation.toString().toLowerCase(), caller);
+//                vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisionerInterface);
+//                toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
             }
         }
         return toscaTemplate;
@@ -150,12 +159,20 @@ public class DRIPService {
         return execute(toscaTemplate);
     }
 
-    private ToscaTemplate initExecution(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException  {
+    private ToscaTemplate initExecution(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException {
         String ymlToscaTemplate = toscaTemplateService.findByID(id);
         Logger.getLogger(DRIPService.class.getName()).log(Level.FINE, "Found ToscaTemplate with id: {0}", id);
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);
         helper.uploadToscaTemplate(toscaTemplate);
         return toscaTemplate;
+    }
+
+    void deleteActions(ToscaTemplate toscaTemplate) throws ApiException, TypeExeption {
+        List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
+        for (NodeTemplateMap vmTopology : vmTopologies){
+            CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
+        }
+
     }
 
 }

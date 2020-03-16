@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
+import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.sure.tosca.client.DefaultApi;
@@ -259,6 +260,16 @@ public class ToscaHelper {
             }
         }
         return "vm_user";
+    }
+
+    public CloudsStormSubTopology.StatusEnum getVMTopologyTemplateStatus(NodeTemplateMap nodeTemplateMap) throws TypeExeption {
+        NodeTemplate nodeTemplate = nodeTemplateMap.getNodeTemplate();
+        if (nodeTemplate.getType().equals(VM_TOPOLOGY)) {
+            String status = (String) nodeTemplate.getAttributes().get("status");
+            return CloudsStormSubTopology.StatusEnum.fromValue(status);
+        } else {
+            throw new TypeExeption("NodeTemplateMap is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
+        }
     }
 
 }
