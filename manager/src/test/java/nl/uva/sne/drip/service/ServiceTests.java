@@ -42,6 +42,7 @@ import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.configuration.MongoConfig;
 import nl.uva.sne.drip.model.Exceptions.MissingCredentialsException;
+import nl.uva.sne.drip.model.Exceptions.MissingVMTopologyException;
 import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
@@ -139,96 +140,97 @@ public class ServiceTests {
         Assert.assertTrue(true);
     }
 
-//    /**
-//     * Test of saveFile method, of class ToscaTemplateService.
-//     *
-//     * @throws java.lang.Exception
-//     */
-//    @Test
-//    public void testToscaTemplateServiceSaveFile() throws Exception {
-//        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "saveFile");
-//        FileInputStream in = new FileInputStream(testApplicationExampleToscaFilePath);
-//        MultipartFile file = new MockMultipartFile("file", in);
-//        toscaTemplateID = toscaTemplateService.saveFile(file);
-//        Assert.assertNotNull(toscaTemplateID);
-//        testApplicationExampleToscaContents = toscaTemplateService.findByID(toscaTemplateID);
-//        Assert.assertNotNull(testApplicationExampleToscaContents);
-//    }
-//
-//    /**
-//     * Test of updateToscaTemplateByID method, of class ToscaTemplateService.
-//     */
-//    @Test
-//    public void testToscaTemplateServiceUpdateToscaTemplateByID_String_MultipartFile() {
-//        FileInputStream in = null;
-//        try {
-//            Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "updateToscaTemplateByID");
-//            if (toscaTemplateID == null) {
-//                testToscaTemplateServiceSaveFile();
-//            }
-//            in = new FileInputStream(testUpdatedApplicationExampleToscaFilePath);
-//            MultipartFile file = new MockMultipartFile("file", in);
-//            String expResult = toscaTemplateID;
-//            String result = toscaTemplateService.updateToscaTemplateByID(toscaTemplateID, file);
-//            assertEquals(expResult, result);
-//            String updatedTemplate = toscaTemplateService.findByID(result);
-//            Assert.assertNotNull(updatedTemplate);
-//            Assert.assertNotEquals(result, testApplicationExampleToscaContents);
-//        } catch (FileNotFoundException ex) {
-//            Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (Exception ex) {
-//            Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
-//        } finally {
-//            try {
-//                if (in != null) {
-//                    in.close();
-//                }
-//            } catch (IOException ex) {
-//                fail(ex.getMessage());
-//                Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Test of updateToscaTemplateByID method, of class ToscaTemplateService.
-//     *
-//     * @throws java.io.FileNotFoundException
-//     */
-//    @Test
-//    public void testToscaTemplateServiceUpdateToscaTemplateByID_Exception_MultipartFile() throws FileNotFoundException, IOException {
-//        FileInputStream in = new FileInputStream(testUpdatedApplicationExampleToscaFilePath);
-//        MultipartFile file = new MockMultipartFile("file", in);
-//        try {
-//            toscaTemplateService.updateToscaTemplateByID("0", file);
-//        } catch (Exception ex) {
-//            if (!(ex instanceof NoSuchElementException)) {
-//                fail(ex.getMessage());
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Test of findByID method, of class ToscaTemplateService.
-//     */
-//    @Test
-//    public void testToscaTemplateServiceFindByID() {
-//        try {
-//            Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "findByID");
-//            if (toscaTemplateID == null) {
-//                testToscaTemplateServiceSaveFile();
-//            }
-//            String result = toscaTemplateService.findByID(toscaTemplateID);
-//            Assert.assertNotNull(result);
-//            assertEquals(testApplicationExampleToscaContents, result);
-//        } catch (JsonProcessingException ex) {
-//            fail(ex.getMessage());
-//            Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (Exception ex) {
-//            fail(ex.getMessage());
-//            Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
+    /**
+     * Test of saveFile method, of class ToscaTemplateService.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testToscaTemplateServiceSaveFile() throws Exception {
+        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "saveFile");
+        FileInputStream in = new FileInputStream(testApplicationExampleToscaFilePath);
+        MultipartFile file = new MockMultipartFile("file", in);
+        toscaTemplateID = toscaTemplateService.saveFile(file);
+        Assert.assertNotNull(toscaTemplateID);
+        testApplicationExampleToscaContents = toscaTemplateService.findByID(toscaTemplateID);
+        Assert.assertNotNull(testApplicationExampleToscaContents);
+    }
+
+    /**
+     * Test of updateToscaTemplateByID method, of class ToscaTemplateService.
+     */
+    @Test
+    public void testToscaTemplateServiceUpdateToscaTemplateByID_String_MultipartFile() {
+        FileInputStream in = null;
+        try {
+            Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "updateToscaTemplateByID");
+            if (toscaTemplateID == null) {
+                testToscaTemplateServiceSaveFile();
+            }
+            in = new FileInputStream(testUpdatedApplicationExampleToscaFilePath);
+            MultipartFile file = new MockMultipartFile("file", in);
+            String expResult = toscaTemplateID;
+            String result = toscaTemplateService.updateToscaTemplateByID(toscaTemplateID, file);
+            assertEquals(expResult, result);
+            String updatedTemplate = toscaTemplateService.findByID(result);
+            Assert.assertNotNull(updatedTemplate);
+            Assert.assertNotEquals(result, testApplicationExampleToscaContents);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                fail(ex.getMessage());
+                Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    /**
+     * Test of updateToscaTemplateByID method, of class ToscaTemplateService.
+     *
+     * @throws java.io.FileNotFoundException
+     */
+    @Test
+    public void testToscaTemplateServiceUpdateToscaTemplateByID_Exception_MultipartFile() throws FileNotFoundException, IOException {
+        FileInputStream in = new FileInputStream(testUpdatedApplicationExampleToscaFilePath);
+        MultipartFile file = new MockMultipartFile("file", in);
+        try {
+            toscaTemplateService.updateToscaTemplateByID("0", file);
+        } catch (Exception ex) {
+            if (!(ex instanceof NoSuchElementException)) {
+                fail(ex.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Test of findByID method, of class ToscaTemplateService.
+     */
+    @Test
+    public void testToscaTemplateServiceFindByID() {
+        try {
+            Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "findByID");
+            if (toscaTemplateID == null) {
+                testToscaTemplateServiceSaveFile();
+            }
+            String result = toscaTemplateService.findByID(toscaTemplateID);
+            Assert.assertNotNull(result);
+            assertEquals(testApplicationExampleToscaContents, result);
+        } catch (JsonProcessingException ex) {
+            fail(ex.getMessage());
+            Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            fail(ex.getMessage());
+            Logger.getLogger(ServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     /**
      * Test of deleteByID method, of class ToscaTemplateService.
      */
@@ -255,157 +257,157 @@ public class ServiceTests {
 
     }
 
-////    /**
-////     * Test of getAllIds method, of class ToscaTemplateService.
-////     *
-////     * @throws java.lang.Exception
-////     */
-////    @Test
-////    public void testToscaTemplateServiceGetAllIds() throws Exception {
-////        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "getAllIds");
-////        testToscaTemplateServiceDeleteAll();
-////        int numOfINst = 3;
-////        for (int i = 1; i <= numOfINst; i++) {
-////            testToscaTemplateServiceSaveFile();
-////        }
-////        List<String> result = toscaTemplateService.getAllIds();
-////        assertEquals(numOfINst, result.size());
-////    }
-////
-////    @Test
-////    public void testToscaTemplateServiceDeleteAll() {
-////        toscaTemplateService.deleteAll();
-////        int size = toscaTemplateService.getAllIds().size();
-////        assertEquals(0, size);
-////    }
-////
-////    /**
-////     * Test of save method, of class CredentialService.
-////     */
-////    @Test
-////    public void testCredentialServiceSave() {
-////        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "save");
-////        saveCredential();
-////    }
-////
-////    @Test
-////    public void testCredentialService() throws IOException, NoSuchAlgorithmException {
-////        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "testCredentialService");
-////        String keyStoreEncoded = Converter.encodeFileToBase64Binary(testCredentialPath);
-////
-////        Credential credential = new Credential();
-////        credential.setCloudProviderName("ExoGENI");
-////        Map<String, String> keys = new HashMap<>();
-////        keys.put("keystore", keyStoreEncoded);
-////        credential.setKeys(keys);
-////        credential.setToken("1234");
-////        credential.setTokenType("password");
-////        credential.setUser("user");
-////
-////        String keyStoreEncodedFromCredential = credential.getKeys().get("keystore");
-////        assertEquals(keyStoreEncoded, keyStoreEncodedFromCredential);
-////
-////        String copyTestCredentialPath = ".." + File.separator + "fake_credentials" + File.separator + "copy_of_test-geni.jks";
-////        Converter.decodeBase64BToFile(keyStoreEncodedFromCredential, copyTestCredentialPath);
-////
-////        String keystorFileChecksum = Converter.getFileMD5(testCredentialPath);
-////        String keystorFileCopyChecksum = Converter.getFileMD5(copyTestCredentialPath);
-////
-////        assertEquals(keystorFileChecksum, keystorFileCopyChecksum);
-////    }
-////
-////    public String saveCredential() {
-////        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "saveCredential");
-////        Credential document = new Credential();
-////        document.setCloudProviderName("exogeni");
-////        Map<String, String> keys = new HashMap<>();
-////        keys.put("keystore", "/qTlqams0Ppq2rnaOgL5am7ExGO2nMsOZYM61kiAnsvkOixUuoPy9r4d4OfhwQXXg3lZmeRITjNz4ps+hIDKuxodIQXgBtfMy9Kx8Syb9bIl/MQQls5hWyp9yHAl6vAampoxYu0170lceT1sds4OCz3tM9eF7/UoBQwXBPo94QhO1/vSbtICyVsm3Z2HeGKcBWobT3opZV2w30GqX/7OBmNeIG7RBMPuxLsUxJ9Alahi1zXOUjLkd2bmmVFREngmeubgCzPFxxCQQrZK6WratTzJKc1sRVNK5GJzTwi9BlcZSQSgprum9yVHUgQc6Ylmvdrkhn2g9SlluY2JAZyCZvHYaRBKE4o5bXBDumTy1YAPMNPTfpeeLz+YmH0GMfVwKkxtIBpjb045QseoIWcqxke60WWfJguaTqymXknmcqcLNz+UzUdfVfyurOy9X8xmTGCW5V4N");
-////        document.setKeys(keys);
-////        document.setToken("secret");
-////        document.setTokenType("password");
-////
-////        return credentialService.save(document);
-////    }
-////
-////    /**
-////     * Test of findByID method, of class CredentialService.
-////     *
-////     * @throws java.lang.Exception
-////     */
-////    @Test
-////    public void testCredentialServiceFindByID() throws Exception {
-////        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "findByID");
-////        String id = saveCredential();
-////        Credential result = credentialService.findByID(id);
-////        assertNotNull(result);
-////    }
-////
-////    /**
-////     * Test of deleteByID method, of class CredentialService.
-////     *
-////     * @throws com.fasterxml.jackson.core.JsonProcessingException
-////     */
-////    @Test
-////    public void testCredentialServiceDeleteByID() throws JsonProcessingException {
-////        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "deleteByID");
-////        String id = saveCredential();
-////        credentialService.deleteByID(id);
-////        try {
-////            Credential res = credentialService.findByID(id);
-////            assertNotNull(res);
-////        } catch (Exception ex) {
-////            if (!(ex instanceof NoSuchElementException)) {
-////                fail(ex.getMessage());
-////            }
-////        }
-////    }
-////
-////    /**
-////     * Test of getAllIds method, of class CredentialService.
-////     */
-////    @Test
-////    public void testCredentialServiceGetAllIds() {
-////        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "getAllIds");
-////        testCredentialServiceDeleteAll();
-////        int numOfINst = 3;
-////        for (int i = 1; i <= numOfINst; i++) {
-////            saveCredential();
-////        }
-////        List<String> result = credentialService.getAllIds();
-////        assertEquals(numOfINst, result.size());
-////    }
-////
-////    /**
-////     * Test of deleteAll method, of class CredentialService.
-////     */
-////    @Test
-////    public void testCredentialServiceDeleteAll() {
-////        credentialService.deleteAll();
-////        int size = credentialService.getAllIds().size();
-////        assertEquals(0, size);
-////    }
-////
-////    @Test
-////    public void testProvision() throws FileNotFoundException, IOException, MissingCredentialsException, ApiException, TypeExeption, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException {
-////        if (ToscaHelper.isServiceUp(sureToscaBasePath) && ToscaHelper.isServiceUp("http://" + messageBrokerHost + ":15672")) {
-////            Credential document = new Credential();
-////            document.setCloudProviderName("exogeni");
-////            Map<String, String> keys = new HashMap<>();
-////            keys.put("keystore", "/qTlqams0Ppq2rnaOgL5am7ExGO2nMsOZYM61kiAnsvkOixUuoPy9r4d4OfhwQXXg3lZmeRITjNz4ps+hIDKuxodIQXgBtfMy9Kx8Syb9bIl/MQQls5hWyp9yHAl6vAampoxYu0170lceT1sds4OCz3tM9eF7/UoBQwXBPo94QhO1/vSbtICyVsm3Z2HeGKcBWobT3opZV2w30GqX/7OBmNeIG7RBMPuxLsUxJ9Alahi1zXOUjLkd2bmmVFREngmeubgCzPFxxCQQrZK6WratTzJKc1sRVNK5GJzTwi9BlcZSQSgprum9yVHUgQc6Ylmvdrkhn2g9SlluY2JAZyCZvHYaRBKE4o5bXBDumTy1YAPMNPTfpeeLz+YmH0GMfVwKkxtIBpjb045QseoIWcqxke60WWfJguaTqymXknmcqcLNz+UzUdfVfyurOy9X8xmTGCW5V4N");
-////            document.setKeys(keys);
-////            document.setToken("secret");
-////            document.setTokenType("password");
-////
-////            String credentialID = credentialService.save(document);
-////            assertNotNull(credentialID);
-////
-////            FileInputStream in = new FileInputStream(testApplicationExampleToscaFilePath);
-////
-////            MultipartFile file = new MockMultipartFile("file", in);
-////            toscaTemplateID = toscaTemplateService.saveFile(file);
-////
-////            dripService.setRequestQeueName(provisionerQueueName);
-////            String planedYemplateId = dripService.provision(toscaTemplateID);
-////        }
-//    }
+    /**
+     * Test of getAllIds method, of class ToscaTemplateService.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testToscaTemplateServiceGetAllIds() throws Exception {
+        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "getAllIds");
+        testToscaTemplateServiceDeleteAll();
+        int numOfINst = 3;
+        for (int i = 1; i <= numOfINst; i++) {
+            testToscaTemplateServiceSaveFile();
+        }
+        List<String> result = toscaTemplateService.getAllIds();
+        assertEquals(numOfINst, result.size());
+    }
+
+    @Test
+    public void testToscaTemplateServiceDeleteAll() {
+        toscaTemplateService.deleteAll();
+        int size = toscaTemplateService.getAllIds().size();
+        assertEquals(0, size);
+    }
+
+    /**
+     * Test of save method, of class CredentialService.
+     */
+    @Test
+    public void testCredentialServiceSave() {
+        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "save");
+        saveCredential();
+    }
+
+    @Test
+    public void testCredentialService() throws IOException, NoSuchAlgorithmException {
+        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "testCredentialService");
+        String keyStoreEncoded = Converter.encodeFileToBase64Binary(testCredentialPath);
+
+        Credential credential = new Credential();
+        credential.setCloudProviderName("ExoGENI");
+        Map<String, String> keys = new HashMap<>();
+        keys.put("keystore", keyStoreEncoded);
+        credential.setKeys(keys);
+        credential.setToken("1234");
+        credential.setTokenType("password");
+        credential.setUser("user");
+
+        String keyStoreEncodedFromCredential = credential.getKeys().get("keystore");
+        assertEquals(keyStoreEncoded, keyStoreEncodedFromCredential);
+
+        String copyTestCredentialPath = ".." + File.separator + "fake_credentials" + File.separator + "copy_of_test-geni.jks";
+        Converter.decodeBase64BToFile(keyStoreEncodedFromCredential, copyTestCredentialPath);
+
+        String keystorFileChecksum = Converter.getFileMD5(testCredentialPath);
+        String keystorFileCopyChecksum = Converter.getFileMD5(copyTestCredentialPath);
+
+        assertEquals(keystorFileChecksum, keystorFileCopyChecksum);
+    }
+
+    public String saveCredential() {
+        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "saveCredential");
+        Credential document = new Credential();
+        document.setCloudProviderName("exogeni");
+        Map<String, String> keys = new HashMap<>();
+        keys.put("keystore", "/qTlqams0Ppq2rnaOgL5am7ExGO2nMsOZYM61kiAnsvkOixUuoPy9r4d4OfhwQXXg3lZmeRITjNz4ps+hIDKuxodIQXgBtfMy9Kx8Syb9bIl/MQQls5hWyp9yHAl6vAampoxYu0170lceT1sds4OCz3tM9eF7/UoBQwXBPo94QhO1/vSbtICyVsm3Z2HeGKcBWobT3opZV2w30GqX/7OBmNeIG7RBMPuxLsUxJ9Alahi1zXOUjLkd2bmmVFREngmeubgCzPFxxCQQrZK6WratTzJKc1sRVNK5GJzTwi9BlcZSQSgprum9yVHUgQc6Ylmvdrkhn2g9SlluY2JAZyCZvHYaRBKE4o5bXBDumTy1YAPMNPTfpeeLz+YmH0GMfVwKkxtIBpjb045QseoIWcqxke60WWfJguaTqymXknmcqcLNz+UzUdfVfyurOy9X8xmTGCW5V4N");
+        document.setKeys(keys);
+        document.setToken("secret");
+        document.setTokenType("password");
+
+        return credentialService.save(document);
+    }
+
+    /**
+     * Test of findByID method, of class CredentialService.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testCredentialServiceFindByID() throws Exception {
+        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "findByID");
+        String id = saveCredential();
+        Credential result = credentialService.findByID(id);
+        assertNotNull(result);
+    }
+
+    /**
+     * Test of deleteByID method, of class CredentialService.
+     *
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
+     */
+    @Test
+    public void testCredentialServiceDeleteByID() throws JsonProcessingException {
+        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "deleteByID");
+        String id = saveCredential();
+        credentialService.deleteByID(id);
+        try {
+            Credential res = credentialService.findByID(id);
+            assertNotNull(res);
+        } catch (Exception ex) {
+            if (!(ex instanceof NoSuchElementException)) {
+                fail(ex.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Test of getAllIds method, of class CredentialService.
+     */
+    @Test
+    public void testCredentialServiceGetAllIds() {
+        Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "getAllIds");
+        testCredentialServiceDeleteAll();
+        int numOfINst = 3;
+        for (int i = 1; i <= numOfINst; i++) {
+            saveCredential();
+        }
+        List<String> result = credentialService.getAllIds();
+        assertEquals(numOfINst, result.size());
+    }
+
+    /**
+     * Test of deleteAll method, of class CredentialService.
+     */
+    @Test
+    public void testCredentialServiceDeleteAll() {
+        credentialService.deleteAll();
+        int size = credentialService.getAllIds().size();
+        assertEquals(0, size);
+    }
+
+    @Test
+    public void testProvision() throws FileNotFoundException, IOException, MissingCredentialsException, ApiException, TypeExeption, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException {
+        if (ToscaHelper.isServiceUp(sureToscaBasePath) && ToscaHelper.isServiceUp("http://" + messageBrokerHost + ":15672")) {
+            Credential document = new Credential();
+            document.setCloudProviderName("exogeni");
+            Map<String, String> keys = new HashMap<>();
+            keys.put("keystore", "/qTlqams0Ppq2rnaOgL5am7ExGO2nMsOZYM61kiAnsvkOixUuoPy9r4d4OfhwQXXg3lZmeRITjNz4ps+hIDKuxodIQXgBtfMy9Kx8Syb9bIl/MQQls5hWyp9yHAl6vAampoxYu0170lceT1sds4OCz3tM9eF7/UoBQwXBPo94QhO1/vSbtICyVsm3Z2HeGKcBWobT3opZV2w30GqX/7OBmNeIG7RBMPuxLsUxJ9Alahi1zXOUjLkd2bmmVFREngmeubgCzPFxxCQQrZK6WratTzJKc1sRVNK5GJzTwi9BlcZSQSgprum9yVHUgQc6Ylmvdrkhn2g9SlluY2JAZyCZvHYaRBKE4o5bXBDumTy1YAPMNPTfpeeLz+YmH0GMfVwKkxtIBpjb045QseoIWcqxke60WWfJguaTqymXknmcqcLNz+UzUdfVfyurOy9X8xmTGCW5V4N");
+            document.setKeys(keys);
+            document.setToken("secret");
+            document.setTokenType("password");
+
+            String credentialID = credentialService.save(document);
+            assertNotNull(credentialID);
+
+            FileInputStream in = new FileInputStream(testApplicationExampleToscaFilePath);
+
+            MultipartFile file = new MockMultipartFile("file", in);
+            toscaTemplateID = toscaTemplateService.saveFile(file);
+
+//                dripService.setRequestQeueName(provisionerQueueName);
+//                String planedYemplateId = dripService.provision(toscaTemplateID);
+        }
+    }
 }

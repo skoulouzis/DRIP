@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import nl.uva.sne.drip.api.NotFoundException;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.Exceptions.MissingCredentialsException;
+import nl.uva.sne.drip.model.Exceptions.MissingVMTopologyException;
 import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.NodeTemplateMap;
@@ -94,8 +95,11 @@ public class DRIPService {
         return credentials.get(0);
     }
 
-    private ToscaTemplate addCredentials(ToscaTemplate toscaTemplate) throws MissingCredentialsException, ApiException, TypeExeption {
+    private ToscaTemplate addCredentials(ToscaTemplate toscaTemplate) throws MissingCredentialsException, ApiException, TypeExeption, MissingVMTopologyException {
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
+        if(vmTopologies== null){
+            throw new MissingVMTopologyException("ToscaTemplate: "+toscaTemplate+" has no VM topology");
+        }
         List<Credential> credentials = null;
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {
             String provider = helper.getTopologyProvider(vmTopologyMap);
@@ -120,7 +124,7 @@ public class DRIPService {
         return execute(toscaTemplate);
     }
 
-    public String provision(String id) throws MissingCredentialsException, ApiException, TypeExeption, IOException, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException {
+    public String provision(String id) throws MissingCredentialsException, ApiException, TypeExeption, IOException, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException, MissingVMTopologyException {
         ToscaTemplate toscaTemplate = initExecution(id);
         toscaTemplate = addCredentials(toscaTemplate);
         toscaTemplate = setProvisionerOperation(toscaTemplate, PROVISIONER_OPERATION.PROVISION);
@@ -169,12 +173,14 @@ public class DRIPService {
     void deleteActions(ToscaTemplate toscaTemplate) throws ApiException, TypeExeption, IOException {
         helper.uploadToscaTemplate(toscaTemplate);
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
-        for (NodeTemplateMap vmTopology : vmTopologies) {
-            CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
-            if (!status.equals(CloudsStormSubTopology.StatusEnum.DELETED)) {
+        if (vmTopologies != null) {
+            for (NodeTemplateMap vmTopology : vmTopologies) {
+                CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
+                if (!status.equals(CloudsStormSubTopology.StatusEnum.DELETED)) {
+                    Logger.getLogger(ToscaHelper.class.getName()).log(Level.FINE, "Deleting VMs from " + vmTopology);
+                }
 
             }
-
         }
 
     }

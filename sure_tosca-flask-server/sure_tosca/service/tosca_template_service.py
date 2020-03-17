@@ -221,9 +221,11 @@ def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, 
         prop = None
         queries.append(query.artifacts != prop)
 
-
     query_results = query_db(queries, db=node_template_db)
-    return change_to_node_template_model(query_results)
+    if query_results:
+        return change_to_node_template_model(query_results)
+    else:
+        return query_results
 
 
 def get_tosca_template_get_dsl_definitions(id, anchors, derived_from):
