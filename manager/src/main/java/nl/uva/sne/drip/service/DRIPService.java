@@ -131,8 +131,7 @@ public class DRIPService {
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {
             Map<String, Object> provisionerInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
-            if (!provisionerInterface.containsKey(operation.toString().toLowerCase())) {
-                throw new RuntimeException("Fix this code. We are adding wrong interfaces");
+//            if (!provisionerInterface.containsKey(operation.toString().toLowerCase())) {
 //                Map<String, Object> inputsMap = new HashMap<>();
 //                inputsMap.put(operation.toString().toLowerCase(), caller);
 //                Map<String, Object> provisionMap = new HashMap<>();
@@ -140,7 +139,7 @@ public class DRIPService {
 //                provisionerInterface.put(operation.toString().toLowerCase(), caller);
 //                vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisionerInterface);
 //                toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
-            }
+//            }
         }
         return toscaTemplate;
     }
@@ -170,8 +169,12 @@ public class DRIPService {
     void deleteActions(ToscaTemplate toscaTemplate) throws ApiException, TypeExeption, IOException {
         helper.uploadToscaTemplate(toscaTemplate);
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
-        for (NodeTemplateMap vmTopology : vmTopologies){
+        for (NodeTemplateMap vmTopology : vmTopologies) {
             CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
+            if (!status.equals(CloudsStormSubTopology.StatusEnum.DELETED)) {
+
+            }
+
         }
 
     }

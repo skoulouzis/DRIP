@@ -23,6 +23,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +64,19 @@ public class ToscaHelper {
     @Autowired
     public ToscaHelper(String sureToscaBasePath) {
         init(sureToscaBasePath);
+    }
+
+    public static Boolean isServiceUp(String serviceBasePath) {
+        try {
+            URL serviceUrl = new URL(serviceBasePath);
+            HttpURLConnection connection = (HttpURLConnection) serviceUrl.openConnection();
+            //Set request to header to reduce load as Subirkumarsao said.
+            connection.setRequestMethod("HEAD");
+            int code = connection.getResponseCode();
+        } catch (IOException ex) {
+            return false;
+        }
+        return true;
     }
 
     /**

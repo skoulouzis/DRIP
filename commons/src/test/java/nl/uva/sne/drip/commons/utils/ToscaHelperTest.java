@@ -85,7 +85,7 @@ public class ToscaHelperTest {
         provisionedToscaTemplate = objectMapper.readValue(ymlStr, ToscaTemplate.class);
 
         String serviceBasePath = prop.getProperty("sure-tosca.base.path");
-        serviceUp = isServiceUp(serviceBasePath);
+        serviceUp = ToscaHelper.isServiceUp(serviceBasePath);
         if (serviceUp) {
             instance = new ToscaHelper(serviceBasePath);
             instance.uploadToscaTemplate(toscaTemplatea2TVMopologies);
@@ -154,18 +154,7 @@ public class ToscaHelperTest {
         }
     }
 
-    public static Boolean isServiceUp(String serviceBasePath) {
-        try {
-            URL serviceUrl = new URL(serviceBasePath);
-            HttpURLConnection connection = (HttpURLConnection) serviceUrl.openConnection();
-            //Set request to header to reduce load as Subirkumarsao said.
-            connection.setRequestMethod("HEAD");
-            int code = connection.getResponseCode();
-        } catch (IOException ex) {
-            return false;
-        }
-        return true;
-    }
+
 
     /**
      * Test of getTemplateVMsForVMTopology method, of class ToscaHelper.

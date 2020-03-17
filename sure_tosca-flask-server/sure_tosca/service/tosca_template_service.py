@@ -14,6 +14,7 @@ from tinydb.middlewares import CachingMiddleware
 from tinydb.storages import MemoryStorage
 from toscaparser.functions import GetAttribute
 from toscaparser.tosca_template import ToscaTemplate
+from werkzeug.datastructures import FileStorage
 
 from sure_tosca.models.base_model_ import Model
 from sure_tosca.models.node_template import NodeTemplateModel as NodeTemplateModel
@@ -45,7 +46,6 @@ root_key = 'root_key'
 
 
 def query_db(queries, db=None):
-    results = db.all()
     if queries:
         query = reduce(lambda a, b: a & b, queries)
         results = db.search(query)
@@ -102,11 +102,10 @@ def purge_all_tables():
     interface_types_db.close()
 
 
-def save(file):
+def save(file: FileStorage):
     # try:
     # tosca_template_file_path = os.path.join(db_dir_path, file.filename)
     start = time.time()
-
     logger.info("Got request for tosca template")
     purge_all_tables()
     dictionary = yaml.safe_load(file.stream)

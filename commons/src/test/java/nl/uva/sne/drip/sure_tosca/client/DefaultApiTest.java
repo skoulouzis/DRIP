@@ -12,11 +12,9 @@
 package nl.uva.sne.drip.sure_tosca.client;
 
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
-import java.io.File;
 import org.junit.Test;
 
-import java.util.List;
-import static nl.uva.sne.drip.commons.utils.ToscaHelperTest.isServiceUp;
+import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 
@@ -30,7 +28,7 @@ public class DefaultApiTest {
     private final Boolean serviceUp;
 
     public DefaultApiTest() {
-        serviceUp = isServiceUp(serviceBasePath);
+        serviceUp = ToscaHelper.isServiceUp(serviceBasePath);
     }
 
 //    private final DefaultApi api = new DefaultApi();
