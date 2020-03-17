@@ -95,10 +95,10 @@ public class DRIPService {
         return credentials.get(0);
     }
 
-    private ToscaTemplate addCredentials(ToscaTemplate toscaTemplate) throws MissingCredentialsException, ApiException, TypeExeption, MissingVMTopologyException {
+    protected ToscaTemplate addCredentials(ToscaTemplate toscaTemplate) throws MissingCredentialsException, ApiException, TypeExeption, MissingVMTopologyException {
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
-        if(vmTopologies== null){
-            throw new MissingVMTopologyException("ToscaTemplate: "+toscaTemplate+" has no VM topology");
+        if (vmTopologies == null) {
+            throw new MissingVMTopologyException("ToscaTemplate: " + toscaTemplate + " has no VM topology");
         }
         List<Credential> credentials = null;
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {
@@ -131,19 +131,21 @@ public class DRIPService {
         return execute(toscaTemplate);
     }
 
-    private ToscaTemplate setProvisionerOperation(ToscaTemplate toscaTemplate, PROVISIONER_OPERATION operation) throws IOException, JsonProcessingException, ApiException {
+    protected ToscaTemplate setProvisionerOperation(ToscaTemplate toscaTemplate, PROVISIONER_OPERATION operation) throws IOException, JsonProcessingException, ApiException {
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {
             Map<String, Object> provisionerInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
-//            if (!provisionerInterface.containsKey(operation.toString().toLowerCase())) {
-//                Map<String, Object> inputsMap = new HashMap<>();
-//                inputsMap.put(operation.toString().toLowerCase(), caller);
-//                Map<String, Object> provisionMap = new HashMap<>();
-//                provisionMap.put("inputs", inputsMap);
-//                provisionerInterface.put(operation.toString().toLowerCase(), caller);
-//                vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisionerInterface);
-//                toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
-//            }
+            if (provisionerInterface == null || !provisionerInterface.containsKey(operation.toString().toLowerCase())) {
+                provisionerInterface = new HashMap<>();
+                Map<String, Object> inputsMap = new HashMap<>();
+                inputsMap.put("code_type", " SEQ");
+                inputsMap.put("object_type", " SubTopology");
+                Map<String, Object> provisionMap = new HashMap<>();
+                provisionMap.put("inputs", inputsMap);
+                provisionerInterface.put(operation.toString().toLowerCase(), provisionMap);
+                vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisionerInterface);
+                toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
+            }
         }
         return toscaTemplate;
     }
@@ -162,7 +164,7 @@ public class DRIPService {
         return execute(toscaTemplate);
     }
 
-    private ToscaTemplate initExecution(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException {
+    protected ToscaTemplate initExecution(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException {
         String ymlToscaTemplate = toscaTemplateService.findByID(id);
         Logger.getLogger(DRIPService.class.getName()).log(Level.FINE, "Found ToscaTemplate with id: {0}", id);
         ToscaTemplate toscaTemplate = toscaTemplateService.getYaml2ToscaTemplate(ymlToscaTemplate);

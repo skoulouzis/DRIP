@@ -45,6 +45,7 @@ import nl.uva.sne.drip.model.Exceptions.MissingCredentialsException;
 import nl.uva.sne.drip.model.Exceptions.MissingVMTopologyException;
 import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.model.tosca.Credential;
+import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
@@ -82,6 +83,7 @@ public class ServiceTests {
     private String toscaTemplateID;
     private String testApplicationExampleToscaContents;
     private static final String testApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
+    private static final String testApplicationExamplePlanedToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_planed.yaml";
     private static final String testUpdatedApplicationExampleToscaFilePath = ".." + File.separator + "TOSCA" + File.separator + "application_example_updated.yaml";
     private static final String testCredentialPath = ".." + File.separator + "fake_credentials" + File.separator + "test-geni.jks";
 
@@ -388,10 +390,10 @@ public class ServiceTests {
     }
 
     @Test
-    public void testProvision() throws FileNotFoundException, IOException, MissingCredentialsException, ApiException, TypeExeption, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException {
+    public void testSetProvisionerOperation() throws FileNotFoundException, IOException, MissingCredentialsException, ApiException, TypeExeption, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException, MissingVMTopologyException {
         if (ToscaHelper.isServiceUp(sureToscaBasePath) && ToscaHelper.isServiceUp("http://" + messageBrokerHost + ":15672")) {
             Credential document = new Credential();
-            document.setCloudProviderName("exogeni");
+            document.setCloudProviderName("ExoGENI");
             Map<String, String> keys = new HashMap<>();
             keys.put("keystore", "/qTlqams0Ppq2rnaOgL5am7ExGO2nMsOZYM61kiAnsvkOixUuoPy9r4d4OfhwQXXg3lZmeRITjNz4ps+hIDKuxodIQXgBtfMy9Kx8Syb9bIl/MQQls5hWyp9yHAl6vAampoxYu0170lceT1sds4OCz3tM9eF7/UoBQwXBPo94QhO1/vSbtICyVsm3Z2HeGKcBWobT3opZV2w30GqX/7OBmNeIG7RBMPuxLsUxJ9Alahi1zXOUjLkd2bmmVFREngmeubgCzPFxxCQQrZK6WratTzJKc1sRVNK5GJzTwi9BlcZSQSgprum9yVHUgQc6Ylmvdrkhn2g9SlluY2JAZyCZvHYaRBKE4o5bXBDumTy1YAPMNPTfpeeLz+YmH0GMfVwKkxtIBpjb045QseoIWcqxke60WWfJguaTqymXknmcqcLNz+UzUdfVfyurOy9X8xmTGCW5V4N");
             document.setKeys(keys);
@@ -401,13 +403,15 @@ public class ServiceTests {
             String credentialID = credentialService.save(document);
             assertNotNull(credentialID);
 
-            FileInputStream in = new FileInputStream(testApplicationExampleToscaFilePath);
+            FileInputStream in = new FileInputStream(testApplicationExamplePlanedToscaFilePath);
 
             MultipartFile file = new MockMultipartFile("file", in);
-            toscaTemplateID = toscaTemplateService.saveFile(file);
+            String id = toscaTemplateService.saveFile(file);
 
-//                dripService.setRequestQeueName(provisionerQueueName);
-//                String planedYemplateId = dripService.provision(toscaTemplateID);
+            dripService.setRequestQeueName(provisionerQueueName);
+            ToscaTemplate toscaTemplate = dripService.initExecution(id);
+            toscaTemplate = dripService.addCredentials(toscaTemplate);
+            toscaTemplate = dripService.setProvisionerOperation(toscaTemplate, DRIPService.PROVISIONER_OPERATION.PROVISION);
         }
     }
 }

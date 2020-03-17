@@ -267,8 +267,8 @@ public class ToscaHelper {
     }
 
     public NodeTemplateMap setProvisionerInterfaceInVMTopology(NodeTemplateMap vmTopologyMap, Map<String, Object> provisionerInterface) {
-        System.err.println(provisionerInterface);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        vmTopologyMap.getNodeTemplate().setInterfaces(provisionerInterface);
+        return vmTopologyMap;
     }
 
     public String getVMTopologyUser() throws ApiException {
