@@ -313,19 +313,19 @@ public class ToscaHelper {
     }
 
     private NODE_STATES getNodeState(NodeTemplateMap node, String stateName) {
-        if (node.getNodeTemplate().getArtifacts() != null) {
-            return NODE_STATES.valueOf((String) node.getNodeTemplate().getArtifacts().get(stateName));
+        if (node.getNodeTemplate().getAttributes() != null) {
+            return NODE_STATES.valueOf((String) node.getNodeTemplate().getAttributes().get(stateName));
         }
         return null;
     }
 
     private NodeTemplateMap setNodeState(NodeTemplateMap node, String stateName, NODE_STATES nodeState) {
-        Map<String, Object> artifacts = node.getNodeTemplate().getArtifacts();
-        if (artifacts == null) {
-            artifacts = new HashMap<>();
+        Map<String, Object> attributes = node.getNodeTemplate().getAttributes();
+        if (attributes == null) {
+            attributes = new HashMap<>();
         }
-        artifacts.put(stateName, nodeState.toString());
-        node.getNodeTemplate().setArtifacts(artifacts);
+        attributes.put(stateName, nodeState.toString());
+        node.getNodeTemplate().attributes(attributes);
         return node;
     }
 

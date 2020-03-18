@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,6 +45,8 @@ import nl.uva.sne.drip.configuration.MongoConfig;
 import nl.uva.sne.drip.model.Exceptions.MissingCredentialsException;
 import nl.uva.sne.drip.model.Exceptions.MissingVMTopologyException;
 import nl.uva.sne.drip.model.Exceptions.TypeExeption;
+import nl.uva.sne.drip.model.NodeTemplate;
+import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
@@ -95,6 +98,9 @@ public class ServiceTests {
 
     @Autowired
     CredentialService credentialService;
+
+    @Autowired
+    ToscaHelper helper;
 
     @Autowired
     private WebApplicationContext wac;
@@ -416,6 +422,32 @@ public class ServiceTests {
 
             ToscaTemplate toscaTemplate = dripService.initExecution(id);
             toscaTemplate = dripService.addCredentials(toscaTemplate);
+
+            List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
+            if (vmTopologies == null || vmTopologies.isEmpty()) {
+                throw new MissingVMTopologyException("ToscaTemplate: " + toscaTemplate + " has no VM Topologies");
+            }
+            for (NodeTemplateMap vmTopology : vmTopologies) {
+                Map<String, Object> attributes = vmTopology.getNodeTemplate().getAttributes();
+                assertNotNull(attributes);
+                Assert.assertTrue(attributes.containsKey("credential"));
+                assertNotNull(attributes.get("credential"));
+            }
+            toscaTemplate = dripService.setDesieredSate(toscaTemplate, vmTopologies, ToscaHelper.NODE_STATES.PROVISION);
+            Map<String, NodeTemplate> nodes = toscaTemplate.getTopologyTemplate().getNodeTemplates();
+            Set<String> names = nodes.keySet();
+            for (String name : names) {
+                NodeTemplate node = nodes.get(name);
+                if (node.getType().equals("tosca.nodes.ARTICONF.VM.topology")) {
+                    Map<String, Object> attributes = node.getAttributes();
+                    assertNotNull(attributes);
+                    Assert.assertTrue(attributes.containsKey("credential"));
+                    assertNotNull(attributes.get("credential"));
+                    Assert.assertTrue(attributes.containsKey("desired_state"));
+                    assertNotNull(attributes.get("desired_state"));
+                }
+            }
+
         }
     }
 }

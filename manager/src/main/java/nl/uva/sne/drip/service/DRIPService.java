@@ -110,6 +110,8 @@ public class DRIPService {
     public String provision(String id) throws MissingCredentialsException, ApiException, TypeExeption, IOException, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException, MissingVMTopologyException {
         ToscaTemplate toscaTemplate = initExecution(id);
         toscaTemplate = addCredentials(toscaTemplate);
+        //Update ToscaTemplate so we can include the credentials
+        helper.uploadToscaTemplate(toscaTemplate);
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         if (vmTopologies == null || vmTopologies.isEmpty()) {
             throw new MissingVMTopologyException("ToscaTemplate: " + toscaTemplate + " has no VM Topologies");
