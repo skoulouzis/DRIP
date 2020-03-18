@@ -4,9 +4,18 @@ node_types:
 
   tosca.nodes.ARTICONF.Root:
     description: root ARTICONF node
+    attributes:
+      current_state:
+        type: string
+        required: false
+        description: the current state of the node
+      desired_state:
+        type: string
+        required: false
+        description: the current state of the node
 
   tosca.nodes.ARTICONF.Container.Application.Docker:
-    derived_from:  tosca.nodes.ARTICONF.Root
+    derived_from:  tosca.nodes.ARTICONF.Application
     description: description of container
     properties:
       ports:
@@ -41,7 +50,7 @@ node_types:
         description: url of the service 
           
   tosca.nodes.ARTICONF.docker.Orchestrator:
-    derived_from: tosca.nodes.ARTICONF.Root
+    derived_from: tosca.nodes.ARTICONF.Application
     description: a container orchestrator
     requirements:
       - host:
@@ -239,3 +248,7 @@ node_types:
         type: tosca.capabilities.Compute
       node:
         type: tosca.capabilities.Node
+        
+  tosca.nodes.ARTICONF.Application:
+    derived_from:  tosca.nodes.ARTICONF.Root
+    description: Base application node    
