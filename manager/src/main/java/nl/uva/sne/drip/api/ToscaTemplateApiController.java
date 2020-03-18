@@ -23,6 +23,7 @@ import nl.uva.sne.drip.service.DRIPService;
 import nl.uva.sne.drip.service.ToscaTemplateService;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
@@ -39,26 +40,36 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
     @Autowired
     private DRIPService dripService;
 
+
+
     @org.springframework.beans.factory.annotation.Autowired
     public ToscaTemplateApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.request = request;
     }
 
+
+    
     @Override
-    public ResponseEntity<String> deleteToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id) {
+    public ResponseEntity<String> deleteToscaTemplateByID(
+            @ApiParam(value = "ID of topology template to return",required=true) 
+            @PathVariable("id") String id,@ApiParam(value = "The node(s) to delete") 
+            @Valid @RequestParam(value = "node_names", required = false) List<String> nodeName) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("text/plain")) {
             try {
-                String deleteedYemplateId = dripService.delete(id);
-                return new ResponseEntity<>(deleteedYemplateId, HttpStatus.OK);
-            } catch (NotFoundException | IOException | ApiException | TypeExeption | TimeoutException | InterruptedException ex) {
+                dripService.delete(id,nodeName);
+                return new ResponseEntity<>("", HttpStatus.OK);
+            } catch (IOException | ApiException | TypeExeption | TimeoutException | InterruptedException ex) {
                 java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            } catch (NotFoundException ex) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
+    
 
     @Override
     public ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id) {
@@ -97,7 +108,6 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
-
     }
 
     @Override

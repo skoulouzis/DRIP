@@ -25,9 +25,6 @@ public class DeployerApiController implements DeployerApi {
 
     private final HttpServletRequest request;
 
-    @Value("${message.broker.queue.deployer}")
-    private String queueName;
-
     @Autowired
     private DRIPService dripService;
 
@@ -43,7 +40,6 @@ public class DeployerApiController implements DeployerApi {
         if (accept != null && accept.contains("")) {
 
             try {
-                dripService.setRequestQeueName(queueName);
                 String planedYemplateId = dripService.deploy(id);
                 return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
 

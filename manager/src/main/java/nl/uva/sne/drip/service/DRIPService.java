@@ -26,6 +26,7 @@ import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.rpc.DRIPCaller;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -44,8 +45,6 @@ public class DRIPService {
     @Autowired
     CredentialService credentialService;
 
-    private String requestQeueName;
-
     @Autowired
     private ToscaHelper helper;
 
@@ -60,7 +59,16 @@ public class DRIPService {
         PROVISION, DEPLOYMENT
     }
 
-    private String execute(ToscaTemplate toscaTemplate) throws JsonProcessingException, ApiException, IOException, TimeoutException, InterruptedException {
+    @Value("${message.broker.queue.provisioner}")
+    private String provisionerQueueName;
+
+    @Value("${message.broker.queue.planner}")
+    private String plannerQueueName;
+
+    @Value("${message.broker.queue.deployer}")
+    private String deployerQueueName;
+
+    private String execute(ToscaTemplate toscaTemplate, String requestQeueName) throws JsonProcessingException, ApiException, IOException, TimeoutException, InterruptedException {
         caller.init();
         Logger.getLogger(DRIPService.class.getName()).log(Level.INFO, "toscaTemplate:\n{0}", toscaTemplate);
         Message message = new Message();
@@ -74,20 +82,6 @@ public class DRIPService {
         caller.close();
         return toscaTemplateService.save(updatedToscaTemplate);
 
-    }
-
-    /**
-     * @return the requestQeueName
-     */
-    public String getRequestQeueName() {
-        return requestQeueName;
-    }
-
-    /**
-     * @param requestQeueName the requestQeueName to set
-     */
-    public void setRequestQeueName(String requestQeueName) {
-        this.requestQeueName = requestQeueName;
     }
 
     private Credential getBestCredential(List<Credential> credentials) {
@@ -120,14 +114,14 @@ public class DRIPService {
 
     public String plan(String id) throws ApiException, NotFoundException, IOException, JsonProcessingException, TimeoutException, InterruptedException {
         ToscaTemplate toscaTemplate = initExecution(id);
-        return execute(toscaTemplate);
+        return execute(toscaTemplate,plannerQueueName);
     }
 
     public String provision(String id) throws MissingCredentialsException, ApiException, TypeExeption, IOException, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException, MissingVMTopologyException {
         ToscaTemplate toscaTemplate = initExecution(id);
         toscaTemplate = addCredentials(toscaTemplate);
         toscaTemplate = setProvisionerOperation(toscaTemplate, PROVISIONER_OPERATION.PROVISION);
-        return execute(toscaTemplate);
+        return execute(toscaTemplate,provisionerQueueName);
     }
 
     protected ToscaTemplate setProvisionerOperation(ToscaTemplate toscaTemplate, PROVISIONER_OPERATION operation) throws IOException, JsonProcessingException, ApiException {
@@ -160,7 +154,7 @@ public class DRIPService {
 
     public String deploy(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException, Exception {
         ToscaTemplate toscaTemplate = initExecution(id);
-        return execute(toscaTemplate);
+        return execute(toscaTemplate,deployerQueueName);
     }
 
     protected ToscaTemplate initExecution(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException {
@@ -171,17 +165,19 @@ public class DRIPService {
         return toscaTemplate;
     }
 
-    public String delete(String id) throws NotFoundException, IOException, JsonProcessingException, ApiException, TypeExeption, TimeoutException, InterruptedException {
+    public String delete(String id, List<String> nodeNames) throws NotFoundException, IOException, JsonProcessingException, ApiException, TypeExeption, TimeoutException, InterruptedException {
         ToscaTemplate toscaTemplate = initExecution(id);
-        List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
-        if (vmTopologies != null) {
-            for (NodeTemplateMap vmTopology : vmTopologies) {
-                CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
-                if (!status.equals(CloudsStormSubTopology.StatusEnum.DELETED)) {
-                    toscaTemplate = setProvisionerOperation(toscaTemplate, PROVISIONER_OPERATION.DELETE);
+        if (nodeNames == null || nodeNames.isEmpty()) {
+            List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
+            if (vmTopologies != null) {
+                for (NodeTemplateMap vmTopology : vmTopologies) {
+                    CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
+                    if (!status.equals(CloudsStormSubTopology.StatusEnum.DELETED)) {
+                        toscaTemplate = setProvisionerOperation(toscaTemplate, PROVISIONER_OPERATION.DELETE);
+                    }
                 }
+                return execute(toscaTemplate,provisionerQueueName);
             }
-            return execute(toscaTemplate);
         }
         return null;
     }

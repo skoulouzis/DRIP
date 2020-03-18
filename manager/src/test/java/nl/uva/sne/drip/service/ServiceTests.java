@@ -74,6 +74,12 @@ public class ServiceTests {
     @Value("${message.broker.queue.provisioner}")
     private String provisionerQueueName;
 
+    @Value("${message.broker.queue.planner}")
+    private String plannerQueueName;
+
+    @Value("${message.broker.queue.deployer}")
+    private String deployerQueueName;
+
     @Value("${message.broker.host}")
     private String messageBrokerHost;
 
@@ -408,7 +414,6 @@ public class ServiceTests {
             MultipartFile file = new MockMultipartFile("file", in);
             String id = toscaTemplateService.saveFile(file);
 
-            dripService.setRequestQeueName(provisionerQueueName);
             ToscaTemplate toscaTemplate = dripService.initExecution(id);
             toscaTemplate = dripService.addCredentials(toscaTemplate);
             toscaTemplate = dripService.setProvisionerOperation(toscaTemplate, DRIPService.PROVISIONER_OPERATION.PROVISION);

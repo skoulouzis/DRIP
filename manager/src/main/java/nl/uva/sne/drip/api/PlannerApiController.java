@@ -26,8 +26,7 @@ public class PlannerApiController implements PlannerApi {
 
     private final HttpServletRequest request;
 
-    @Value("${message.broker.queue.planner}")
-    private String queueName;
+    
     @Autowired
     private DRIPService dripService;
 
@@ -45,7 +44,6 @@ public class PlannerApiController implements PlannerApi {
         if (accept != null && accept.contains("text/plain")) {
 
             try {
-                dripService.setRequestQeueName(queueName);
                 String planedYemplateId = dripService.plan(id);
                 return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
             } catch (ApiException | NotFoundException | IOException | TimeoutException | InterruptedException ex) {

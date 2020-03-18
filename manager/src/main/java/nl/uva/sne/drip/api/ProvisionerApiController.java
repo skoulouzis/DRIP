@@ -32,9 +32,6 @@ public class ProvisionerApiController implements ProvisionerApi {
 
     private final HttpServletRequest request;
 
-    @Value("${message.broker.queue.provisioner}")
-    private String queueName;
-
     @Autowired
     private DRIPService dripService;
 
@@ -51,7 +48,6 @@ public class ProvisionerApiController implements ProvisionerApi {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("text/plain")) {
             try {
-                dripService.setRequestQeueName(queueName);
                 String planedYemplateId = dripService.provision(id);
                 return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
             } catch (ApiException | TypeExeption | IOException | TimeoutException | InterruptedException | NotFoundException ex) {
