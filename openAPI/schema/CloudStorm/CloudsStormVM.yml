@@ -21,8 +21,6 @@
                 type: "string"
             VMType:
                 type: "string"
-            DiskSize:
-                type: "string"
             Price:
                 type: "string"
             DefaultSSHAccount:
