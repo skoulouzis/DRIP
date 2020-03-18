@@ -15,6 +15,7 @@
  */
 package nl.uva.sne.drip.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
@@ -28,6 +29,7 @@ import javax.validation.constraints.NotNull;
  * @author S. Koulouzis.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Message implements Serializable {
 
     /**

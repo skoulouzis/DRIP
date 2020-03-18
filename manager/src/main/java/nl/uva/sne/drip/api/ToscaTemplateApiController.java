@@ -47,7 +47,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
     @Override
     public ResponseEntity<String> deleteToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("*/*")) {
+        if (accept != null && accept.contains("text/plain")) {
             try {
                 String deleteedYemplateId = dripService.delete(id);
                 return new ResponseEntity<>(deleteedYemplateId, HttpStatus.OK);
