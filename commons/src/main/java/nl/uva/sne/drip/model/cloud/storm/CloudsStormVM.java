@@ -323,6 +323,7 @@ public class CloudsStormVM {
     private String OS_GUID = null;
 
     @JsonProperty("diskSize")
+    @JsonAlias({"DiskSize"})
     private Integer diskSize;
 
     public CloudsStormVM name(String name) {
