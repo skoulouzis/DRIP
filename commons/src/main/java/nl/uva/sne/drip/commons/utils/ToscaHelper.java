@@ -42,6 +42,7 @@ import org.apache.commons.io.FileUtils;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import nl.uva.sne.drip.sure.tosca.client.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import static nl.uva.sne.drip.commons.utils.Constatnts.*;
 
 /**
  *
@@ -52,13 +53,7 @@ public class ToscaHelper {
     private DefaultApi api;
 
     private ObjectMapper objectMapper;
-    public static final String VM_CAPABILITY = "tosca.capabilities.ARTICONF.VM";
-    private static final String VM_TYPE = "tosca.nodes.ARTICONF.VM.Compute";
-    private static final String VM_NUM_OF_CORES = "num_cores";
-    private static final String MEM_SIZE = "mem_size";
-    private static final String DISK_SIZE = "disk_size";
-    private static final String VM_OS = "os";
-    private static final String VM_TOPOLOGY = "tosca.nodes.ARTICONF.VM.topology";
+
     private Integer id;
 
     public static enum NODE_STATES {
@@ -125,7 +120,7 @@ public class ToscaHelper {
     public List<NodeTemplateMap> getVMTopologyTemplates() throws ApiException {
 
         try {
-            List<NodeTemplateMap> vmTopologyTemplates = api.getNodeTemplates(String.valueOf(id), "tosca.nodes.ARTICONF.VM.topology", null, null, null, null, null, null, null);
+            List<NodeTemplateMap> vmTopologyTemplates = api.getNodeTemplates(String.valueOf(id), VM_TOPOLOGY, null, null, null, null, null, null, null);
             return vmTopologyTemplates;
         } catch (ApiException ex) {
             if (ex.getCode() == 404) {
@@ -313,8 +308,9 @@ public class ToscaHelper {
     }
 
     private NODE_STATES getNodeState(NodeTemplateMap node, String stateName) {
-        if (node.getNodeTemplate().getAttributes() != null) {
-            return NODE_STATES.valueOf((String) node.getNodeTemplate().getAttributes().get(stateName));
+        Map<String, Object> attributes = node.getNodeTemplate().getAttributes();
+        if (attributes != null && attributes.containsKey(stateName)) {
+            return NODE_STATES.valueOf((String) attributes.get(stateName));
         }
         return null;
     }

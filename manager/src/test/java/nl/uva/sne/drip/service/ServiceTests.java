@@ -39,6 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.Swagger2SpringBoot;
 import nl.uva.sne.drip.api.NotFoundException;
+import static nl.uva.sne.drip.commons.utils.Constatnts.*;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.configuration.MongoConfig;
@@ -259,7 +260,7 @@ public class ServiceTests {
                 Assert.assertNotNull(id);
 
                 toscaTemplateService.deleteByID(id);
-                id = toscaTemplateService.findByID(id);
+                toscaTemplateService.findByID(id);
             } catch (Exception ex) {
                 if (!(ex instanceof NoSuchElementException)) {
                     fail(ex.getMessage());
@@ -422,7 +423,7 @@ public class ServiceTests {
 
             ToscaTemplate toscaTemplate = dripService.initExecution(id);
             toscaTemplate = dripService.addCredentials(toscaTemplate);
-
+            helper.uploadToscaTemplate(toscaTemplate);
             List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
             if (vmTopologies == null || vmTopologies.isEmpty()) {
                 throw new MissingVMTopologyException("ToscaTemplate: " + toscaTemplate + " has no VM Topologies");
@@ -438,7 +439,7 @@ public class ServiceTests {
             Set<String> names = nodes.keySet();
             for (String name : names) {
                 NodeTemplate node = nodes.get(name);
-                if (node.getType().equals("tosca.nodes.ARTICONF.VM.topology")) {
+                if (node.getType().equals(VM_TOPOLOGY)) {
                     Map<String, Object> attributes = node.getAttributes();
                     assertNotNull(attributes);
                     Assert.assertTrue(attributes.containsKey("credential"));

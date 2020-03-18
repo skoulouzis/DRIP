@@ -25,14 +25,13 @@ import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import static nl.uva.sne.drip.commons.utils.Constatnts.*;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.Provisioner;
@@ -127,7 +126,7 @@ public class ToscaHelperTest {
     public void testGetProvisionInterfaceDefinitions() throws ApiException {
         if (serviceUp) {
             System.out.println("getProvisionInterfaceDefinitions");
-            String expected = "tosca.interfaces.ARTICONF.CloudsStorm";
+            String expected = CLOUD_STORM_INTERFACE;
             List<String> toscaInterfaceTypes = new ArrayList<>();
             toscaInterfaceTypes.add(expected);
             List<Map<String, Object>> result = instance.getProvisionInterfaceDefinitions(toscaInterfaceTypes);
@@ -149,12 +148,10 @@ public class ToscaHelperTest {
             List<NodeTemplateMap> result = instance.getVMTopologyTemplates();
             assertNotNull(result);
             for (NodeTemplateMap nodeTemplateMap : result) {
-                assertEquals(nodeTemplateMap.getNodeTemplate().getType(), "tosca.nodes.ARTICONF.VM.topology");
+                assertEquals(nodeTemplateMap.getNodeTemplate().getType(), VM_TOPOLOGY);
             }
         }
     }
-
-
 
     /**
      * Test of getTemplateVMsForVMTopology method, of class ToscaHelper.
@@ -169,7 +166,7 @@ public class ToscaHelperTest {
             for (NodeTemplateMap nodeTemplateMap : vmTopologyTemplatesMap) {
                 List<NodeTemplateMap> result = instance.getTemplateVMsForVMTopology(nodeTemplateMap);
                 for (NodeTemplateMap mvmTopology : result) {
-                    assertEquals("tosca.nodes.ARTICONF.VM.Compute", mvmTopology.getNodeTemplate().getType());
+                    assertEquals(VM_TYPE, mvmTopology.getNodeTemplate().getType());
 
                 }
             }
@@ -229,7 +226,7 @@ public class ToscaHelperTest {
             Provisioner provisioner = new Provisioner();
             provisioner.setName("CloudsStorm");
             provisioner.setDescription("Interface for VM topology management with CloudsStorm. More at https://cloudsstorm.github.io/");
-            provisioner.setToscaInterfaceType("tosca.interfaces.ARTICONF.CloudsStorm");
+            provisioner.setToscaInterfaceType(CLOUD_STORM_INTERFACE);
             String operation = "provision";
 
 //            for (NodeTemplateMap vmTopologyMap : vmTopologies) {
