@@ -61,6 +61,10 @@ public class ToscaHelper {
     private static final String VM_TOPOLOGY = "tosca.nodes.ARTICONF.VM.topology";
     private Integer id;
 
+    public static enum NODE_STATES {
+        PROVISION, DELETE, START, STOP, H_SCALE, V_SCALE, CONFIGURE
+    }
+
     @Autowired
     public ToscaHelper(String sureToscaBasePath) {
         init(sureToscaBasePath);
@@ -293,6 +297,36 @@ public class ToscaHelper {
         } else {
             throw new TypeExeption("NodeTemplateMap is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
         }
+    }
+
+    public NODE_STATES getNodeCurrentState(NodeTemplateMap node) {
+        return getNodeState(node, "current_state");
+
+    }
+
+    public NodeTemplateMap setNodeDesiredState(NodeTemplateMap node, NODE_STATES nodeState) {
+        return setNodeState(node, "desired_state", nodeState);
+    }
+
+    public NODE_STATES getNodeDesiredState(NodeTemplateMap node) {
+        return getNodeState(node, "desired_state");
+    }
+
+    private NODE_STATES getNodeState(NodeTemplateMap node, String stateName) {
+        if (node.getNodeTemplate().getArtifacts() != null) {
+            return NODE_STATES.valueOf((String) node.getNodeTemplate().getArtifacts().get(stateName));
+        }
+        return null;
+    }
+
+    private NodeTemplateMap setNodeState(NodeTemplateMap node, String stateName, NODE_STATES nodeState) {
+        Map<String, Object> artifacts = node.getNodeTemplate().getArtifacts();
+        if (artifacts == null) {
+            artifacts = new HashMap<>();
+        }
+        artifacts.put(stateName, nodeState.toString());
+        node.getNodeTemplate().setArtifacts(artifacts);
+        return node;
     }
 
 }

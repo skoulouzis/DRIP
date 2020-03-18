@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import nl.uva.sne.drip.service.DRIPService;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 @Controller
 public class PlannerApiController implements PlannerApi {

@@ -416,7 +416,6 @@ public class ServiceTests {
 
             ToscaTemplate toscaTemplate = dripService.initExecution(id);
             toscaTemplate = dripService.addCredentials(toscaTemplate);
-            toscaTemplate = dripService.setProvisionerOperation(toscaTemplate, DRIPService.PROVISIONER_OPERATION.PROVISION);
         }
     }
 }

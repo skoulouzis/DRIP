@@ -1,6 +1,5 @@
 package nl.uva.sne.drip.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import java.io.IOException;
@@ -19,7 +18,6 @@ import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.service.DRIPService;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 

@@ -7,20 +7,18 @@ package nl.uva.sne.drip.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.api.NotFoundException;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
+import nl.uva.sne.drip.commons.utils.ToscaHelper.NODE_STATES;
 import nl.uva.sne.drip.model.Exceptions.MissingCredentialsException;
 import nl.uva.sne.drip.model.Exceptions.MissingVMTopologyException;
 import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.NodeTemplateMap;
-import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.rpc.DRIPCaller;
@@ -50,14 +48,6 @@ public class DRIPService {
 
     @Autowired
     ProvisionerService provisionerService;
-
-    enum PROVISIONER_OPERATION {
-        PROVISION, DELETE, START, STOP, H_SCALE, V_SCALE, CONFIGURE
-    }
-
-    enum DELETE_ACTIONS {
-        PROVISION, DEPLOYMENT
-    }
 
     @Value("${message.broker.queue.provisioner}")
     private String provisionerQueueName;
@@ -93,7 +83,7 @@ public class DRIPService {
         if (vmTopologies == null) {
             throw new MissingVMTopologyException("ToscaTemplate: " + toscaTemplate + " has no VM topology");
         }
-        List<Credential> credentials = null;
+        List<Credential> credentials;
         for (NodeTemplateMap vmTopologyMap : vmTopologies) {
             String provider = helper.getTopologyProvider(vmTopologyMap);
             if (needsCredentials(provider)) {
@@ -114,31 +104,27 @@ public class DRIPService {
 
     public String plan(String id) throws ApiException, NotFoundException, IOException, JsonProcessingException, TimeoutException, InterruptedException {
         ToscaTemplate toscaTemplate = initExecution(id);
-        return execute(toscaTemplate,plannerQueueName);
+        return execute(toscaTemplate, plannerQueueName);
     }
 
     public String provision(String id) throws MissingCredentialsException, ApiException, TypeExeption, IOException, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException, MissingVMTopologyException {
         ToscaTemplate toscaTemplate = initExecution(id);
         toscaTemplate = addCredentials(toscaTemplate);
-        toscaTemplate = setProvisionerOperation(toscaTemplate, PROVISIONER_OPERATION.PROVISION);
-        return execute(toscaTemplate,provisionerQueueName);
+        List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
+        if (vmTopologies == null || vmTopologies.isEmpty()) {
+            throw new MissingVMTopologyException("ToscaTemplate: " + toscaTemplate + " has no VM Topologies");
+        }
+        toscaTemplate = setDesieredSate(toscaTemplate, vmTopologies, NODE_STATES.PROVISION);
+        return execute(toscaTemplate, provisionerQueueName);
     }
 
-    protected ToscaTemplate setProvisionerOperation(ToscaTemplate toscaTemplate, PROVISIONER_OPERATION operation) throws IOException, JsonProcessingException, ApiException {
-        List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
-        for (NodeTemplateMap vmTopologyMap : vmTopologies) {
-            Map<String, Object> provisionerInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
-            if (provisionerInterface == null || !provisionerInterface.containsKey(operation.toString().toLowerCase())) {
-                provisionerInterface = new HashMap<>();
-                Map<String, Object> inputsMap = new HashMap<>();
-                inputsMap.put("code_type", " SEQ");
-                inputsMap.put("object_type", " SubTopology");
-                Map<String, Object> provisionMap = new HashMap<>();
-                provisionMap.put("inputs", inputsMap);
-                provisionerInterface.put(operation.toString().toLowerCase(), provisionMap);
-                vmTopologyMap = helper.setProvisionerInterfaceInVMTopology(vmTopologyMap, provisionerInterface);
-                toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
-            }
+    protected ToscaTemplate setDesieredSate(ToscaTemplate toscaTemplate,
+            List<NodeTemplateMap> nodes, NODE_STATES nodeState) throws IOException, JsonProcessingException, ApiException {
+        for (NodeTemplateMap node : nodes) {
+            NODE_STATES currentState = helper.getNodeCurrentState(node);
+            NODE_STATES desiredState = helper.getNodeDesiredState(node);
+            node = helper.setNodeDesiredState(node, nodeState);
+            toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, node);
         }
         return toscaTemplate;
     }
@@ -154,7 +140,7 @@ public class DRIPService {
 
     public String deploy(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException, Exception {
         ToscaTemplate toscaTemplate = initExecution(id);
-        return execute(toscaTemplate,deployerQueueName);
+        return execute(toscaTemplate, deployerQueueName);
     }
 
     protected ToscaTemplate initExecution(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException {
@@ -166,19 +152,19 @@ public class DRIPService {
     }
 
     public String delete(String id, List<String> nodeNames) throws NotFoundException, IOException, JsonProcessingException, ApiException, TypeExeption, TimeoutException, InterruptedException {
-        ToscaTemplate toscaTemplate = initExecution(id);
-        if (nodeNames == null || nodeNames.isEmpty()) {
-            List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
-            if (vmTopologies != null) {
-                for (NodeTemplateMap vmTopology : vmTopologies) {
-                    CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
-                    if (!status.equals(CloudsStormSubTopology.StatusEnum.DELETED)) {
-                        toscaTemplate = setProvisionerOperation(toscaTemplate, PROVISIONER_OPERATION.DELETE);
-                    }
-                }
-                return execute(toscaTemplate,provisionerQueueName);
-            }
-        }
+//        ToscaTemplate toscaTemplate = initExecution(id);
+//        if (nodeNames == null || nodeNames.isEmpty()) {
+//            List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
+//            if (vmTopologies != null) {
+//                for (NodeTemplateMap vmTopology : vmTopologies) {
+//                    CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
+//                    if (!status.equals(CloudsStormSubTopology.StatusEnum.DELETED)) {
+//                        toscaTemplate = setDesieredSate(toscaTemplate, vmTopologies, NODE_STATES.DELETE);
+//                    }
+//                }
+//                return execute(toscaTemplate, provisionerQueueName);
+//            }
+//        }
         return null;
     }
 

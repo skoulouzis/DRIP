@@ -293,19 +293,26 @@ class CloudStormService {
         int i = 0;
         List<InfrasCode> infrasCodes = new ArrayList<>();
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
-            Map<String, Object> provisionInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
-            String operation = provisionInterface.keySet().iterator().next();
-            Map<String, Object> inputs = (Map<String, Object>) provisionInterface.get(operation);
-            inputs.put("object_type", cloudStormSubtopologies.get(i).getTopology());
-            OpCode opCode = new OpCode();
-            opCode.setLog(Boolean.FALSE);
-            opCode.setObjectType(OpCode.ObjectTypeEnum.SUBTOPOLOGY);
-            opCode.setObjects(cloudStormSubtopologies.get(i).getTopology());
-            opCode.setOperation(OpCode.OperationEnum.fromValue(operation));
-            InfrasCode infrasCode = new InfrasCode();
-            infrasCode.setCodeType(InfrasCode.CodeTypeEnum.SEQ);
-            infrasCode.setOpCode(opCode);
-            infrasCodes.add(infrasCode);
+            ToscaHelper.NODE_STATES nodeCurrentState = helper.getNodeCurrentState(vmTopologyMap);
+            ToscaHelper.NODE_STATES nodeDesiredState = helper.getNodeDesiredState(vmTopologyMap);
+            if (nodeCurrentState != null && nodeCurrentState.equals(ToscaHelper.NODE_STATES.PROVISION)) {
+                //Already there
+            }
+            if (nodeCurrentState == null || nodeCurrentState.equals(ToscaHelper.NODE_STATES.DELETE)) {
+                Map<String, Object> provisionInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
+                String operation = nodeDesiredState.toString().toLowerCase();
+                Map<String, Object> inputs = (Map<String, Object>) provisionInterface.get(operation);
+                inputs.put("object_type", cloudStormSubtopologies.get(i).getTopology());
+                OpCode opCode = new OpCode();
+                opCode.setLog(Boolean.FALSE);
+                opCode.setObjectType(OpCode.ObjectTypeEnum.SUBTOPOLOGY);
+                opCode.setObjects(cloudStormSubtopologies.get(i).getTopology());
+                opCode.setOperation(OpCode.OperationEnum.fromValue(operation));
+                InfrasCode infrasCode = new InfrasCode();
+                infrasCode.setCodeType(InfrasCode.CodeTypeEnum.SEQ);
+                infrasCode.setOpCode(opCode);
+                infrasCodes.add(infrasCode);
+            }
         }
         CloudsStormInfrasCode cloudsStormInfrasCode = new CloudsStormInfrasCode();
         cloudsStormInfrasCode.setMode(CloudsStormInfrasCode.ModeEnum.LOCAL);

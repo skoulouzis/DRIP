@@ -162,6 +162,26 @@ node_types:
     interfaces:
         CloudsStorm:
             type: tosca.interfaces.ARTICONF.CloudsStorm
+            provision:
+                inputs:
+                    code_type: SEQ
+                    object_type: SubTopology
+            delete:
+                inputs:
+                    code_type: SEQ
+                    object_type: SubTopology 
+            hscale:
+                inputs:
+                    code_type: SEQ
+                    object_type: SubTopology     
+            stop:
+                inputs:
+                    code_type: SEQ
+                    object_type: SubTopology    
+            start:
+                inputs:
+                    code_type: SEQ
+                    object_type: SubTopology       
         
   tosca.nodes.ARTICONF.VM.Compute:
     derived_from: tosca.nodes.ARTICONF.Infrastructure
