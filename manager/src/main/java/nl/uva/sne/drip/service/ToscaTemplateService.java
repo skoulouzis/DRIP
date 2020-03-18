@@ -44,8 +44,7 @@ public class ToscaTemplateService {
 
     @Autowired
     private ToscaTemplateDAO dao;
-    @Autowired
-    private DRIPService dripService;
+
 
     public String save(ToscaTemplate tt) {
         dao.save(tt);
@@ -85,7 +84,6 @@ public class ToscaTemplateService {
 
     public void deleteByID(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException, TypeExeption {
         ToscaTemplate toscaTemplate = getYaml2ToscaTemplate(findByID(id));
-        dripService.deleteActions(toscaTemplate);
         dao.deleteById(id);
     }
 

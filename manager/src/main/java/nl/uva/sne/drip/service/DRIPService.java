@@ -61,7 +61,6 @@ public class DRIPService {
     }
 
     private String execute(ToscaTemplate toscaTemplate) throws JsonProcessingException, ApiException, IOException, TimeoutException, InterruptedException {
-
         caller.init();
         Logger.getLogger(DRIPService.class.getName()).log(Level.INFO, "toscaTemplate:\n{0}", toscaTemplate);
         Message message = new Message();
@@ -172,19 +171,19 @@ public class DRIPService {
         return toscaTemplate;
     }
 
-    void deleteActions(ToscaTemplate toscaTemplate) throws ApiException, TypeExeption, IOException {
-        helper.uploadToscaTemplate(toscaTemplate);
+    public String delete(String id) throws NotFoundException, IOException, JsonProcessingException, ApiException, TypeExeption, TimeoutException, InterruptedException {
+        ToscaTemplate toscaTemplate = initExecution(id);
         List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
         if (vmTopologies != null) {
             for (NodeTemplateMap vmTopology : vmTopologies) {
                 CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
                 if (!status.equals(CloudsStormSubTopology.StatusEnum.DELETED)) {
-                    Logger.getLogger(ToscaHelper.class.getName()).log(Level.FINE, "Deleting VMs from " + vmTopology);
+                    toscaTemplate = setProvisionerOperation(toscaTemplate, PROVISIONER_OPERATION.DELETE);
                 }
-
             }
+            return execute(toscaTemplate);
         }
-
+        return null;
     }
 
 }

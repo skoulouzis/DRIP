@@ -16,8 +16,10 @@ import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import nl.uva.sne.drip.model.Exceptions.TypeExeption;
+import nl.uva.sne.drip.service.DRIPService;
 import nl.uva.sne.drip.service.ToscaTemplateService;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,9 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
     @Autowired
     private ToscaTemplateService toscaTemplateService;
 
+    @Autowired
+    private DRIPService dripService;
+
     @org.springframework.beans.factory.annotation.Autowired
     public ToscaTemplateApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.request = request;
@@ -44,9 +49,9 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("*/*")) {
             try {
-                toscaTemplateService.deleteByID(id);
-                return new ResponseEntity<>("", HttpStatus.OK);
-            } catch (NotFoundException | IOException | ApiException | TypeExeption ex) {
+                String deleteedYemplateId = dripService.delete(id);
+                return new ResponseEntity<>(deleteedYemplateId, HttpStatus.OK);
+            } catch (NotFoundException | IOException | ApiException | TypeExeption | TimeoutException | InterruptedException ex) {
                 java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }

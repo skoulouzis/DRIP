@@ -206,20 +206,27 @@ class CloudStormService {
     }
 
     private CloudsStormVM getBestMatchingCloudStormVM(NodeTemplateMap vmMap, String provider) throws IOException, Exception {
-        Double numOfCores = helper.getVMNumOfCores(vmMap);
-        Double memSize = helper.getVMNMemSize(vmMap);
-        String os = helper.getVMNOS(vmMap);
-        Double diskSize = helper.getVMNDiskSize(vmMap);
-        double[] requestedVector = convert2ArrayofDoubles(numOfCores, memSize, diskSize);
+        Double requestedNumOfCores = helper.getVMNumOfCores(vmMap);
+        Double requestedMemSize = helper.getVMNMemSize(vmMap);
+        String requestedOs = helper.getVMNOS(vmMap);
+        Double requestedDiskSize = helper.getVMNDiskSize(vmMap);
+        double[] requestedVector = convert2ArrayofDoubles(requestedNumOfCores, requestedMemSize, requestedDiskSize);
         double min = Double.MAX_VALUE;
         CloudsStormVM bestMatchingVM = null;
         List<CloudsStormVM> vmInfos = cloudStormDAO.findVmMetaInfoByProvider(CloudProviderEnum.fromValue(provider));
         for (CloudsStormVM vmInfo : vmInfos) {
 
-            if (os.toLowerCase().equals(vmInfo.getOstype().toLowerCase())) {
-                Double cloudsStormVMdiskSize = null;
+            if (requestedOs.toLowerCase().equals(vmInfo.getOstype().toLowerCase())) {
+                Double cloudsStormVMdiskSize;
                 if (vmInfo.getDiskSize() == null) {
-                    cloudsStormVMdiskSize = Double.valueOf(7.0);
+                    if (vmInfo.getExtraInfo() != null && vmInfo.getExtraInfo().containsKey("DiskSize")) {
+                        int intSize = (int) vmInfo.getExtraInfo().get("DiskSize");
+                        cloudsStormVMdiskSize = Double.valueOf(intSize);
+                        vmInfo.setDiskSize(intSize);
+                    } else {
+                        cloudsStormVMdiskSize = 7.0;
+                    }
+
                 } else {
                     cloudsStormVMdiskSize = Double.valueOf(vmInfo.getDiskSize());
                 }
@@ -232,8 +239,9 @@ class CloudStormService {
                 }
             }
         }
-        if (bestMatchingVM != null && bestMatchingVM.getDiskSize() == null){
-            bestMatchingVM.setDiskSize(diskSize.intValue());
+        if (bestMatchingVM != null && bestMatchingVM.getDiskSize() == null
+                && bestMatchingVM.getExtraInfo() == null && !bestMatchingVM.getExtraInfo().containsKey("DiskSize")) {
+            bestMatchingVM.setDiskSize(requestedDiskSize.intValue());
         }
         Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Found best matching VM: {0}", bestMatchingVM);
         return bestMatchingVM;
