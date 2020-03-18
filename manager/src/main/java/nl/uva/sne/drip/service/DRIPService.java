@@ -19,6 +19,7 @@ import nl.uva.sne.drip.model.Exceptions.MissingVMTopologyException;
 import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.model.Message;
 import nl.uva.sne.drip.model.NodeTemplateMap;
+import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.rpc.DRIPCaller;
@@ -154,19 +155,21 @@ public class DRIPService {
     }
 
     public String delete(String id, List<String> nodeNames) throws NotFoundException, IOException, JsonProcessingException, ApiException, TypeExeption, TimeoutException, InterruptedException {
-//        ToscaTemplate toscaTemplate = initExecution(id);
-//        if (nodeNames == null || nodeNames.isEmpty()) {
-//            List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
-//            if (vmTopologies != null) {
-//                for (NodeTemplateMap vmTopology : vmTopologies) {
-//                    CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
-//                    if (!status.equals(CloudsStormSubTopology.StatusEnum.DELETED)) {
-//                        toscaTemplate = setDesieredSate(toscaTemplate, vmTopologies, NODE_STATES.DELETE);
-//                    }
-//                }
-//                return execute(toscaTemplate, provisionerQueueName);
-//            }
-//        }
+        ToscaTemplate toscaTemplate = initExecution(id);
+        //If no nodes are specified delete all the infrastructure
+        if (nodeNames == null || nodeNames.isEmpty()) {
+            List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
+            for (NodeTemplateMap vmTopology : vmTopologies) {
+                CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
+                if (!status.equals(CloudsStormSubTopology.StatusEnum.DELETED)) {
+                    toscaTemplate = setDesieredSate(toscaTemplate, vmTopologies, NODE_STATES.DELETE);
+                }
+            }
+            return execute(toscaTemplate, provisionerQueueName);
+        }else{
+            
+        }
+
         return null;
     }
 

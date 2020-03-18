@@ -165,7 +165,7 @@ class CloudStormService {
         Set<PosixFilePermission> perms = new HashSet<>();
         perms.add(PosixFilePermission.OWNER_READ);
         Files.setPosixFilePermissions(Paths.get(tempInputDirPath + File.separator + userPrivateName), perms);
-        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote ssh keys in: " + tempInputDirPath + File.separator + userPrivateName);
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote ssh keys in: {0}{1}{2}", new Object[]{tempInputDirPath, File.separator, userPrivateName});
         return publicKeyPath;
     }
 
