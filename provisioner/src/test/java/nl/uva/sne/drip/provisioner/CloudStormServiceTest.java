@@ -19,11 +19,16 @@ import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.Message;
+import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormInfrasCode;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormTopTopology;
+import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
+import nl.uva.sne.drip.model.cloud.storm.CredentialInfo;
 import nl.uva.sne.drip.model.cloud.storm.InfrasCode;
 import nl.uva.sne.drip.model.cloud.storm.OpCode;
+import nl.uva.sne.drip.model.tosca.Credential;
+import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import static nl.uva.sne.drip.provisioner.CloudStormService.APP_FOLDER_NAME;
 import static nl.uva.sne.drip.provisioner.CloudStormService.INFRASTUCTURE_CODE_FILE_NAME;
 import static nl.uva.sne.drip.provisioner.CloudStormService.INFS_FOLDER_NAME;
@@ -277,6 +282,24 @@ public class CloudStormServiceTest {
         for (InfrasCode code : cloudsStormInfrasCode.getInfrasCodes()) {
             assertEquals(opCode, code.getOpCode().getOperation());
         }
+    }
+
+    /**
+     * Test of addCloudStromArtifacts method, of class CloudStormService.
+     */
+    @Test
+    public void testAddCloudStromArtifacts() throws Exception {
+         if (ToscaHelper.isServiceUp(sureToscaBasePath)) {
+             
+         }
+        System.out.println("addCloudStromArtifacts");
+        initPaths();
+        CloudStormService instance = getService(messageExampleProvisioneRequestFilePath);
+        List<NodeTemplateMap> vmTopologiesMaps = instance.getHelper().getVMTopologyTemplates();
+        for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
+            vmTopologyMap = instance.addCloudStromArtifacts(vmTopologyMap, tempInputDirPath);
+        }
+
     }
 
 }

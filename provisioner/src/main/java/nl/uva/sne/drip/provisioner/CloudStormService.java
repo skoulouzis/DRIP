@@ -61,10 +61,21 @@ import org.apache.maven.shared.utils.io.DirectoryScanner;
  */
 class CloudStormService {
 
-    private List<Map.Entry> vmTopologies;
-//    private String tempInputDirPath;
-//    private final ToscaTemplate toscaTemplate;
-    private final ToscaHelper helper;
+    /**
+     * @return the helper
+     */
+    public ToscaHelper getHelper() {
+        return helper;
+    }
+
+    /**
+     * @param helper the helper to set
+     */
+    public void setHelper(ToscaHelper helper) {
+        this.helper = helper;
+    }
+
+    private ToscaHelper helper;
     private final CloudStormDAO cloudStormDAO;
     private final ObjectMapper objectMapper;
     private final String cloudStormDBPath;
@@ -139,7 +150,7 @@ class CloudStormService {
         writeCloudStormInfrasCodeFiles(infrasCodeTempInputDirPath, cloudStormSubtopologies);
 
         ToscaTemplate newToscaTemplate = runCloudStorm(tempInputDirPath);
-        helper.uploadToscaTemplate(newToscaTemplate);
+        getHelper().uploadToscaTemplate(newToscaTemplate);
         return newToscaTemplate;
     }
 
@@ -150,7 +161,7 @@ class CloudStormService {
 
         String publicKeyPath = buildSSHKeyPair(topologyTempInputDirPath, keyPair);
         topTopology.setPublicKeyPath(publicKeyPath);
-        topTopology.setUserName(helper.getVMTopologyUser());
+        topTopology.setUserName(getHelper().getVMTopologyUser());
 
         Map<String, Object> subTopologiesAndVMs = getCloudsStormSubTopologiesAndVMs(topologyTempInputDirPath);
         List<CloudsStormSubTopology> cloudsStormSubTopology = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
@@ -181,26 +192,26 @@ class CloudStormService {
     }
 
     protected Map<String, Object> getCloudsStormSubTopologiesAndVMs(String tempInputDirPath) throws ApiException, IOException, Exception {
-        List<NodeTemplateMap> vmTopologyTemplatesMap = helper.getVMTopologyTemplates();
+        List<NodeTemplateMap> vmTopologyTemplatesMap = getHelper().getVMTopologyTemplates();
         List<CloudsStormSubTopology> cloudsStormSubTopologies = new ArrayList<>();
         Map<String, Object> cloudsStormMap = new HashMap<>();
         List<CloudsStormVMs> cloudsStormVMsList = new ArrayList<>();
         int i = 0;
         for (NodeTemplateMap nodeTemplateMap : vmTopologyTemplatesMap) {
             CloudsStormSubTopology cloudsStormSubTopology = new CloudsStormSubTopology();
-            String domain = helper.getTopologyDomain(nodeTemplateMap);
-            String provider = helper.getTopologyProvider(nodeTemplateMap);
+            String domain = getHelper().getTopologyDomain(nodeTemplateMap);
+            String provider = getHelper().getTopologyProvider(nodeTemplateMap);
             cloudsStormSubTopology.setDomain(domain);
             cloudsStormSubTopology.setCloudProvider(provider);
             cloudsStormSubTopology.setTopology(SUB_TOPOLOGY_NAME + i);
-            ToscaHelper.NODE_STATES currentState = helper.getNodeCurrentState(nodeTemplateMap);
-            ToscaHelper.NODE_STATES desiredState = helper.getNodeDesiredState(nodeTemplateMap);
+            ToscaHelper.NODE_STATES currentState = getHelper().getNodeCurrentState(nodeTemplateMap);
+            ToscaHelper.NODE_STATES desiredState = getHelper().getNodeDesiredState(nodeTemplateMap);
 
             cloudsStormSubTopology.setStatus(ToscaHelper.nodeCurrentState2CloudStormStatus(currentState));
             CloudsStormVMs cloudsStormVMs = new CloudsStormVMs();
 
             List<CloudsStormVM> vms = new ArrayList<>();
-            List<NodeTemplateMap> vmTemplatesMap = helper.getTemplateVMsForVMTopology(nodeTemplateMap);
+            List<NodeTemplateMap> vmTemplatesMap = getHelper().getTemplateVMsForVMTopology(nodeTemplateMap);
             int j = 0;
             for (NodeTemplateMap vmMap : vmTemplatesMap) {
                 CloudsStormVM cloudStromVM = getBestMatchingCloudStormVM(vmMap, provider);
@@ -220,10 +231,10 @@ class CloudStormService {
     }
 
     protected CloudsStormVM getBestMatchingCloudStormVM(NodeTemplateMap vmMap, String provider) throws IOException, Exception {
-        Double requestedNumOfCores = helper.getVMNumOfCores(vmMap);
-        Double requestedMemSize = helper.getVMNMemSize(vmMap);
-        String requestedOs = helper.getVMNOS(vmMap);
-        Double requestedDiskSize = helper.getVMNDiskSize(vmMap);
+        Double requestedNumOfCores = getHelper().getVMNumOfCores(vmMap);
+        Double requestedMemSize = getHelper().getVMNMemSize(vmMap);
+        String requestedOs = getHelper().getVMNOS(vmMap);
+        Double requestedDiskSize = getHelper().getVMNDiskSize(vmMap);
         double[] requestedVector = convert2ArrayofDoubles(requestedNumOfCores, requestedMemSize, requestedDiskSize);
         double min = Double.MAX_VALUE;
         CloudsStormVM bestMatchingVM = null;
@@ -262,11 +273,11 @@ class CloudStormService {
     }
 
     protected void writeCloudStormCredentialsFiles(String credentialsTempInputDirPath) throws ApiException, Exception {
-        List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
+        List<NodeTemplateMap> vmTopologiesMaps = getHelper().getVMTopologyTemplates();
         List<CloudCred> cloudStormCredentialList = new ArrayList<>();
         int i = 0;
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
-            Credential toscaCredentials = helper.getCredentialsFromVMTopology(vmTopologyMap);
+            Credential toscaCredentials = getHelper().getCredentialsFromVMTopology(vmTopologyMap);
             CloudCred cloudStormCredential = new CloudCred();
             cloudStormCredential.setCloudProvider(toscaCredentials.getCloudProviderName());
             String credInfoFile = toscaCredentials.getCloudProviderName() + i + ".yml";
@@ -303,15 +314,15 @@ class CloudStormService {
     }
 
     protected void writeCloudStormInfrasCodeFiles(String infrasCodeTempInputDirPath, List<CloudsStormSubTopology> cloudStormSubtopologies) throws ApiException, IOException {
-        List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
+        List<NodeTemplateMap> vmTopologiesMaps = getHelper().getVMTopologyTemplates();
         int i = 0;
         List<InfrasCode> infrasCodes = new ArrayList<>();
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
-            ToscaHelper.NODE_STATES nodeCurrentState = helper.getNodeCurrentState(vmTopologyMap);
-            ToscaHelper.NODE_STATES nodeDesiredState = helper.getNodeDesiredState(vmTopologyMap);
+            ToscaHelper.NODE_STATES nodeCurrentState = getHelper().getNodeCurrentState(vmTopologyMap);
+            ToscaHelper.NODE_STATES nodeDesiredState = getHelper().getNodeDesiredState(vmTopologyMap);
             //Can provision
 
-            Map<String, Object> provisionInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
+            Map<String, Object> provisionInterface = getHelper().getProvisionerInterfaceFromVMTopology(vmTopologyMap);
             OpCode.OperationEnum operation = ToscaHelper.NodeDesiredState2CloudStormOperation(nodeDesiredState);
             Map<String, Object> inputs = (Map<String, Object>) provisionInterface.get(operation.toString().toLowerCase());
             inputs.put("object_type", cloudStormSubtopologies.get(i).getTopology());
@@ -349,27 +360,14 @@ class CloudStormService {
 
         List<CloudsStormSubTopology> subTopologies = _top.getTopologies();
 
-        List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
+        List<NodeTemplateMap> vmTopologiesMaps = getHelper().getVMTopologyTemplates();
         int i = 0;
         for (CloudsStormSubTopology subTopology : subTopologies) {
             NodeTemplateMap vmTopologyMap = vmTopologiesMaps.get(i);
 
-            Map<String, Object> artifacts = vmTopologyMap.getNodeTemplate().getArtifacts();
-            if (artifacts == null) {
-                artifacts = new HashMap<>();
-            }
-            Map<String, String> provisionedFiles = new HashMap<>();
-            provisionedFiles.put("type", ENCODED_FILE_DATATYPE);
-            Path zipPath = Paths.get(tempInputDirPath + TOPOLOGY_RELATIVE_PATH+File.separator+TOPOLOGY_FOLDER_NAME+".zip");
-            Path sourceFolderPath = Paths.get(tempInputDirPath + TOPOLOGY_RELATIVE_PATH);
-            Converter.zipFolder(sourceFolderPath, zipPath);
-            
-            String cloudStormZipFileContentsAsBase64 = Converter.encodeFileToBase64Binary(zipPath.toFile().getAbsolutePath());
-            provisionedFiles.put("file_contents", cloudStormZipFileContentsAsBase64);
-            provisionedFiles.put("encoding", "base64");
-            provisionedFiles.put("file_ext", "zip");
-            artifacts.put("provisioned_files", provisionedFiles);
-            helper.setNodeCurrentState(vmTopologyMap, cloudStormStatus2NodeState(subTopology.getStatus()));
+            vmTopologyMap = addCloudStromArtifacts(vmTopologyMap, tempInputDirPath);
+
+            getHelper().setNodeCurrentState(vmTopologyMap, cloudStormStatus2NodeState(subTopology.getStatus()));
 
             String rootKeyPairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                     + File.separator + subTopology.getSshKeyPairId();
@@ -400,7 +398,7 @@ class CloudStormService {
             CloudsStormVMs cloudsStormVMs = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + subTopology.getTopology() + ".yml"),
                     CloudsStormVMs.class);
             List<CloudsStormVM> vms = cloudsStormVMs.getVms();
-            List<NodeTemplateMap> vmTemplatesMap = helper.getTemplateVMsForVMTopology(vmTopologyMap);
+            List<NodeTemplateMap> vmTemplatesMap = getHelper().getTemplateVMsForVMTopology(vmTopologyMap);
             int j = 0;
             for (CloudsStormVM vm : vms) {
                 NodeTemplateMap vmTemplateMap = vmTemplatesMap.get(j);
@@ -421,10 +419,10 @@ class CloudStormService {
                 vmAttributes.put("root_key_pair", rootKeyPairCredential);
                 vmAttributes.put("user_key_pair", userKeyPairCredential);
                 vmTemplateMap.getNodeTemplate().setAttributes(vmAttributes);
-                toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTemplateMap);
+                toscaTemplate = getHelper().setNodeInToscaTemplate(toscaTemplate, vmTemplateMap);
                 j++;
             }
-            toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
+            toscaTemplate = getHelper().setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
             i++;
         }
         return toscaTemplate;
@@ -437,15 +435,36 @@ class CloudStormService {
 
     protected KeyPair getKeyPair() throws ApiException, TypeExeption, JSchException {
         KeyPair keyPair = null;
-        List<NodeTemplateMap> vmTopologyTemplatesMap = helper.getVMTopologyTemplates();
+        List<NodeTemplateMap> vmTopologyTemplatesMap = getHelper().getVMTopologyTemplates();
         for (NodeTemplateMap nodeTemplateMap : vmTopologyTemplatesMap) {
-            List<NodeTemplateMap> vmTemplatesMap = helper.getTemplateVMsForVMTopology(nodeTemplateMap);
+            List<NodeTemplateMap> vmTemplatesMap = getHelper().getTemplateVMsForVMTopology(nodeTemplateMap);
             for (NodeTemplateMap vmMap : vmTemplatesMap) {
-                keyPair = helper.getKeyPairsFromVM(vmMap.getNodeTemplate());
+                keyPair = getHelper().getKeyPairsFromVM(vmMap.getNodeTemplate());
                 break;
             }
         }
         return keyPair;
+    }
+
+    protected NodeTemplateMap addCloudStromArtifacts(NodeTemplateMap vmTopologyMap, String tempInputDirPath) throws IOException {
+        Map<String, Object> artifacts = vmTopologyMap.getNodeTemplate().getArtifacts();
+        if (artifacts == null) {
+            artifacts = new HashMap<>();
+        }
+        Map<String, String> provisionedFiles = new HashMap<>();
+        provisionedFiles.put("type", ENCODED_FILE_DATATYPE);
+        Path zipPath = Paths.get(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + TOPOLOGY_FOLDER_NAME + ".zip");
+        Path sourceFolderPath = Paths.get(tempInputDirPath + TOPOLOGY_RELATIVE_PATH);
+        Converter.zipFolder(sourceFolderPath, zipPath);
+
+        String cloudStormZipFileContentsAsBase64 = Converter.encodeFileToBase64Binary(zipPath.toFile().getAbsolutePath());
+        provisionedFiles.put("file_contents", cloudStormZipFileContentsAsBase64);
+        provisionedFiles.put("encoding", "base64");
+        provisionedFiles.put("file_ext", "zip");
+        artifacts.put("provisioned_files", provisionedFiles);
+        vmTopologyMap.getNodeTemplate().setArtifacts(artifacts);
+
+        return vmTopologyMap;
     }
 
 }
