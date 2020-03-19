@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import com.jcraft.jsch.KeyPair;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
@@ -437,6 +438,46 @@ public class ToscaHelperTest {
 
         }
 
+    }
+
+    /**
+     * Test of getKeyPairsFromVM method, of class ToscaHelper.
+     */
+    @Test
+    public void testGetKeyPairsFromVM() throws Exception {
+        System.out.println("getKeyPairsFromVM");
+        instance.uploadToscaTemplate(provisionedToscaTemplate);
+        KeyPair keyPair;
+        List<NodeTemplateMap> vmTopologyTemplatesMap = instance.getVMTopologyTemplates();
+        assertNotNull(vmTopologyTemplatesMap);
+        for (NodeTemplateMap nodeTemplateMap : vmTopologyTemplatesMap) {
+            assertNotNull(nodeTemplateMap);
+            List<NodeTemplateMap> vmTemplatesMap = instance.getTemplateVMsForVMTopology(nodeTemplateMap);
+            assertNotNull(vmTemplatesMap);
+            for (NodeTemplateMap vmMap : vmTemplatesMap) {
+                assertNotNull(vmMap);
+                assertNotNull(vmMap.getNodeTemplate());
+                keyPair = instance.getKeyPairsFromVM(vmMap.getNodeTemplate());
+                assertNotNull(keyPair);
+            }
+        }
+
+    }
+
+    /**
+     * Test of cloudStormStatus2NodeState method, of class ToscaHelper.
+     */
+    @Test
+    public void testCloudStormStatus2NodeState() {
+        System.out.println("cloudStormStatus2NodeState");
+        for (CloudsStormSubTopology.StatusEnum value : CloudsStormSubTopology.StatusEnum.values()) {
+            ToscaHelper.NODE_STATES result = ToscaHelper.cloudStormStatus2NodeState(value);
+            if (value.equals(CloudsStormSubTopology.StatusEnum.FRESH)) {
+                assertNull(result);
+            } else {
+                assertEquals(value.toString().toUpperCase(), result.toString().toUpperCase());
+            }
+        }
     }
 
 }

@@ -21,11 +21,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.KeyPair;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +47,7 @@ import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import nl.uva.sne.drip.sure.tosca.client.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import static nl.uva.sne.drip.commons.utils.Constatnts.*;
+import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology.StatusEnum;
 
 /**
  *
@@ -57,7 +62,7 @@ public class ToscaHelper {
     private Integer id;
 
     public static enum NODE_STATES {
-        PROVISION, DELETE, START, STOP, H_SCALE, V_SCALE, CONFIGURE
+        DELETED, STARTED, STOPPED, H_SCALED, V_SCALED, CONFIGURED, RUNNING, FAILED
     }
 
     @Autowired
@@ -251,7 +256,7 @@ public class ToscaHelper {
             return toscaCredential;
 
         } else {
-            throw new Exception("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + vmTopology.getType());
+            throw new TypeExeption("NodeTemplate is not of type: " + VM_TOPOLOGY + " it is of type: " + vmTopology.getType());
         }
     }
 
@@ -296,9 +301,12 @@ public class ToscaHelper {
 
     public NODE_STATES getNodeCurrentState(NodeTemplateMap node) {
         return getNodeState(node, "current_state");
-
     }
 
+    public NodeTemplateMap setNodeCurrentState(NodeTemplateMap node, NODE_STATES nodeState) {
+        return setNodeState(node, "current_state", nodeState);
+    }
+    
     public NodeTemplateMap setNodeDesiredState(NodeTemplateMap node, NODE_STATES nodeState) {
         return setNodeState(node, "desired_state", nodeState);
     }
@@ -323,6 +331,36 @@ public class ToscaHelper {
         attributes.put(stateName, nodeState.toString());
         node.getNodeTemplate().attributes(attributes);
         return node;
+    }
+
+    public static NODE_STATES cloudStormStatus2NodeState(StatusEnum cloudStormStatus) {
+        if(cloudStormStatus.equals(StatusEnum.FRESH)){
+            return null;
+        }
+        String cloudStormStatusStr = cloudStormStatus.toString().toUpperCase();
+        return NODE_STATES.valueOf(cloudStormStatusStr);
+    }
+
+    public KeyPair getKeyPairsFromVM(NodeTemplate vmMap) throws ApiException, TypeExeption, JSchException {
+        if (vmMap.getType().equals(VM_TYPE)) {
+            Map<String, Object> attributes = vmMap.getAttributes();
+            if (attributes != null && attributes.containsKey("user_key_pair")) {
+                Map<String, Object> userKeyPair = (Map<String, Object>) attributes.get("user_key_pair");
+                if (userKeyPair.containsKey("protocol") && userKeyPair.get("protocol").equals("ssh")) {
+                    Map<String, Object> keysMap = (Map<String, Object>) userKeyPair.get("keys");
+                    JSch jsch = new JSch();
+                    byte[] privatekeyBytes = Base64.getDecoder().decode(((String) keysMap.get("private_key")));
+                    byte[] publicKeyBytes = Base64.getDecoder().decode(((String) keysMap.get("public_key")));
+                    KeyPair keyPair = KeyPair.load(jsch, privatekeyBytes, publicKeyBytes);
+                    keyPair.dispose();
+                    return keyPair;
+                }
+            }
+
+        } else {
+            throw new TypeExeption("NodeTemplate is not of type: " + VM_TYPE + " it is of type: " + vmMap.getType());
+        }
+        return null;
     }
 
 }

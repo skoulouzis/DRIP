@@ -31,6 +31,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
+import static nl.uva.sne.drip.commons.utils.ToscaHelper.cloudStormStatus2NodeState;
+import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormVM;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.cloud.storm.CloudCred;
@@ -64,17 +66,19 @@ class CloudStormService {
     private final CloudStormDAO cloudStormDAO;
     private final ObjectMapper objectMapper;
     private final String cloudStormDBPath;
-    private final String SUB_TOPOLOGY_NAME = "subTopology";
-    private final String TOPOLOGY_FOLDER_NAME = "Topology";
-    private final String INFS_FOLDER_NAME = "Infs";
-    private final String UC_FOLDER_NAME = "UC";
-    private final String UD_FOLDER_NAME = "UD";
-    private final String APP_FOLDER_NAME = "App";
-    private final String TOP_TOPOLOGY_FILE_NAME = "_top.yml";
+    public static final String SUB_TOPOLOGY_NAME = "subTopology";
+    public static final String TOPOLOGY_FOLDER_NAME = "Topology";
+    public static final String INFS_FOLDER_NAME = "Infs";
+    public static final String UC_FOLDER_NAME = "UC";
+    public static final String UD_FOLDER_NAME = "UD";
+    public static final String APP_FOLDER_NAME = "App";
+    public static final String TOP_TOPOLOGY_FILE_NAME = "_top.yml";
 
-    private final String TOPOLOGY_RELATIVE_PATH = File.separator
+    public static final String TOPOLOGY_RELATIVE_PATH = File.separator
             + INFS_FOLDER_NAME + File.separator + TOPOLOGY_FOLDER_NAME + File.separator;
     private ToscaTemplate toscaTemplate;
+    private String userPublicKeyName;
+    public static final String INFRASTUCTURE_CODE_FILE_NAME = "infrasCode.yml";
 
     CloudStormService(Properties properties, ToscaTemplate toscaTemplate) throws IOException, JsonProcessingException, ApiException {
         this.toscaTemplate = toscaTemplate;
@@ -132,34 +136,39 @@ class CloudStormService {
         List<CloudsStormSubTopology> cloudStormSubtopologies = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
         writeCloudStormInfrasCodeFiles(infrasCodeTempInputDirPath, cloudStormSubtopologies);
 
-        ToscaTemplate toscaTemplate = runCloudStorm(tempInputDirPath);
-        helper.uploadToscaTemplate(toscaTemplate);
-        return toscaTemplate;
+        ToscaTemplate newToscaTemplate = runCloudStorm(tempInputDirPath);
+        helper.uploadToscaTemplate(newToscaTemplate);
+        return newToscaTemplate;
     }
 
-    private Map<String, Object> writeCloudStormTopologyFiles(String tempInputDirPath) throws JSchException, IOException, ApiException, Exception {
+    protected Map<String, Object> writeCloudStormTopologyFiles(String topologyTempInputDirPath) throws JSchException, IOException, ApiException, Exception {
         CloudsStormTopTopology topTopology = new CloudsStormTopTopology();
-        String publicKeyPath = buildSSHKeyPair(tempInputDirPath);
+
+        KeyPair keyPair = getKeyPair();
+
+        String publicKeyPath = buildSSHKeyPair(topologyTempInputDirPath, keyPair);
         topTopology.setPublicKeyPath(publicKeyPath);
         topTopology.setUserName(helper.getVMTopologyUser());
 
-        Map<String, Object> subTopologiesAndVMs = getCloudsStormSubTopologiesAndVMs(tempInputDirPath);
+        Map<String, Object> subTopologiesAndVMs = getCloudsStormSubTopologiesAndVMs(topologyTempInputDirPath);
         List<CloudsStormSubTopology> cloudsStormSubTopology = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
         topTopology.setTopologies(cloudsStormSubTopology);
-
-        objectMapper.writeValue(new File(tempInputDirPath + File.separator + TOP_TOPOLOGY_FILE_NAME), topTopology);
-        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote CloudStorm topology files in: " + TOP_TOPOLOGY_FILE_NAME, new Object[]{tempInputDirPath, File.separator});
+        File topTopologyFile = new File(topologyTempInputDirPath + File.separator + TOP_TOPOLOGY_FILE_NAME);
+        objectMapper.writeValue(topTopologyFile, topTopology);
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote CloudStorm topology files in: {0}", topTopologyFile.getAbsolutePath());
         return subTopologiesAndVMs;
     }
 
-    private String buildSSHKeyPair(String tempInputDirPath) throws JSchException, IOException {
-        String userPublicKeyName = "id_rsa.pub";
+    protected String buildSSHKeyPair(String tempInputDirPath, KeyPair kpair) throws JSchException, IOException {
+        userPublicKeyName = "id_rsa.pub";
         String publicKeyPath = "name@" + userPublicKeyName;
-        JSch jsch = new JSch();
-        KeyPair kpair = KeyPair.genKeyPair(jsch, KeyPair.RSA);
         String userPrivateName = FilenameUtils.removeExtension(userPublicKeyName);
+        if (kpair == null) {
+            JSch jsch = new JSch();
+            kpair = KeyPair.genKeyPair(jsch, KeyPair.RSA);
+        }
         kpair.writePrivateKey(tempInputDirPath + File.separator + userPrivateName);
-        kpair.writePublicKey(tempInputDirPath + File.separator + userPublicKeyName, "auto generated user accees keys");
+        kpair.writePublicKey(tempInputDirPath + File.separator + userPublicKeyName, "generated user accees keys");
         kpair.dispose();
 
         Set<PosixFilePermission> perms = new HashSet<>();
@@ -169,7 +178,7 @@ class CloudStormService {
         return publicKeyPath;
     }
 
-    private Map<String, Object> getCloudsStormSubTopologiesAndVMs(String tempInputDirPath) throws ApiException, IOException, Exception {
+    protected Map<String, Object> getCloudsStormSubTopologiesAndVMs(String tempInputDirPath) throws ApiException, IOException, Exception {
         List<NodeTemplateMap> vmTopologyTemplatesMap = helper.getVMTopologyTemplates();
         List<CloudsStormSubTopology> cloudsStormSubTopologies = new ArrayList<>();
         Map<String, Object> cloudsStormMap = new HashMap<>();
@@ -205,7 +214,7 @@ class CloudStormService {
         return cloudsStormMap;
     }
 
-    private CloudsStormVM getBestMatchingCloudStormVM(NodeTemplateMap vmMap, String provider) throws IOException, Exception {
+    protected CloudsStormVM getBestMatchingCloudStormVM(NodeTemplateMap vmMap, String provider) throws IOException, Exception {
         Double requestedNumOfCores = helper.getVMNumOfCores(vmMap);
         Double requestedMemSize = helper.getVMNMemSize(vmMap);
         String requestedOs = helper.getVMNOS(vmMap);
@@ -247,7 +256,7 @@ class CloudStormService {
         return bestMatchingVM;
     }
 
-    private void writeCloudStormCredentialsFiles(String credentialsTempInputDirPath) throws ApiException, Exception {
+    protected void writeCloudStormCredentialsFiles(String credentialsTempInputDirPath) throws ApiException, Exception {
         List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
         List<CloudCred> cloudStormCredentialList = new ArrayList<>();
         int i = 0;
@@ -269,7 +278,7 @@ class CloudStormService {
         Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote  cloudStorm credentials at : {0}{1}cred.yml", new Object[]{credentialsTempInputDirPath, File.separator});
     }
 
-    private CredentialInfo getCloudStormCredentialInfo(Credential toscaCredentials, String tmpPath) throws FileNotFoundException, IOException {
+    protected CredentialInfo getCloudStormCredentialInfo(Credential toscaCredentials, String tmpPath) throws FileNotFoundException, IOException {
         CredentialInfo cloudStormCredentialInfo = new CredentialInfo();
         switch (toscaCredentials.getCloudProviderName().toLowerCase()) {
             case "exogeni":
@@ -288,17 +297,18 @@ class CloudStormService {
         return null;
     }
 
-    private void writeCloudStormInfrasCodeFiles(String infrasCodeTempInputDirPath, List<CloudsStormSubTopology> cloudStormSubtopologies) throws ApiException, IOException {
+    protected void writeCloudStormInfrasCodeFiles(String infrasCodeTempInputDirPath, List<CloudsStormSubTopology> cloudStormSubtopologies) throws ApiException, IOException {
         List<NodeTemplateMap> vmTopologiesMaps = helper.getVMTopologyTemplates();
         int i = 0;
         List<InfrasCode> infrasCodes = new ArrayList<>();
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
             ToscaHelper.NODE_STATES nodeCurrentState = helper.getNodeCurrentState(vmTopologyMap);
             ToscaHelper.NODE_STATES nodeDesiredState = helper.getNodeDesiredState(vmTopologyMap);
-            if (nodeCurrentState != null && nodeCurrentState.equals(ToscaHelper.NODE_STATES.PROVISION)) {
+            if (nodeCurrentState != null && nodeCurrentState.equals(ToscaHelper.NODE_STATES.RUNNING)) {
                 //Already there
             }
-            if (nodeCurrentState == null || nodeCurrentState.equals(ToscaHelper.NODE_STATES.DELETE)) {
+            //Can provision
+            if (nodeCurrentState == null || nodeCurrentState.equals(ToscaHelper.NODE_STATES.DELETED)) {
                 Map<String, Object> provisionInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
                 String operation = nodeDesiredState.toString().toLowerCase();
                 Map<String, Object> inputs = (Map<String, Object>) provisionInterface.get(operation);
@@ -317,17 +327,18 @@ class CloudStormService {
         CloudsStormInfrasCode cloudsStormInfrasCode = new CloudsStormInfrasCode();
         cloudsStormInfrasCode.setMode(CloudsStormInfrasCode.ModeEnum.LOCAL);
         cloudsStormInfrasCode.setInfrasCodes(infrasCodes);
-
-        objectMapper.writeValue(new File(infrasCodeTempInputDirPath + File.separator + "infrasCode.yml"), cloudsStormInfrasCode);
+        File infrasCodeFile = new File(infrasCodeTempInputDirPath + File.separator + INFRASTUCTURE_CODE_FILE_NAME);
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Wrote infrasCode file: {0}", infrasCodeFile.getAbsolutePath());
+        objectMapper.writeValue(infrasCodeFile, cloudsStormInfrasCode);
     }
 
-    private void writeCloudStormProvidersDBFiles(String tempInputDirPath) throws IOException {
+    protected void writeCloudStormProvidersDBFiles(String tempInputDirPath) throws IOException {
         File srcDir = new File(cloudStormDBPath);
         File destDir = new File(tempInputDirPath);
         FileUtils.copyDirectory(srcDir, destDir);
     }
 
-    private ToscaTemplate runCloudStorm(String tempInputDirPath) throws IOException, ApiException {
+    protected ToscaTemplate runCloudStorm(String tempInputDirPath) throws IOException, ApiException {
         String[] args = new String[]{"run", tempInputDirPath};
         standalone.MainAsTool.main(args);
 //        tempInputDirPath = "/tmp/Input-26386504078656";
@@ -347,8 +358,8 @@ class CloudStormService {
             if (att == null) {
                 att = new HashMap<>();
             }
-            att.put("status", subTopology.getStatus().toString());
-
+            helper.setNodeCurrentState(vmTopologyMap, cloudStormStatus2NodeState(subTopology.getStatus()));
+            
             String rootKeyPairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                     + File.separator + subTopology.getSshKeyPairId();
 
@@ -411,6 +422,19 @@ class CloudStormService {
     private double[] convert2ArrayofDoubles(Double numOfCores, Double memSize, Double diskSize) {
         double[] vector = new double[]{numOfCores, memSize, diskSize};
         return vector;
+    }
+
+    protected KeyPair getKeyPair() throws ApiException, TypeExeption, JSchException {
+        KeyPair keyPair = null;
+        List<NodeTemplateMap> vmTopologyTemplatesMap = helper.getVMTopologyTemplates();
+        for (NodeTemplateMap nodeTemplateMap : vmTopologyTemplatesMap) {
+            List<NodeTemplateMap> vmTemplatesMap = helper.getTemplateVMsForVMTopology(nodeTemplateMap);
+            for (NodeTemplateMap vmMap : vmTemplatesMap) {
+                keyPair = helper.getKeyPairsFromVM(vmMap.getNodeTemplate());
+                break;
+            }
+        }
+        return keyPair;
     }
 
 }

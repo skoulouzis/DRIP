@@ -3,9 +3,9 @@ topology_template:
   node_templates:
     compute:
       properties:
-        disk_size: "50000 MB"
-        mem_size: "6000 MB"
-        num_cores: 2.0
+        disk_size: "10000 MB"
+        mem_size: "1000 MB"
+        num_cores: 1.0
         os: "Ubuntu 18.04"
         user_name: "vm_user"
       interfaces:
@@ -16,22 +16,22 @@ topology_template:
         user_key_pair:
           protocol: "ssh"
           keys:
-            public_key: "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFBZ1FDV3l6VEoxS1pycDVvVHVBVm15dmxKL2prMnRNdktZSlAvSWtHZ1JKeTVFNUgrbjl0eU1QRXdyUDN4c0lUMVZzRjlVNVhLTkkvVDVpZDgxNko5RmxjbEhOSHVrbEFTMlhqV3QzNnlZekorMkhsa3JET0I4Q25DdmgvQlQ5K2liNkpjVFpUd21Xb1FQbjFuVXpSelRSVGU5NUlyOUl4djgrTnNLVWYxdVYzNDBRPT0gYXV0byBnZW5lcmF0ZWQgdXNlciBhY2NlZXMga2V5cwo="
-            private_key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlDV3dJQkFBS0JnUUNXeXpUSjFLWnJwNW9UdUFWbXl2bEovamsydE12S1lKUC9Ja0dnUkp5NUU1SCtuOXR5Ck1QRXdyUDN4c0lUMVZzRjlVNVhLTkkvVDVpZDgxNko5RmxjbEhOSHVrbEFTMlhqV3QzNnlZekorMkhsa3JET0IKOENuQ3ZoL0JUOStpYjZKY1RaVHdtV29RUG4xblV6UnpUUlRlOTVJcjlJeHY4K05zS1VmMXVWMzQwUUlEQVFBQgpBb0dBSUJDMStQVXZMbFZGZmt2eldoaHZTankxRGQwRU9OU3dvK0EwOUUraXcvaFZZeis2K2wxTjdIdmN4RGcxCkRiYVZEb0ZucU1ma2picXpTdWpQdEttN2ZlVThldjF3a21aOHNRdzhac1JNdXd3NUxDUzZpMENnem5RMlJ3WmIKU2dqSlVrLy81VVF2Z2x2YkFEMXJpUlJ1TzR5N0cwTFZpa2Y4b3UvM0pBM21iQUVDUVFESm1VY2dBQjJONmpSYQpydWxhNklnYzFYYjdTUGl0TEpFQjFNZytyUW5EZDZWWXZqcVVGaW9zWVdhYlJSdGtPQ1VPdWt5cklLY1puZ3Q4CjdrdHN6T1c1QWtFQXYzeEFHYUdyWkk1KzdjSTF4Si9NaWVRa1pkaFFWTEpEUnpwT3FJVjVKaFIzbCt2R3N2R2MKWWhwUG9IL1VoN3hsV3NLUVF2Q3Y2azhyaVh1dmZ6aTMyUUpBQTJDb0NtYzJGNHlXOS9YNlB1V3FjaUU1YnhoWAo0ajdlNXhMemorbENRcDRjalJJUzFTeFI1SkIxTWFERXhyY1NGOThUTGNMTVNlZVY5YS9nWDZCSE1RSkFadHNVCkIzQ2JBdW16N255cXF4SjNLUDUrT3FLbUM4aXhjTm8yRkRtVjZNbUhyL2c3QkRYYUhhd3FaM2tpclVLYVl0VXQKN25jZzEwaHRoMjBEeU4rcmlRSkFRMHVvNWf9HaUxJSHNEQUR5Nkw1azdrNTZjVUlhZnhpeVRHdzlWQ2tUY3puVQpPS1liYXFVM3lyaDRqbzRYTHlGd3JYcHJOdkNsb29pY1JIMTdSUkMxUHc9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo="
-        public_ip: "192.125.18.246"
+            public_key: "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFBZ1FDRm9tbkNaR2JYaGthdFkrV2VLQ29yRzdSRUlYSTBhclNLb2VrVU13Wks3c1NjNTloTFN3a09TcGZiTExuNnlGWG1Tc1h3bkk5SmJvY1lCdUR2bllJdVVrdnY5bmtQWVc3S0RXdU01UU5oanlhQUtkVUlXeGhZZ3pka2JJYkVUNlo2QkgvZGxzV2NsSU9aMnNSeGFidkNPQVVsT0xNWDFMQUlFK1ZacDlpekl3PT0gZ2VuZXJhdGVkIHVzZXIgYWNjZWVzIGtleXMK"
+            private_key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlDV3dJQkFBS0JnUUNGb21uQ1pHYlhoa2F0WStXZUtDb3JHN1JFSVhJMGFyU0tvZWtVTXdaSzdzU2M1OWhMClN3a09TcGZiTExuNnlGWG1Tc1h3bkk5SmJvY1lCdUR2bllJdVVrdnY5bmtQWVc3S0RXdU01UU5oanlhQUtkVUkKV3hoWWd6ZGtiSWJFVDZaNkJIL2Rsc1djbElPWjJzUnhhYnZDT0FVbE9MTVgxTEFJRStWWnA5aXpJd0lEQVFBQgpBb0dBWStWZ1IrZkVGVE1VWElPRDM3SElyQWIrdjd0ODR3QXRURUR5dXAzV0EyZnY1QmRRVWlDYWVXdDdqMlVrCjlmcVNkQi9MVGkzSzB5cmpwQ3RvTk5jNnU0dHpkV0txRk9QRUgyNXhHQ1N6aVpNQWFWcWdFTTNDb0UrVUl1aXIKNW1FaGlQRDJhd2U2SFdZbUQvODQwTUxWR1NUMWp3VUdxTy9wY0dpQW04c0hBeGtDUVFEYW45S1JZL2RiQmNUegpLR3JUL25Xamg2WW0ySnAxNkd5NEMxeDVEZElUYVg5TEtsajIwS2V4ZFQ5NGVNN2o5S1pBZG9uS2xzQ1l1WVBRClRRMGd6U2hQQWtFQW5IcjV2YkFhbWh1Rkw1Uk9zQXF4dWhxdXRVcTRUbnVraHlPNFZQYnoxRE12djgwZzd0V1MKWnNtSWV6ek14YXpncXhiaHV2S0lPWjFoRjROUDNsVCs3UUpBZWRPbDJ5OEJuODlQT05ERTl1MU5VSnMrazFjUQplN1BSSVozekllSDV0cWVMTDYraGM2aENTamt6N1VZa3hCS0lzbE5iNVhDc1VtN09iVDBDbTh5M01RSkFlMzlHCjJTRkNiWHZveWx0SEd3TGxyNVpkYWpGVmNvTjhuemRleEplK2Fpd1h0RTFsZjNsSk9SdzNQZVFIVEwrYTlReHoKRE1OYkpmV0NhamMxY3Fnc0pRSkFkNmhoekxVTmFtYVVycTdoNkdMTUZ4TFdOdDJleGhWZWhZU3IyeTBZZ2RXZwpaUTc1eTV2Rm9zMXFTTDl6dU83cVpKRmpqc2doVVhvRGtVbFNYWk9DMlE9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo="
+        public_ip: "52.59.190.147"
         role: "master"
-        node_type: "t2.medium"
+        node_type: "t2.micro"
         root_key_pair:
           protocol: "ssh"
           keys:
-            public_key: "cHVibGljS2V5LTM5NjBjZThjLTA0NzctNDcyNC1iZTc5LWM5NGNjZjQ1ZDYwZg=="
-            private_key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBbnFVd3E3ZHdvWjJjcU03WSsrcGRia0Jud0dFc1FEVExQdWxQWklQMm5UcUo3L05aTlQzMU9uM1hRMElsCkNENFNLekxyVE04ZGlIVEJRRlBQZTV6UHB6Q1Uyam82SDcxL0xUTDRnZDZPakxreFkwS2p5SWZwbFJUcHhpUnpldXVJVG9wLzdLZWoKMjMyWVQ4QXowQU03SStQZVFwb0l1RjhQeHBOdlpnOUZvYWlMd09iL2lwSFV0ZlNjUTRzZEhPTHlCU1h3N1RIQ2VkNHowazRpckhpbQpMTlJHRFZJenNpZDM4T0hRYnFna2pPZUJBaFVoUm5oKzAwWmVYb2NER2o3bUZGWGxuYkhzeGNzTGx3NlM0V1NsR0RPalhPRFRvRE5ICkNmMUkycUdtSWM0VXovckR4TSs5Q3JQYlhBMnNHd1RIV0paM1ZENUtzWmFWSEkzTlp2K3ZBUUlEQVFBQkFvSUJBQVJZVyt2b0cxS2gKNFgrU0lzbExrd0dKREE1dDJ1dHJSc0hUWEJSUnRQaDdlUG0wZlpZQ3UydTl0SjZuK2lHdXFZcTdXMHlBUTd2UUR0YjNOTENiQytqMQpZSzVWZC9BVW5aNGNUa2dvVTFreFhWUHRxRlMrdkR3VUZZOFN3b0wwWG9oZ0xMN0xuS1pQVzFPYjNROXVkemsxYlluL2RBdXd0dHJtCmdOK1h2WDErK0REQnVlTnZaTGF1Q3puUmt2WDZzVHd3alFGQVlLUGZ2Z1A1UUVCMHRkN0Nkb215TW1GL2NVdThEajhXaldtNlpRZFcKNTIrNFRwdE4rVjhoTjdIM3RKRXZ2dHN5S3lCYzZWUW4wNnZ4WGh5QktpVko3M0puQnpyREd2ODI4YU84REVUS2hidUpTMjJzQTF6SApBVEh1b045WUw1bzAyYW5ycTRyUGt1NHBJUTBDZ1lFQTRhYU5sQW81bVA4MGMybXRZazE1dXdudG5UWnJmZnBKNGxZaWtUSkw3YlVpCnRvWk1KRmwyK1k5Q2ZZK2hTYnk4RzlWd01jWEpiUzBTZitKU3ZqQ0p1WTZNQ2dCNTM4RU5MekpwK3FJZXJwd05WY1pMSFRycElUaWIKM21qdEEwWUttUk16bGJYTVlNeEV5Rll4N3pRbWJMQmFJSEkwdWYzOWZLU2M0OU9pMks4Q2dZRUFzL3VPUFVVZUtwYld0T3dCMS9mUwpTei8rSEdmK25nYmVvMk4xamhpaERQa2t3UDVLWFBseURtYVFXZnRMUFhjUGVnamJUaHkrdGR1K2lsTlV6NmQ1eExZNzhreCtVTlErCitYcE1leStVWlN6UWZ5ZWR2SjlwQVhybjhIVzFGYlpNcm9oVEE0ek1kUkJ5b29iZ0ticUtHRE5zUkVsZkF4MDdDMGR2S3FYQWYwOEMKZ1lBYTVjT1NsZlZ2cTF3Uk5kT1pHQ3NlaEh4eWRQNHpNaGFFaUVmdWp0UkdMWVZKeEpCbTlOTWR4Rm5rcGE1UUg5TThiaURGamhJSQpsWXJTKzZOcFVGZmFhb2QrMmJldFdGRytBb0JuZzlPc2RLV1NSK1RFUXpWdTVGU1FHbW5HTGg4dFNBQ3FJOVdNNUV4K3BPZW0zOHlFCndEQytGVjc3bks4T29JQ2pGNk1kdVFLQmdCRWVGcXdiRzhCZk1qSm8wOUFQZ00rcFdXaW9OMTRlTnlTQS9CZzBuWFNYYVhoMWR1c2EKeWs4MlQvcE8zUndPYThsbWVEMFluTWE5RElVcFljS1NJaEdrWjFVbkUwaHF0MGFRN0I4M0tqenBJemRFdEVyUk9uSnFsdzZXazA5cQpWQ2F4VG52aTh6c2JBbHdVeWRNT0s3NGJmZXVNc3QyZjlSS2dpNkVadkpJZkFvR0JBS3BaWjRnb1I4ZFVFSTJJQm9zNjdCNExia1JVCll5elg2RFZrcEd5MzMvYVIyRUtHZ0ZGenNnS2I1K204dFhOM1lRTFhxbGJNTU1Oakx2eVVZdk53dzQzLzVvRHhhbGxIa3c2dW1BWDgKbkhtOGFmajYyTzVrREhsRUcrZDdCQTVqMHhyeGxnM1J4S0xvcXBoSnNKTWVFYWszYVV4bXlWMkI1S3pyalg5eGZVbzcKLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0="
+            public_key: "cHVibGljS2V5LTMyMGQwOWM5LWZiY2EtNDFiMy04OGU0LTFjYzVjMmFmNDY1OQ=="
+            private_key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBaHB6MTcyRjhLbUNLSFFGVWVnTFgrVGp5WHhYa1pBdTVvVS9lVFNHRnZTdWllOWd4N2RLVFpLUi9MV05qCno5WXlEZzd0NU5pNFA3dUo3WDNKL204MWozdXVFRkJPQkt4aGlleUFRN3d3RTdCK1hXZFlZZ1grOVJYRUphYmxRQ0laVnRTQ1pPY3AKamUrMFFmaTcwU2UxaU90cEg0ZDNscnNRTVh3UlBXU1FmQmtkM005V3hjWi9MNzFsaTE5cnVLckpOS09VS0Z1QTZzNE5zQ3YxNkVWSQpQTkl4TkFXTGh1T3FGL29ocHR6T1JOaE83T0ptWWUvOXFXdHp3Lzl1SG1iRnhhRktOWUlONDZaS05YUnpnbllxMWYzK2RSUVJSSzdVClVUREpweXJLcXZkV3pxaGQxQTk2ekp2NFNZMi9PK2JrYm5mM1ZhMk0rTEhPY3VDTWJOY3ZTd0lEQVFBQkFvSUJBSDdLR0ZzQVZ4TVQKR3dOMjNUcU9zeDNxcFY4cUg1U2I5cHdadmlpb0NtL0RTYWVjV21yR2pFMmZJcXA5a3VXUHVsWERlZzZ5a2RoMXE5UWxScngvd3RNQwppMUNTVXVuVDg0c1ZWenAxWmxNbFNlQndGcTg5Tm9kaG1QNWQxRkF6emVvYS96WkxCTGpMcmR6MWl2SFZsUWNCdEdJZUZtWENpOTRRCkhhelZxOEUxL2w4c3VCa3JNSzlybHZHVUtZck8wSEZBZFgyVDZtb292TTFPTFdWQkZ5ZEUrTXN4NWxaNGtML3JpNWsvQmR2QUNkLzYKLy9oT1FFSHhCdFR6SWtPUjZxZEtJMmo4UUkrc0FVMytwek1EMXhraUpqaE9KeERWamtTdUJGdVRDeit4SjE4T0VKanR2bE5Ia3E0KwpCZG1EQVpnRDNXMndpV0dmVkI5dnpTZUpvQUVDZ1lFQTdsSFNtK0ZVcXlyQnZNNFFRVmxtdzRZS0I5U3hGMGM5SkFSSUZLT1I0NGJZClBGVEhheTJkUHhRZHlkYUtWN0JSYjd1ZTZZV0p2d0hKUWZEbXhGR2tEK1FWTTd3ZDJVTWNOaW1kaHgyM096aG1GT0VQUmZoN0pZejUKRnFzbSs0bm5oUU9lMTNjUGs2MDhUU25rTGtiZDI4VGhBUHN4YVVzemhJWTYwWGFhOUlFQ2dZRUFrSm1LR28yQlVJWmtWNGd0dmhXQwpqSVF4MzJtR0pqckhCN1NhZ3pwc0FuaElING03ZHoxcEJwVjExNWhHSC9FQWkzT1pXaVNyQlIrcVl1Y3BKK29Cam41MVdZdjQ3MjlpClU4WEVwM0Z3dWlWQWwxSDZEQkNnNkdNV25kZnovUGd6bjB1dG42NmZ1VE5CaEszK0JSMVh3SHo1NEVBbWNlYnIwVzErWlVRc3pjc0MKZ1lFQTJwdExxWmxrWlM1dlVKVms2OHpxS3VoRlF6R2kwRXVVbGZrbmRXY2xaNlJGcmZIR2kxWG9LL2h6NnJWVmFXSmZFVEwxYmhnRQpacVZveTRnQzVvcE5DQmFjTER5ZTFMQnVySEE0QTcwS1d0UTlMMkhTOU1nZGpqQm1QSmo2eFRtV21iamNkNkRMTlJkdmZRaTBPbzdlCjY3MEkrREZ5L2JieHB0cktFV0hPZWdFQ2dZQmM3a0NDbGlUZ29xNkVUdUhQQXpYMnB0TUNtV2Y4MDlPc0VSY29kWGlMRWRDUWJFMU4KOGVxNHIzK2Z3cDUyMHNXZDJmcFpvNjFCeXJzUGV5N0pGeXhPN3RqdVp2WGlzN3dHeU5oOUlIdnBOaDNQNG9DSUZudkRQa04veUJWbgpwQUJSUlNyZHNEVzRxY2RXeFJlM0k4ZU16d1VzYVM0TUQvUElrYzBrdWU3dGh3S0JnUUNuUjh2NHM0bWVQeEF1MGRiVmxaR3ExUnZnCkJnR3BkZHR6SnN2Sk9qYitmWVp3a2tNU3huZGY5dzdocUVqbEFPckdNVmlBTm13R3ROVWFSMEdkS1h1OGxoRzNSUDFEbnFRdkR0ZDMKajRRTkE0WUFjZ2xFYnpLK1JsVzR1VENOeTN6enBqcC8wOERBazJOZHMvVkhkQ0gyRlBBaW9TdVkrTllESFJhTlE0Tng4QT09Ci0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0t"
         host_name: "vm0"
     compute_1:
       properties:
-        disk_size: "50000 MB"
-        mem_size: "6000 MB"
-        num_cores: 2.0
+        disk_size: "10000 MB"
+        mem_size: "1000 MB"
+        num_cores: 1.0
         os: "Ubuntu 18.04"
         user_name: "vm_user"
       interfaces:
@@ -42,21 +42,18 @@ topology_template:
         user_key_pair:
           protocol: "ssh"
           keys:
-            public_key: "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFBZ1FDV3l6VEoxS1pycDVvVHVBVm15dmxKL2prMnRNdktZSlAvSWtHZ1JKeTVFNUgrbjl0eU1QRXdyUDN4c0lUMVZzRjlVNVhLTkkvVDVpZDgxNko5RmxjbEhOSHVrbEFTMlhqV3QzNnlZekorMkhsa3JET0I4Q25DdmgvQlQ5K2liNkpjVFpUd21Xb1FQbjFuVXpSelRSVGU5NUlyOUl4djgrTnNLVWYxdVYzNDBRPT0gYXV0byBnZW5lcmF0ZWQgdXNlciBhY2NlZXMga2V5cwo="
-            private_key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlDV3dJQkFBS0JnUUNXeXpUSjFLWnJwNW9UdUFWbXl2bEovamsydE12S1lKUC9Ja0dnUkp5NUU1SCtuOXR5Ck1QRXdyUDN4c0lUMVZzRjlVNVhLTkkvVDVpZDgxNko5RmxjbEhOSHVrbEFTMlhqV3QzNnlZekorMkhsa3JET0IKOENuQ3ZoL0JUOStpYjZKY1RaVHdtV29RUG4xblV6UnpUUlRlOTVJcjlJeHY4K05zS1VmMXVWMzQwUUlEQVFBQgpBb0dBSUJDMStQVXZMbFZGZmt2eldoaHZTankxRGQwRU9OU3dvK0EwOUUraXcvaFZZeis2K2wxTjdIdmN4RGcxCkRiYVZEb0ZucU1ma2picXpTdWpQdEttN2ZlVThldjF3a21aOHNRdzhac1JNdXd3NUxDUzZpMENnem5RMlJ3WmIKU2dqSlVrLy81VVF2Z2x2YkFEMXJpUlJ1TzR5N0cwTFZpa2Y4b3UvM0pBM21iQUVDUVFESm1VY2dBQjJONmpSYQpydWxhNklnYzFYYjdTUGl0TEpFQjFNZytyUW5EZDZWWXZqcVVGaW9zWVdhYlJSdGtPQ1VPdWt5cklLY1puZ3Q4CjdrdHN6T1c1QWtFQXYzeEFHYUdyWkk1KzdjSTF4Si9NaWVRa1pkaFFWTEpEUnpwT3FJVjVKaFIzbCt2R3N2R2MKWWhwUG9IL1VoN3hsV3NLUVF2Q3Y2azhyaVh1dmZ6aTMyUUpBQTJDb0NtYzJGNHlXOS9YNlB1V3FjaUU1YnhoWAo0ajdlNXhMemorbENRcDRjalJJUzFTeFI1SkIxTWFERXhyY1NGOThUTGNMTVNlZVY5YS9nWDZCSE1RSkFadHNVCkIzQ2JBdW16N255cXF4SjNLUDUrT3FLbUM4aXhjTm8yRkRtVjZNbUhyL2c3QkRYYUhhd3FaM2tpclVLYVl0VXQKN25jZzEwaHRoMjBEeU4rcmlRSkFRMHVvNW9HaUxJSHNEQUR5Nkw1azdrNTZjVUlhZnhpeVRHdzlWQ2tUY3puVQpPS1liYXFVM3lyaDRqbzRYTHlGd3JYcHJOdkNsb29pY1JIMTdSUkMxUHc9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo="
-        public_ip: "192.122.56.251"
+            public_key: "c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFBZ1FDRm9tbkNaR2JYaGthdFkrV2VLQ29yRzdSRUlYSTBhclNLb2VrVU13Wks3c1NjNTloTFN3a09TcGZiTExuNnlGWG1Tc1h3bkk5SmJvY1lCdUR2bllJdVVrdnY5bmtQWVc3S0RXdU01UU5oanlhQUtkVUlXeGhZZ3pka2JJYkVUNlo2QkgvZGxzV2NsSU9aMnNSeGFidkNPQVVsT0xNWDFMQUlFK1ZacDlpekl3PT0gZ2VuZXJhdGVkIHVzZXIgYWNjZWVzIGtleXMK"
+            private_key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlDV3dJQkFBS0JnUUNGb21uQ1pHYlhoa2F0WStXZUtDb3JHN1JFSVhJMGFyU0tvZWtVTXdaSzdzU2M1OWhMClN3a09TcGZiTExuNnlGWG1Tc1h3bkk5SmJvY1lCdUR2bllJdVVrdnY5bmtQWVc3S0RXdU01UU5oanlhQUtkVUkKV3hoWWd6ZGtiSWJFVDZaNkJIL2Rsc1djbElPWjJzUnhhYnZDT0FVbE9MTVgxTEFJRStWWnA5aXpJd0lEQVFBQgpBb0dBWStWZ1IrZkVGVE1VWElPRDM3SElyQWIrdjd0ODR3QXRURUR5dXAzV0EyZnY1QmRRVWlDYWVXdDdqMlVrCjlmcVNkQi9MVGkzSzB5cmpwQ3RvTk5jNnU0dHpkV0txRk9QRUgyNXhHQ1N6aVpNQWFWcWdFTTNDb0UrVUl1aXIKNW1FaGlQRDJhd2U2SFdZbUQvODQwTUxWR1NUMWp3VUdxTy9wY0dpQW04c0hBeGtDUVFEYW45S1JZL2RiQmNUegpLR3JUL25Xamg2WW0ySnAxNkd5NEMxeDVEZElUYVg5TEtsajIwS2V4ZFQ5NGVNN2o5S1pBZG9uS2xzQ1l1WVBRClRRMGd6U2hQQWtFQW5IcjV2YkFhbWh1Rkw1Uk9zQXF4dWhxdXRVcTRUbnVraHlPNFZQYnoxRE12djgwZzd0V1MKWnNtSWV6ek14YXpncXhiaHV2S0lPWjFoRjROUDNsVCs3UUpBZWRPbDJ5OEJuODlQT05ERTl1MU5VSnMrazFjUQplN1BSSVozekllSDV0cWVMTDYraGM2aENTamt6N1VZa3hCS0lzbE5iNVhDc1VtN09iVDBDbTh5M01RSkFlMzlHCjJTRkNiWHZveWx0SEd3TGxyNVpkYWpGVmNvTjhuemRleEplK2Fpd1h0RTFsZjNsSk9SdzNQZVFIVEwrYTlReHoKRE1OYkpmV0NhamMxY3Fnc0pRSkFkNmhoekxVTmFtYVVycTdoNkdMTUZ4TFdOdDJleGhWZWhZU3IyeTBZZ2RXZwpaUTc1eTV2Rm9zMXFTTDl6dU83cVpKRmpqc2doVVhvRGtVbFNYWk9DMlE9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo="
+        public_ip: "3.127.81.250"
         role: "worker"
-        node_type: "t2.medium"
+        node_type: "t2.micro"
         root_key_pair:
           protocol: "ssh"
           keys:
-            public_key: "cHVibGljS2V5LTM5NjBjZThjLTA0NzctNDcyNC1iZTc5LWM5NGNjZjQ1ZDYwZg=="
-            private_key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBbnFVd3E3ZHdvWjJjcU03WSsrcGRia0Jud0dFc1FEVExQdWxQWklQMm5UcUo3L05aTlQzMU9uM1hRMElsCkNENFNLekxyVE04ZGlIVEJRRlBQZTV6UHB6Q1Uyam82SDcxL0xUTDRnZDZPakxreFkwS2p5SWZwbFJUcHhpUnpldXVJVG9wLzdLZWoKMjMyWVQ4QXowQU03SStQZVFwb0l1RjhQeHBOdlpnOUZvYWlMd09iL2lwSFV0ZlNjUTRzZEhPTHlCU1h3N1RIQ2VkNHowazRpckhpbQpMTlJHRFZJenNpZDM4T0hRYnFna2pPZUJBaFVoUm5oKzAwWmVYb2NER2o3bUZGWGxuYkhzeGNzTGx3NlM0V1NsR0RPalhPRFRvRE5ICkNmMUkycUdtSWM0VXovckR4TSs5Q3JQYlhBMnNHd1RIV0paM1ZENUtzWmFWSEkzTlp2K3ZBUUlEQVFBQkFvSUJBQVJZVyt2b0cxS2gKNFgrU0lzbExrd0dKREE1dDJ1dHJSc0hUWEJSUnRQaDdlUG0wZlpZQ3UydTl0SjZuK2lHdXFZcTdXMHlBUTd2UUR0YjNOTENiQytqMQpZSzVWZC9BVW5aNGNUa2dvVTFreFhWUHRxRlMrdkR3VUZZOFN3b0wwWG9oZ0xMN0xuS1pQVzFPYjNROXVkemsxYlluL2RBdXd0dHJtCmdOK1h2WDErK0REQnVlTnZaTGF1Q3puUmt2WDZzVHd3alFGQVlLUGZ2Z1A1UUVCMHRkN0Nkb215TW1GL2NVdThEajhXaldtNlpRZFcKNTIrNFRwdE4rVjhoTjdIM3RKRXZ2dHN5S3lCYzZWUW4wNnZ4WGh5QktpVko3M0puQnpyREd2ODI4YU84REVUS2hidUpTMjJzQTF6SApBVEh1b045WUw1bzAyYW5ycTRyUGt1NHBJUTBDZ1lFQTRhYU5sQW81bVA4MGMybXRZazE1dXdudG5UWnJmZnBKNGxZaWtUSkw3YlVpCnRvWk1KRmwyK1k5Q2ZZK2hTYnk4RzlWd01jWEpiUzBTZitKU3ZqQ0p1WTZNQ2dCNTM4RU5MekpwK3FJZXJwd05WY1pMSFRycElUaWIKM21qdEEwWUttUk16bGJYTVlNeEV5Rll4N3pRbWJMQmFJSEkwdWYzOWZLU2M0OU9pMks4Q2dZRUFzL3VPUFVVZUtwYld0T3dCMS9mUwpTei8rSEdmK25nYmVvMk4xamhpaERQa2t3UDVLWFBseURtYVFXZnRMUFhjUGVnamJUaHkrdGR1K2lsTlV6NmQ1eExZNzhreCtVTlErCitYcE1leStVWlN6UWZ5ZWR2SjlwQVhybjhIVzFGYlpNcm9oVEE0ek1kUkJ5b29iZ0ticUtHRE5zUkVsZkF4MDdDMGR2S3FYQWYwOEMKZ1lBYTVjT1NsZlZ2cTF3Uk5kT1pHQ3NlaEh4eWRQNHpNaGFFaUVmdWp0UkdMWVZKeEpCbTlOTWR4Rm5rcGE1UUg5TThiaURGamhJSQpsWXJTKzZOcFVGZmFhb2QrMmJldFdGRytBb0JuZzlPc2RLV1NSK1RFUXpWdTVGU1FHbW5HTGg4dFNBQ3FJOVdNNUV4K3BPZW0zOHlFCndEQytGVjc3bks4T29JQ2pGNk1kdVFLQmdCRWVGcXdiRzhCZk1qSm8wOUFQZ00rcFdXaW9OMTRlTnlTQS9CZzBuWFNYYVhoMWR1c2EKeWs4MlQvcE8zUndPYThsbWVEMFluTWE5RElVcFljS1NJaEdrWjFVbkUwaHF0MGFRN0I4M0tqenBJemRFdEVyUk9uSnFsdzZXazA5cQpWQ2F4VG52aTh6c2JBbHdVeWRNT0s3NGJmZXVNc3QyZjlSS2dpNkVadkpJZkFvR0JBS3BaWjRnb1I4ZFVFSTJJQm9zNjdCNExia1JVCll5elg2RFZrcEd5MzMvYVIyRUtHZ0ZGenNnS2I1K204dFhOM1lRTFhxbGJNTU1Oakx2eVVZdk53dzQzLzVvRHhhbGxIa3c2dW1BWDgKbkhtOGFmajYyTzVrREhsRUcrZDdCQTVqMHhyeGxnM1J4S0xvcXBoSnNKTWVFYWszYVV4bXlWMkI1S3pyalg5eGZVbzcKLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0="
+            public_key: "cHVibGljS2V5LTMyMGQwOWM5LWZiY2EtNDFiMy04OGU0LTFjYzVjMmFmNDY1OQ=="
+            private_key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBaHB6MTcyRjhLbUNLSFFGVWVnTFgrVGp5WHhYa1pBdTVvVS9lVFNHRnZTdWllOWd4N2RLVFpLUi9MV05qCno5WXlEZzd0NU5pNFA3dUo3WDNKL204MWozdXVFRkJPQkt4aGlleUFRN3d3RTdCK1hXZFlZZ1grOVJYRUphYmxRQ0laVnRTQ1pPY3AKamUrMFFmaTcwU2UxaU90cEg0ZDNscnNRTVh3UlBXU1FmQmtkM005V3hjWi9MNzFsaTE5cnVLckpOS09VS0Z1QTZzNE5zQ3YxNkVWSQpQTkl4TkFXTGh1T3FGL29ocHR6T1JOaE83T0ptWWUvOXFXdHp3Lzl1SG1iRnhhRktOWUlONDZaS05YUnpnbllxMWYzK2RSUVJSSzdVClVUREpweXJLcXZkV3pxaGQxQTk2ekp2NFNZMi9PK2JrYm5mM1ZhMk0rTEhPY3VDTWJOY3ZTd0lEQVFBQkFvSUJBSDdLR0ZzQVZ4TVQKR3dOMjNUcU9zeDNxcFY4cUg1U2I5cHdadmlpb0NtL0RTYWVjV21yR2pFMmZJcXA5a3VXUHVsWERlZzZ5a2RoMXE5UWxScngvd3RNQwppMUNTVXVuVDg0c1ZWenAxWmxNbFNlQndGcTg5Tm9kaG1QNWQxRkF6emVvYS96WkxCTGpMcmR6MWl2SFZsUWNCdEdJZUZtWENpOTRRCkhhelZxOEUxL2w4c3VCa3JNSzlybHZHVUtZck8wSEZBZFgyVDZtb292TTFPTFdWQkZ5ZEUrTXN4NWxaNGtML3JpNWsvQmR2QUNkLzYKLy9oT1FFSHhCdFR6SWtPUjZxZEtJMmo4UUkrc0FVMytwek1EMXhraUpqaE9KeERWamtTdUJGdVRDeit4SjE4T0VKanR2bE5Ia3E0KwpCZG1EQVpnRDNXMndpV0dmVkI5dnpTZUpvQUVDZ1lFQTdsSFNtK0ZVcXlyQnZNNFFRVmxtdzRZS0I5U3hGMGM5SkFSSUZLT1I0NGJZClBGVEhheTJkUHhRZHlkYUtWN0JSYjd1ZTZZV0p2d0hKUWZEbXhGR2tEK1FWTTd3ZDJVTWNOaW1kaHgyM096aG1GT0VQUmZoN0pZejUKRnFzbSs0bm5oUU9lMTNjUGs2MDhUU25rTGtiZDI4VGhBUHN4YVVzemhJWTYwWGFhOUlFQ2dZRUFrSm1LR28yQlVJWmtWNGd0dmhXQwpqSVF4MzJtR0pqckhCN1NhZ3pwc0FuaElING03ZHoxcEJwVjExNWhHSC9FQWkzT1pXaVNyQlIrcVl1Y3BKK29Cam41MVdZdjQ3MjlpClU4WEVwM0Z3dWlWQWwxSDZEQkNnNkdNV25kZnovUGd6bjB1dG42NmZ1VE5CaEszK0JSMVh3SHo1NEVBbWNlYnIwVzErWlVRc3pjc0MKZ1lFQTJwdExxWmxrWlM1dlVKVms2OHpxS3VoRlF6R2kwRXVVbGZrbmRXY2xaNlJGcmZIR2kxWG9LL2h6NnJWVmFXSmZFVEwxYmhnRQpacVZveTRnQzVvcE5DQmFjTER5ZTFMQnVySEE0QTcwS1d0UTlMMkhTOU1nZGpqQm1QSmo2eFRtV21iamNkNkRMTlJkdmZRaTBPbzdlCjY3MEkrREZ5L2JieHB0cktFV0hPZWdFQ2dZQmM3a0NDbGlUZ29xNkVUdUhQQXpYMnB0TUNtV2Y4MDlPc0VSY29kWGlMRWRDUWJFMU4KOGVxNHIzK2Z3cDUyMHNXZDJmcFpvNjFCeXJzUGV5N0pGeXhPN3RqdVp2WGlzN3dHeU5oOUlIdnBOaDNQNG9DSUZudkRQa04veUJWbgpwQUJSUlNyZHNEVzRxY2RXeFJlM0k4ZU16d1VzYVM0TUQvUElrYzBrdWU3dGh3S0JnUUNuUjh2NHM0bWVQeEF1MGRiVmxaR3ExUnZnCkJnR3BkZHR6SnN2Sk9qYitmWVp3a2tNU3huZGY5dzdocUVqbEFPckdNVmlBTm13R3ROVWFSMEdkS1h1OGxoRzNSUDFEbnFRdkR0ZDMKajRRTkE0WUFjZ2xFYnpLK1JsVzR1VENOeTN6enBqcC8wOERBazJOZHMvVkhkQ0gyRlBBaW9TdVkrTllESFJhTlE0Tng4QT09Ci0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0t"
         host_name: "vm1"
     kubernetes:
-      properties:
-        min_masters_num: 1
-        min_workers_num: 1
       requirements:
       - host:
           capability: "tosca.capabilities.ARTICONF.VM.topology"
@@ -64,6 +61,9 @@ topology_template:
           relationship: "tosca.relationships.HostedOn"
       interfaces:
         Kubernetes:
+          configure:
+            inputs:
+              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/dashboard.yaml"
           create:
             inputs:
               playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/create_k8s.yml"
@@ -71,48 +71,6 @@ topology_template:
             inputs:
               playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml"
       type: "tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes"
-    logspout:
-      properties:
-        environment:
-          publish: "127.0.0.1:8000:80"
-        ports:
-        - "8000:80"
-        volumes:
-        - "/etc/hostname:/etc/host_hostname:ro"
-        - "/var/run/docker.sock:/var/run/docker.sock"
-      requirements:
-      - host:
-          capability: "tosca.capabilities.ARTICONF.docker.Orchestrator"
-          node: "kubernetes"
-          relationship: "tosca.relationships.HostedOn"
-      type: "tosca.nodes.ARTICONF.Container.Application.Docker"
-      artifacts:
-        image:
-          file: "gliderlabs/logspout:latest"
-          repository: "docker_hub"
-          type: "tosca.artifacts.Deployment.Image.Container.Docker"
-    mysql:
-      properties:
-        environment:
-          MYSQL_DATABASE: "wordpress"
-          MYSQL_PASSWORD: "wordpress"
-          MYSQL_ROOT_PASSWORD: "somewordpress"
-          MYSQL_USER: "wordpress"
-        ports:
-        - "3306:3306"
-        volumes:
-        - "db_data:/var/lib/mysql"
-      requirements:
-      - host:
-          capability: "tosca.capabilities.ARTICONF.docker.Orchestrator"
-          node: "kubernetes"
-          relationship: "tosca.relationships.HostedOn"
-      type: "tosca.nodes.ARTICONF.Container.Application.Docker"
-      artifacts:
-        image:
-          file: "mysql:5.7"
-          repository: "docker_hub"
-          type: "tosca.artifacts.Deployment.Image.Container.Docker"
     topology:
       properties:
         domain: "Frankfurt"
@@ -128,7 +86,23 @@ topology_template:
           relationship: "tosca.relationships.DependsOn"
       interfaces:
         CloudsStorm:
+          delete:
+            inputs:
+              code_type: "SEQ"
+              object_type: "SubTopology"
+          hscale:
+            inputs:
+              code_type: "SEQ"
+              object_type: "SubTopology"
           provision:
+            inputs:
+              code_type: "SEQ"
+              object_type: "SubTopology"
+          start:
+            inputs:
+              code_type: "SEQ"
+              object_type: "SubTopology"
+          stop:
             inputs:
               code_type: "SEQ"
               object_type: "SubTopology"
@@ -137,24 +111,26 @@ topology_template:
         credential:
           cloud_provider_name: "EC2"
           keys:
-            aws_access_key_id: "XXXXXXXXXXXXXXXXXXXXXXXX"
-          token: "XXXXXXXXXXXXXXXXXXXXXX"
+            aws_access_key_id: "XXXXXXXXXXXXXXXXXXX"
+          token: "XXXXXXXXXXXXXXXXXXX"
           token_type: "access_key"
+        desired_state: "PROVISION"
         status: "running"
-  policies:
-  - scalability:
+    ws-pema:
       properties:
-        constraint_name: "cpu_load"
-        max_value: 90
-      targets:
-      - "mysql"
-      type: "tosca.policies.ARTICONF.Performance.CPU"
-  - faultTolerance:
-      properties:
-        level: 1
-      targets:
-      - "mysql"
-      type: "tosca.policies.ARTICONF.FaultTolerance"
+        ports:
+        - "30001:8080"
+      requirements:
+      - host:
+          capability: "tosca.capabilities.ARTICONF.docker.Orchestrator"
+          node: "kubernetes"
+          relationship: "tosca.relationships.HostedOn"
+      type: "tosca.nodes.ARTICONF.Container.Application.Docker"
+      artifacts:
+        image:
+          file: "alogo53/ws-pema-lifewatch"
+          repository: "docker_hub"
+          type: "tosca.artifacts.Deployment.Image.Container.Docker"
 description: "TOSCA example"
 imports:
 - nodes: "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/nodes.yaml"

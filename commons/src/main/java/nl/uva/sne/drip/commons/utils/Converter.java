@@ -60,7 +60,7 @@ public class Converter {
     }
 
     public static String encodeFileToBase64Binary(String fileName) throws IOException {
-        return encode2Bas64(Files.readAllBytes(Paths.get(fileName)));
+        return encode2Base64(Files.readAllBytes(Paths.get(fileName)));
     }
 
     public static void decodeBase64BToFile(String base64, String fileName) throws IOException {
@@ -82,11 +82,11 @@ public class Converter {
         String name = System.currentTimeMillis() + "_" + originalFileName;
         byte[] bytes = file.getBytes();
 
-        return encode2Bas64(bytes);
+        return encode2Base64(bytes);
 
     }
 
-    private static String encode2Bas64(byte[] bytes) {
+    private static String encode2Base64(byte[] bytes) {
 
         byte[] encodedBytes = Base64.getEncoder().encode(bytes);
         return new String(encodedBytes, StandardCharsets.UTF_8);

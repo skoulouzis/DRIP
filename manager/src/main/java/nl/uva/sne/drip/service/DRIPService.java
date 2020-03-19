@@ -117,7 +117,7 @@ public class DRIPService {
         if (vmTopologies == null || vmTopologies.isEmpty()) {
             throw new MissingVMTopologyException("ToscaTemplate: " + toscaTemplate + " has no VM Topologies");
         }
-        toscaTemplate = setDesieredSate(toscaTemplate, vmTopologies, NODE_STATES.PROVISION);
+        toscaTemplate = setDesieredSate(toscaTemplate, vmTopologies, NODE_STATES.RUNNING);
         return execute(toscaTemplate, provisionerQueueName);
     }
 
@@ -162,7 +162,7 @@ public class DRIPService {
             for (NodeTemplateMap vmTopology : vmTopologies) {
                 CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
                 if (!status.equals(CloudsStormSubTopology.StatusEnum.DELETED)) {
-                    toscaTemplate = setDesieredSate(toscaTemplate, vmTopologies, NODE_STATES.DELETE);
+                    toscaTemplate = setDesieredSate(toscaTemplate, vmTopologies, NODE_STATES.DELETED);
                 }
             }
             return execute(toscaTemplate, provisionerQueueName);

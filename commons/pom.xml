@@ -143,7 +143,13 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.25</version>
             <type>jar</type>
-        </dependency>               
+        </dependency>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.54</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     
     
