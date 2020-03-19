@@ -453,17 +453,16 @@ class CloudStormService {
         }
         Map<String, String> provisionedFiles = new HashMap<>();
         provisionedFiles.put("type", ENCODED_FILE_DATATYPE);
-        Path zipPath = Paths.get(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + TOPOLOGY_FOLDER_NAME + ".zip");
-        Path sourceFolderPath = Paths.get(tempInputDirPath + TOPOLOGY_RELATIVE_PATH);
+        String zipPath = (tempInputDirPath + File.separator + TOPOLOGY_FOLDER_NAME + ".zip");
+        String sourceFolderPath = tempInputDirPath + TOPOLOGY_RELATIVE_PATH;
         Converter.zipFolder(sourceFolderPath, zipPath);
 
-        String cloudStormZipFileContentsAsBase64 = Converter.encodeFileToBase64Binary(zipPath.toFile().getAbsolutePath());
+        String cloudStormZipFileContentsAsBase64 = Converter.encodeFileToBase64Binary(zipPath);
         provisionedFiles.put("file_contents", cloudStormZipFileContentsAsBase64);
         provisionedFiles.put("encoding", "base64");
         provisionedFiles.put("file_ext", "zip");
         artifacts.put("provisioned_files", provisionedFiles);
         vmTopologyMap.getNodeTemplate().setArtifacts(artifacts);
-
         return vmTopologyMap;
     }
 

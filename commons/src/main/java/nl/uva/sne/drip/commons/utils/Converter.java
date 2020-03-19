@@ -16,27 +16,20 @@
 package nl.uva.sne.drip.commons.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,6 +96,33 @@ public class Converter {
 
         byte[] encodedBytes = Base64.getEncoder().encode(bytes);
         return new String(encodedBytes, StandardCharsets.UTF_8);
+    }
+
+    public static void zipFolder(String sourceDir, String zipFile) throws FileNotFoundException, IOException {
+        FileOutputStream fout = new FileOutputStream(zipFile);
+        try (ZipOutputStream zout = new ZipOutputStream(fout)) {
+            File fileSource = new File(sourceDir);
+            addDirectory(zout, fileSource);
+        }
+    }
+
+    private static void addDirectory(ZipOutputStream zout, File fileSource) throws FileNotFoundException, IOException {
+        File[] files = fileSource.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                addDirectory(zout, file);
+                continue;
+            }
+            byte[] buffer = new byte[1024];
+            try (final FileInputStream fin = new FileInputStream(file)) {
+                zout.putNextEntry(new ZipEntry(file.getName()));
+                int length;
+                while ((length = fin.read(buffer)) > 0) {
+                    zout.write(buffer, 0, length);
+                }
+                zout.closeEntry();
+            }
+        }
     }
 
 }
