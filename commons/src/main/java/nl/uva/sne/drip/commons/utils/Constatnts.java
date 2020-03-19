@@ -29,4 +29,6 @@ public class Constatnts {
     public static final String VM_OS = "os";
     public static final String VM_TOPOLOGY = "tosca.nodes.ARTICONF.VM.topology";
     public static final String CLOUD_STORM_INTERFACE = "tosca.interfaces.ARTICONF.CloudsStorm";
+    public static final String ENCODED_FILE_DATATYPE = "tosca.datatypes.ARTICONF.encodedFile";
+    
 }

@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static nl.uva.sne.drip.commons.utils.Constatnts.ENCODED_FILE_DATATYPE;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import static nl.uva.sne.drip.commons.utils.ToscaHelper.cloudStormStatus2NodeState;
@@ -191,7 +193,10 @@ class CloudStormService {
             cloudsStormSubTopology.setDomain(domain);
             cloudsStormSubTopology.setCloudProvider(provider);
             cloudsStormSubTopology.setTopology(SUB_TOPOLOGY_NAME + i);
-            cloudsStormSubTopology.setStatus(CloudsStormSubTopology.StatusEnum.FRESH);
+            ToscaHelper.NODE_STATES currentState = helper.getNodeCurrentState(nodeTemplateMap);
+            ToscaHelper.NODE_STATES desiredState = helper.getNodeDesiredState(nodeTemplateMap);
+
+            cloudsStormSubTopology.setStatus(ToscaHelper.nodeCurrentState2CloudStormStatus(currentState));
             CloudsStormVMs cloudsStormVMs = new CloudsStormVMs();
 
             List<CloudsStormVM> vms = new ArrayList<>();
@@ -304,25 +309,22 @@ class CloudStormService {
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
             ToscaHelper.NODE_STATES nodeCurrentState = helper.getNodeCurrentState(vmTopologyMap);
             ToscaHelper.NODE_STATES nodeDesiredState = helper.getNodeDesiredState(vmTopologyMap);
-            if (nodeCurrentState != null && nodeCurrentState.equals(ToscaHelper.NODE_STATES.RUNNING)) {
-                //Already there
-            }
             //Can provision
-            if (nodeCurrentState == null || nodeCurrentState.equals(ToscaHelper.NODE_STATES.DELETED)) {
-                Map<String, Object> provisionInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
-                String operation = nodeDesiredState.toString().toLowerCase();
-                Map<String, Object> inputs = (Map<String, Object>) provisionInterface.get(operation);
-                inputs.put("object_type", cloudStormSubtopologies.get(i).getTopology());
-                OpCode opCode = new OpCode();
-                opCode.setLog(Boolean.FALSE);
-                opCode.setObjectType(OpCode.ObjectTypeEnum.SUBTOPOLOGY);
-                opCode.setObjects(cloudStormSubtopologies.get(i).getTopology());
-                opCode.setOperation(OpCode.OperationEnum.fromValue(operation));
-                InfrasCode infrasCode = new InfrasCode();
-                infrasCode.setCodeType(InfrasCode.CodeTypeEnum.SEQ);
-                infrasCode.setOpCode(opCode);
-                infrasCodes.add(infrasCode);
-            }
+
+            Map<String, Object> provisionInterface = helper.getProvisionerInterfaceFromVMTopology(vmTopologyMap);
+            OpCode.OperationEnum operation = ToscaHelper.NodeDesiredState2CloudStormOperation(nodeDesiredState);
+            Map<String, Object> inputs = (Map<String, Object>) provisionInterface.get(operation.toString().toLowerCase());
+            inputs.put("object_type", cloudStormSubtopologies.get(i).getTopology());
+            OpCode opCode = new OpCode();
+            opCode.setLog(Boolean.FALSE);
+            opCode.setObjectType(OpCode.ObjectTypeEnum.SUBTOPOLOGY);
+            opCode.setObjects(cloudStormSubtopologies.get(i).getTopology());
+            opCode.setOperation(operation);
+            InfrasCode infrasCode = new InfrasCode();
+            infrasCode.setCodeType(InfrasCode.CodeTypeEnum.SEQ);
+            infrasCode.setOpCode(opCode);
+            infrasCodes.add(infrasCode);
+
         }
         CloudsStormInfrasCode cloudsStormInfrasCode = new CloudsStormInfrasCode();
         cloudsStormInfrasCode.setMode(CloudsStormInfrasCode.ModeEnum.LOCAL);
@@ -341,8 +343,6 @@ class CloudStormService {
     protected ToscaTemplate runCloudStorm(String tempInputDirPath) throws IOException, ApiException {
         String[] args = new String[]{"run", tempInputDirPath};
         standalone.MainAsTool.main(args);
-//        tempInputDirPath = "/tmp/Input-26386504078656";
-
         CloudsStormTopTopology _top = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                 + TOP_TOPOLOGY_FILE_NAME),
                 CloudsStormTopTopology.class);
@@ -354,12 +354,23 @@ class CloudStormService {
         for (CloudsStormSubTopology subTopology : subTopologies) {
             NodeTemplateMap vmTopologyMap = vmTopologiesMaps.get(i);
 
-            Map<String, Object> att = vmTopologyMap.getNodeTemplate().getAttributes();
-            if (att == null) {
-                att = new HashMap<>();
+            Map<String, Object> artifacts = vmTopologyMap.getNodeTemplate().getArtifacts();
+            if (artifacts == null) {
+                artifacts = new HashMap<>();
             }
-            helper.setNodeCurrentState(vmTopologyMap, cloudStormStatus2NodeState(subTopology.getStatus()));
+            Map<String, String> provisionedFiles = new HashMap<>();
+            provisionedFiles.put("type", ENCODED_FILE_DATATYPE);
+            Path zipPath = Paths.get(tempInputDirPath + TOPOLOGY_RELATIVE_PATH+File.separator+TOPOLOGY_FOLDER_NAME+".zip");
+            Path sourceFolderPath = Paths.get(tempInputDirPath + TOPOLOGY_RELATIVE_PATH);
+            Converter.zipFolder(sourceFolderPath, zipPath);
             
+            String cloudStormZipFileContentsAsBase64 = Converter.encodeFileToBase64Binary(zipPath.toFile().getAbsolutePath());
+            provisionedFiles.put("file_contents", cloudStormZipFileContentsAsBase64);
+            provisionedFiles.put("encoding", "base64");
+            provisionedFiles.put("file_ext", "zip");
+            artifacts.put("provisioned_files", provisionedFiles);
+            helper.setNodeCurrentState(vmTopologyMap, cloudStormStatus2NodeState(subTopology.getStatus()));
+
             String rootKeyPairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                     + File.separator + subTopology.getSshKeyPairId();
 

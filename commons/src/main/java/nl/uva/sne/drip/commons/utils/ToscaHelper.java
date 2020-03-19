@@ -48,6 +48,7 @@ import nl.uva.sne.drip.sure.tosca.client.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import static nl.uva.sne.drip.commons.utils.Constatnts.*;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology.StatusEnum;
+import nl.uva.sne.drip.model.cloud.storm.OpCode;
 
 /**
  *
@@ -306,7 +307,7 @@ public class ToscaHelper {
     public NodeTemplateMap setNodeCurrentState(NodeTemplateMap node, NODE_STATES nodeState) {
         return setNodeState(node, "current_state", nodeState);
     }
-    
+
     public NodeTemplateMap setNodeDesiredState(NodeTemplateMap node, NODE_STATES nodeState) {
         return setNodeState(node, "desired_state", nodeState);
     }
@@ -334,7 +335,7 @@ public class ToscaHelper {
     }
 
     public static NODE_STATES cloudStormStatus2NodeState(StatusEnum cloudStormStatus) {
-        if(cloudStormStatus.equals(StatusEnum.FRESH)){
+        if (cloudStormStatus.equals(StatusEnum.FRESH)) {
             return null;
         }
         String cloudStormStatusStr = cloudStormStatus.toString().toUpperCase();
@@ -361,6 +362,50 @@ public class ToscaHelper {
             throw new TypeExeption("NodeTemplate is not of type: " + VM_TYPE + " it is of type: " + vmMap.getType());
         }
         return null;
+    }
+
+    public static OpCode.OperationEnum NodeDesiredState2CloudStormOperation(NODE_STATES nodeDesiredState) {
+        switch (nodeDesiredState) {
+            case RUNNING:
+                return OpCode.OperationEnum.PROVISION;
+            case DELETED:
+                return OpCode.OperationEnum.DELETE;
+            case STARTED:
+                return OpCode.OperationEnum.START;
+            case STOPPED:
+                return OpCode.OperationEnum.STOP;
+            case H_SCALED:
+                return OpCode.OperationEnum.HSCALE;
+            case V_SCALED:
+                return OpCode.OperationEnum.VSCALE;
+            default:
+                return null;
+        }
+    }
+
+    public static StatusEnum nodeCurrentState2CloudStormStatus(NODE_STATES currentState) {
+        if (currentState == null) {
+            return StatusEnum.FRESH;
+        }
+        switch (currentState) {
+            case RUNNING:
+                return StatusEnum.RUNNING;
+            case DELETED:
+                return StatusEnum.DELETED;
+            case STARTED:
+                return StatusEnum.RUNNING;
+            case STOPPED:
+                return StatusEnum.STOPPED;
+            case H_SCALED:
+                return StatusEnum.RUNNING;
+            case V_SCALED:
+                return StatusEnum.RUNNING;
+            case FAILED:
+                return StatusEnum.FAILED;
+            default:
+                return null;
+        }
+
     }
 
 }

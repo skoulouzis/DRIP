@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.jcraft.jsch.KeyPair;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,7 +19,11 @@ import java.util.List;
 import java.util.Map;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.Message;
+import nl.uva.sne.drip.model.cloud.storm.CloudsStormInfrasCode;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
+import nl.uva.sne.drip.model.cloud.storm.CloudsStormTopTopology;
+import nl.uva.sne.drip.model.cloud.storm.InfrasCode;
+import nl.uva.sne.drip.model.cloud.storm.OpCode;
 import static nl.uva.sne.drip.provisioner.CloudStormService.APP_FOLDER_NAME;
 import static nl.uva.sne.drip.provisioner.CloudStormService.INFRASTUCTURE_CODE_FILE_NAME;
 import static nl.uva.sne.drip.provisioner.CloudStormService.INFS_FOLDER_NAME;
@@ -35,11 +41,11 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author alogo
+ * @author S. Koulouzis
  */
 public class CloudStormServiceTest {
 
-    private static final String messageExampleDeleteRequestFilePath = ".." + File.separator + "example_messages" + File.separator + "message_example_provisioned.json";
+    private static final String messageExampleDeleteRequestFilePath = ".." + File.separator + "example_messages" + File.separator + "message_delete_request.json";
     private static final String messageExampleProvisioneRequestFilePath = ".." + File.separator + "example_messages" + File.separator + "message_provision_request.json";
     private final ObjectMapper objectMapper;
     private String tempInputDirPath;
@@ -52,7 +58,7 @@ public class CloudStormServiceTest {
     private String providersDBTempInputDirPath;
 
     public CloudStormServiceTest() {
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
@@ -186,21 +192,9 @@ public class CloudStormServiceTest {
     public void testWriteCloudStormInfrasCodeFiles() throws Exception {
         if (ToscaHelper.isServiceUp(sureToscaBasePath)) {
             System.out.println("writeCloudStormInfrasCodeFiles");
-            CloudStormService instance = getService(messageExampleProvisioneRequestFilePath);
-            Map<String, Object> subTopologiesAndVMs = instance.writeCloudStormTopologyFiles(topologyTempInputDirPath);
-            assertNotNull(subTopologiesAndVMs);
-            assertTrue(new File(topologyTempInputDirPath + File.separator + TOP_TOPOLOGY_FILE_NAME).exists());
-            List<CloudsStormSubTopology> cloudStormSubtopologies = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
-            instance.writeCloudStormInfrasCodeFiles(infrasCodeTempInputDirPath, cloudStormSubtopologies);
-            assertTrue(new File(infrasCodeTempInputDirPath + File.separator + INFRASTUCTURE_CODE_FILE_NAME).exists());
-            
-            instance = getService(messageExampleDeleteRequestFilePath);
-            subTopologiesAndVMs = instance.writeCloudStormTopologyFiles(topologyTempInputDirPath);
-            assertNotNull(subTopologiesAndVMs);
-            assertTrue(new File(topologyTempInputDirPath + File.separator + TOP_TOPOLOGY_FILE_NAME).exists());
-            cloudStormSubtopologies = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
-            instance.writeCloudStormInfrasCodeFiles(infrasCodeTempInputDirPath, cloudStormSubtopologies);
-            assertTrue(new File(infrasCodeTempInputDirPath + File.separator + INFRASTUCTURE_CODE_FILE_NAME).exists());            
+
+            testWriteCloudStormInfrasFiles(messageExampleProvisioneRequestFilePath, CloudsStormSubTopology.StatusEnum.FRESH, OpCode.OperationEnum.PROVISION);
+            testWriteCloudStormInfrasFiles(messageExampleDeleteRequestFilePath, CloudsStormSubTopology.StatusEnum.RUNNING, OpCode.OperationEnum.DELETE);
         }
 
     }
@@ -257,6 +251,32 @@ public class CloudStormServiceTest {
     private CloudStormService getService(String messagefilePath) throws IOException, JsonProcessingException, ApiException {
         Message message = objectMapper.readValue(new File(messagefilePath), Message.class);
         return new CloudStormService(RPCServer.getProp(), message.getToscaTemplate());
+    }
+
+    private void testWriteCloudStormInfrasFiles(String path, CloudsStormSubTopology.StatusEnum status, OpCode.OperationEnum opCode) throws IOException, JsonProcessingException, ApiException, Exception {
+        CloudStormService instance = getService(path);
+        initPaths();
+        Map<String, Object> subTopologiesAndVMs = instance.writeCloudStormTopologyFiles(topologyTempInputDirPath);
+        assertNotNull(subTopologiesAndVMs);
+        File topTopologyFile = new File(topologyTempInputDirPath + File.separator + TOP_TOPOLOGY_FILE_NAME);
+        assertTrue(topTopologyFile.exists());
+        CloudsStormTopTopology _top = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH
+                + TOP_TOPOLOGY_FILE_NAME),
+                CloudsStormTopTopology.class);
+
+        for (CloudsStormSubTopology cloudsStormSubTopology : _top.getTopologies()) {
+            assertEquals(status, cloudsStormSubTopology.getStatus());
+        }
+
+        List<CloudsStormSubTopology> cloudStormSubtopologies = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
+        instance.writeCloudStormInfrasCodeFiles(infrasCodeTempInputDirPath, cloudStormSubtopologies);
+        File infrasCodeFile = new File(infrasCodeTempInputDirPath + File.separator + INFRASTUCTURE_CODE_FILE_NAME);
+        assertTrue(infrasCodeFile.exists());
+        CloudsStormInfrasCode cloudsStormInfrasCode = objectMapper.readValue(infrasCodeFile, CloudsStormInfrasCode.class);
+
+        for (InfrasCode code : cloudsStormInfrasCode.getInfrasCodes()) {
+            assertEquals(opCode, code.getOpCode().getOperation());
+        }
     }
 
 }

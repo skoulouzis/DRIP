@@ -13,6 +13,7 @@ node_types:
         type: string
         required: false
         description: the current state of the node
+    
 
   tosca.nodes.ARTICONF.Container.Application.Docker:
     derived_from:  tosca.nodes.ARTICONF.Application
@@ -164,7 +165,7 @@ node_types:
             delete:
                 inputs:
                     code_type: SEQ
-                    object_type: SubTopology 
+                    object_type: SubTopology
             hscale:
                 inputs:
                     code_type: SEQ
