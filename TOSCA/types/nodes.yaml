@@ -206,7 +206,7 @@ node_types:
         required: true
         default: 10000 MB
         constraints:
-          - greater_or_equal: 15000 MB
+          - greater_or_equal: 5000 MB
       mem_size:
         type: scalar-unit.size
         required: true
