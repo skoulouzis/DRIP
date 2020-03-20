@@ -54,6 +54,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.apache.maven.shared.utils.io.DirectoryScanner;
+import topology.analysis.TopologyAnalysisMain;
 
 /**
  *
@@ -112,8 +113,8 @@ class CloudStormService {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
-    public ToscaTemplate execute() throws FileNotFoundException, JSchException, IOException, ApiException, Exception {
-        
+    public ToscaTemplate execute(boolean dryRun) throws FileNotFoundException, JSchException, IOException, ApiException, Exception {
+
         String tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
         File tempInputDir = new File(tempInputDirPath);
         if (!(tempInputDir.mkdirs())) {
@@ -149,7 +150,7 @@ class CloudStormService {
         List<CloudsStormSubTopology> cloudStormSubtopologies = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
         writeCloudStormInfrasCodeFiles(infrasCodeTempInputDirPath, cloudStormSubtopologies);
 
-        ToscaTemplate newToscaTemplate = runCloudStorm(tempInputDirPath);
+        ToscaTemplate newToscaTemplate = runCloudStorm(tempInputDirPath, dryRun);
         getHelper().uploadToscaTemplate(newToscaTemplate);
         return newToscaTemplate;
     }
@@ -351,11 +352,20 @@ class CloudStormService {
         FileUtils.copyDirectory(srcDir, destDir);
     }
 
-    protected ToscaTemplate runCloudStorm(String tempInputDirPath) throws IOException, ApiException {
+    protected ToscaTemplate runCloudStorm(String tempInputDirPath, boolean dryRun) throws IOException, ApiException {
         String[] args = new String[]{"run", tempInputDirPath};
-        standalone.MainAsTool.main(args);
-        CloudsStormTopTopology _top = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH
-                + TOP_TOPOLOGY_FILE_NAME),
+        File topTopologyFile = new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH
+                + TOP_TOPOLOGY_FILE_NAME);
+        if (!dryRun) {
+            standalone.MainAsTool.main(args);
+        } else {
+            TopologyAnalysisMain tam = new TopologyAnalysisMain(topTopologyFile.getAbsolutePath());
+            if (!tam.fullLoadWholeTopology()) {
+                Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "CloudStrom topology file at: {0} has errors", topTopologyFile.getAbsolutePath());
+            }
+        }
+
+        CloudsStormTopTopology _top = objectMapper.readValue(topTopologyFile,
                 CloudsStormTopTopology.class);
 
         List<CloudsStormSubTopology> subTopologies = _top.getTopologies();
@@ -363,67 +373,9 @@ class CloudStormService {
         List<NodeTemplateMap> vmTopologiesMaps = getHelper().getVMTopologyTemplates();
         int i = 0;
         for (CloudsStormSubTopology subTopology : subTopologies) {
-            NodeTemplateMap vmTopologyMap = vmTopologiesMaps.get(i);
 
-            vmTopologyMap = addCloudStromArtifacts(vmTopologyMap, tempInputDirPath);
+            setSSHKeysToVMAttributes(i, vmTopologiesMaps, subTopology, tempInputDirPath);
 
-            getHelper().setNodeCurrentState(vmTopologyMap, cloudStormStatus2NodeState(subTopology.getStatus()));
-
-            String rootKeyPairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH
-                    + File.separator + subTopology.getSshKeyPairId();
-
-            Credential rootKeyPairCredential = new Credential();
-            rootKeyPairCredential.setProtocol("ssh");
-            Map<String, String> rootKeys = new HashMap<>();
-            rootKeys.put("private_key", Converter.encodeFileToBase64Binary(rootKeyPairFolder + File.separator + "id_rsa"));
-
-            DirectoryScanner scanner = new DirectoryScanner();
-            scanner.setIncludes(new String[]{"**/*.pub"});
-            scanner.setBasedir(rootKeyPairFolder + File.separator);
-            scanner.setCaseSensitive(false);
-            scanner.scan();
-            String[] fileNames = scanner.getIncludedFiles();
-
-            rootKeys.put("public_key", Converter.encodeFileToBase64Binary(rootKeyPairFolder + File.separator + File.separator + fileNames[0]));
-            rootKeyPairCredential.setKeys(rootKeys);
-
-            String userKyePairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH;
-            Credential userKeyPairCredential = new Credential();
-            userKeyPairCredential.setProtocol("ssh");
-            Map<String, String> userKyes = new HashMap<>();
-            userKyes.put("private_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa"));
-            userKyes.put("public_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa.pub"));
-            userKeyPairCredential.setKeys(userKyes);
-
-            CloudsStormVMs cloudsStormVMs = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + subTopology.getTopology() + ".yml"),
-                    CloudsStormVMs.class);
-            List<CloudsStormVM> vms = cloudsStormVMs.getVms();
-            List<NodeTemplateMap> vmTemplatesMap = getHelper().getTemplateVMsForVMTopology(vmTopologyMap);
-            int j = 0;
-            for (CloudsStormVM vm : vms) {
-                NodeTemplateMap vmTemplateMap = vmTemplatesMap.get(j);
-                Map<String, Object> vmAttributes = vmTemplateMap.getNodeTemplate().getAttributes();
-                if (vmAttributes == null) {
-                    vmAttributes = new HashMap<>();
-                }
-                vmAttributes.put("private_ip", vm.getSelfEthAddresses());
-                vmAttributes.put("public_ip", vm.getPublicAddress());
-                if (j > 0) {
-                    vmAttributes.put("role", "worker");
-                } else {
-                    vmAttributes.put("role", "master");
-                }
-                vmAttributes.put("node_type", vm.getNodeType());
-                vmAttributes.put("host_name", vm.getName());
-
-                vmAttributes.put("root_key_pair", rootKeyPairCredential);
-                vmAttributes.put("user_key_pair", userKeyPairCredential);
-                vmTemplateMap.getNodeTemplate().setAttributes(vmAttributes);
-                toscaTemplate = getHelper().setNodeInToscaTemplate(toscaTemplate, vmTemplateMap);
-                j++;
-            }
-            toscaTemplate = getHelper().setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
-            i++;
         }
         return toscaTemplate;
     }
@@ -453,8 +405,9 @@ class CloudStormService {
         }
         Map<String, String> provisionedFiles = new HashMap<>();
         provisionedFiles.put("type", ENCODED_FILE_DATATYPE);
-        String zipPath = (tempInputDirPath + File.separator + TOPOLOGY_FOLDER_NAME + ".zip");
-        String sourceFolderPath = tempInputDirPath + TOPOLOGY_RELATIVE_PATH;
+        File tempInputDirFile = new File(tempInputDirPath);
+        String zipPath = (tempInputDirFile.getAbsolutePath() + "-cloudStromFiles.zip");
+        String sourceFolderPath = tempInputDirPath;
         Converter.zipFolder(sourceFolderPath, zipPath);
 
         String cloudStormZipFileContentsAsBase64 = Converter.encodeFileToBase64Binary(zipPath);
@@ -464,6 +417,73 @@ class CloudStormService {
         artifacts.put("provisioned_files", provisionedFiles);
         vmTopologyMap.getNodeTemplate().setArtifacts(artifacts);
         return vmTopologyMap;
+    }
+
+    private void setSSHKeysToVMAttributes(int i, List<NodeTemplateMap> vmTopologiesMaps, CloudsStormSubTopology subTopology, String tempInputDirPath) throws IOException, ApiException {
+        NodeTemplateMap vmTopologyMap = vmTopologiesMaps.get(i);
+
+        vmTopologyMap = addCloudStromArtifacts(vmTopologyMap, tempInputDirPath);
+
+        getHelper().setNodeCurrentState(vmTopologyMap, cloudStormStatus2NodeState(subTopology.getStatus()));
+
+        Credential rootKeyPairCredential = null;
+        if (subTopology.getSshKeyPairId() != null) {
+            String rootKeyPairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH
+                    + File.separator + subTopology.getSshKeyPairId();
+
+            rootKeyPairCredential = new Credential();
+            rootKeyPairCredential.setProtocol("ssh");
+            Map<String, String> rootKeys = new HashMap<>();
+            rootKeys.put("private_key", Converter.encodeFileToBase64Binary(rootKeyPairFolder + File.separator + "id_rsa"));
+            DirectoryScanner scanner = new DirectoryScanner();
+            scanner.setIncludes(new String[]{"**/*.pub"});
+            scanner.setBasedir(rootKeyPairFolder + File.separator);
+            scanner.setCaseSensitive(false);
+            scanner.scan();
+            String[] fileNames = scanner.getIncludedFiles();
+
+            rootKeys.put("public_key", Converter.encodeFileToBase64Binary(rootKeyPairFolder + File.separator + File.separator + fileNames[0]));
+            rootKeyPairCredential.setKeys(rootKeys);
+        }
+
+        String userKyePairFolder = tempInputDirPath + TOPOLOGY_RELATIVE_PATH;
+        Credential userKeyPairCredential = new Credential();
+        userKeyPairCredential.setProtocol("ssh");
+        Map<String, String> userKyes = new HashMap<>();
+        userKyes.put("private_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa"));
+        userKyes.put("public_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa.pub"));
+        userKeyPairCredential.setKeys(userKyes);
+
+        CloudsStormVMs cloudsStormVMs = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + subTopology.getTopology() + ".yml"),
+                CloudsStormVMs.class);
+        List<CloudsStormVM> vms = cloudsStormVMs.getVms();
+        List<NodeTemplateMap> vmTemplatesMap = getHelper().getTemplateVMsForVMTopology(vmTopologyMap);
+        int j = 0;
+        for (CloudsStormVM vm : vms) {
+            NodeTemplateMap vmTemplateMap = vmTemplatesMap.get(j);
+            Map<String, Object> vmAttributes = vmTemplateMap.getNodeTemplate().getAttributes();
+            if (vmAttributes == null) {
+                vmAttributes = new HashMap<>();
+            }
+            vmAttributes.put("private_ip", vm.getSelfEthAddresses());
+            vmAttributes.put("public_ip", vm.getPublicAddress());
+            if (j > 0) {
+                vmAttributes.put("role", "worker");
+            } else {
+                vmAttributes.put("role", "master");
+            }
+            vmAttributes.put("node_type", vm.getNodeType());
+            vmAttributes.put("host_name", vm.getName());
+            if (rootKeyPairCredential != null) {
+                vmAttributes.put("root_key_pair", rootKeyPairCredential);
+            }
+            vmAttributes.put("user_key_pair", userKeyPairCredential);
+            vmTemplateMap.getNodeTemplate().setAttributes(vmAttributes);
+            toscaTemplate = getHelper().setNodeInToscaTemplate(toscaTemplate, vmTemplateMap);
+            j++;
+        }
+        toscaTemplate = getHelper().setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
+        i++;
     }
 
 }

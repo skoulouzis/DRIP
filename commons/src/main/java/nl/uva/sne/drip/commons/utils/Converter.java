@@ -2,7 +2,7 @@
  * Copyright 2019 S. Koulouzis
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this zipfile except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
@@ -15,21 +15,29 @@
  */
 package nl.uva.sne.drip.commons.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,29 +106,55 @@ public class Converter {
         return new String(encodedBytes, StandardCharsets.UTF_8);
     }
 
-    public static void zipFolder(String sourceDir, String zipFile) throws FileNotFoundException, IOException {
-        FileOutputStream fout = new FileOutputStream(zipFile);
-        try (ZipOutputStream zout = new ZipOutputStream(fout)) {
-            File fileSource = new File(sourceDir);
-            addDirectory(zout, fileSource);
+    public static void zipFolder(String sourceFolder, String zipFolder) throws FileNotFoundException, IOException {
+        try (FileOutputStream fos = new FileOutputStream(zipFolder);
+                ZipOutputStream zos = new ZipOutputStream(fos)) {
+            Path sourcePath = Paths.get(sourceFolder);
+            Files.walkFileTree(sourcePath, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+                    if (!sourcePath.equals(dir)) {
+                        zos.putNextEntry(new ZipEntry(sourcePath.relativize(dir).toString() + "/"));
+                        zos.closeEntry();
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    zos.putNextEntry(new ZipEntry(sourcePath.relativize(file).toString()));
+                    Files.copy(file, zos);
+                    zos.closeEntry();
+                    return FileVisitResult.CONTINUE;
+                }
+            });
         }
     }
 
-    private static void addDirectory(ZipOutputStream zout, File fileSource) throws FileNotFoundException, IOException {
-        File[] files = fileSource.listFiles();
-        for (File file : files) {
-            if (file.isDirectory()) {
-                addDirectory(zout, file);
-                continue;
-            }
-            byte[] buffer = new byte[1024];
-            try (final FileInputStream fin = new FileInputStream(file)) {
-                zout.putNextEntry(new ZipEntry(file.getName()));
-                int length;
-                while ((length = fin.read(buffer)) > 0) {
-                    zout.write(buffer, 0, length);
+    public static void unzipFolder(String zipFile) throws IOException {
+        try (ZipFile zipfile = new ZipFile(zipFile)) {
+            FileSystem fileSystem = FileSystems.getDefault();
+            Enumeration<? extends ZipEntry> zipEntries = zipfile.entries();
+
+            String uncompressedDirectory = "uncompressed/";
+            Files.createDirectory(fileSystem.getPath(uncompressedDirectory));
+
+            while (zipEntries.hasMoreElements()) {
+                ZipEntry entry = zipEntries.nextElement();
+                if (entry.isDirectory()) {
+                    Files.createDirectories(fileSystem.getPath(uncompressedDirectory + entry.getName()));
+                } else {
+                    InputStream is = zipfile.getInputStream(entry);
+                    BufferedInputStream bis = new BufferedInputStream(is);
+                    String uncompressedFileName = uncompressedDirectory + entry.getName();
+                    Path uncompressedFilePath = fileSystem.getPath(uncompressedFileName);
+                    Files.createFile(uncompressedFilePath);
+                    try (FileOutputStream fileOutput = new FileOutputStream(uncompressedFileName)) {
+                        while (bis.available() > 0) {
+                            fileOutput.write(bis.read());
+                        }
+                    }
                 }
-                zout.closeEntry();
             }
         }
     }

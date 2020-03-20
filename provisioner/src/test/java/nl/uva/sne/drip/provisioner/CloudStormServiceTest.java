@@ -129,17 +129,23 @@ public class CloudStormServiceTest {
 
     /**
      * Test of execute method, of class CloudStormService.
+     *
+     * @throws java.lang.Exception
      */
-//    @Test
-//    public void testExecute() throws Exception {
-//        if (ToscaHelper.isServiceUp(sureToscaBasePath)) {
-//            System.out.println("execute");
-//            CloudStormService instance = getService(messageExampleProvisioneRequestFilePath);
-//            instance.execute();
-//        }
-//    }
+    @Test
+    public void testExecute() throws Exception {
+        if (ToscaHelper.isServiceUp(sureToscaBasePath)) {
+            System.out.println("execute");
+            CloudStormService instance = getService(messageExampleProvisioneRequestFilePath);
+            boolean dryRun = true;
+            instance.execute(dryRun);
+        }
+    }
+
     /**
      * Test of writeCloudStormTopologyFiles method, of class CloudStormService.
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testWriteCloudStormTopologyFiles() throws Exception {
@@ -151,6 +157,8 @@ public class CloudStormServiceTest {
 
     /**
      * Test of buildSSHKeyPair method, of class CloudStormService.
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testBuildSSHKeyPair() throws Exception {
@@ -194,6 +202,8 @@ public class CloudStormServiceTest {
 
     /**
      * Test of getKeyPair method, of class CloudStormService.
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testGetKeyPair() throws Exception {

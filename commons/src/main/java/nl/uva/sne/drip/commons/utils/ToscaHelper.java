@@ -38,7 +38,6 @@ import java.util.logging.Logger;
 import nl.uva.sne.drip.model.Exceptions.TypeExeption;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
-import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import nl.uva.sne.drip.sure.tosca.client.DefaultApi;
@@ -319,8 +318,11 @@ public class ToscaHelper {
         if (attributes == null) {
             attributes = new HashMap<>();
         }
-        attributes.put(stateName, nodeState.toString());
-        node.getNodeTemplate().attributes(attributes);
+        if (nodeState != null) {
+            attributes.put(stateName, nodeState.toString());
+            node.getNodeTemplate().attributes(attributes);
+        }
+
         return node;
     }
 

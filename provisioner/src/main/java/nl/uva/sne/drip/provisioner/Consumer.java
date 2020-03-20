@@ -77,7 +77,8 @@ public class Consumer extends DefaultConsumer {
             }
 
             CloudStormService service = new CloudStormService(this.properties, message.getToscaTemplate());
-            ToscaTemplate toscaTemplate = service.execute();
+            boolean dryRun = false;
+            ToscaTemplate toscaTemplate = service.execute(dryRun);
 
             responceMessage = new Message();
             responceMessage.setCreationDate(System.currentTimeMillis());

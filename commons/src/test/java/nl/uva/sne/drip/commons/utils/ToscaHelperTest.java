@@ -37,6 +37,7 @@ import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.Provisioner;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology;
+import nl.uva.sne.drip.model.cloud.storm.OpCode;
 import nl.uva.sne.drip.model.tosca.Credential;
 import nl.uva.sne.drip.model.tosca.ToscaTemplate;
 import org.junit.After;
@@ -420,29 +421,29 @@ public class ToscaHelperTest {
         }
     }
 
-
     /**
      * Test of getKeyPairsFromVM method, of class ToscaHelper.
      */
     @Test
     public void testGetKeyPairsFromVM() throws Exception {
-        System.out.println("getKeyPairsFromVM");
-        instance.uploadToscaTemplate(provisionedToscaTemplate);
-        KeyPair keyPair;
-        List<NodeTemplateMap> vmTopologyTemplatesMap = instance.getVMTopologyTemplates();
-        assertNotNull(vmTopologyTemplatesMap);
-        for (NodeTemplateMap nodeTemplateMap : vmTopologyTemplatesMap) {
-            assertNotNull(nodeTemplateMap);
-            List<NodeTemplateMap> vmTemplatesMap = instance.getTemplateVMsForVMTopology(nodeTemplateMap);
-            assertNotNull(vmTemplatesMap);
-            for (NodeTemplateMap vmMap : vmTemplatesMap) {
-                assertNotNull(vmMap);
-                assertNotNull(vmMap.getNodeTemplate());
-                keyPair = instance.getKeyPairsFromVM(vmMap.getNodeTemplate());
-                assertNotNull(keyPair);
+        if (serviceUp) {
+            System.out.println("getKeyPairsFromVM");
+            instance.uploadToscaTemplate(provisionedToscaTemplate);
+            KeyPair keyPair;
+            List<NodeTemplateMap> vmTopologyTemplatesMap = instance.getVMTopologyTemplates();
+            assertNotNull(vmTopologyTemplatesMap);
+            for (NodeTemplateMap nodeTemplateMap : vmTopologyTemplatesMap) {
+                assertNotNull(nodeTemplateMap);
+                List<NodeTemplateMap> vmTemplatesMap = instance.getTemplateVMsForVMTopology(nodeTemplateMap);
+                assertNotNull(vmTemplatesMap);
+                for (NodeTemplateMap vmMap : vmTemplatesMap) {
+                    assertNotNull(vmMap);
+                    assertNotNull(vmMap.getNodeTemplate());
+                    keyPair = instance.getKeyPairsFromVM(vmMap.getNodeTemplate());
+                    assertNotNull(keyPair);
+                }
             }
         }
-
     }
 
     /**
@@ -459,6 +460,89 @@ public class ToscaHelperTest {
                 assertEquals(value.toString().toUpperCase(), result.toString().toUpperCase());
             }
         }
+    }
+
+    /**
+     * Test of getNodeCurrentState method, of class ToscaHelper.
+     *
+     * @throws java.io.IOException
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
+     * @throws nl.uva.sne.drip.sure.tosca.client.ApiException
+     */
+    @Test
+    public void testGetNodeCurrentState() throws IOException, JsonProcessingException, ApiException {
+        if (serviceUp) {
+            System.out.println("getNodeCurrentState");
+            instance.uploadToscaTemplate(provisionedToscaTemplate);
+            NodeTemplateMap node = instance.getVMTopologyTemplates().get(0);
+            ToscaHelper.NODE_STATES expResult = ToscaHelper.NODE_STATES.RUNNING;
+            ToscaHelper.NODE_STATES result = instance.getNodeCurrentState(node);
+            assertEquals(expResult, result);
+        }
+
+    }
+
+    /**
+     * Test of setNodeCurrentState method, of class ToscaHelper.
+     *
+     * @throws java.io.IOException
+     * @throws com.fasterxml.jackson.core.JsonProcessingException
+     * @throws nl.uva.sne.drip.sure.tosca.client.ApiException
+     */
+    @Test
+    public void testSetNodeCurrentState() throws IOException, JsonProcessingException, ApiException {
+        if (serviceUp) {
+            System.out.println("setNodeCurrentState");
+            instance.uploadToscaTemplate(provisionedToscaTemplate);
+            NodeTemplateMap node = instance.getVMTopologyTemplates().get(0);
+            ToscaHelper.NODE_STATES nodeState = ToscaHelper.NODE_STATES.DELETED;
+            NodeTemplateMap result = instance.setNodeCurrentState(node, nodeState);
+            assertEquals(instance.getNodeCurrentState(node), nodeState);
+
+            instance.setNodeCurrentState(node, null);
+        }
+
+    }
+
+    /**
+     * Test of NodeDesiredState2CloudStormOperation method, of class
+     * ToscaHelper.
+     */
+    @Test
+    public void testNodeDesiredState2CloudStormOperation() {
+        System.out.println("NodeDesiredState2CloudStormOperation");
+        ToscaHelper.NODE_STATES nodeDesiredState = ToscaHelper.NODE_STATES.RUNNING;
+        OpCode.OperationEnum expResult = OpCode.OperationEnum.PROVISION;
+        OpCode.OperationEnum result = ToscaHelper.NodeDesiredState2CloudStormOperation(nodeDesiredState);
+        assertEquals(expResult, result);
+
+        nodeDesiredState = ToscaHelper.NODE_STATES.DELETED;
+        expResult = OpCode.OperationEnum.DELETE;
+        result = ToscaHelper.NodeDesiredState2CloudStormOperation(nodeDesiredState);
+        assertEquals(expResult, result);
+
+        nodeDesiredState = ToscaHelper.NODE_STATES.STOPPED;
+        expResult = OpCode.OperationEnum.STOP;
+        result = ToscaHelper.NodeDesiredState2CloudStormOperation(nodeDesiredState);
+        assertEquals(expResult, result);
+
+        nodeDesiredState = ToscaHelper.NODE_STATES.STARTED;
+        expResult = OpCode.OperationEnum.START;
+        result = ToscaHelper.NodeDesiredState2CloudStormOperation(nodeDesiredState);
+        assertEquals(expResult, result);
+
+    }
+
+    /**
+     * Test of nodeCurrentState2CloudStormStatus method, of class ToscaHelper.
+     */
+    @Test
+    public void testNodeCurrentState2CloudStormStatus() {
+        System.out.println("nodeCurrentState2CloudStormStatus");
+        ToscaHelper.NODE_STATES currentState = ToscaHelper.NODE_STATES.CONFIGURED;
+        CloudsStormSubTopology.StatusEnum expResult = null;
+        CloudsStormSubTopology.StatusEnum result = ToscaHelper.nodeCurrentState2CloudStormStatus(currentState);
+        assertEquals(expResult, result);
     }
 
 }
