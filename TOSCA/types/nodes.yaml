@@ -155,6 +155,10 @@ node_types:
       ssh_keys:
         type: tosca.datatypes.ARTICONF.Credential
         required: false      
+    artifacts:
+      provisioned_files:
+        type: string
+        required: false
     interfaces:
         CloudsStorm:
             type: tosca.interfaces.ARTICONF.CloudsStorm

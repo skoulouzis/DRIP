@@ -420,25 +420,6 @@ public class ToscaHelperTest {
         }
     }
 
-    /**
-     * Test of getVMTopologyTemplateStatus method, of class ToscaHelper.
-     */
-    @Test
-    public void testGetVMTopologyTemplateStatus() throws Exception {
-        if (serviceUp) {
-            System.out.println("getVMTopologyTemplateStatus");
-            toscaTemplateWithCredentials = null;
-            instance.uploadToscaTemplate(provisionedToscaTemplate);
-
-            List<NodeTemplateMap> vmTopologies = instance.getVMTopologyTemplates();
-            for (NodeTemplateMap vmTopology : vmTopologies) {
-                CloudsStormSubTopology.StatusEnum status = instance.getVMTopologyTemplateStatus(vmTopology);
-                assertEquals(CloudsStormSubTopology.StatusEnum.RUNNING, status);
-            }
-
-        }
-
-    }
 
     /**
      * Test of getKeyPairsFromVM method, of class ToscaHelper.

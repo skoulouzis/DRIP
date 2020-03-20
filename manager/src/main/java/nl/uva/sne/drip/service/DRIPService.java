@@ -160,7 +160,6 @@ public class DRIPService {
         if (nodeNames == null || nodeNames.isEmpty()) {
             List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
             for (NodeTemplateMap vmTopology : vmTopologies) {
-                CloudsStormSubTopology.StatusEnum status = helper.getVMTopologyTemplateStatus(vmTopology);
                 toscaTemplate = setDesieredSate(toscaTemplate, vmTopologies, NODE_STATES.DELETED);
             }
             return execute(toscaTemplate, provisionerQueueName);

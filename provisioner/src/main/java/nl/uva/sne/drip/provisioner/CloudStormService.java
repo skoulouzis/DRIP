@@ -113,7 +113,7 @@ class CloudStormService {
     }
 
     public ToscaTemplate execute() throws FileNotFoundException, JSchException, IOException, ApiException, Exception {
-
+        
         String tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
         File tempInputDir = new File(tempInputDirPath);
         if (!(tempInputDir.mkdirs())) {

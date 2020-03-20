@@ -290,16 +290,6 @@ public class ToscaHelper {
         return "vm_user";
     }
 
-    public CloudsStormSubTopology.StatusEnum getVMTopologyTemplateStatus(NodeTemplateMap nodeTemplateMap) throws TypeExeption {
-        NodeTemplate nodeTemplate = nodeTemplateMap.getNodeTemplate();
-        if (nodeTemplate.getType().equals(VM_TOPOLOGY)) {
-            String status = (String) nodeTemplate.getAttributes().get("status");
-            return CloudsStormSubTopology.StatusEnum.fromValue(status);
-        } else {
-            throw new TypeExeption("NodeTemplateMap is not of type: " + VM_TOPOLOGY + " it is of type: " + nodeTemplate.getType());
-        }
-    }
-
     public NODE_STATES getNodeCurrentState(NodeTemplateMap node) {
         return getNodeState(node, "current_state");
     }
