@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.api.NotFoundException;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
-import nl.uva.sne.drip.commons.utils.Constatnts.NODE_STATES;
+import nl.uva.sne.drip.commons.utils.Constants.NODE_STATES;
 import nl.uva.sne.drip.model.Exceptions.MissingCredentialsException;
 import nl.uva.sne.drip.model.Exceptions.MissingVMTopologyException;
 import nl.uva.sne.drip.model.Exceptions.TypeExeption;

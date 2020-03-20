@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import static nl.uva.sne.drip.commons.utils.Constatnts.*;
+import static nl.uva.sne.drip.commons.utils.Constants.*;
 import nl.uva.sne.drip.model.NodeTemplate;
 import nl.uva.sne.drip.model.NodeTemplateMap;
 import nl.uva.sne.drip.model.Provisioner;
@@ -453,7 +453,7 @@ public class ToscaHelperTest {
     public void testCloudStormStatus2NodeState() {
         System.out.println("cloudStormStatus2NodeState");
         for (CloudsStormSubTopology.StatusEnum value : CloudsStormSubTopology.StatusEnum.values()) {
-            Constatnts.NODE_STATES result = ToscaHelper.cloudStormStatus2NodeState(value);
+            Constants.NODE_STATES result = ToscaHelper.cloudStormStatus2NodeState(value);
             if (value.equals(CloudsStormSubTopology.StatusEnum.FRESH)) {
                 assertNull(result);
             } else {
@@ -475,8 +475,8 @@ public class ToscaHelperTest {
             System.out.println("getNodeCurrentState");
             instance.uploadToscaTemplate(provisionedToscaTemplate);
             NodeTemplateMap node = instance.getVMTopologyTemplates().get(0);
-            Constatnts.NODE_STATES expResult = Constatnts.NODE_STATES.RUNNING;
-            Constatnts.NODE_STATES result = instance.getNodeCurrentState(node);
+            Constants.NODE_STATES expResult = Constants.NODE_STATES.RUNNING;
+            Constants.NODE_STATES result = instance.getNodeCurrentState(node);
             assertEquals(expResult, result);
         }
 
@@ -495,7 +495,7 @@ public class ToscaHelperTest {
             System.out.println("setNodeCurrentState");
             instance.uploadToscaTemplate(provisionedToscaTemplate);
             NodeTemplateMap node = instance.getVMTopologyTemplates().get(0);
-            Constatnts.NODE_STATES nodeState = Constatnts.NODE_STATES.DELETED;
+            Constants.NODE_STATES nodeState = Constants.NODE_STATES.DELETED;
             NodeTemplateMap result = instance.setNodeCurrentState(node, nodeState);
             assertEquals(instance.getNodeCurrentState(node), nodeState);
 
@@ -511,22 +511,22 @@ public class ToscaHelperTest {
     @Test
     public void testNodeDesiredState2CloudStormOperation() {
         System.out.println("NodeDesiredState2CloudStormOperation");
-        Constatnts.NODE_STATES nodeDesiredState = Constatnts.NODE_STATES.RUNNING;
+        Constants.NODE_STATES nodeDesiredState = Constants.NODE_STATES.RUNNING;
         OpCode.OperationEnum expResult = OpCode.OperationEnum.PROVISION;
         OpCode.OperationEnum result = ToscaHelper.NodeDesiredState2CloudStormOperation(nodeDesiredState);
         assertEquals(expResult, result);
 
-        nodeDesiredState = Constatnts.NODE_STATES.DELETED;
+        nodeDesiredState = Constants.NODE_STATES.DELETED;
         expResult = OpCode.OperationEnum.DELETE;
         result = ToscaHelper.NodeDesiredState2CloudStormOperation(nodeDesiredState);
         assertEquals(expResult, result);
 
-        nodeDesiredState = Constatnts.NODE_STATES.STOPPED;
+        nodeDesiredState = Constants.NODE_STATES.STOPPED;
         expResult = OpCode.OperationEnum.STOP;
         result = ToscaHelper.NodeDesiredState2CloudStormOperation(nodeDesiredState);
         assertEquals(expResult, result);
 
-        nodeDesiredState = Constatnts.NODE_STATES.STARTED;
+        nodeDesiredState = Constants.NODE_STATES.STARTED;
         expResult = OpCode.OperationEnum.START;
         result = ToscaHelper.NodeDesiredState2CloudStormOperation(nodeDesiredState);
         assertEquals(expResult, result);
@@ -539,7 +539,7 @@ public class ToscaHelperTest {
     @Test
     public void testNodeCurrentState2CloudStormStatus() {
         System.out.println("nodeCurrentState2CloudStormStatus");
-        Constatnts.NODE_STATES currentState = Constatnts.NODE_STATES.CONFIGURED;
+        Constants.NODE_STATES currentState = Constants.NODE_STATES.CONFIGURED;
         CloudsStormSubTopology.StatusEnum expResult = null;
         CloudsStormSubTopology.StatusEnum result = ToscaHelper.nodeCurrentState2CloudStormStatus(currentState);
         assertEquals(expResult, result);

@@ -19,7 +19,7 @@ package nl.uva.sne.drip.commons.utils;
  *
  * @author S. Koulouzis
  */
-public class Constatnts {
+public class Constants {
 
     public static final String VM_CAPABILITY = "tosca.capabilities.ARTICONF.VM";
     public static final String VM_TYPE = "tosca.nodes.ARTICONF.VM.Compute";

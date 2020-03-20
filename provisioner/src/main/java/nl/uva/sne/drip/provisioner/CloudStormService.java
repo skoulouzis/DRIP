@@ -29,9 +29,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.commons.utils.Constatnts;
-import static nl.uva.sne.drip.commons.utils.Constatnts.CLOUD_STORM_FILES_ZIP_SUXIF;
-import static nl.uva.sne.drip.commons.utils.Constatnts.ENCODED_FILE_DATATYPE;
+import nl.uva.sne.drip.commons.utils.Constants;
+import static nl.uva.sne.drip.commons.utils.Constants.CLOUD_STORM_FILES_ZIP_SUXIF;
+import static nl.uva.sne.drip.commons.utils.Constants.ENCODED_FILE_DATATYPE;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import static nl.uva.sne.drip.commons.utils.ToscaHelper.cloudStormStatus2NodeState;
@@ -206,8 +206,8 @@ class CloudStormService {
             cloudsStormSubTopology.setDomain(domain);
             cloudsStormSubTopology.setCloudProvider(provider);
             cloudsStormSubTopology.setTopology(SUB_TOPOLOGY_NAME + i);
-            Constatnts.NODE_STATES currentState = getHelper().getNodeCurrentState(nodeTemplateMap);
-            Constatnts.NODE_STATES desiredState = getHelper().getNodeDesiredState(nodeTemplateMap);
+            Constants.NODE_STATES currentState = getHelper().getNodeCurrentState(nodeTemplateMap);
+            Constants.NODE_STATES desiredState = getHelper().getNodeDesiredState(nodeTemplateMap);
 
             cloudsStormSubTopology.setStatus(ToscaHelper.nodeCurrentState2CloudStormStatus(currentState));
             CloudsStormVMs cloudsStormVMs = new CloudsStormVMs();
@@ -320,8 +320,8 @@ class CloudStormService {
         int i = 0;
         List<InfrasCode> infrasCodes = new ArrayList<>();
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
-            Constatnts.NODE_STATES nodeCurrentState = getHelper().getNodeCurrentState(vmTopologyMap);
-            Constatnts.NODE_STATES nodeDesiredState = getHelper().getNodeDesiredState(vmTopologyMap);
+            Constants.NODE_STATES nodeCurrentState = getHelper().getNodeCurrentState(vmTopologyMap);
+            Constants.NODE_STATES nodeDesiredState = getHelper().getNodeDesiredState(vmTopologyMap);
             //Can provision
 
             Map<String, Object> provisionInterface = getHelper().getProvisionerInterfaceFromVMTopology(vmTopologyMap);

@@ -7,7 +7,7 @@ package nl.uva.sne.drip.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import static nl.uva.sne.drip.commons.utils.Constatnts.CLOUD_STORM_INTERFACE;
+import static nl.uva.sne.drip.commons.utils.Constants.CLOUD_STORM_INTERFACE;
 import org.springframework.stereotype.Service;
 import nl.uva.sne.drip.model.Provisioner;
 

@@ -45,7 +45,7 @@ import org.apache.commons.io.FileUtils;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import nl.uva.sne.drip.sure.tosca.client.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
-import static nl.uva.sne.drip.commons.utils.Constatnts.*;
+import static nl.uva.sne.drip.commons.utils.Constants.*;
 import nl.uva.sne.drip.model.cloud.storm.CloudsStormSubTopology.StatusEnum;
 import nl.uva.sne.drip.model.cloud.storm.OpCode;
 

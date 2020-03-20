@@ -19,7 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-import static nl.uva.sne.drip.commons.utils.Constatnts.CLOUD_STORM_FILES_ZIP_SUXIF;
+import static nl.uva.sne.drip.commons.utils.Constants.CLOUD_STORM_FILES_ZIP_SUXIF;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.Message;
