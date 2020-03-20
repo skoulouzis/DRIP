@@ -138,7 +138,6 @@ public class CloudStormServiceTest {
 //            instance.execute();
 //        }
 //    }
-
     /**
      * Test of writeCloudStormTopologyFiles method, of class CloudStormService.
      */
@@ -157,6 +156,7 @@ public class CloudStormServiceTest {
     public void testBuildSSHKeyPair() throws Exception {
         System.out.println("buildSSHKeyPair");
         CloudStormService instance = getService(messageExampleProvisioneRequestFilePath);
+        initPaths();
         String result = instance.buildSSHKeyPair(tempInputDirPath, null);
         assertNotNull(result);
         String userPublicKeyName = "id_rsa.pub";
@@ -165,6 +165,7 @@ public class CloudStormServiceTest {
         assertTrue(new File(tempInputDirPath + File.separator + userPublicKeyName).exists());
 
         instance = getService(messageExampleDeleteRequestFilePath);
+        initPaths();
         result = instance.buildSSHKeyPair(tempInputDirPath, null);
         assertNotNull(result);
         userPublicKeyName = "id_rsa.pub";
@@ -207,8 +208,6 @@ public class CloudStormServiceTest {
         }
 
     }
-
-
 
     private void testWriteCloudStormInfrasFiles(String path, CloudsStormSubTopology.StatusEnum status, OpCode.OperationEnum opCode) throws IOException, JsonProcessingException, ApiException, Exception {
         CloudStormService instance = getService(path);
