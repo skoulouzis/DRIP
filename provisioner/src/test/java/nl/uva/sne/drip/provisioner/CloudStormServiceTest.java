@@ -146,7 +146,7 @@ public class CloudStormServiceTest {
         System.out.println("writeCloudStormTopologyFiles");
         CloudStormService instance = getService(messageExampleProvisioneRequestFilePath);
         Map<String, Object> result = instance.writeCloudStormTopologyFiles(tempInputDirPath);
-        assertNull(result);
+        assertNotNull(result);
     }
 
     /**
