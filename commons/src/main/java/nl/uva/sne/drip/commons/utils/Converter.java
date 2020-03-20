@@ -16,6 +16,7 @@
 package nl.uva.sne.drip.commons.utils;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -131,22 +132,19 @@ public class Converter {
         }
     }
 
-    public static void unzipFolder(String zipFile) throws IOException {
+    public static void unzipFolder(String zipFile, String uncompressedDirectory) throws IOException {
         try (ZipFile zipfile = new ZipFile(zipFile)) {
             FileSystem fileSystem = FileSystems.getDefault();
             Enumeration<? extends ZipEntry> zipEntries = zipfile.entries();
 
-            String uncompressedDirectory = "uncompressed/";
-            Files.createDirectory(fileSystem.getPath(uncompressedDirectory));
-
             while (zipEntries.hasMoreElements()) {
                 ZipEntry entry = zipEntries.nextElement();
                 if (entry.isDirectory()) {
-                    Files.createDirectories(fileSystem.getPath(uncompressedDirectory + entry.getName()));
+                    Files.createDirectories(fileSystem.getPath(uncompressedDirectory + File.separator + entry.getName()));
                 } else {
                     InputStream is = zipfile.getInputStream(entry);
                     BufferedInputStream bis = new BufferedInputStream(is);
-                    String uncompressedFileName = uncompressedDirectory + entry.getName();
+                    String uncompressedFileName = uncompressedDirectory + File.separator + entry.getName();
                     Path uncompressedFilePath = fileSystem.getPath(uncompressedFileName);
                     Files.createFile(uncompressedFilePath);
                     try (FileOutputStream fileOutput = new FileOutputStream(uncompressedFileName)) {

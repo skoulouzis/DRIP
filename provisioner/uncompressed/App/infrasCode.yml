@@ -1,0 +1,8 @@
+Mode: "LOCAL"
+InfrasCodes:
+- CodeType: "SEQ"
+  OpCode:
+    Operation: "provision"
+    ObjectType: "SubTopology"
+    Objects: "subTopology0"
+    Log: false

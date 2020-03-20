@@ -1,0 +1,36 @@
+2020-03-20 14:35:19,077 [INFO ] [lambdaExprs.infrasCode.main.ICYAML.loadInfrasCodes]	Infrastructure code from /tmp/Input-256701871377403/App/infrasCode.yml is loaded successfully!
+2020-03-20 14:35:19,078 [INFO ] [lambdaInfrs.engine.SEngine.EC2SEngine.createAccessSSHKey]	There is no ssh key pair for sub-topology 'subTopology0'! Generating!
+2020-03-20 14:35:31,298 [INFO ] [lambdaInfrs.engine.VEngine.EC2.EC2VEngine.provision]	Get 'i-04ceeccfb470d5e43' <-> 3.127.210.184
+2020-03-20 14:35:31,307 [INFO ] [lambdaInfrs.engine.VEngine.EC2.EC2VEngine.provision]	Get 'i-0e1ab567301fe1ec7' <-> 3.120.175.137
+2020-03-20 14:36:10,962 [INFO ] [lambdaInfrs.engine.VEngine.EC2.EC2VEngine.provision]	vm1 (3.120.175.137) is activated!
+2020-03-20 14:36:12,326 [INFO ] [lambdaInfrs.engine.VEngine.EC2.EC2VEngine.provision]	vm0 (3.127.210.184) is activated!
+2020-03-20 14:36:13,597 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > user.pub exitCode: 0
+2020-03-20 14:36:14,935 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > user.pub exitCode: 0
+2020-03-20 14:36:15,464 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > id_rsa.pub exitCode: 0
+2020-03-20 14:36:17,108 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > id_rsa.pub exitCode: 0
+2020-03-20 14:36:17,240 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > id_rsa exitCode: 0
+2020-03-20 14:36:19,153 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > sshconf.sh && sudo bash sshconf.sh  exitCode: 0
+2020-03-20 14:36:19,375 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > id_rsa exitCode: 0
+2020-03-20 14:36:21,405 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: rm sshconf.sh exitCode: 0
+2020-03-20 14:36:21,917 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > sshconf.sh && sudo bash sshconf.sh  exitCode: 0
+2020-03-20 14:36:23,028 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > user.pub exitCode: 0
+2020-03-20 14:36:24,060 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: rm sshconf.sh exitCode: 0
+2020-03-20 14:36:24,686 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > id_rsa.pub exitCode: 0
+2020-03-20 14:36:26,208 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > user.pub exitCode: 0
+2020-03-20 14:36:26,408 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > id_rsa exitCode: 0
+2020-03-20 14:36:27,837 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > id_rsa.pub exitCode: 0
+2020-03-20 14:36:28,032 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > sshconf.sh && sudo bash sshconf.sh  exitCode: 0
+2020-03-20 14:36:29,485 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > id_rsa exitCode: 0
+2020-03-20 14:36:29,662 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: rm sshconf.sh exitCode: 0
+2020-03-20 14:36:29,663 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.confENV]	There is no script needed for 'vm1' to run!
+2020-03-20 14:36:31,130 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: cat > sshconf.sh && sudo bash sshconf.sh  exitCode: 0
+2020-03-20 14:36:32,874 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.execShell]	Command: rm sshconf.sh exitCode: 0
+2020-03-20 14:36:32,875 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.confENV]	There is no script needed for 'vm0' to run!
+2020-03-20 14:36:32,886 [INFO ] [lambdaInfrs.engine.SEngine.adapter.SEngine_provision.run]	Sub-topology 'subTopology0' has been provisioned!
+2020-03-20 14:36:32,899 [INFO ] [topology.description.actual.SubTopology.saveSSHKeys]	The key pair 'ec2-frankfurt' has already been stored!
+2020-03-20 14:36:32,900 [INFO ] [lambdaInfrs.engine.TEngine.TEngine.connectionConf]	Connecting sub-topology 'subTopology0' from 'EC2'
+2020-03-20 14:36:32,903 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.confVNF]	There is no connection need to be configured for vm0
+2020-03-20 14:36:32,903 [INFO ] [lambdaInfrs.engine.VEngine.OS.ubuntu.VEngineUbuntu.confVNF]	There is no connection need to be configured for vm1
+2020-03-20 14:36:32,910 [INFO ] [topology.description.actual.SubTopology.saveSSHKeys]	The key pair 'ec2-frankfurt' has already been stored!
+2020-03-20 14:36:32,910 [INFO ] [lambdaInfrs.engine.TEngine.TEngine.provision]	All the running sub-topologies have been connected!
+2020-03-20 14:36:32,916 [WARN ] [standalone.MainAsTool.main]	Finished!

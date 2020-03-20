@@ -30,8 +30,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.commons.utils.Constants;
-import static nl.uva.sne.drip.commons.utils.Constants.CLOUD_STORM_FILES_ZIP_SUXIF;
-import static nl.uva.sne.drip.commons.utils.Constants.ENCODED_FILE_DATATYPE;
+import static nl.uva.sne.drip.commons.utils.Constants.*;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import static nl.uva.sne.drip.commons.utils.ToscaHelper.cloudStormStatus2NodeState;
@@ -115,41 +114,38 @@ class CloudStormService {
     }
 
     public ToscaTemplate execute(boolean dryRun) throws FileNotFoundException, JSchException, IOException, ApiException, Exception {
-
         String tempInputDirPath = System.getProperty("java.io.tmpdir") + File.separator + "Input-" + Long.toString(System.nanoTime()) + File.separator;
         File tempInputDir = new File(tempInputDirPath);
         if (!(tempInputDir.mkdirs())) {
             throw new FileNotFoundException("Could not create input directory: " + tempInputDir.getAbsolutePath());
         }
-        String topologyTempInputDirPath = tempInputDirPath + TOPOLOGY_RELATIVE_PATH;
+        boolean hasArtifacts = false;
+        for (NodeTemplateMap vmTopologyMap : helper.getVMTopologyTemplates()) {
+            Map<String, Object> provisionedFiles = helper.getNodeArtifact(vmTopologyMap.getNodeTemplate(), "provisioned_files");
+            if (provisionedFiles != null) {
+                String fileContentsBase64 = (String) provisionedFiles.get("file_contents");
+                if (fileContentsBase64 != null) {
+                    File zipFile = new File(tempInputDir.getParent() + File.separator + Long.toString(System.nanoTime()) + "-" + CLOUD_STORM_FILES_ZIP_SUFIX);
+                    Converter.decodeBase64BToFile(fileContentsBase64, zipFile.getAbsolutePath());
+                    Converter.unzipFolder(zipFile.getAbsolutePath(), tempInputDir.getAbsolutePath());
 
-        File topologyTempInputDir = new File(topologyTempInputDirPath);
-        if (!(topologyTempInputDir.mkdirs())) {
-            throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
-        }
-        Map<String, Object> subTopologiesAndVMs = writeCloudStormTopologyFiles(topologyTempInputDirPath);
+                    String infrasCodeTempInputDirPath = tempInputDirPath + File.separator + APP_FOLDER_NAME;
+                    File infrasCodeFile = new File(infrasCodeTempInputDirPath + File.separator + INFRASTUCTURE_CODE_FILE_NAME);
+                    CloudsStormInfrasCode cloudsStormInfrasCode = objectMapper.readValue(infrasCodeFile, CloudsStormInfrasCode.class);
+                    Constants.NODE_STATES nodeDesiredState = getHelper().getNodeDesiredState(vmTopologyMap);
+                    OpCode.OperationEnum operation = ToscaHelper.NodeDesiredState2CloudStormOperation(nodeDesiredState);
+                    cloudsStormInfrasCode.getInfrasCodes().get(0).getOpCode().setOperation(operation);
 
-        String credentialsTempInputDirPath = tempInputDirPath + File.separator + INFS_FOLDER_NAME + File.separator + UC_FOLDER_NAME;
-        File credentialsTempInputDir = new File(credentialsTempInputDirPath);
-        if (!(credentialsTempInputDir.mkdirs())) {
-            throw new FileNotFoundException("Could not create input directory: " + credentialsTempInputDir.getAbsolutePath());
+                    objectMapper.writeValue(infrasCodeFile, cloudsStormInfrasCode);
+                    hasArtifacts = true;
+                    break;
+                }
+            }
         }
-        writeCloudStormCredentialsFiles(credentialsTempInputDirPath);
 
-        String providersDBTempInputDirPath = tempInputDirPath + File.separator + INFS_FOLDER_NAME + File.separator + UD_FOLDER_NAME;
-        File providersDBTempInputDir = new File(providersDBTempInputDirPath);
-        if (!(providersDBTempInputDir.mkdirs())) {
-            throw new FileNotFoundException("Could not create input directory: " + providersDBTempInputDir.getAbsolutePath());
+        if (!hasArtifacts) {
+            initCloudStormFiles(tempInputDirPath);
         }
-        writeCloudStormProvidersDBFiles(providersDBTempInputDirPath);
-
-        String infrasCodeTempInputDirPath = tempInputDirPath + File.separator + APP_FOLDER_NAME;
-        File infrasCodeTempInputDir = new File(infrasCodeTempInputDirPath);
-        if (!(infrasCodeTempInputDir.mkdirs())) {
-            throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
-        }
-        List<CloudsStormSubTopology> cloudStormSubtopologies = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
-        writeCloudStormInfrasCodeFiles(infrasCodeTempInputDirPath, cloudStormSubtopologies);
 
         ToscaTemplate newToscaTemplate = runCloudStorm(tempInputDirPath, dryRun);
         getHelper().uploadToscaTemplate(newToscaTemplate);
@@ -407,7 +403,7 @@ class CloudStormService {
         Map<String, String> provisionedFiles = new HashMap<>();
         provisionedFiles.put("type", ENCODED_FILE_DATATYPE);
         File tempInputDirFile = new File(tempInputDirPath);
-        String zipPath = (tempInputDirFile.getAbsolutePath() + CLOUD_STORM_FILES_ZIP_SUXIF);
+        String zipPath = (tempInputDirFile.getAbsolutePath() + CLOUD_STORM_FILES_ZIP_SUFIX);
         String sourceFolderPath = tempInputDirPath;
         Converter.zipFolder(sourceFolderPath, zipPath);
         Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "Created zip at: {0}", zipPath);
@@ -487,6 +483,39 @@ class CloudStormService {
         }
         toscaTemplate = getHelper().setNodeInToscaTemplate(toscaTemplate, vmTopologyMap);
         i++;
+    }
+
+    private void initCloudStormFiles(String tempInputDirPath) throws FileNotFoundException, IOException, Exception {
+
+        String topologyTempInputDirPath = tempInputDirPath + TOPOLOGY_RELATIVE_PATH;
+
+        File topologyTempInputDir = new File(topologyTempInputDirPath);
+        if (!(topologyTempInputDir.mkdirs())) {
+            throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
+        }
+        Map<String, Object> subTopologiesAndVMs = writeCloudStormTopologyFiles(topologyTempInputDirPath);
+
+        String credentialsTempInputDirPath = tempInputDirPath + File.separator + INFS_FOLDER_NAME + File.separator + UC_FOLDER_NAME;
+        File credentialsTempInputDir = new File(credentialsTempInputDirPath);
+        if (!(credentialsTempInputDir.mkdirs())) {
+            throw new FileNotFoundException("Could not create input directory: " + credentialsTempInputDir.getAbsolutePath());
+        }
+        writeCloudStormCredentialsFiles(credentialsTempInputDirPath);
+
+        String providersDBTempInputDirPath = tempInputDirPath + File.separator + INFS_FOLDER_NAME + File.separator + UD_FOLDER_NAME;
+        File providersDBTempInputDir = new File(providersDBTempInputDirPath);
+        if (!(providersDBTempInputDir.mkdirs())) {
+            throw new FileNotFoundException("Could not create input directory: " + providersDBTempInputDir.getAbsolutePath());
+        }
+        writeCloudStormProvidersDBFiles(providersDBTempInputDirPath);
+
+        String infrasCodeTempInputDirPath = tempInputDirPath + File.separator + APP_FOLDER_NAME;
+        File infrasCodeTempInputDir = new File(infrasCodeTempInputDirPath);
+        if (!(infrasCodeTempInputDir.mkdirs())) {
+            throw new FileNotFoundException("Could not create input directory: " + topologyTempInputDir.getAbsolutePath());
+        }
+        List<CloudsStormSubTopology> cloudStormSubtopologies = (List<CloudsStormSubTopology>) subTopologiesAndVMs.get("cloud_storm_subtopologies");
+        writeCloudStormInfrasCodeFiles(infrasCodeTempInputDirPath, cloudStormSubtopologies);
     }
 
 }

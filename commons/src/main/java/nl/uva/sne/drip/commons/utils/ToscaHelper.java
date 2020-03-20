@@ -61,8 +61,6 @@ public class ToscaHelper {
 
     private Integer id;
 
-
-
     @Autowired
     public ToscaHelper(String sureToscaBasePath) {
         init(sureToscaBasePath);
@@ -396,6 +394,18 @@ public class ToscaHelper {
                 return null;
         }
 
+    }
+
+    public Map<String, Object> getNodeArtifacts(NodeTemplate nodeTemplate) {
+        return nodeTemplate.getArtifacts();
+    }
+
+    public Map<String, Object> getNodeArtifact(NodeTemplate nodeTemplate, String artifactName) {
+        Map<String, Object> artifacts = nodeTemplate.getArtifacts();
+        if (artifacts != null) {
+            return (Map<String, Object>) artifacts.get(artifactName);
+        }
+        return null;
     }
 
 }
