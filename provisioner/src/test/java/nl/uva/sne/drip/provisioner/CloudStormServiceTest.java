@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import static nl.uva.sne.drip.commons.utils.Constatnts.CLOUD_STORM_FILES_ZIP_SUXIF;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
 import nl.uva.sne.drip.model.Message;
@@ -259,7 +260,11 @@ public class CloudStormServiceTest {
             List<NodeTemplateMap> vmTopologiesMaps = instance.getHelper().getVMTopologyTemplates();
             for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
                 vmTopologyMap = instance.addCloudStromArtifacts(vmTopologyMap, tempInputDirPath);
-                File zipFile = new File(tempInputDirPath + File.separator + TOPOLOGY_FOLDER_NAME + ".zip");
+
+                File tempInputDirFile = new File(tempInputDirPath);
+                String zipPath = (tempInputDirFile.getAbsolutePath() + CLOUD_STORM_FILES_ZIP_SUXIF);
+
+                File zipFile = new File(zipPath);
                 assertTrue(zipFile.exists());
                 assertTrue(zipFile.length() > 1);
                 String contentType = Files.probeContentType(Paths.get(zipFile.getAbsolutePath()));

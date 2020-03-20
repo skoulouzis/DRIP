@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
@@ -30,6 +29,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.uva.sne.drip.commons.utils.Constatnts;
+import static nl.uva.sne.drip.commons.utils.Constatnts.CLOUD_STORM_FILES_ZIP_SUXIF;
 import static nl.uva.sne.drip.commons.utils.Constatnts.ENCODED_FILE_DATATYPE;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
@@ -205,8 +206,8 @@ class CloudStormService {
             cloudsStormSubTopology.setDomain(domain);
             cloudsStormSubTopology.setCloudProvider(provider);
             cloudsStormSubTopology.setTopology(SUB_TOPOLOGY_NAME + i);
-            ToscaHelper.NODE_STATES currentState = getHelper().getNodeCurrentState(nodeTemplateMap);
-            ToscaHelper.NODE_STATES desiredState = getHelper().getNodeDesiredState(nodeTemplateMap);
+            Constatnts.NODE_STATES currentState = getHelper().getNodeCurrentState(nodeTemplateMap);
+            Constatnts.NODE_STATES desiredState = getHelper().getNodeDesiredState(nodeTemplateMap);
 
             cloudsStormSubTopology.setStatus(ToscaHelper.nodeCurrentState2CloudStormStatus(currentState));
             CloudsStormVMs cloudsStormVMs = new CloudsStormVMs();
@@ -269,7 +270,7 @@ class CloudStormService {
                 && bestMatchingVM.getExtraInfo() == null && !bestMatchingVM.getExtraInfo().containsKey("DiskSize")) {
             bestMatchingVM.setDiskSize(requestedDiskSize.intValue());
         }
-        Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Found best matching VM: {0}", bestMatchingVM);
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "Found best matching VM: {0}", bestMatchingVM);
         return bestMatchingVM;
     }
 
@@ -319,8 +320,8 @@ class CloudStormService {
         int i = 0;
         List<InfrasCode> infrasCodes = new ArrayList<>();
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
-            ToscaHelper.NODE_STATES nodeCurrentState = getHelper().getNodeCurrentState(vmTopologyMap);
-            ToscaHelper.NODE_STATES nodeDesiredState = getHelper().getNodeDesiredState(vmTopologyMap);
+            Constatnts.NODE_STATES nodeCurrentState = getHelper().getNodeCurrentState(vmTopologyMap);
+            Constatnts.NODE_STATES nodeDesiredState = getHelper().getNodeDesiredState(vmTopologyMap);
             //Can provision
 
             Map<String, Object> provisionInterface = getHelper().getProvisionerInterfaceFromVMTopology(vmTopologyMap);
@@ -406,9 +407,10 @@ class CloudStormService {
         Map<String, String> provisionedFiles = new HashMap<>();
         provisionedFiles.put("type", ENCODED_FILE_DATATYPE);
         File tempInputDirFile = new File(tempInputDirPath);
-        String zipPath = (tempInputDirFile.getAbsolutePath() + "-cloudStromFiles.zip");
+        String zipPath = (tempInputDirFile.getAbsolutePath() + CLOUD_STORM_FILES_ZIP_SUXIF);
         String sourceFolderPath = tempInputDirPath;
         Converter.zipFolder(sourceFolderPath, zipPath);
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "Created zip at: {0}", zipPath);
 
         String cloudStormZipFileContentsAsBase64 = Converter.encodeFileToBase64Binary(zipPath);
         provisionedFiles.put("file_contents", cloudStormZipFileContentsAsBase64);
@@ -416,6 +418,7 @@ class CloudStormService {
         provisionedFiles.put("file_ext", "zip");
         artifacts.put("provisioned_files", provisionedFiles);
         vmTopologyMap.getNodeTemplate().setArtifacts(artifacts);
+        Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "Added zip artifacts in node: {0}", vmTopologyMap.getName());
         return vmTopologyMap;
     }
 

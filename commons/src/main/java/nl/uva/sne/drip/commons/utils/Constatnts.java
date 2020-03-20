@@ -30,5 +30,10 @@ public class Constatnts {
     public static final String VM_TOPOLOGY = "tosca.nodes.ARTICONF.VM.topology";
     public static final String CLOUD_STORM_INTERFACE = "tosca.interfaces.ARTICONF.CloudsStorm";
     public static final String ENCODED_FILE_DATATYPE = "tosca.datatypes.ARTICONF.encodedFile";
-    
+    public static final String CLOUD_STORM_FILES_ZIP_SUXIF = "-cloudStromFiles.zip";
+
+    public static enum NODE_STATES {
+        DELETED, STARTED, STOPPED, H_SCALED, V_SCALED, CONFIGURED, RUNNING, FAILED
+    }
+
 }

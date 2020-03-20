@@ -39,6 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.sne.drip.Swagger2SpringBoot;
 import nl.uva.sne.drip.api.NotFoundException;
+import nl.uva.sne.drip.commons.utils.Constatnts;
 import static nl.uva.sne.drip.commons.utils.Constatnts.*;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
@@ -434,7 +435,7 @@ public class ServiceTests {
                 Assert.assertTrue(attributes.containsKey("credential"));
                 assertNotNull(attributes.get("credential"));
             }
-            toscaTemplate = dripService.setDesieredSate(toscaTemplate, vmTopologies, ToscaHelper.NODE_STATES.RUNNING);
+            toscaTemplate = dripService.setDesieredSate(toscaTemplate, vmTopologies, Constatnts.NODE_STATES.RUNNING);
             Map<String, NodeTemplate> nodes = toscaTemplate.getTopologyTemplate().getNodeTemplates();
             Set<String> names = nodes.keySet();
             for (String name : names) {

@@ -61,9 +61,7 @@ public class ToscaHelper {
 
     private Integer id;
 
-    public static enum NODE_STATES {
-        DELETED, STARTED, STOPPED, H_SCALED, V_SCALED, CONFIGURED, RUNNING, FAILED
-    }
+
 
     @Autowired
     public ToscaHelper(String sureToscaBasePath) {
@@ -105,11 +103,11 @@ public class ToscaHelper {
         String ymlStr = objectMapper.writeValueAsString(toscaTemplate);
         File toscaTemplateFile = File.createTempFile("temp-toscaTemplate", ".yml");
         FileUtils.writeByteArrayToFile(toscaTemplateFile, ymlStr.getBytes());
-        Logger.getLogger(ToscaHelper.class.getName()).log(Level.INFO, "Uploading ToscaTemplate to sure-tosca service: {0}", api.getApiClient().getBasePath());
+        Logger.getLogger(ToscaHelper.class.getName()).log(Level.FINE, "Uploading ToscaTemplate to sure-tosca service: {0}", api.getApiClient().getBasePath());
         String resp = api.uploadToscaTemplate(toscaTemplateFile);
         id = Integer.valueOf(resp);
         toscaTemplateFile.deleteOnExit();
-        Logger.getLogger(ToscaHelper.class.getName()).log(Level.INFO, "Uploaded ToscaTemplate to sure-tosca service got back id: {0}", id);
+        Logger.getLogger(ToscaHelper.class.getName()).log(Level.FINE, "Uploaded ToscaTemplate to sure-tosca service got back id: {0}", id);
     }
 
     public List<Map<String, Object>> getProvisionInterfaceDefinitions(List<String> toscaInterfaceTypes) throws ApiException {
