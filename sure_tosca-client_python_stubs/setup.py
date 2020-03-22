@@ -25,7 +25,7 @@ VERSION = "1.0.0"
 REQUIRES = [
 "certifi==2019.11.28",
 "six==1.14.0",
-"python_dateutl==2.5.3",
+# "python_dateutl==2.5.3",
 "setuptools==46",
 "urllib3==1.25.8",
 "numpy==1.18.2"

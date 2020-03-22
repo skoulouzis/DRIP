@@ -9,10 +9,37 @@ services:
       - "4369:4369"
       - "15671:15671" 
 
+  mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      MYSQL_DATABASE: semaphore
+      MYSQL_USER: semaphore
+      MYSQL_PASSWORD: semaphore
+    #volumes:
+    #  - /tmp/mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+      
   semaphore:
-    ports: 
-      - "30003:3000"   
     image: ansiblesemaphore/semaphore
+    environment:
+      SEMAPHORE_DB_USER: semaphore
+      SEMAPHORE_DB_PASS: semaphore
+      SEMAPHORE_DB_HOST: mysql
+      SEMAPHORE_DB_PORT: 3306
+      SEMAPHORE_DB: semaphore
+      SEMAPHORE_PLAYBOOK_PATH: /etc/semaphore
+      SEMAPHORE_ADMIN_PASSWORD: password
+      SEMAPHORE_ADMIN_NAME: "Developer"
+      SEMAPHORE_ADMIN_EMAIL: admin@localhost
+      SEMAPHORE_ADMIN: admin
+      SEMAPHORE_WEB_ROOT: http://0.0.0.0:3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
       
       
   logspout:
@@ -58,22 +85,23 @@ services:
     environment:
       RABBITMQ_HOST: rabbit
     
-  #provisioner:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: provisioner:3.0.0
-    #environment:
-      #RABBITMQ_HOST: rabbit      
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-    
-  deployer:
+  provisioner:
     depends_on:
       - rabbit
       - sure-tosca
-    image: deployer:3.0.0
+    image: provisioner:3.0.0
     environment:
-      RABBITMQ_HOST: rabbit           
+      RABBITMQ_HOST: rabbit      
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+    
+  #deployer:
+    #depends_on:
+      #- rabbit
+      #- sure-tosca
+    #image: deployer:3.0.0
+    #environment:
+      #RABBITMQ_HOST: rabbit           
+      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
 
       
 #volumes:
