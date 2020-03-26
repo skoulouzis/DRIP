@@ -27,7 +27,8 @@ class TestDefaultApi(unittest.TestCase):
 
     def setUp(self):
         configuration = Configuration()
-        configuration.host = "http://localhost:8081/tosca-sure/1.0.0/"
+        configuration.host = 'http://localhost:8081/tosca-sure/1.0.0' #Make sure we don't have '/' on the end of url
+        configuration.verify_ssl = False
         api_client = ApiClient(configuration=configuration)
         self.api = sure_tosca_client.api.default_api.DefaultApi(api_client=api_client)  # noqa: E501
 

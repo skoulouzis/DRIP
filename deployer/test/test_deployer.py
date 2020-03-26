@@ -51,9 +51,10 @@ class TestDeployer(unittest.TestCase):
 
 
         tosca_client = self.init_sure_tosca_client('http://localhost:8081/tosca-sure/1.0.0/')
-        self.upload_tosca_template('application_example_provisioned.yaml',tosca_client)
+        doc_id = self.upload_tosca_template(tosca_template_path,tosca_client)
+        self.assertIsNotNone(doc_id)
 
-        # tosca_interfaces = tosca.get_interfaces(tosca_template_dict)
+        tosca_interfaces = tosca_client.get_tosca_template(doc_id).get
         # tmp_path = tempfile.mkdtemp()
         # vms = tosca.get_vms(tosca_template_dict)
         # inventory_path = ansible_service.write_inventory_file(tmp_path, vms)
@@ -88,9 +89,8 @@ class TestDeployer(unittest.TestCase):
         # print(json.dumps(response))
 
 
-    def upload_tosca_template(self, file_name,api):
-        file = self.get_tosca_file(file_name)
-        file_id = api.upload_tosca_template(file)
+    def upload_tosca_template(self, file_path,api):
+        file_id = api.upload_tosca_template(file_path)
         return file_id
 
 
@@ -108,7 +108,7 @@ class TestDeployer(unittest.TestCase):
 
     def init_sure_tosca_client(self,sure_tosca_base_path):
         configuration = Configuration()
-        configuration.host = "http://localhost:8081/tosca-sure/1.0.0/"
+        configuration.host = sure_tosca_base_path
         api_client = ApiClient(configuration=configuration)
         api = default_api.DefaultApi(api_client=api_client)  # noqa: E501
         return api
