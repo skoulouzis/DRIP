@@ -10,6 +10,8 @@ import yaml
 import unittest
 
 import sure_tosca_client
+from sure_tosca_client import Configuration, ApiClient
+from sure_tosca_client.api import default_api
 
 
 class TestDeployer(unittest.TestCase):
@@ -46,9 +48,10 @@ class TestDeployer(unittest.TestCase):
         with open(tosca_template_path, 'w') as outfile:
             yaml.dump(tosca_template_dict, outfile, default_flow_style=False)
 
-        tosca_client = init_sure_tosca_client('http://localhost:8081/tosca-sure/1.0.0/')
-        doc_id = tosca_client.upload_tosca_template(tosca_template_path)
-        print(doc_id)
+
+
+        tosca_client = self.init_sure_tosca_client('http://localhost:8081/tosca-sure/1.0.0/')
+        self.upload_tosca_template('application_example_provisioned.yaml',tosca_client)
 
         # tosca_interfaces = tosca.get_interfaces(tosca_template_dict)
         # tmp_path = tempfile.mkdtemp()
@@ -85,12 +88,30 @@ class TestDeployer(unittest.TestCase):
         # print(json.dumps(response))
 
 
-def init_sure_tosca_client(sure_tosca_base_path):
-    configuration = sure_tosca_client.Configuration()
-    sure_tosca_client.configuration.host = sure_tosca_base_path
-    api_client = sure_tosca_client.ApiClient(configuration=configuration)
-    sure_tosca_client_api = sure_tosca_client.api.default_api.DefaultApi(api_client=api_client)  # noqa: E501
-    return sure_tosca_client_api
+    def upload_tosca_template(self, file_name,api):
+        file = self.get_tosca_file(file_name)
+        file_id = api.upload_tosca_template(file)
+        return file_id
+
+
+    def get_tosca_file(self, file_name):
+        tosca_path = "../../TOSCA/"
+        input_tosca_file_path = tosca_path + '/' + file_name
+        if not os.path.exists(input_tosca_file_path):
+            tosca_path = "../TOSCA/"
+            input_tosca_file_path = tosca_path + '/' + file_name
+
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        self.assertEqual(True, os.path.exists(input_tosca_file_path),
+                         'Starting from: ' + dir_path + ' Input TOSCA file: ' + input_tosca_file_path + ' not found')
+        return input_tosca_file_path
+
+    def init_sure_tosca_client(self,sure_tosca_base_path):
+        configuration = Configuration()
+        configuration.host = "http://localhost:8081/tosca-sure/1.0.0/"
+        api_client = ApiClient(configuration=configuration)
+        api = default_api.DefaultApi(api_client=api_client)  # noqa: E501
+        return api
 
 
 if __name__ == '__main__':
