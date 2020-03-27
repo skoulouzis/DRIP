@@ -29,6 +29,17 @@ topology_template:
           capability: "tosca.capabilities.ARTICONF.VM.topology"
           node: "topology"
           relationship: "tosca.relationships.HostedOn"
+      interfaces:
+        Standard:
+          configure:
+            inputs:
+              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_dashboard.yaml"
+          create:
+            inputs:
+              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_install.yml"
+          delete:
+            inputs:
+              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_delete.yaml"
       type: "tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes"
     topology:
       properties:
@@ -62,11 +73,6 @@ topology_template:
               code_type: "SEQ"
               object_type: "SubTopology"
       type: "tosca.nodes.ARTICONF.VM.topology"
-      artifacts:
-        provisioned_files:
-          required: false
-          type: "string"
-          
     topology_1:
       properties:
         domain: "Frankfurt"
@@ -103,7 +109,6 @@ topology_template:
         provisioned_files:
           required: false
           type: "string"
-          
     ws-pema:
       properties:
         ports:
