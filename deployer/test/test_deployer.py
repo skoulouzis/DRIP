@@ -14,6 +14,7 @@ from sure_tosca_client import Configuration, ApiClient
 from sure_tosca_client.api import default_api
 
 from service.deploy_service import deploy
+from service.tosca_helper import  ToscaHelper
 
 
 class TestDeployer(unittest.TestCase):
@@ -50,24 +51,16 @@ class TestDeployer(unittest.TestCase):
         with open(tosca_template_path, 'w') as outfile:
             yaml.dump(tosca_template_dict, outfile, default_flow_style=False)
 
+        tosca_helper = ToscaHelper('http://localhost:8081/tosca-sure/1.0.0',tosca_template_path)
+        self.assertIsNotNone(tosca_helper.doc_id)
 
 
-        tosca_client = self.init_sure_tosca_client('http://localhost:8081/tosca-sure/1.0.0')
-        doc_id = self.upload_tosca_template(tosca_template_path,tosca_client)
-        self.assertIsNotNone(doc_id)
 
 
-        nodes_to_deploy = tosca_client.get_node_templates(doc_id,type_name='tosca.nodes.ARTICONF.Application')
-
+        nodes_to_deploy = tosca_helper.get_application_nodes()
         self.assertIsNotNone(nodes_to_deploy)
-        nodes_pairs = []
-        infrastructure_nodes = []
-        for node in nodes_to_deploy:
-            related_nodes = tosca_client.get_related_nodes(doc_id,node.name)
-            for related_node in related_nodes:
-                # if related_node in nodes_to_deploy:
-                pair = (related_node, node)
-                nodes_pairs.append(pair)
+        nodes_pairs = tosca_helper.get_deployment_node_pairs()
+        self.assertIsNotNone(nodes_pairs)
 
         for node_pair in nodes_pairs:
             deploy(node_pair)
@@ -106,9 +99,7 @@ class TestDeployer(unittest.TestCase):
         # print(json.dumps(response))
 
 
-    def upload_tosca_template(self, file_path,api):
-        file_id = api.upload_tosca_template(file_path)
-        return file_id
+
 
 
     def get_tosca_file(self, file_name):
@@ -123,12 +114,7 @@ class TestDeployer(unittest.TestCase):
                          'Starting from: ' + dir_path + ' Input TOSCA file: ' + input_tosca_file_path + ' not found')
         return input_tosca_file_path
 
-    def init_sure_tosca_client(self,sure_tosca_base_path):
-        configuration = Configuration()
-        configuration.host = sure_tosca_base_path
-        api_client = ApiClient(configuration=configuration)
-        api = default_api.DefaultApi(api_client=api_client)  # noqa: E501
-        return api
+
 
 
 if __name__ == '__main__':
