@@ -9,17 +9,6 @@ topology_template:
   node_templates:
     
     kubernetes:
-      interfaces:
-        Kubernetes:
-          configure:
-            inputs:
-              playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/dashboard.yaml
-          create:
-            inputs:
-              playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/create_k8s.yml
-          install:
-            inputs:
-              playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml
       properties:
         min_masters_num: 1
         min_workers_num: 1
