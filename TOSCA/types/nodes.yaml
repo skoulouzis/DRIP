@@ -127,12 +127,15 @@ node_types:
     interfaces:
         Standard:
             type: tosca.interfaces.ARTICONF.Standard
-            install:
+            create:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml  
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_install.yml  
             configure:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/dashboard.yaml    
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_dashboard.yaml 
+            delete:
+                inputs:
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_delete.yaml                     
                     
         
   #osca.nodes.ARTICONF.docker.Orchestrator.Swarm:
