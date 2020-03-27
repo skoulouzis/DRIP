@@ -50,11 +50,17 @@ class TestDeployer(unittest.TestCase):
 
 
 
-        tosca_client = self.init_sure_tosca_client('http://localhost:8081/tosca-sure/1.0.0/')
+        tosca_client = self.init_sure_tosca_client('http://localhost:8081/tosca-sure/1.0.0')
         doc_id = self.upload_tosca_template(tosca_template_path,tosca_client)
         self.assertIsNotNone(doc_id)
 
-        tosca_interfaces = tosca_client.get_tosca_template(doc_id).get
+        nodes_to_deploy = tosca_client.get_node_templates(doc_id,type_name='tosca.nodes.ARTICONF.Application')
+        self.assertIsNotNone(nodes_to_deploy)
+        nodes_to_deploy_ordered = []
+        for node in nodes_to_deploy:
+            related_nodes = tosca_client.get_related_nodes(doc_id,node.name)
+            for related_node in related_nodes:
+                print(related_node)
         # tmp_path = tempfile.mkdtemp()
         # vms = tosca.get_vms(tosca_template_dict)
         # inventory_path = ansible_service.write_inventory_file(tmp_path, vms)

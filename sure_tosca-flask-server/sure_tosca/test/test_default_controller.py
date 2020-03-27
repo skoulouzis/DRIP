@@ -178,6 +178,22 @@ class TestDefaultController(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json, list)
 
+        query_string = [('type_name', 'tosca.nodes.ARTICONF.Application'),
+                        ('node_name', None),
+                        ('has_interfaces', True),
+                        ('has_properties', None),
+                        ('has_attributes', None),
+                        ('has_requirements', None),
+                        ('has_capabilities', None),
+                        ('has_artifacts', None)]
+        response = self.client.open(
+            '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates'.format(id=id_example),
+            method='GET',
+            query_string=query_string)
+        self.assertTrue(response.is_json)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.json, list)
+
     def test_get_node_type_name(self):
         """Test case for get_node_type_name
 

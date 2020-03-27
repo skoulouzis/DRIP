@@ -94,7 +94,13 @@ class TestDefaultApi(unittest.TestCase):
         """Test case for get_node_templates
 
         """
-        pass
+        file_id = self.upload_tosca_template('application_example_provisioned.yaml')
+        node_templates = self.api.get_node_templates(file_id)
+        self.assertIsNotNone(node_templates)
+        nodes_to_deploy = self.api.get_node_templates(file_id,type_name = 'tosca.nodes.ARTICONF.Application')
+        
+
+
 
     def test_get_node_type_name(self):
         """Test case for get_node_type_name
@@ -156,8 +162,7 @@ class TestDefaultApi(unittest.TestCase):
 
         upload a tosca template description file  # noqa: E501
         """
-        file_id = self.upload_tosca_template("application_example_provisioned.yaml")
-
+        file_id = self.upload_tosca_template('application_example_provisioned.yaml')
         self.assertIsNotNone(file_id)
 
     def get_tosca_file(self, file_name):
@@ -173,7 +178,7 @@ class TestDefaultApi(unittest.TestCase):
         return input_tosca_file_path
 
     def upload_tosca_template(self, file_name):
-        file = self.get_tosca_file("application_example_provisioned.yaml")
+        file = self.get_tosca_file(file_name)
         file_id = self.api.upload_tosca_template(file)
         return file_id
 

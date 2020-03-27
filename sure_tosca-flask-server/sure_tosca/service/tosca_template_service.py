@@ -164,17 +164,25 @@ def change_to_node_template_model(query_results):
     return res
 
 
+def get_node_templates_with_ancestor_types(id, type_name):
+    query_results = []
+    node_templates = get_node_templates(id)
+    if node_templates:
+        for node_template in node_templates:
+            ancestor_types = get_all_ancestor_types(id, node_template.name)
+            for ancestor_type in ancestor_types:
+                if ancestor_type == type_name and node_template not in query_results:
+                    query_results.append(node_template)
+                    break
+    return query_results
+
+
 def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, has_properties=None,
                        has_attributes=None,
                        has_requirements=None, has_capabilities=None, has_artifacts=None):
     if len(node_template_db) <= 1:
         tosca_template_model = get_tosca_template_model_by_id(id)
         object_list = tosca_template_model.topology_template.node_templates
-        # tosca_template = get_tosca_template(tosca_template_model.to_dict())
-        # tosca_node_types = tosca_template.nodetemplates[0].type_definition.TOSCA_DEF
-        # all_custom_def = tosca_template.nodetemplates[0].custom_def
-        # object_list.update(tosca_node_types)
-        # object_list.update(all_custom_def)
         if object_list:
             for key in object_list:
                 node = {root_key: key}
@@ -222,6 +230,10 @@ def get_node_templates(id, type_name=None, node_name=None, has_interfaces=None, 
         queries.append(query.artifacts != prop)
 
     query_results = query_db(queries, db=node_template_db)
+
+    if type_name and not query_results:
+        query_results = get_node_templates_with_ancestor_types(id,type_name)
+        return query_results
     if query_results:
         return change_to_node_template_model(query_results)
     else:
@@ -381,8 +393,8 @@ def get_related_nodes(id, node_name):
     related_nodes = []
     for name in related_node_names:
         related_node = get_node_templates(id, node_name=name)
-        related_nodes.append(related_node)
-
+        related_nodes = related_nodes + related_node
+    logger.info('Node: '+node_name +' has related nodes: '+str(related_nodes))
     return related_nodes
 
 

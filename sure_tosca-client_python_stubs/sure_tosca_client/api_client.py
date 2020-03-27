@@ -26,7 +26,7 @@ from six.moves.urllib.parse import quote
 
 from sure_tosca_client.configuration import Configuration
 import sure_tosca_client.models
-from sure_tosca_client import rest
+from sure_tosca_client import rest, models
 
 
 class ApiClient(object):
@@ -267,7 +267,7 @@ class ApiClient(object):
             if klass in self.NATIVE_TYPES_MAPPING:
                 klass = self.NATIVE_TYPES_MAPPING[klass]
             else:
-                klass = getattr(swagger_client.models, klass)
+                klass = getattr(models, klass)
 
         if klass in self.PRIMITIVE_TYPES:
             return self.__deserialize_primitive(data, klass)
