@@ -73,6 +73,9 @@ interface_types:
       playbook:
         type: string
         required: false
+      replicas:
+        type: integer
+        required: false
     scale:
       description: Set the number of replicas for a Deployment, ReplicaSet, or Replication Controller, or the parallelism attribute of a Job.
     create:

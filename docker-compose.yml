@@ -72,10 +72,10 @@ services:
     ports:
       - "30000:8080"       
             
-  #sure-tosca:
-    #image: sure-tosca:3.0.0
-    #ports: 
-      #- "8081:8081"
+  sure-tosca:
+    image: sure-tosca:3.0.0
+    ports: 
+      - "8081:8081"
     
   planner:
     depends_on:
@@ -85,14 +85,14 @@ services:
     environment:
       RABBITMQ_HOST: rabbit
     
-  #provisioner:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: provisioner:3.0.0
-    #environment:
-      #RABBITMQ_HOST: rabbit      
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+  provisioner:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: provisioner:3.0.0
+    environment:
+      RABBITMQ_HOST: rabbit      
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
     
   #deployer:
     #depends_on:

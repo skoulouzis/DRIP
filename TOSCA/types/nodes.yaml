@@ -68,7 +68,7 @@ node_types:
             scale:
                 inputs:
                     playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/scale_service.yml  
-                    replicas:1
+                    replicas: 1
             autoscale:
                 inputs:
                     playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/autoscale_service.yml  
