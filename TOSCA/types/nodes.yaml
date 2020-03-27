@@ -126,12 +126,10 @@ node_types:
         description: the dashboard access url
     interfaces:
         Standard:
+            type: tosca.interfaces.ARTICONF.Standard
             install:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml
-            create:
-                inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/create_k8s.yml   
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml  
             configure:
                 inputs:
                     playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/dashboard.yaml    

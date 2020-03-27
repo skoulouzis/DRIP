@@ -25,6 +25,12 @@ class MyTestCase(unittest.TestCase):
         input_tosca_file_path = self.get_input_tosca_file_path(file_name)
         self.run_test(input_tosca_file_path)
 
+
+        file_name = 'lifeWatch_vre1.yaml'
+        input_tosca_file_path = self.get_input_tosca_file_path(file_name)
+        self.run_test(input_tosca_file_path)
+
+
     def test_kubernetes(self):
         file_name = 'kubernetes.yaml'
         input_tosca_file_path = self.get_input_tosca_file_path(file_name)

@@ -62,10 +62,18 @@ interface_types:
       description: Provision the defined objects (resources). ObjectType can be SubTopology or VM.
       
       
-      
+  tosca.interfaces.ARTICONF.Standard:
+    derived_from: tosca.interfaces.node.lifecycle.Standard
+    inputs:
+      inventory_file:
+        type: string
+        required: false
+      playbook:
+        type: string
+        required: false
       
   tosca.interfaces.ARTICONF.Kubernetes:
-    derived_from: tosca.interfaces.node.lifecycle.Standard
+    derived_from: tosca.interfaces.ARTICONF.Standard
     inputs:
       inventory_file:
         type: string
@@ -77,13 +85,23 @@ interface_types:
         type: integer
         required: false
     scale:
-      description: Set the number of replicas for a Deployment, ReplicaSet, or Replication Controller, or the parallelism attribute of a Job.
-    create:
-      description: create deployment on a k8s cluster
-    delete:
-      description: delete deployment on a k8s cluster      
+      description: Set the number of replicas for a Deployment, ReplicaSet, or Replication Controller, or the parallelism attribute of a Job.  
     autoscale:
       description: horizontal_pod_autoscaler           
     info:
       description: get information on pods,services or deployments
+      
+      
+#tosca.interfaces.node.lifecycle.Standard:
+  #derived_from: tosca.interfaces.Root
+  #create:
+    #description: Standard lifecycle create operation.
+  #configure:
+    #description: Standard lifecycle configure operation.
+  #start:
+    #description: Standard lifecycle start operation.
+  #stop:
+    #description: Standard lifecycle stop operation.
+  #delete:
+    #description: Standard lifecycle delete operation.      
   
