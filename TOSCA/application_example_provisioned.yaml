@@ -59,17 +59,6 @@ topology_template:
           capability: "tosca.capabilities.ARTICONF.VM.topology"
           node: "topology"
           relationship: "tosca.relationships.HostedOn"
-      interfaces:
-        Kubernetes:
-          configure:
-            inputs:
-              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/dashboard.yaml"
-          create:
-            inputs:
-              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/create_k8s.yml"
-          install:
-            inputs:
-              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml"
       type: "tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes"
     topology:
       properties:
