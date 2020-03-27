@@ -49,6 +49,36 @@ node_types:
         type: string
         required: false
         description: url of the service 
+      interfaces:
+        Kubernetes:
+          create:
+            implementation: image
+            inputs:
+              strategy:
+                type: Recreate
+    interfaces:
+        Kubernetes:
+            type: tosca.interfaces.ARTICONF.Kubernetes
+            delete:
+                inputs:
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/delete_service.yml
+            create:
+                inputs:
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/create_service.yml   
+            scale:
+                inputs:
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/scale_service.yml  
+                    replicas:1
+            autoscale:
+                inputs:
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/autoscale_service.yml  
+                    horizontal_pod_autoscaler: https://raw.githubusercontent.com/skoulouzis/CONF/develop/k8s/horizontal_pod_autoscaler.yml  
+            info:
+                inputs:
+                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/get_info_service.yml
+                
+                    
+                    
           
   tosca.nodes.ARTICONF.docker.Orchestrator:
     derived_from: tosca.nodes.ARTICONF.Application
@@ -95,8 +125,7 @@ node_types:
         required: false
         description: the dashboard access url
     interfaces:
-        Kubernetes:
-            type: tosca.interfaces.ARTICONF.Kubernetes
+        Standard:
             install:
                 inputs:
                     playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yml

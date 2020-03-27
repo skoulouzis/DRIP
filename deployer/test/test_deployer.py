@@ -13,6 +13,8 @@ import sure_tosca_client
 from sure_tosca_client import Configuration, ApiClient
 from sure_tosca_client.api import default_api
 
+from service.deploy_service import deploy
+
 
 class TestDeployer(unittest.TestCase):
 
@@ -54,13 +56,22 @@ class TestDeployer(unittest.TestCase):
         doc_id = self.upload_tosca_template(tosca_template_path,tosca_client)
         self.assertIsNotNone(doc_id)
 
+
         nodes_to_deploy = tosca_client.get_node_templates(doc_id,type_name='tosca.nodes.ARTICONF.Application')
+
         self.assertIsNotNone(nodes_to_deploy)
-        nodes_to_deploy_ordered = []
+        nodes_pairs = []
+        infrastructure_nodes = []
         for node in nodes_to_deploy:
             related_nodes = tosca_client.get_related_nodes(doc_id,node.name)
             for related_node in related_nodes:
-                print(related_node)
+                # if related_node in nodes_to_deploy:
+                pair = (related_node, node)
+                nodes_pairs.append(pair)
+
+        for node_pair in nodes_pairs:
+            deploy(node_pair)
+
         # tmp_path = tempfile.mkdtemp()
         # vms = tosca.get_vms(tosca_template_dict)
         # inventory_path = ansible_service.write_inventory_file(tmp_path, vms)
