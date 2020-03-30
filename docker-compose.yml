@@ -16,11 +16,8 @@ services:
       MYSQL_DATABASE: semaphore
       MYSQL_USER: semaphore
       MYSQL_PASSWORD: semaphore
-    #volumes:
-    #  - /tmp/mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
-
       
   semaphore:
     image: ansiblesemaphore/semaphore
@@ -41,6 +38,36 @@ services:
     depends_on:
       - mysql
       
+  #polemarch:
+    #image: vstconsulting/polemarch
+    #environment:
+      #POLEMARCH_DB_TYPE: mysql
+      #POLEMARCH_DB_NAME: project-db
+      #POLEMARCH_DB_USER: project-user
+      #POLEMARCH_DB_PASSWORD: project-pas
+      #POLEMARCH_DB_PORT: 3306
+      #POLEMARCH_DB_HOST: mysql
+      #DB_INIT_CMD: "SET sql_mode='STRICT_TRANS_TABLES', default_storage_engine=INNODB, NAMES 'utf8', CHARACTER SET 'utf8', SESSION collation_connection = 'utf8_unicode_ci'"
+      #CACHE_LOCATION: 'redis://redis:6379/0'
+      #RPC_ENGINE: 'redis://redis:6379/1'
+      #RPC_CONCURRENCY: 15
+      #POLEMARCH_LOG_LEVEL: DEBUG
+      #POLEMARCH_DEBUG: 'true'
+      #TIMEZONE: 'Asia/Vladivostok'
+    #ports:
+      #- "30001:8080"      
+ 
+  #redis:
+    #image: "redis:alpine"
+    
+  #mysql:
+    #image: "mysql:5.7"
+    #environment:
+      #MYSQL_USER: project-user
+      #MYSQL_PASSWORD: project-pas
+      #MYSQL_DATABASE: project-db
+      #MYSQL_ROOT_PASSWORD: project-root  
+      
       
   logspout:
     ports: 
@@ -59,18 +86,18 @@ services:
       - "27017:27017"         
             
     
-  #manager:
-    #depends_on:
-      #- rabbit
-      #- mongo
-      #- sure-tosca
-    #image: manager:3.0.0
-    #environment:
-      #RABBITMQ_HOST: rabbit
-      #MONGO_HOST: mongo
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-    #ports:
-      #- "30000:8080"       
+  manager:
+    depends_on:
+      - rabbit
+      - mongo
+      - sure-tosca
+    image: manager:3.0.0
+    environment:
+      RABBITMQ_HOST: rabbit
+      MONGO_HOST: mongo
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+    ports:
+      - "30000:8080"       
             
   sure-tosca:
     image: sure-tosca:3.0.0

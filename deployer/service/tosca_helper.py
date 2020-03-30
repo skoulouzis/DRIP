@@ -1,3 +1,7 @@
+import os
+import sys
+import urllib.request
+
 from sure_tosca_client import Configuration, ApiClient
 from sure_tosca_client.api import default_api
 
@@ -40,14 +44,39 @@ class ToscaHelper:
         for node in nodes_to_deploy:
             related_nodes = self.tosca_client.get_related_nodes(self.doc_id,node.name)
             for related_node in related_nodes:
+                # We need to deploy the docker orchestrator on the VMs not the topology.
+                # But the topology is directly connected to the orchestrator not the VMs.
+                # So we explicitly get the VMs
+                # I don't like this solution but I can't think of something better.
+                if related_node.node_template.type == 'tosca.nodes.ARTICONF.VM.topology':
+                    vms = self.tosca_client.get_node_templates(self.doc_id,type_name='tosca.nodes.ARTICONF.VM.Compute')
+                    related_node = vms
                 pair = (related_node, node)
                 nodes_pairs.append(pair)
 
         return nodes_pairs
 
+    @classmethod
+    def service_is_up(cls, url):
+        code = None
+        try:
+            code = urllib.request.urlopen(url).getcode()
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            if not e.reason and not e.reason.errno and e.code:
+                return False
+            else:
+                return True
+
+        return True
+
 
 def get_interface_types(node):
     interface_type_names = []
-    for interface in node.node_template.interfaces:
-        interface_type_names.append(interface)
-    return interface_type_names
+    if node.node_template.interfaces:
+        for interface in node.node_template.interfaces:
+            interface_type_names.append(interface)
+        return interface_type_names
+
+
