@@ -34,10 +34,10 @@ class TestDeployer(unittest.TestCase):
     def test(self):
         logger = logging.getLogger(__name__)
         tosca_path = "../../example_messages/"
-        input_tosca_file_path = tosca_path + '/message_provision_response.json'
+        input_tosca_file_path = tosca_path + '/message_deploy_request.json'
         if not os.path.exists(input_tosca_file_path):
             tosca_path = "../example_messages/"
-            input_tosca_file_path = tosca_path + '/message_provision_response.json'
+            input_tosca_file_path = tosca_path + '/message_deploy_request.json'
 
         with open(input_tosca_file_path, 'r') as stream:
             parsed_json_message = json.load(stream)

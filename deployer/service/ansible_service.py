@@ -21,36 +21,37 @@ class AnsibleService:
         self.semaphore_base_url = semaphore_base_url
         self.semaphore_username = semaphore_username
         self.semaphore_password = semaphore_password
+        self.semaphore_helper = SemaphoreHelper(self.semaphore_base_url, self.semaphore_username, self.semaphore_password)
 
 
 
-    def execute(self,nodes_pair,operation):
+    def execute(self,nodes_pair):
         vms = nodes_pair[0]
         orchestartor = nodes_pair[1]
+        desired_state = None
         interfaces = orchestartor.node_template.interfaces
-        for interface in interfaces:
-            if interface == 'Standard':
+        if 'current_state' in orchestartor.attributes:
+            current_state = orchestartor.attributes['current_state']
+        if 'desired_state' in orchestartor.attributes:
+            desired_state = orchestartor.attributes['desired_state']
+
+        if desired_state:
+            project_id = self.semaphore_helper.create_project(orchestartor.name)
+            inventory_contents = self.build_yml_inventory(vms)
+            private_key = self.get_private_key(vms)
+            key_id = self.semaphore_helper.create_ssh_key(orchestartor.name, project_id, private_key)
+            inventory_id = self.semaphore_helper.create_inventory(orchestartor.name, project_id, key_id,inventory_contents)
+            if 'RUNNING' == desired_state:
                 standard = interfaces['Standard']
+                create = standard['create']
+                inputs = create['inputs']
+                git_url = inputs['repository']
+                playbook_name = inputs['playbook']
 
-        git_url = 'https://github.com/skoulouzis/playbooks.git'
-        private_key = '-----BEGIN RSA PRIVATE KEY-----6qFrczm3VYELw0Flw06Cf2Bza8rAVFnFqWpZJHLh7LFMt/U5ocn4df45NrE4UXo+hGoK7xWb/A' \
-              'zudkwDkSexIAUHx/yPsHXK0gIxGtpsAXzV+7Y+5bI4gsN+WAJgOASFi6YHJU1YuAkLkPk5Gqb5UGZn7DoS9cGFQKvLCxBQIDAQABAoIBA' \
-              'GXPM7ugfC-----END RSA PRIVATE KEY-----'
-        path = self.get_path('inventory.yaml')
-        with open(path, 'r') as stream:
-            data = yaml.load(stream)
+                # repository_id = self.semaphore_helper.create_repository(orchestartor.name, project_id, key_id, git_url)
+                # template_id = self.semaphore_helper.create_template(project_id, key_id, inventory_id, repository_id, playbook_name)
+                # task_id = self.semaphore_helper.execute_task(project_id, template_id, playbook_name)
 
-        inventory_contents = yaml.dump(data)
-        playbook_name = 'k8s_install.yml'
-        semaphore_helper = SemaphoreHelper(self.semaphore_base_url,self.semaphore_username,self.semaphore_password)
-
-        project_id = semaphore_helper.create_project(orchestartor.name)
-        key_id = semaphore_helper.create_ssh_key(orchestartor.name,project_id,private_key)
-        inventory_id = semaphore_helper.create_inventory(orchestartor.name, project_id, key_id, inventory_contents)
-        repository_id = semaphore_helper.create_repository(orchestartor.name,project_id,key_id,git_url)
-
-        template_id = semaphore_helper.create_template(project_id,key_id,inventory_id,repository_id,playbook_name)
-        task_id = semaphore_helper.execute_task(project_id, template_id, playbook_name)
         pass
 
     def get_path(self,file_name):
