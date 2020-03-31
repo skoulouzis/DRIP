@@ -434,8 +434,9 @@ public class ServiceTests {
                 assertNotNull(attributes);
                 Assert.assertTrue(attributes.containsKey("credential"));
                 assertNotNull(attributes.get("credential"));
+                toscaTemplate = dripService.setDesieredSate(toscaTemplate, vmTopology, Constants.NODE_STATES.RUNNING);
             }
-            toscaTemplate = dripService.setDesieredSate(toscaTemplate, vmTopologies, Constants.NODE_STATES.RUNNING);
+            
             Map<String, NodeTemplate> nodes = toscaTemplate.getTopologyTemplate().getNodeTemplates();
             Set<String> names = nodes.keySet();
             for (String name : names) {

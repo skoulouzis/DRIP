@@ -131,6 +131,18 @@ public class ToscaHelper {
         }
     }
 
+    public List<NodeTemplateMap> getApplicationTemplates() throws ApiException {
+        try {
+            List<NodeTemplateMap> vmTopologyTemplates = api.getNodeTemplates(String.valueOf(id), APPLICATION_TYPE, null, null, null, null, null, null, null);
+            return vmTopologyTemplates;
+        } catch (ApiException ex) {
+            if (ex.getCode() == 404) {
+                return null;
+            }
+            throw ex;
+        }
+    }
+
     public List<NodeTemplateMap> getTemplateVMsForVMTopology(NodeTemplateMap nodeTemplateMap) throws ApiException {
         NodeTemplate nodeTemplate = nodeTemplateMap.getNodeTemplate();
         List<Map<String, Object>> requirements = nodeTemplate.getRequirements();

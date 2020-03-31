@@ -181,8 +181,8 @@ class User(object):
         :param created: The created of this User.  # noqa: E501
         :type: str
         """
-        if created is not None and not re.search(r'^\\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}T\\d{2}:\\d{2}:\\d{2}Z$', created):  # noqa: E501
-            raise ValueError(r"Invalid value for `created`, must be a follow pattern or equal to `/^\\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}T\\d{2}:\\d{2}:\\d{2}Z$/`")  # noqa: E501
+        # if created is not None and not re.search(r'^\\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}T\\d{2}:\\d{2}:\\d{2}Z$', created):  # noqa: E501
+        #     raise ValueError(r"Invalid value for `created`, must be a follow pattern or equal to `/^\\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}T\\d{2}:\\d{2}:\\d{2}Z$/`")  # noqa: E501
 
         self._created = created
 

@@ -1,0 +1,13 @@
+all:
+  vars:
+    ansible_ssh_user: ubunut
+    host_key_checking: False
+  children:
+    k8-master:
+      hosts:
+        192.168.1.10:
+    worker:
+      hosts:
+        192.168.1.11:
+        192.168.1.12:
+        192.168.1.13:

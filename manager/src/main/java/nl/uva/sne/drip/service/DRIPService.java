@@ -116,18 +116,18 @@ public class DRIPService {
         if (vmTopologies == null || vmTopologies.isEmpty()) {
             throw new MissingVMTopologyException("ToscaTemplate: " + toscaTemplate + " has no VM Topologies");
         }
-        toscaTemplate = setDesieredSate(toscaTemplate, vmTopologies, NODE_STATES.RUNNING);
+        for (NodeTemplateMap vmTopology : vmTopologies) {
+            toscaTemplate = setDesieredSate(toscaTemplate, vmTopology, NODE_STATES.RUNNING);
+        }
         return execute(toscaTemplate, provisionerQueueName);
     }
 
     protected ToscaTemplate setDesieredSate(ToscaTemplate toscaTemplate,
-            List<NodeTemplateMap> nodes, NODE_STATES nodeState) throws IOException, JsonProcessingException, ApiException {
-        for (NodeTemplateMap node : nodes) {
-            NODE_STATES currentState = helper.getNodeCurrentState(node);
-            NODE_STATES desiredState = helper.getNodeDesiredState(node);
-            node = helper.setNodeDesiredState(node, nodeState);
-            toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, node);
-        }
+            NodeTemplateMap node, NODE_STATES nodeState) throws IOException, JsonProcessingException, ApiException {
+        NODE_STATES currentState = helper.getNodeCurrentState(node);
+        NODE_STATES desiredState = helper.getNodeDesiredState(node);
+        node = helper.setNodeDesiredState(node, nodeState);
+        toscaTemplate = helper.setNodeInToscaTemplate(toscaTemplate, node);
         return toscaTemplate;
     }
 
@@ -140,8 +140,15 @@ public class DRIPService {
         }
     }
 
-    public String deploy(String id) throws JsonProcessingException, NotFoundException, IOException, ApiException, Exception {
+    public String deploy(String id, List<String> nodeNames) throws JsonProcessingException, NotFoundException, IOException, ApiException, Exception {
         ToscaTemplate toscaTemplate = initExecution(id);
+        //If no nodes are specified deploy all applications
+        if (nodeNames == null || nodeNames.isEmpty()) {
+            List<NodeTemplateMap> applicationTemplates = helper.getApplicationTemplates();
+            for (NodeTemplateMap applicationTemplate : applicationTemplates) {
+                toscaTemplate = setDesieredSate(toscaTemplate, applicationTemplate, NODE_STATES.RUNNING);
+            }
+        }
         return execute(toscaTemplate, deployerQueueName);
     }
 
@@ -159,7 +166,7 @@ public class DRIPService {
         if (nodeNames == null || nodeNames.isEmpty()) {
             List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
             for (NodeTemplateMap vmTopology : vmTopologies) {
-                toscaTemplate = setDesieredSate(toscaTemplate, vmTopologies, NODE_STATES.DELETED);
+                toscaTemplate = setDesieredSate(toscaTemplate, vmTopology, NODE_STATES.DELETED);
             }
             return execute(toscaTemplate, provisionerQueueName);
         } else {

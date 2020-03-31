@@ -61,21 +61,26 @@ node_types:
             type: tosca.interfaces.ARTICONF.Kubernetes
             delete:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/delete_service.yml
+                    repository: https://github.com/skoulouzis/playbooks.git
+                    playbook: delete_service.yml
             create:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/create_service.yml   
+                    repository: https://github.com/skoulouzis/playbooks.git
+                    playbook: create_service.yml   
             scale:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/scale_service.yml  
+                    repository: https://github.com/skoulouzis/playbooks.git
+                    playbook: scale_service.yml  
                     replicas: 1
             autoscale:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/autoscale_service.yml  
-                    horizontal_pod_autoscaler: https://raw.githubusercontent.com/skoulouzis/CONF/develop/k8s/horizontal_pod_autoscaler.yml  
+                    repository: https://github.com/skoulouzis/playbooks.git                
+                    playbook: autoscale_service.yml  
+                    horizontal_pod_autoscaler: horizontal_pod_autoscaler.yml  
             info:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/get_info_service.yml
+                    repository: https://github.com/skoulouzis/playbooks.git   
+                    playbook: get_info_service.yml
                 
                     
                     
@@ -129,21 +134,17 @@ node_types:
             type: tosca.interfaces.ARTICONF.Standard
             create:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_install.yml  
+                    repository: https://github.com/skoulouzis/playbooks.git   
+                    playbook: k8s_install.yml  
             configure:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_dashboard.yaml 
+                    repository: https://github.com/skoulouzis/playbooks.git   
+                    playbook: k8s_dashboard.yaml 
             delete:
                 inputs:
-                    playbook: https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_delete.yaml                     
+                    repository: https://github.com/skoulouzis/playbooks.git   
+                    playbook: k8s_delete.yaml                     
                     
-        
-  #osca.nodes.ARTICONF.docker.Orchestrator.Swarm:
-    #derived_from: tosca.nodes.ARTICONF.docker.Orchestrator
-    #description: swarm orchestrator
-    #interfaces:
-      #Standard:
-        #create: interfaces/playbooks/docker_swarm_install.yaml            
         
   tosca.nodes.ARTICONF.VM.topology:
     derived_from: tosca.nodes.ARTICONF.Infrastructure
