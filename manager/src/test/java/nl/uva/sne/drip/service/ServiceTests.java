@@ -406,16 +406,9 @@ public class ServiceTests {
     @Test
     public void testSetProvisionerOperation() throws FileNotFoundException, IOException, MissingCredentialsException, ApiException, TypeExeption, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException, MissingVMTopologyException {
         if (ToscaHelper.isServiceUp(sureToscaBasePath) && ToscaHelper.isServiceUp("http://" + messageBrokerHost + ":15672")) {
-            Credential document = new Credential();
-            document.setCloudProviderName("ExoGENI");
-            Map<String, String> keys = new HashMap<>();
-            keys.put("keystore", "/qTlqams0Ppq2rnaOgL5am7ExGO2nMsOZYM61kiAnsvkOixUuoPy9r4d4OfhwQXXg3lZmeRITjNz4ps+hIDKuxodIQXgBtfMy9Kx8Syb9bIl/MQQls5hWyp9yHAl6vAampoxYu0170lceT1sds4OCz3tM9eF7/UoBQwXBPo94QhO1/vSbtICyVsm3Z2HeGKcBWobT3opZV2w30GqX/7OBmNeIG7RBMPuxLsUxJ9Alahi1zXOUjLkd2bmmVFREngmeubgCzPFxxCQQrZK6WratTzJKc1sRVNK5GJzTwi9BlcZSQSgprum9yVHUgQc6Ylmvdrkhn2g9SlluY2JAZyCZvHYaRBKE4o5bXBDumTy1YAPMNPTfpeeLz+YmH0GMfVwKkxtIBpjb045QseoIWcqxke60WWfJguaTqymXknmcqcLNz+UzUdfVfyurOy9X8xmTGCW5V4N");
-            document.setKeys(keys);
-            document.setToken("secret");
-            document.setTokenType("password");
 
-            String credentialID = credentialService.save(document);
-            assertNotNull(credentialID);
+            addRandomCredential("ExoGENI");
+            addRandomCredential("EC2");
 
             FileInputStream in = new FileInputStream(testApplicationExamplePlanedToscaFilePath);
 
@@ -436,7 +429,7 @@ public class ServiceTests {
                 assertNotNull(attributes.get("credential"));
                 toscaTemplate = dripService.setDesieredSate(toscaTemplate, vmTopology, Constants.NODE_STATES.RUNNING);
             }
-            
+
             Map<String, NodeTemplate> nodes = toscaTemplate.getTopologyTemplate().getNodeTemplates();
             Set<String> names = nodes.keySet();
             for (String name : names) {
@@ -452,5 +445,18 @@ public class ServiceTests {
             }
 
         }
+    }
+
+    private void addRandomCredential(String providerName) {
+        Credential document = new Credential();
+        document.setCloudProviderName(providerName);
+        Map<String, String> keys = new HashMap<>();
+        keys.put("keystore", "/qTlqams0Ppq2rnaOgL5am7ExGO2nMsOZYM61kiAnsvkOixUuoPy9r4d4OfhwQXXg3lZmeRITjNz4ps+hIDKuxodIQXgBtfMy9Kx8Syb9bIl/MQQls5hWyp9yHAl6vAampoxYu0170lceT1sds4OCz3tM9eF7/UoBQwXBPo94QhO1/vSbtICyVsm3Z2HeGKcBWobT3opZV2w30GqX/7OBmNeIG7RBMPuxLsUxJ9Alahi1zXOUjLkd2bmmVFREngmeubgCzPFxxCQQrZK6WratTzJKc1sRVNK5GJzTwi9BlcZSQSgprum9yVHUgQc6Ylmvdrkhn2g9SlluY2JAZyCZvHYaRBKE4o5bXBDumTy1YAPMNPTfpeeLz+YmH0GMfVwKkxtIBpjb045QseoIWcqxke60WWfJguaTqymXknmcqcLNz+UzUdfVfyurOy9X8xmTGCW5V4N");
+        document.setKeys(keys);
+        document.setToken("secret");
+        document.setTokenType("password");
+        String credentialID = credentialService.save(document);
+        assertNotNull(credentialID);
+
     }
 }
