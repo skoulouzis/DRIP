@@ -96,3 +96,6 @@ class SemaphoreHelper:
         self.project_api.project_project_id_tasks_post(project_id, task)
         tasks = self.project_api.project_project_id_tasks_get(project_id)
         return tasks[len(tasks) - 1].id
+
+    def get_task(self,project_id,task_id):
+        return self.project_api.project_project_id_tasks_task_id_get(project_id,task_id)

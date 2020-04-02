@@ -9,7 +9,7 @@ topology_template:
               playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_dashboard.yaml"
           create:
             inputs:
-              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_install.yml"
+              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yaml"
           delete:
             inputs:
               playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_delete.yaml"

@@ -135,7 +135,7 @@ node_types:
             create:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git   
-                    playbook: k8s_install.yml  
+                    playbook: install_k8s.yaml  
             configure:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git   
