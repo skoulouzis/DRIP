@@ -52,21 +52,21 @@ class SemaphoreHelper:
 
     def create_ssh_key(self, name, project_id, private_key):
         key_request = AccessKeyRequest(name=name, type='ssh', project_id=project_id, secret=private_key)
-        self.project_api.project_project_id_keys_post(project_id, key_request)
+        self.project_api.project_project_id_keys_post(key_request, project_id )
         keys = self.project_api.project_project_id_keys_get(project_id, name, 'asc', key_type='ssh')
         return keys[len(keys) - 1].id
 
     def create_inventory(self, name, project_id,ssh_key_id, inventory_contents):
         inventory_request = InventoryRequest( name=name, project_id=project_id, inventory=inventory_contents,
                                               ssh_key_id=ssh_key_id, type='static')
-        self.project_api.project_project_id_inventory_post(project_id,inventory_request)
+        self.project_api.project_project_id_inventory_post(inventory_request,project_id)
 
         inventories = self.project_api.project_project_id_inventory_get(project_id, name, 'asc')
         return inventories[len(inventories) - 1].id
 
     def create_repository(self, name, project_id, key_id, git_url):
         repository_request = RepositoryRequest(name=name, project_id=project_id, git_url=git_url, ssh_key_id=key_id)
-        self.project_api.project_project_id_repositories_post(project_id, repository=repository_request)
+        self.project_api.project_project_id_repositories_post(repository_request ,project_id)
 
         repositories = self.project_api.project_project_id_repositories_get(project_id, name, 'asc')
         return repositories[len(repositories) - 1].id
@@ -74,13 +74,13 @@ class SemaphoreHelper:
     def create_template(self, project_id,key_id,inventory_id,repository_id,playbook_name):
         template_request = TemplateRequest(ssh_key_id=key_id, project_id=project_id, inventory_id=inventory_id,
                                            repository_id=repository_id, alias=playbook_name, playbook=playbook_name)
-        self.project_api.project_project_id_templates_post(project_id, template_request)
+        self.project_api.project_project_id_templates_post(template_request , project_id )
         templates = self.project_api.project_project_id_templates_get(project_id, playbook_name, 'asc')
         return templates[len(templates) - 1].id
 
     def execute_task(self, project_id, template_id, playbook_name):
         task = Task(template_id=template_id, playbook=playbook_name)
-        self.project_api.project_project_id_tasks_post(project_id, task)
+        self.project_api.project_project_id_tasks_post(task,project_id)
         tasks = self.project_api.project_project_id_tasks_get(project_id)
         return tasks[len(tasks) - 1].id
 
@@ -98,3 +98,6 @@ class SemaphoreHelper:
             return False
 
         return True
+
+    def get_task_outputs(self, project_id, task_id):
+        return self.project_api.project_project_id_tasks_task_id_output_get(project_id,task_id)

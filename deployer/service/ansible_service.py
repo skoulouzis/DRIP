@@ -3,8 +3,8 @@ import logging
 from time import sleep
 
 import yaml
+from semaphore_client.semaphore_helper import SemaphoreHelper
 
-from service.semaphore_helper import SemaphoreHelper
 yaml.Dumper.ignore_aliases = lambda *args : True
 
 logger = logging.getLogger(__name__)
@@ -24,25 +24,28 @@ class AnsibleService:
         self.semaphore_username = semaphore_username
         self.semaphore_password = semaphore_password
         self.semaphore_helper = SemaphoreHelper(self.semaphore_base_url, self.semaphore_username, self.semaphore_password)
+        self.repository_id = None
+        self.template_id = None
 
 
 
     def execute(self,nodes_pair):
         vms = nodes_pair[0]
-        orchestartor = nodes_pair[1]
+        orchestrator = nodes_pair[1]
+        name = orchestrator.name
         desired_state = None
-        interfaces = orchestartor.node_template.interfaces
-        if 'current_state' in orchestartor.node_template.attributes:
-            current_state = orchestartor.node_template.attributes['current_state']
-        if 'desired_state' in orchestartor.node_template.attributes:
-            desired_state = orchestartor.node_template.attributes['desired_state']
+        interfaces = orchestrator.node_template.interfaces
+        if 'current_state' in orchestrator.node_template.attributes:
+            current_state = orchestrator.node_template.attributes['current_state']
+        if 'desired_state' in orchestrator.node_template.attributes:
+            desired_state = orchestrator.node_template.attributes['desired_state']
 
         if desired_state:
-            project_id = self.semaphore_helper.create_project(orchestartor.name)
+            project_id = self.semaphore_helper.create_project(orchestrator.name)
             inventory_contents = yaml.dump( self.build_yml_inventory(vms),default_flow_style=False)
             private_key = self.get_private_key(vms)
-            key_id = self.semaphore_helper.create_ssh_key(orchestartor.name, project_id, private_key)
-            inventory_id = self.semaphore_helper.create_inventory(orchestartor.name, project_id, key_id,inventory_contents)
+            key_id = self.semaphore_helper.create_ssh_key(orchestrator.name, project_id, private_key)
+            inventory_id = self.semaphore_helper.create_inventory(orchestrator.name, project_id, key_id,inventory_contents)
             if 'RUNNING' == desired_state:
                 standard = interfaces['Standard']
                 create = standard['create']
@@ -50,14 +53,14 @@ class AnsibleService:
                 git_url = inputs['repository']
                 playbook_name = inputs['playbook']
 
-                repository_id = self.semaphore_helper.create_repository(orchestartor.name, project_id, key_id, git_url)
-                template_id = self.semaphore_helper.create_template(project_id, key_id, inventory_id, repository_id, playbook_name)
-                task_id = self.semaphore_helper.execute_task(project_id, template_id, playbook_name)
-                for x in range(0, 3):
-                    task = self.semaphore_helper.get_task(project_id,task_id)
-                    print(task)
-                    sleep(0.5)
+                task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name)
 
+                configure = standard['configure']
+                inputs = configure['inputs']
+                git_url = inputs['repository']
+                playbook_name = inputs['playbook']
+                if self.semaphore_helper.get_task(project_id,task_id).status == 'success':
+                    task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name)
 
         pass
 
@@ -95,4 +98,19 @@ class AnsibleService:
     def get_private_key(self, vms):
         private_key = vms[0].node_template.attributes['user_key_pair']['keys']['private_key']
         return base64.b64decode(private_key).decode('utf-8').replace(r'\n', '\n')
+
+    def run_task(self, name, project_id, key_id, git_url, inventory_id, playbook_name):
+        self.repository_id = self.semaphore_helper.create_repository(name, project_id, key_id, git_url)
+        template_id = self.semaphore_helper.create_template(project_id, key_id, inventory_id, self.repository_id,
+                                                            playbook_name)
+
+        task_id = self.semaphore_helper.execute_task(project_id, template_id, playbook_name)
+        task = self.semaphore_helper.get_task(project_id, task_id)
+        while task.status == 'waiting' or task.status == 'running':
+            task = self.semaphore_helper.get_task(project_id, task_id)
+            logger.info('task status: ' + str(task.status))
+            sleep(1.5)
+        task_outputs = self.semaphore_helper.get_task_outputs(project_id, task_id)
+        logger.info('task_output: ' + str(task_outputs))
+        return task_id
 
