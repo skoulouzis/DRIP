@@ -1,11 +1,15 @@
+import os
+import sys
+import urllib3
+
 from semaphore_client import Configuration, ApiClient, api, ProjectRequest, Login, Repository, Inventory, \
     AccessKeyRequest, InventoryRequest, RepositoryRequest, TemplateRequest, Task
 
 
 class SemaphoreHelper:
 
-    def __init__(self, polemarch_base_url,username,password):
-        self.init_semaphore_client(polemarch_base_url, username, password)
+    def __init__(self, semaphore_base_url, username, password):
+        self.init_semaphore_client(semaphore_base_url, username, password)
 
 
     def init_semaphore_client(self, polemarch_base_url, username, password):
@@ -25,23 +29,6 @@ class SemaphoreHelper:
         self.user_api = api.UserApi (api_client=api_client)
         self.projects_api = api.ProjectsApi(api_client=api_client)
 
-
-    # def create_project_if_not_exists(self, name, git_url, private_key,inventory_contents,playbook_name):
-    #     the_project = self.create_project(name)
-    #     key = self.create_ssh_key(name,the_project.id,private_key)
-    #     inventory= self.create_inventory(name,the_project.id,key.id,inventory_contents)
-    #     repository = self.create_repository(name,the_project.id,key.id,git_url)
-    #
-    #     template = self.create_template(the_project.id,key.id,inventory.id,repository.id,playbook_name)
-    #
-    #     task = Task(template_id=template.id, playbook=playbook_name)
-    #     self.project_api.project_project_id_tasks_post(the_project.id, task)
-    #
-    #     tasks = self.project_api.project_project_id_tasks_get(the_project.id)
-    #     for task in tasks:
-    #         print(task)
-    #
-    #     return the_project
 
     def find_projects_by_name(self, name):
         projects = self.projects_api.projects_get()
@@ -99,3 +86,15 @@ class SemaphoreHelper:
 
     def get_task(self,project_id,task_id):
         return self.project_api.project_project_id_tasks_task_id_get(project_id,task_id)
+
+
+    @classmethod
+    def service_is_up(cls, url):
+        code = None
+        try:
+            http = urllib3.PoolManager()
+            r = http.request('HEAD', url)
+        except Exception as e:
+            return False
+
+        return True

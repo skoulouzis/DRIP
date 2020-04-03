@@ -2,12 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3f84153d-6ed1-4691-94d6-53105266f15e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../deployer/test/test_deployer.py" beforeDir="false" afterPath="$PROJECT_DIR$/../deployer/test/test_deployer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../semaphore-python-client-generated/semaphore_client/semaphore_helper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../deployer/.idea/drip-deployer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../deployer/.idea/drip-deployer.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../deployer/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../deployer/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../deployer/service/semaphore_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/../deployer/service/semaphore_helper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../semaphore-python-client-generated/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/.idea/semaphore-python-client-generated.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../semaphore-python-client-generated/.idea/semaphore-python-client-generated.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test-requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../semaphore-python-client-generated/test-requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_helper.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_login.py" beforeDir="false" afterPath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_login.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sure_tosca_client/api_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/sure_tosca_client/api_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_default_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_default_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/service/tosca_template_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/service/tosca_template_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/test/test_default_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/../sure_tosca-flask-server/sure_tosca/test/test_default_controller.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +30,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../sure_tosca-flask-server" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager">

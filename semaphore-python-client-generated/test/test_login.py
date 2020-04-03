@@ -19,31 +19,26 @@ import semaphore_client
 from semaphore_client import APIToken
 from semaphore_client.models.login import Login  # noqa: E501
 from semaphore_client.rest import ApiException
-from test.test_helper import TestHelper
+
+from semaphore_client.semaphore_helper import SemaphoreHelper
 
 
 class TestLogin(unittest.TestCase):
     """Login unit test stubs"""
 
     def setUp(self):
-        self.helper = TestHelper()
-        pass
+        self.semaphore_base_url = 'http://localhost:3000/api'
+        if SemaphoreHelper.service_is_up(self.semaphore_base_url):
+            self.username = 'admin'
+            self.password = 'password'
 
     def tearDown(self):
         pass
 
     def testLogin(self):
         """Test Login"""
-        login = semaphore_client.models.login.Login()  # noq
-        login.password = self.helper.semaphore_password
-        login.auth = self.helper.semaphore_username
-        self.helper.authentication_api.auth_login_post(login)
-        cookie = self.helper.authentication_api.api_client.cookie
-        self.assertIsNotNone(cookie)
-        tokens = self.helper.authentication_api.user_tokens_get()
-        self.assertIsNotNone(tokens)
-        newToken = self.helper.authentication_api.user_tokens_post()
-        self.assertIsNotNone(newToken)
+        if SemaphoreHelper.service_is_up(self.semaphore_base_url):
+            self.helper = SemaphoreHelper(self.semaphore_base_url, self.username, self.password)
 
 
 
