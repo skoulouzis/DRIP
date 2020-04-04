@@ -69,7 +69,7 @@ interface_types:
         type: string
         required: false
       playbooks:
-        type: string
+        type: list
         required: false
       repository:
         type: string
@@ -78,15 +78,6 @@ interface_types:
   tosca.interfaces.ARTICONF.Kubernetes:
     derived_from: tosca.interfaces.ARTICONF.Standard
     inputs:
-      inventory_file:
-        type: string
-        required: false
-      repository:
-        type: string
-        required: false        
-      playbooks:
-        type: list
-        required: false
       replicas:
         type: integer
         required: false

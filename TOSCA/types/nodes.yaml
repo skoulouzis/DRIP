@@ -62,25 +62,30 @@ node_types:
             delete:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git
-                    playbook: delete_service.yml
+                    playbooks: 
+                        - delete_service.yml
             create:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git
-                    playbook: create_service.yml   
+                    playbooks: 
+                        - create_service.yml   
             scale:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git
-                    playbook: scale_service.yml  
+                    playbooks: 
+                        - scale_service.yml  
                     replicas: 1
             autoscale:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git                
-                    playbook: autoscale_service.yml  
+                    playbooks: 
+                        - autoscale_service.yml  
                     horizontal_pod_autoscaler: horizontal_pod_autoscaler.yml  
             info:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git   
-                    playbook: get_info_service.yml
+                    playbooks: 
+                        - get_info_service.yml
                 
                     
                     
