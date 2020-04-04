@@ -135,15 +135,22 @@ node_types:
             create:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git   
-                    playbook: install_k8s.yaml  
+                    playbooks: 
+                        - install_packages.yaml
+                        - mount.yaml
+                        - install_docker.yaml
+                        - install_k8s.yaml
             configure:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git   
-                    playbook: k8s_dashboard.yaml 
+                    playbooks: 
+                        - create_k8s_cluster.yaml
+                        - create_k8s_dashboard.yaml
             delete:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git   
-                    playbook: k8s_delete.yaml                     
+                    playbooks: 
+                        - k8s_delete.yaml                     
                     
         
   tosca.nodes.ARTICONF.VM.topology:

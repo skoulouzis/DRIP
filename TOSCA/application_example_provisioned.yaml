@@ -63,13 +63,16 @@ topology_template:
         Standard:
           configure:
             inputs:
-              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_dashboard.yaml"
+              repository: https://github.com/skoulouzis/playbooks.git
+              playbook: "k8s_dashboard.yaml"
           create:
             inputs:
-              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/install_k8s.yaml"
+              playbook: "install_k8s.yaml"
+              repository: https://github.com/skoulouzis/playbooks.git
           delete:
             inputs:
-              playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_delete.yaml"
+              playbook: "k8s_delete.yaml"
+              repository: https://github.com/skoulouzis/playbooks.git
       type: "tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes"
     topology:
       properties:

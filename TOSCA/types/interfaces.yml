@@ -68,7 +68,7 @@ interface_types:
       inventory_file:
         type: string
         required: false
-      playbook:
+      playbooks:
         type: string
         required: false
       repository:
@@ -84,8 +84,8 @@ interface_types:
       repository:
         type: string
         required: false        
-      playbook:
-        type: string
+      playbooks:
+        type: list
         required: false
       replicas:
         type: integer

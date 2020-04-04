@@ -21,7 +21,4 @@ class DeployService:
         if interface_types and 'Standard' in interface_types:
             ansible_service = AnsibleService(self.semaphore_base_url,self.semaphore_username,self.semaphore_password)
             ansible_service.execute(nodes_pair)
-        # print(source)
-        # print(target)
-
         return None

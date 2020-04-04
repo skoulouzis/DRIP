@@ -62,17 +62,10 @@ class AnsibleService:
                 if self.semaphore_helper.get_task(project_id,task_id).status == 'success':
                     task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name)
 
-        pass
-
     def build_yml_inventory(self, vms):
         # loader = DataLoader()
         # inventory = InventoryManager(loader=loader)
         # variable_manager = VariableManager()
-        # with open(r'/home/alogo/Downloads/inventory.yaml') as file:
-        #     # The FullLoader parameter handles the conversion from YAML
-        #     # scalar values to Python the dictionary format
-        #     data = yaml.load(file)
-
         inventory = {}
         all = {}
         vars = {'ansible_ssh_common_args':'-o StrictHostKeyChecking=no'}
@@ -82,12 +75,13 @@ class AnsibleService:
             attributes = vm.node_template.attributes
             role = attributes['role']
             public_ip = attributes['public_ip']
-
             if role not in children:
                 hosts = {}
             else:
                 hosts = children[role]
-            hosts[public_ip] = vars
+            host = {}
+            host[public_ip] =  vars
+            hosts['hosts'] = host
             children[role] = hosts
             # inventory.add_group(role)
             # inventory.add_host(public_ip,group=role)
