@@ -51,16 +51,16 @@ class AnsibleService:
                 create = standard['create']
                 inputs = create['inputs']
                 git_url = inputs['repository']
-                playbook_name = inputs['playbook']
-
-                task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name)
-
-                configure = standard['configure']
-                inputs = configure['inputs']
-                git_url = inputs['repository']
-                playbook_name = inputs['playbook']
-                if self.semaphore_helper.get_task(project_id,task_id).status == 'success':
+                playbook_names = inputs['playbooks']
+                for playbook_name in playbook_names:
                     task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name)
+                if self.semaphore_helper.get_task(project_id,task_id).status == 'success':
+                    configure = standard['configure']
+                    inputs = configure['inputs']
+                    git_url = inputs['repository']
+                    playbook_names = inputs['playbooks']
+                    for playbook_name in playbook_names:
+                        task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name)
 
     def build_yml_inventory(self, vms):
         # loader = DataLoader()
@@ -94,17 +94,19 @@ class AnsibleService:
         return base64.b64decode(private_key).decode('utf-8').replace(r'\n', '\n')
 
     def run_task(self, name, project_id, key_id, git_url, inventory_id, playbook_name):
+        logger.info('task name: ' + str(name)+ ' git url: '+git_url+' playbook: '+playbook_name)
         self.repository_id = self.semaphore_helper.create_repository(name, project_id, key_id, git_url)
         template_id = self.semaphore_helper.create_template(project_id, key_id, inventory_id, self.repository_id,
                                                             playbook_name)
-
-        task_id = self.semaphore_helper.execute_task(project_id, template_id, playbook_name)
-        task = self.semaphore_helper.get_task(project_id, task_id)
-        while task.status == 'waiting' or task.status == 'running':
-            task = self.semaphore_helper.get_task(project_id, task_id)
-            logger.info('task status: ' + str(task.status))
-            sleep(1.5)
-        task_outputs = self.semaphore_helper.get_task_outputs(project_id, task_id)
-        logger.info('task_output: ' + str(task_outputs))
-        return task_id
+        #
+        # task_id = self.semaphore_helper.execute_task(project_id, template_id, playbook_name)
+        # task = self.semaphore_helper.get_task(project_id, task_id)
+        # while task.status == 'waiting' or task.status == 'running':
+        #     task = self.semaphore_helper.get_task(project_id, task_id)
+        #     logger.info('task status: ' + str(task.status))
+        #     task_outputs = self.semaphore_helper.get_task_outputs(project_id, task_id)
+        #     sleep(1.5)
+        # task_outputs = self.semaphore_helper.get_task_outputs(project_id, task_id)
+        # # logger.info('task_output: ' + str(task_outputs))
+        return None #task_id
 
