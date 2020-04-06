@@ -1,5 +1,7 @@
 import os
 import sys
+from datetime import datetime
+
 import urllib3
 
 from semaphore_client import Configuration, ApiClient, api, ProjectRequest, Login, Repository, Inventory, \
@@ -48,13 +50,13 @@ class SemaphoreHelper:
         project_request = ProjectRequest(name=name)
         self.projects_api.projects_post(project_request)
         projects = self.find_projects_by_name(name)
-        return projects[len(projects)-1].id
+        return self.find_latest_project(projects).id
 
     def create_ssh_key(self, name, project_id, private_key):
         key_request = AccessKeyRequest(name=name, type='ssh', project_id=project_id, secret=private_key)
         self.project_api.project_project_id_keys_post(key_request, project_id )
         keys = self.project_api.project_project_id_keys_get(project_id, name, 'asc', key_type='ssh')
-        return keys[len(keys) - 1].id
+        return keys[0].id
 
     def create_inventory(self, name, project_id,ssh_key_id, inventory_contents):
         inventory_request = InventoryRequest( name=name, project_id=project_id, inventory=inventory_contents,
@@ -62,27 +64,27 @@ class SemaphoreHelper:
         self.project_api.project_project_id_inventory_post(inventory_request,project_id)
 
         inventories = self.project_api.project_project_id_inventory_get(project_id, name, 'asc')
-        return inventories[len(inventories) - 1].id
+        return inventories[0].id
 
     def create_repository(self, name, project_id, key_id, git_url):
         repository_request = RepositoryRequest(name=name, project_id=project_id, git_url=git_url, ssh_key_id=key_id)
         self.project_api.project_project_id_repositories_post(repository_request ,project_id)
 
         repositories = self.project_api.project_project_id_repositories_get(project_id, name, 'asc')
-        return repositories[len(repositories) - 1].id
+        return repositories[0].id
 
     def create_template(self, project_id,key_id,inventory_id,repository_id,playbook_name):
         template_request = TemplateRequest(ssh_key_id=key_id, project_id=project_id, inventory_id=inventory_id,
                                            repository_id=repository_id, alias=playbook_name, playbook=playbook_name)
         self.project_api.project_project_id_templates_post(template_request , project_id )
         templates = self.project_api.project_project_id_templates_get(project_id, playbook_name, 'asc')
-        return templates[len(templates) - 1].id
+        return templates[0].id
 
     def execute_task(self, project_id, template_id, playbook_name):
         task = Task(template_id=template_id, playbook=playbook_name)
         self.project_api.project_project_id_tasks_post(task,project_id)
         tasks = self.project_api.project_project_id_tasks_get(project_id)
-        return tasks[len(tasks) - 1].id
+        return self.find_latest_task(tasks).id
 
     def get_task(self,project_id,task_id):
         return self.project_api.project_project_id_tasks_task_id_get(project_id,task_id)
@@ -101,3 +103,18 @@ class SemaphoreHelper:
 
     def get_task_outputs(self, project_id, task_id):
         return self.project_api.project_project_id_tasks_task_id_output_get(project_id,task_id)
+
+    def find_latest_project(self, projects):
+        now = datetime.now()
+        earlier = datetime.strptime('1900-01-01T10:07:35Z',  '%Y-%m-%dT%H:%M:%SZ')
+        min_time_delta = now - earlier
+        latest_project = None
+        for project in projects:
+            date_object = datetime.strptime(project.created,  '%Y-%m-%dT%H:%M:%SZ')
+            time_delta = now - date_object
+            if time_delta < min_time_delta:
+                latest_project = project
+        return latest_project
+
+    def find_latest_task(self, tasks):
+        return tasks[0]

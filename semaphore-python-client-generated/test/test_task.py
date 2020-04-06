@@ -33,7 +33,7 @@ class TestTask(unittest.TestCase):
         if SemaphoreHelper.service_is_up(self.semaphore_base_url):
             self.username = 'admin'
             self.password = 'password'
-            self.project_name = names.get_first_name()
+            self.project_name = 'test'
             self.private_key = '-----BEGIN RSA PRIVATE KEY-----MIIEowIBAAKCAQEAg0blRNV6cm3RTiivpzE8HR4JzKZRVIBZ7bxeNoMz0' \
                                '-----END RSA PRIVATE KEY-----'
             vms = []
@@ -67,9 +67,26 @@ class TestTask(unittest.TestCase):
             for x in range(0, 2):
                 task = self.semaphore_helper.get_task(project_id, task_id)
                 print(task)
-                task_output = self.semaphore_helper.get_task_output(project_id, task_id)
-                print(task_output)
-                sleep(0.5)
+                # task_output = self.semaphore_helper.get_task_output(project_id, task_id)
+                # print(task_output)
+                sleep(1)
+
+            task_id = self.semaphore_helper.execute_task(project_id, template_id, self.playbook_name)
+            for x in range(0, 2):
+                task = self.semaphore_helper.get_task(project_id, task_id)
+                print(task)
+                # task_output = self.semaphore_helper.get_task_output(project_id, task_id)
+                # print(task_output)
+                sleep(1)
+            task_id = self.semaphore_helper.execute_task(project_id, template_id, 'mount.yaml')
+            for x in range(0, 2):
+                task = self.semaphore_helper.get_task(project_id, task_id)
+                print(task)
+                # task_output = self.semaphore_helper.get_task_output(project_id, task_id)
+                # print(task_output)
+                sleep(1)
+
+
 
     def build_yml_inventory(self, vms):
         inventory = {}
