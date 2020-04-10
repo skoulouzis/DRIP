@@ -8,6 +8,7 @@ import time
 
 import yaml
 import re  # noqa: F401
+from pathlib import Path
 import unittest
 
 import sure_tosca_client
@@ -33,13 +34,15 @@ class TestDeployer(unittest.TestCase):
 
     def test(self):
         logger = logging.getLogger(__name__)
-        tosca_path = "../../example_messages/"
-        input_tosca_file_path = tosca_path + '/message_deploy_request.json'
-        if not os.path.exists(input_tosca_file_path):
-            tosca_path = "../example_messages/"
-            input_tosca_file_path = tosca_path + '/message_deploy_request.json'
+        message_file_path = str(Path.home()) + '/Downloads/message_deploy_request.json'
 
-        with open(input_tosca_file_path, 'r') as stream:
+        # example_messages_path = "../../example_messages/"
+        # message_file_path = example_messages_path + '/message_deploy_request.json'
+        # if not os.path.exists(message_file_path):
+        #     example_messages_path = "../example_messages/"
+        #     message_file_path = example_messages_path + '/message_deploy_request.json'
+
+        with open(message_file_path, 'r') as stream:
             parsed_json_message = json.load(stream)
 
         # owner = parsed_json_message['owner']

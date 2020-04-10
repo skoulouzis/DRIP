@@ -56,18 +56,18 @@ services:
       - "27017:27017"         
             
     
-  #manager:
-    #depends_on:
-      #- rabbit
-      #- mongo
-      #- sure-tosca
-    #image: manager:3.0.0
-    #environment:
-      #RABBITMQ_HOST: rabbit
-      #MONGO_HOST: mongo
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-    #ports:
-      #- "30000:8080"       
+  manager:
+    depends_on:
+      - rabbit
+      - mongo
+      - sure-tosca
+    image: manager:3.0.0
+    environment:
+      RABBITMQ_HOST: rabbit
+      MONGO_HOST: mongo
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+    ports:
+      - "30000:8080"       
             
   sure-tosca:
     image: sure-tosca:3.0.0
@@ -82,14 +82,14 @@ services:
     environment:
       RABBITMQ_HOST: rabbit
     
-  #provisioner:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: provisioner:3.0.0
-    #environment:
-      #RABBITMQ_HOST: rabbit      
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+  provisioner:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: provisioner:3.0.0
+    environment:
+      RABBITMQ_HOST: rabbit      
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
     
   #deployer:
     #depends_on:

@@ -78,7 +78,7 @@ class SemaphoreHelper:
                                            repository_id=repository_id, alias=playbook_name, playbook=playbook_name)
         self.project_api.project_project_id_templates_post(template_request , project_id )
         templates = self.project_api.project_project_id_templates_get(project_id, playbook_name, 'asc')
-        return templates[0].id
+        return self.find_template(templates,playbook_name).id
 
     def execute_task(self, project_id, template_id, playbook_name):
         task = Task(template_id=template_id, playbook=playbook_name)
@@ -118,3 +118,8 @@ class SemaphoreHelper:
 
     def find_latest_task(self, tasks):
         return tasks[0]
+
+    def find_template(self, templates,playbook_name):
+        for template in templates:
+            if template.playbook == playbook_name:
+                return template
