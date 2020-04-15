@@ -20,7 +20,7 @@ services:
       - "3306:3306"
       
   semaphore:
-    image: ansiblesemaphore/semaphore
+    image: alogo53/docker_ansible_semaphore
     environment:
       SEMAPHORE_DB_USER: semaphore
       SEMAPHORE_DB_PASS: semaphore
@@ -61,7 +61,7 @@ services:
       - rabbit
       - mongo
       - sure-tosca
-    image: manager:3.0.0
+    image: alogo53/manager:3.0.0 #manager:3.0.0
     environment:
       RABBITMQ_HOST: rabbit
       MONGO_HOST: mongo
@@ -78,7 +78,7 @@ services:
     depends_on:
       - rabbit
       - sure-tosca
-    image: planner:3.0.0
+    image: alogo53/planner:3.0.0 #planner:3.0.0
     environment:
       RABBITMQ_HOST: rabbit
     
@@ -86,19 +86,19 @@ services:
     depends_on:
       - rabbit
       - sure-tosca
-    image: provisioner:3.0.0
+    image: alogo53/provisioner:3.0.0 #provisioner:3.0.0
     environment:
       RABBITMQ_HOST: rabbit      
       SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
     
-  #deployer:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: deployer:3.0.0
-    #environment:
-      #RABBITMQ_HOST: rabbit           
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+  deployer:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: alogo53/deployer:3.0.0 #deployer:3.0.0
+    environment:
+      RABBITMQ_HOST: rabbit           
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
 
       
 #volumes:

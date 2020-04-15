@@ -33,7 +33,37 @@ topology_template:
             image:
                 type: tosca.artifacts.Deployment.Image.Container.Docker
                 file:  mongo:3
-                repository: docker_hub     
+                repository: docker_hub 
+        interfaces:
+            Kubernetes:
+                delete:
+                    inputs:
+                        repository: https://github.com/skoulouzis/playbooks.git
+                        playbooks: 
+                            - delete_service.yml
+                create:
+                    inputs:
+                        repository: https://github.com/skoulouzis/playbooks.git
+                        playbooks: 
+                            - create_service.yml
+                scale:
+                    inputs:
+                        repository: https://github.com/skoulouzis/playbooks.git
+                        playbooks: 
+                            - scale_service.yml  
+                        replicas: 1
+                autoscale:
+                    inputs:
+                        repository: https://github.com/skoulouzis/playbooks.git                
+                        playbooks: 
+                            - autoscale_service.yml  
+                        horizontal_pod_autoscaler: horizontal_pod_autoscaler.yml  
+                info:
+                    inputs:
+                        repository: https://github.com/skoulouzis/playbooks.git   
+                        playbooks: 
+                            - get_info_service.yml
+                            
                 
   policies:
     - scalability:

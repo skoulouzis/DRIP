@@ -270,3 +270,18 @@ def get_node_template_dict(node_template):
     #        print(node_template.templates)
 
     return node_template_dict
+
+
+def get_node_type_interfaces(node):
+    node_type_interfaces =  node.type_definition.interfaces
+    return node_type_interfaces
+
+
+def get_node_template_interfaces(node):
+    node_template_interfaces = node.interfaces
+    return node_template_interfaces
+
+
+def add_interfaces(node,node_type_interfaces):
+    # node.interfaces = node_type_interfaces
+    return node

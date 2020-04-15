@@ -158,6 +158,7 @@ class Planner:
         """ Resolve requirements. Go over all nodes and recursively resolve requirements till node has no
         requirements  e.g. docker -> k8s -> cluster -> vm """
         for node in self.tosca_template.nodetemplates:
+            self.add_interfaces(node)
             self.add_required_nodes(node)
         return self.add_required_nodes_to_template(self.required_nodes)
 
@@ -295,3 +296,10 @@ class Planner:
                 if parent_node_type_name == self.all_node_types[tosca_node_type]['derived_from']:
                     child_nodes[tosca_node_type] = self.all_node_types[tosca_node_type]
         return child_nodes
+
+    def add_interfaces(self, node):
+        # node_type_interfaces = tosca_helper.get_node_type_interfaces(node)
+        # node_template_interfaces = tosca_helper.get_node_template_interfaces(node)
+        # if not node_template_interfaces and node_type_interfaces:
+        #     tosca_helper.add_interfaces(node,node_type_interfaces)
+        return node

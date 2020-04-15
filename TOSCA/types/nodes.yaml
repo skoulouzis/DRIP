@@ -49,13 +49,6 @@ node_types:
         type: string
         required: false
         description: url of the service 
-      interfaces:
-        Kubernetes:
-          create:
-            implementation: image
-            inputs:
-              strategy:
-                type: Recreate
     interfaces:
         Kubernetes:
             type: tosca.interfaces.ARTICONF.Kubernetes
@@ -68,7 +61,7 @@ node_types:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git
                     playbooks: 
-                        - create_service.yml   
+                        - create_service.yml
             scale:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git

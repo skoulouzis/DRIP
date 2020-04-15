@@ -18,7 +18,11 @@ class DeployService:
         source = nodes_pair[1]
 
         interface_types = tosca_helper.get_interface_types(source)
-        if interface_types and 'Standard' in interface_types:
-            ansible_service = AnsibleService(self.semaphore_base_url,self.semaphore_username,self.semaphore_password)
-            ansible_service.execute(nodes_pair)
+        if interface_types:
+            if 'Standard' in interface_types:
+                ansible_service = AnsibleService(self.semaphore_base_url,self.semaphore_username,self.semaphore_password)
+                ansible_service.execute(nodes_pair)
+            else:
+                print(interface_types)
+
         return None
