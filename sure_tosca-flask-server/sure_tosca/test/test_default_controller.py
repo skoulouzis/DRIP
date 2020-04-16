@@ -240,7 +240,7 @@ class TestDefaultController(BaseTestCase):
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/related'.format(
-                id=id_example, node_name='mysql'),
+                id=id_example, node_name='ws-pema'),
             method='GET')
         self.assertTrue(response.is_json)
         self.assertEqual(response.status_code, 200)
