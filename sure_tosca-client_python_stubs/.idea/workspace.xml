@@ -2,8 +2,36 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3f84153d-6ed1-4691-94d6-53105266f15e" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../semaphore-python-client-generated/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_access_key.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_access_key_request.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_api_token.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_authentication_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_default_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_environment.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_environment_request.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_event.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_info_type.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_info_type_update.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_inventory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_inventory_request.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_password.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_pong.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_project.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_project1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_project_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_project_request.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_projects_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_repository.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_repository_request.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_task_output.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_template.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_template_request.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_user1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_user_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_user_request.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_default_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_default_api.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
