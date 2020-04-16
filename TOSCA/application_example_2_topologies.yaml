@@ -126,7 +126,6 @@ topology_template:
           type: "tosca.artifacts.Deployment.Image.Container.Docker"
       interfaces:
         Kubernetes:
-            type: tosca.interfaces.ARTICONF.Kubernetes
             delete:
                 inputs:
                     repository: https://github.com/skoulouzis/playbooks.git
