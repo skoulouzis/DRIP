@@ -2,16 +2,258 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3f84153d-6ed1-4691-94d6-53105266f15e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../semaphore-python-client-generated/semaphore_client/semaphore_helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../deployer/.idea/drip-deployer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../deployer/.idea/drip-deployer.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../deployer/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../deployer/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../deployer/service/semaphore_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/../deployer/service/semaphore_helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../semaphore-python-client-generated/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/.idea/semaphore-python-client-generated.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../semaphore-python-client-generated/.idea/semaphore-python-client-generated.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test-requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../semaphore-python-client-generated/test-requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_helper.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_login.py" beforeDir="false" afterPath="$PROJECT_DIR$/../semaphore-python-client-generated/test/test_login.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../.travis.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/.idea/polemarch-python-client-generated.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/.swagger-codegen-ignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/.swagger-codegen/VERSION" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/.travis.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/ActionResponse.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/AnsibleModule.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/AnsiblePlaybook.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/ChangePassword.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/ChartLineSetting.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/ChartLineSettings.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/CommunityTemplateApi.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/CounterWidgetSetting.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/CreateUser.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Data.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Empty.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Error.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/ExecuteResponse.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Group.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/GroupApi.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/GroupCreateMaster.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/History.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/HistoryApi.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Hook.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/HookApi.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Host.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/HostApi.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse200.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse2001.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse20010.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse20011.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse20012.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse20013.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse20014.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse20015.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse20016.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse2002.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse2003.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse2004.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse2005.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse2006.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse2007.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse2008.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InlineResponse2009.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Inventory.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InventoryApi.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InventoryImport.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/InventoryVariable.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Module.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/OneGroup.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/OneHistory.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/OneHost.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/OneInventory.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/OneModule.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/OnePeriodictask.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/OnePlaybook.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/OneProject.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/OneProjectTemplate.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/OneTeam.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/OneTemplate.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/OneUser.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/PeriodicTaskVariable.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Periodictask.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Playbook.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Project.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/ProjectApi.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/ProjectCreateMaster.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/ProjectHistory.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/ProjectTemplate.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/ProjectTemplateCreate.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/ProjectVariable.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/SetOwner.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Team.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/TeamApi.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/Template.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/TemplateExec.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/User.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/UserApi.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/UserSettings.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/WidgetSetting.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/docs/WidgetSettings.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/git_push.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/api/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/api/community_template_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/api/group_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/api/history_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/api/hook_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/api/host_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/api/inventory_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/api/project_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/api/team_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/api/user_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/api_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/configuration.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/action_response.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/ansible_module.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/ansible_playbook.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/change_password.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/chart_line_setting.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/chart_line_settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/counter_widget_setting.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/create_user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/empty.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/error.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/execute_response.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/group.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/group_create_master.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/history.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/hook.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/host.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response200.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response2001.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response20010.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response20011.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response20012.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response20013.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response20014.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response20015.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response20016.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response2002.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response2003.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response2004.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response2005.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response2006.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response2007.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response2008.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inline_response2009.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inventory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inventory_import.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/inventory_variable.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/module.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/one_group.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/one_history.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/one_host.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/one_inventory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/one_module.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/one_periodictask.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/one_playbook.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/one_project.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/one_project_template.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/one_team.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/one_template.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/one_user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/periodic_task_variable.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/periodictask.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/playbook.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/project.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/project_create_master.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/project_history.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/project_template.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/project_template_create.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/project_variable.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/set_owner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/team.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/template.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/template_exec.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/user_settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/widget_setting.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/models/widget_settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/polemarch_client/rest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/setup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test-requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_action_response.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_ansible_module.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_ansible_playbook.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_change_password.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_chart_line_setting.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_chart_line_settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_community_template_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_counter_widget_setting.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_create_user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_empty.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_error.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_execute_response.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_group.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_group_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_group_create_master.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_history.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_history_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_hook.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_hook_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_host.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_host_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response200.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response2001.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response20010.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response20011.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response20012.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response20013.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response20014.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response20015.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response20016.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response2002.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response2003.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response2004.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response2005.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response2006.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response2007.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response2008.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inline_response2009.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inventory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inventory_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inventory_import.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_inventory_variable.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_module.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_one_group.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_one_history.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_one_host.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_one_inventory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_one_module.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_one_periodictask.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_one_playbook.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_one_project.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_one_project_template.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_one_team.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_one_template.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_one_user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_periodic_task_variable.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_periodictask.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_playbook.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_project.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_project_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_project_create_master.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_project_history.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_project_template.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_project_template_create.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_project_variable.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_set_owner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_team.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_team_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_template.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_template_exec.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_user_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_user_settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_widget_setting.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/test/test_widget_settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../polemarch-python-client-generated/tox.ini" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +267,6 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
@@ -104,10 +345,10 @@
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
     <state width="1825" height="383" key="GridCell.Tab.1.right/67.34.1853.1046@67.34.1853.1046" timestamp="1585306552968" />
-    <state x="359" y="103" key="SettingsEditor" timestamp="1584813615342">
+    <state x="359" y="103" key="SettingsEditor" timestamp="1587036749389">
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
-    <state x="359" y="103" key="SettingsEditor/67.34.1853.1046@67.34.1853.1046" timestamp="1584813615342" />
+    <state x="359" y="103" key="SettingsEditor/67.34.1853.1046@67.34.1853.1046" timestamp="1587036749389" />
     <state x="563" y="235" width="1053" height="732" key="find.popup" timestamp="1584900160970">
       <screen x="67" y="34" width="1853" height="1046" />
     </state>

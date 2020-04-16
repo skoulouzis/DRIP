@@ -3,14 +3,7 @@ services:
 - docker
 matrix:
   include:
-  - language: python
-    python: 3.8
-    before_script:
-    - cd planner
-    - pip install -r requirements.txt
-    script:
-    - python -m unittest discover
-    - docker build -t alogo53/planner:3.0.0 .
+  #------------sure_tosca-server-----------------
   - language: python
     python: 3.7
     before_script:
@@ -20,6 +13,38 @@ matrix:
     script:
     - python -m unittest discover
     - docker build -t alogo53/sure-tosca:3.0.0 .
+    
+#------------sure_tosca-client-----------------    
+  - language: python
+    python: 3.8
+    before_script:
+    - cd sure_tosca-client_python_stubs
+    - pip install -r requirements.txt
+    - pip install -r test-requirements.txt
+    script:
+    - python -m unittest discover
+    
+#------------semaphore-client------------------
+  - language: python
+    python: 3.8
+    before_script:
+    - cd semaphore-python-client-generated
+    - pip install -r requirements.txt
+    - pip install -r test-requirements.txt
+    script:
+    - python -m unittest discover    
+    
+#------------planner------------------  
+  - language: python
+    python: 3.8
+    before_script:
+    - cd planner
+    - pip install -r requirements.txt
+    script:
+    - python -m unittest discover
+    - docker build -t alogo53/planner:3.0.0 .
+    
+#------------deployer------------------  
   - language: python
     python: 3.8
     before_script:
@@ -28,6 +53,8 @@ matrix:
     script:
     - python -m unittest discover
     - docker build -t alogo53/deployer:3.0.0 .
+
+#------------manager and provisioner------------------      
   - language: java
     jdk: openjdk11
     before_script:
@@ -38,6 +65,9 @@ matrix:
     - mvn -Dmaven.test.skip=true dockerfile:build
     - cd ../provisioner
     - mvn -Dmaven.test.skip=true dockerfile:build
+
+    
+    
 after_success:
 - docker stack deploy conf -c docker-compose.yml
 - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
