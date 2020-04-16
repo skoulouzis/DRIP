@@ -51,9 +51,9 @@ matrix:
     - cd deployer
     - pip install -r requirements.txt
     - cd ../semaphore-python-client-generated
-    - ../deployer/venv/bin/python setup.py install
+    - python setup.py install
     - cd ../sure_tosca-client_python_stubs/
-    - ../deployer/venv/bin/python setup.py install
+    - python setup.py install
     - cd ../deployer
     script:
     - python -m unittest discover
@@ -74,7 +74,7 @@ matrix:
     
     
 after_success:
-- docker stack deploy conf -c docker-compose.yml
+- docker stack deploy conf -c docker-compose-test.yml
 - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
   do printf '.' && sleep 5 && count=$((count+1)) && if [ $count -gt 5 ]; then break;
   fi; done
