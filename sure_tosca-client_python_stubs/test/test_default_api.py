@@ -16,6 +16,8 @@ import os
 import unittest
 from io import BytesIO
 
+import urllib3
+
 import sure_tosca_client
 from sure_tosca_client import Configuration, ApiClient
 from sure_tosca_client.api.default_api import DefaultApi  # noqa: E501
@@ -28,9 +30,13 @@ class TestDefaultApi(unittest.TestCase):
     def setUp(self):
         configuration = Configuration()
         configuration.host = 'http://localhost:8081/tosca-sure/1.0.0' #Make sure we don't have '/' on the end of url
-        configuration.verify_ssl = False
-        api_client = ApiClient(configuration=configuration)
-        self.api = sure_tosca_client.api.default_api.DefaultApi(api_client=api_client)  # noqa: E501
+        if self.service_is_up(configuration.host):
+            configuration.verify_ssl = False
+            api_client = ApiClient(configuration=configuration)
+            self.api = sure_tosca_client.api.default_api.DefaultApi(api_client=api_client)  # noqa: E501
+            self.service_is_up = True
+        else:
+            self.service_is_up = False
 
     def tearDown(self):
         pass
@@ -94,10 +100,11 @@ class TestDefaultApi(unittest.TestCase):
         """Test case for get_node_templates
 
         """
-        file_id = self.upload_tosca_template('application_example_provisioned.yaml')
-        node_templates = self.api.get_node_templates(file_id)
-        self.assertIsNotNone(node_templates)
-        nodes_to_deploy = self.api.get_node_templates(file_id,type_name = 'tosca.nodes.ARTICONF.Application')
+        if self.service_is_up:
+            file_id = self.upload_tosca_template('application_example_provisioned.yaml')
+            node_templates = self.api.get_node_templates(file_id)
+            self.assertIsNotNone(node_templates)
+            nodes_to_deploy = self.api.get_node_templates(file_id,type_name = 'tosca.nodes.ARTICONF.Application')
         
 
 
@@ -162,8 +169,9 @@ class TestDefaultApi(unittest.TestCase):
 
         upload a tosca template description file  # noqa: E501
         """
-        file_id = self.upload_tosca_template('application_example_provisioned.yaml')
-        self.assertIsNotNone(file_id)
+        if self.service_is_up:
+            file_id = self.upload_tosca_template('application_example_provisioned.yaml')
+            self.assertIsNotNone(file_id)
 
     def get_tosca_file(self, file_name):
         tosca_path = "../../TOSCA/"
@@ -178,10 +186,21 @@ class TestDefaultApi(unittest.TestCase):
         return input_tosca_file_path
 
     def upload_tosca_template(self, file_name):
-        file = self.get_tosca_file(file_name)
-        file_id = self.api.upload_tosca_template(file)
-        return file_id
+        if self.service_is_up:
+            file = self.get_tosca_file(file_name)
+            file_id = self.api.upload_tosca_template(file)
+            return file_id
 
+
+    def service_is_up(self, url):
+        code = None
+        try:
+            http = urllib3.PoolManager()
+            r = http.request('HEAD', url)
+        except Exception as e:
+            return False
+
+        return True
 
 if __name__ == '__main__':
     unittest.main()
