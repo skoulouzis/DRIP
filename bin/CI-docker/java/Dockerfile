@@ -8,7 +8,7 @@ COPY send_to_sonarqube.sh send_to_sonarqube.sh
 
 CMD ./clone_git.sh $BRANCH $GIT_URL $FOLDER_NAME && \ 
     ./build.sh $FOLDER_NAME && \
-    ./send_to_sonarqube.sh $SONAR_HOST $SONAR_LOGIN
+    ./send_to_sonarqube.sh $FOLDER_NAME $SONAR_HOST $SONAR_LOGIN
     
     
     

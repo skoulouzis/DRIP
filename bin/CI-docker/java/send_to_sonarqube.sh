@@ -1,10 +1,13 @@
 #!/bin/bash
 
 
-SONAR_HOST=$1
-SONAR_LOGIN=$2
+SRC=$1
+SONAR_HOST=$2
+SONAR_LOGIN=$3
 
 
-for i in $(find -name target); do # Not recommended, will break on whitespace
+cd $SRC
+
+for i in $(find . -name target); do # Not recommended, will break on whitespace
     echo "Sending $i"
 done
