@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import static nl.uva.sne.drip.commons.utils.Constants.*;
 import nl.uva.sne.drip.commons.utils.Converter;
 import nl.uva.sne.drip.commons.utils.ToscaHelper;
@@ -45,6 +46,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.util.logging.Logger;
 
 /**
  *
@@ -124,6 +126,7 @@ public class CloudStormServiceTest {
     }
 
     private CloudStormService getService(String messagefilePath) throws IOException, JsonProcessingException, ApiException {
+        Logger.getLogger(CloudStormServiceTest.class.getName()).log(Level.INFO, "Reterning  CloudStormService for file: {0}", new File(messagefilePath).getAbsolutePath());
         Message message = objectMapper.readValue(new File(messagefilePath), Message.class);
         return new CloudStormService(RPCServer.getProp(), message.getToscaTemplate());
     }
@@ -217,6 +220,7 @@ public class CloudStormServiceTest {
             CloudStormService instance = getService(messageExampleProvisioneRequestFilePath);
             KeyPair result = instance.getKeyPair();
             assertNull(result);
+
             instance = getService(messageExampleDeleteRequestFilePath);
             result = instance.getKeyPair();
             assertNotNull(result);

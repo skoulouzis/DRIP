@@ -388,6 +388,7 @@ class CloudStormService {
         for (NodeTemplateMap nodeTemplateMap : vmTopologyTemplatesMap) {
             List<NodeTemplateMap> vmTemplatesMap = getHelper().getTemplateVMsForVMTopology(nodeTemplateMap);
             for (NodeTemplateMap vmMap : vmTemplatesMap) {
+                Logger.getLogger(CloudStormService.class.getName()).log(Level.INFO, "Getting ssh keys for: {0}", vmMap.getName()) ;
                 keyPair = getHelper().getKeyPairsFromVM(vmMap.getNodeTemplate());
                 break;
             }
