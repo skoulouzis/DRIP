@@ -33,7 +33,6 @@ import nl.uva.sne.drip.model.cloud.storm.OpCode;
 import static nl.uva.sne.drip.provisioner.CloudStormService.APP_FOLDER_NAME;
 import static nl.uva.sne.drip.provisioner.CloudStormService.INFRASTUCTURE_CODE_FILE_NAME;
 import static nl.uva.sne.drip.provisioner.CloudStormService.INFS_FOLDER_NAME;
-import static nl.uva.sne.drip.provisioner.CloudStormService.TOPOLOGY_FOLDER_NAME;
 import static nl.uva.sne.drip.provisioner.CloudStormService.TOPOLOGY_RELATIVE_PATH;
 import static nl.uva.sne.drip.provisioner.CloudStormService.TOP_TOPOLOGY_FILE_NAME;
 import static nl.uva.sne.drip.provisioner.CloudStormService.UC_FOLDER_NAME;
