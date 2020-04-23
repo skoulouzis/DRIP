@@ -1,13 +1,8 @@
 #!/bin/bash
 
-
-SRC=$1
+FOLDER_NAME=$1
 SONAR_HOST=$2
 SONAR_LOGIN=$3
+SONAR_PROPERTIES_FILE=$4
 
-
-cd $SRC
-
-for i in $(find . -name target); do
-    echo "Sending $i"
-done
+/opt/sonar-scanner/bin/sonar-scanner -X -e -D sonar.host.url=$SONAR_HOST -D sonar.projectBaseDir=$FOLDER_NAME -D project.settings=$SONAR_PROPERTIES_FILE -D sonar.login=$SONAR_LOGIN
