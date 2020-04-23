@@ -10,7 +10,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <springfox-version>2.9.2</springfox-version>
-        <docker.image.prefix>alogo53</docker.image.prefix>
+        <docker.image.prefix>qcdia</docker.image.prefix>
     </properties>
     <parent>
         <groupId>nl.uva.sne.drip</groupId>
