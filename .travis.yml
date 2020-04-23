@@ -21,6 +21,10 @@ matrix:
     - cd sure_tosca-client_python_stubs
     - pip install -r requirements.txt
     - pip install -r test-requirements.txt
+    - docker stack deploy conf -c docker-compose-test.yml
+    - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
+    do printf '.' && sleep 5 && count=$((count+1)) && if [ $count -gt 5 ]; then break;
+    fi; done    
     script:
     - python -m unittest discover
     
@@ -31,6 +35,9 @@ matrix:
     - cd semaphore-python-client-generated
     - pip install -r requirements.txt
     - pip install -r test-requirements.txt
+    - docker stack deploy conf -c docker-compose-test.yml
+    - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
+    do printf '.' && sleep 5 && count=$((count+1)) && if [ $count -gt 5 ]; then break;    
     script:
     - python -m unittest discover    
     
@@ -40,6 +47,9 @@ matrix:
     before_script:
     - cd planner
     - pip install -r requirements.txt
+    - docker stack deploy conf -c docker-compose-test.yml
+    - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
+    do printf '.' && sleep 5 && count=$((count+1)) && if [ $count -gt 5 ]; then break;    
     script:
     - python -m unittest discover
     - docker build -t alogo53/planner:3.0.0 .
@@ -55,6 +65,9 @@ matrix:
     - cd ../sure_tosca-client_python_stubs/
     - python setup.py install
     - cd ../deployer
+    - docker stack deploy conf -c docker-compose-test.yml
+    - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
+    do printf '.' && sleep 5 && count=$((count+1)) && if [ $count -gt 5 ]; then break;    
     script:
     - python -m unittest discover
     - docker build -t alogo53/deployer:3.0.0 .
@@ -64,6 +77,9 @@ matrix:
     jdk: openjdk11
     before_script:
     - mvn -Dmaven.test.skip=true install
+    - docker stack deploy conf -c docker-compose-test.yml
+    - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
+    do printf '.' && sleep 5 && count=$((count+1)) && if [ $count -gt 5 ]; then break;
     script:
     - mvn test
     - cd manager
@@ -74,11 +90,6 @@ matrix:
     
     
 after_success:
-- docker stack deploy conf -c docker-compose-test.yml
-- count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
-  do printf '.' && sleep 5 && count=$((count+1)) && if [ $count -gt 5 ]; then break;
-  fi; done
-- mvn test
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
 - docker tag manager:3.0.0 alogo53/manager:3.0.0
 - docker push alogo53/manager:3.0.0
