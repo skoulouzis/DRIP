@@ -2,7 +2,7 @@ FROM maven:3.6.3-jdk-11
 
 MAINTAINER S. Koulouzis
 
-ARG SONAR_PROPERTIES_FILE=uva-conf.properties
+ENV SONAR_PROPERTIES_FILE=uva-conf.properties
 ENV GIT_URL=https://gitlab.articonf.eu:4430/uva/conf.git
 ENV FOLDER_NAME=conf
 ENV BRANCH=develop
@@ -17,8 +17,6 @@ COPY clone_git.sh clone_git.sh
 RUN ./clone_git.sh $BRANCH $GIT_URL $FOLDER_NAME
 COPY build.sh build.sh
 RUN ./build.sh $FOLDER_NAME
-RUN download_dependencies.sh $FOLDER_NAME
-
 COPY send_to_sonarqube.sh send_to_sonarqube.sh 
 COPY ${SONAR_PROPERTIES_FILE} ${SONAR_PROPERTIES_FILE}
 COPY pull_git.sh pull_git.sh
@@ -29,5 +27,6 @@ CMD ./pull_git.sh $FOLDER_NAME && \
     
     
     
-# sudo docker build -t java_ci --build-arg SONAR_PROPERTIES_FILE=uva-conf.properties --build-arg GIT_URL=https://gitlab.articonf.eu:4430/uva/conf.git --build-arg FOLDER_NAME=conf --build-arg FOLDER_NAME=develop .
-# docker run -it -e BRANCH=develop -e GIT_URL=https://gitlab.articonf.eu:4430/uva/conf.git -e FOLDER_NAME=conf -e SONAR_HOST=https://sonar.articonf.eu/ -e SONAR_LOGIN= -e SONAR_PROPERTIES_FILE=uva-conf.properties -e FOLDER_NAME=conf java_ci
+# docker build -t java_ci --build-arg SONAR_PROPERTIES_FILE=uva-conf.properties --build-arg GIT_URL=https://gitlab.articonf.eu:4430/uva/conf.git --build-arg FOLDER_NAME=conf --build-arg FOLDER_NAME=develop .
+
+# docker run -it java_ci
