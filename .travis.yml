@@ -14,58 +14,62 @@ matrix:
     - python -m unittest discover
     - docker build -t alogo53/sure-tosca:3.0.0 .
     
-
-
-
+#------------sure_tosca-client-----------------    
+  - language: python
+    python: 3.8
+    before_script:
+    - cd sure_tosca-client_python_stubs
+    - pip install -r requirements.txt
+    - pip install -r test-requirements.txt
+    script:
+    - python -m unittest discover
     
+#------------semaphore-client------------------
+  - language: python
+    python: 3.8
+    before_script:
+    - cd semaphore-python-client-generated
+    - pip install -r requirements.txt
+    - pip install -r test-requirements.txt
+    script:
+    - python -m unittest discover    
+    
+#------------planner------------------  
+  - language: python
+    python: 3.8
+    before_script:
+    - cd planner
+    - pip install -r requirements.txt
+    script:
+    - python -m unittest discover
+    - docker build -t alogo53/planner:3.0.0 .
+    
+#------------deployer------------------  
+  - language: python
+    python: 3.8
+    before_script:
+    - cd deployer
+    - pip install -r requirements.txt
+    - cd ../semaphore-python-client-generated
+    - python setup.py install
+    - cd ../sure_tosca-client_python_stubs/
+    - python setup.py install
+    - cd ../deployer
+    script:
+    - python -m unittest discover
+    - docker build -t alogo53/deployer:3.0.0 .
 
-    
-##------------semaphore-client------------------
-  #- language: python
-    #python: 3.8
-    #before_script:
-    #- cd semaphore-python-client-generated
-    #- pip install -r requirements.txt
-    #- pip install -r test-requirements.txt
-    #script:
-    #- python -m unittest discover    
-    
-##------------planner------------------  
-  #- language: python
-    #python: 3.8
-    #before_script:
-    #- cd planner
-    #- pip install -r requirements.txt
-    #script:
-    #- python -m unittest discover
-    #- docker build -t alogo53/planner:3.0.0 .
-    
-##------------deployer------------------  
-  #- language: python
-    #python: 3.8
-    #before_script:
-    #- cd deployer
-    #- pip install -r requirements.txt
-    #- cd ../semaphore-python-client-generated
-    #- python setup.py install
-    #- cd ../sure_tosca-client_python_stubs/
-    #- python setup.py install
-    #- cd ../deployer
-    #script:
-    #- python -m unittest discover
-    #- docker build -t alogo53/deployer:3.0.0 .
-
-##------------manager and provisioner------------------      
-  #- language: java
-    #jdk: openjdk11
-    #before_script:
-    #- mvn -Dmaven.test.skip=true install
-    #script:
-    #- mvn test
-    #- cd manager
-    #- mvn -Dmaven.test.skip=true dockerfile:build
-    #- cd ../provisioner
-    #- mvn -Dmaven.test.skip=true dockerfile:build
+#------------manager and provisioner------------------      
+  - language: java
+    jdk: openjdk11
+    before_script:
+    - mvn -Dmaven.test.skip=true install
+    script:
+    - mvn test
+    - cd manager
+    - mvn -Dmaven.test.skip=true dockerfile:build
+    - cd ../provisioner
+    - mvn -Dmaven.test.skip=true dockerfile:build
 
     
     
@@ -74,43 +78,18 @@ after_success:
 - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
   do printf '.' && sleep 5 && count=$((count+1)) && if [ $count -gt 5 ]; then break;
   fi; done
-  
-  
-    matrix:
-        include:
-            - language: java
-                jdk: openjdk11
-                script:
-                - mvn test
-                - cd manager
-                - mvn -Dmaven.test.skip=true dockerfile:build
-                - cd ../provisioner
-                - mvn -Dmaven.test.skip=true dockerfile:build
-                
-    
-            #------------sure_tosca-client-----------------    
-            - language: python
-                python: 3.8
-                before_script:
-                - cd sure_tosca-client_python_stubs
-                - pip install -r requirements.txt
-                - pip install -r test-requirements.txt
-                script:
-                - python -m unittest discover                
-    
-
-#- docker login -u $DOCKER_USER -p $DOCKER_PASS
-#- docker tag manager:3.0.0 alogo53/manager:3.0.0
-#- docker push alogo53/manager:3.0.0
-#- docker tag sure-tosca:3.0.0 alogo53/sure-tosca:3.0.0
-#- docker push alogo53/sure-tosca:3.0.0
-#- docker tag planner:3.0.0 alogo53/planner:3.0.0
-#- docker push alogo53/planner:3.0.0
-#- docker tag provisioner:3.0.0 alogo53/provisioner:3.0.0
-#- docker push alogo53/provisioner:3.0.0
-#- docker tag deployer:3.0.0 alogo53/deployer:3.0.0
-#- docker push alogo53/deployer:3.0.0
-
+- mvn test
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
+- docker tag manager:3.0.0 alogo53/manager:3.0.0
+- docker push alogo53/manager:3.0.0
+- docker tag sure-tosca:3.0.0 alogo53/sure-tosca:3.0.0
+- docker push alogo53/sure-tosca:3.0.0
+- docker tag planner:3.0.0 alogo53/planner:3.0.0
+- docker push alogo53/planner:3.0.0
+- docker tag provisioner:3.0.0 alogo53/provisioner:3.0.0
+- docker push alogo53/provisioner:3.0.0
+- docker tag deployer:3.0.0 alogo53/deployer:3.0.0
+- docker push alogo53/deployer:3.0.0
 env:
   global:
   - secure: ymUnVWoFsn6dGShBx+mJvOOtkdTdtkXuKDWUxDitn+M5SVYdFUGN+UbvrMp8hKQfC8ZQT+/sOGIvdWWE2ruQEeAx9cBSQ4+4x7eup7kORNxzAH2OplWZwoYh+TAl3zx/kHiVh5k6+GnoRWPS3fDvlb/AALdUCsUtz3JzUpYLeAWPfs7czc8frc3gBvnBwORC4iomSrAw+/cmjPhcysyq7zMCnpiriC/APstbotzAuOzDyeOds8pZqUuUri8XKlzlMQtIqVX851S/P/dwf5XcOTX1RUFhRCcYosmkbfR98nabYekhbSyW/ONMQdGMsdurDLJ4obxbD4c/zijvZfUTWMWZnDIlmR1dTy9at8lNJ7OPQw7zHDkj1T4YuofrBZ+LNlDYz7Ad2U6Uo3vD8bTcgaBk9I/0/inJ4JjE6hAxCl9V19revyy+/89ogA7v30cTXW48tJ8JziZqmyXUYR4eLZGyTlR3Ee79Bsu3vsTqX06/8IWFbc1XfIg6ZrwsP1EfCTRDiK4nqAGInhiLo1x9y3kdZkI3X0m90Jr88T8VpUIp1Dvp7OScpEXnE/J1Lgo3e082l1k4ehXTb6ocwKrA3gSlKFV6vJCIhxmU9nUO67axzBz6Sz4gaY//+jhoDL59UOsUQ/dJATVmawkQJIVH1EcU42SD64bAGvjS1mSFEek=
