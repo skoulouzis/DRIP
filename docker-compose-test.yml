@@ -31,6 +31,6 @@ services:
       - mysql
             
   sure-tosca:
-    image: sure-tosca:3.0.0
+    image: qcdia/sure-tosca:3.0.0
     ports: 
       - "8081:8081"   
