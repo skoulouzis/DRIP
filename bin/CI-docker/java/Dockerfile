@@ -12,6 +12,7 @@ RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-s
 COPY clone_git.sh clone_git.sh
 COPY build.sh build.sh
 COPY send_to_sonarqube.sh send_to_sonarqube.sh 
+COPY ${SONAR_PROPERTIES_FILE} ${SONAR_PROPERTIES_FILE}
 
 CMD ./clone_git.sh $BRANCH $GIT_URL $FOLDER_NAME && \ 
     ./build.sh $FOLDER_NAME && \
