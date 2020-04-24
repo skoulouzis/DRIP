@@ -1,8 +1,8 @@
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose --file docker-compose.yml convert
+    kompose.cmd: kompose convert
     kompose.version: 1.16.0 (0c01309)
   creationTimestamp: null
   labels:
@@ -10,9 +10,6 @@ metadata:
   name: sure-tosca
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      io.kompose.service: sure-tosca    
   strategy: {}
   template:
     metadata:
@@ -21,9 +18,10 @@ spec:
         io.kompose.service: sure-tosca
     spec:
       containers:
-      - image: alogo53/sure-tosca:3.0.0
+      - image: qcdis/sure-tosca:3.0.0
         name: sure-tosca
-        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
         resources: {}
       restartPolicy: Always
 status: {}

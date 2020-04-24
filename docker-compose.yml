@@ -3,11 +3,11 @@ services:
       
   rabbit:
     image: rabbitmq:3.8-management
-    ports:   
-      - "5671-5672:5671-5672"
-      - "15672:15672"
-      - "4369:4369"
-      - "15671:15671" 
+    #ports:   
+      #- "5671-5672:5671-5672"
+      #- "15672:15672"
+      #- "4369:4369"
+      #- "15671:15671" 
 
   mysql:
     image: mysql:5.6
@@ -16,8 +16,8 @@ services:
       MYSQL_DATABASE: semaphore
       MYSQL_USER: semaphore
       MYSQL_PASSWORD: semaphore
-    ports:
-      - "3306:3306"
+    #ports:
+      #- "3306:3306"
       
   semaphore:
     image: semaphore
@@ -34,26 +34,26 @@ services:
       SEMAPHORE_ADMIN: admin
       SEMAPHORE_WEB_ROOT: http://0.0.0.0:3000
     ports:
-      - "3000:3000"
+      - "30002:3000"
     depends_on:
       - mysql
       
       
-  logspout:
-    ports: 
-      - "30002:80"   
-    volumes:
-      - /etc/hostname:/etc/host_hostname:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      publish: "127.0.0.1:30002:80"
-    image: gliderlabs/logspout:latest
+  #logspout:
+    #ports: 
+      #- "30002:80"   
+    #volumes:
+      #- /etc/hostname:/etc/host_hostname:ro
+      #- /var/run/docker.sock:/var/run/docker.sock
+    #environment:
+      #publish: "127.0.0.1:30002:80"
+    #image: gliderlabs/logspout:latest
         
       
   mongo:
     image: mongo:4
-    ports:
-      - "27017:27017"         
+    #ports:
+      #- "27017:27017"         
             
     
   manager:
@@ -61,7 +61,7 @@ services:
       - rabbit
       - mongo
       - sure-tosca
-    image: manager:3.0.0 #manager:3.0.0
+    image: qcdis/manager:3.0.0 
     environment:
       RABBITMQ_HOST: rabbit
       MONGO_HOST: mongo
@@ -70,15 +70,15 @@ services:
       - "30000:8080"       
             
   sure-tosca:
-    image: sure-tosca:3.0.0
+    image: qcdis/sure-tosca:3.0.0
     ports: 
-      - "8081:8081"
+      - "30001:8081"
     
   planner:
     depends_on:
       - rabbit
       - sure-tosca
-    image: planner:3.0.0 #planner:3.0.0
+    image: qcdis/planner:3.0.0 #planner:3.0.0
     environment:
       RABBITMQ_HOST: rabbit
     
@@ -86,7 +86,7 @@ services:
     depends_on:
       - rabbit
       - sure-tosca
-    image: provisioner:3.0.0 #provisioner:3.0.0
+    image: qcdis/provisioner:3.0.0 #provisioner:3.0.0
     environment:
       RABBITMQ_HOST: rabbit      
       SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
@@ -95,7 +95,7 @@ services:
     depends_on:
       - rabbit
       - sure-tosca
-    image: deployer:3.0.0 #deployer:3.0.0
+    image: qcdis/deployer:3.0.0 #deployer:3.0.0
     environment:
       RABBITMQ_HOST: rabbit           
       SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
