@@ -9,6 +9,7 @@ metadata:
     io.kompose.service: manager
   name: manager
 spec:
+  type: NodePort
   ports:
     - port: 8080
       nodePort: 30000
