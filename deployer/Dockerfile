@@ -6,19 +6,17 @@ ARG git_url=https://github.com/skoulouzis/CONF.git
 
 RUN git clone -b develop https://github.com/skoulouzis/CONF.git
 
-RUN mkdir -p /usr/src/semaphore-python-client-generated
-RUN cp -r CONF/semaphore-python-client-generated/ /usr/src/semaphore-python-client-generated
+RUN mkdir -p /usr/src/
+RUN cp -r /CONF/semaphore-python-client-generated /usr/src/semaphore-python-client-generated
 WORKDIR /usr/src/semaphore-python-client-generated
 RUN python setup.py install
 
 
-RUN mkdir -p /usr/src/sure_tosca-client_python_stubs
-RUN cp -r CONF/sure_tosca-client_python_stubs/ /usr/src/sure_tosca-client_python_stubs
+RUN cp -r /CONF/sure_tosca-client_python_stubs /usr/src/sure_tosca-client_python_stubs
 WORKDIR /usr/src/sure_tosca-client_python_stubs
 RUN python setup.py install
 
 RUN rm -rf /CONF
-
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
