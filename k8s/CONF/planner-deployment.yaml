@@ -9,6 +9,9 @@ metadata:
     io.kompose.service: planner
   name: planner
 spec:
+  selector:
+    matchLabels:
+      io.kompose.service: planner
   replicas: 1
   strategy: {}
   template:

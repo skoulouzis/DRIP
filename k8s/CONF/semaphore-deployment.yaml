@@ -9,6 +9,9 @@ metadata:
     io.kompose.service: semaphore
   name: semaphore
 spec:
+  selector:
+    matchLabels:
+      io.kompose.service: semaphore
   replicas: 1
   strategy: {}
   template:

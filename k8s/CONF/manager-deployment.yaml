@@ -9,6 +9,9 @@ metadata:
     io.kompose.service: manager
   name: manager
 spec:
+  selector:
+    matchLabels:
+      io.kompose.service: manager
   replicas: 1
   strategy: {}
   template:

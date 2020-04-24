@@ -9,6 +9,9 @@ metadata:
     io.kompose.service: sure-tosca
   name: sure-tosca
 spec:
+  selector:
+    matchLabels:
+      io.kompose.service: sure-tosca
   replicas: 1
   strategy: {}
   template:

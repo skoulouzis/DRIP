@@ -9,6 +9,9 @@ metadata:
     io.kompose.service: provisioner
   name: provisioner
 spec:
+  selector:
+    matchLabels:
+      io.kompose.service: provisioner
   replicas: 1
   strategy: {}
   template:

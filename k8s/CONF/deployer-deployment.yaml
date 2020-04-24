@@ -9,6 +9,9 @@ metadata:
     io.kompose.service: deployer
   name: deployer
 spec:
+  selector:
+    matchLabels:
+      io.kompose.service: deployer
   replicas: 1
   strategy: {}
   template:
