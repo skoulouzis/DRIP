@@ -23,6 +23,7 @@ spec:
       containers:
       - image: rabbitmq:3.8-management
         name: rabbit
+        imagePullPolicy: Always
         resources: {}
       restartPolicy: Always
 status: {}

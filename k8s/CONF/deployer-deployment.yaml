@@ -28,6 +28,7 @@ spec:
           value: http://sure-tosca:8081/tosca-sure/1.0.0
         image: qcdis/deployer:3.0.0
         name: deployer
+        imagePullPolicy: Always
         resources: {}
       restartPolicy: Always
 status: {}

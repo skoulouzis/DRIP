@@ -32,6 +32,7 @@ spec:
           value: semaphore
         image: mysql:5.6
         name: mysql
+        imagePullPolicy: Always
         resources: {}
       restartPolicy: Always
 status: {}

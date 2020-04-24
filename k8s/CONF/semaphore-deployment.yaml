@@ -46,6 +46,7 @@ spec:
           value: http://0.0.0.0:3000
         image: semaphore
         name: semaphore
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
         resources: {}

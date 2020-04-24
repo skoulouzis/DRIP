@@ -23,6 +23,7 @@ spec:
       containers:
       - image: qcdis/sure-tosca:3.0.0
         name: sure-tosca
+        imagePullPolicy: Always
         ports:
         - containerPort: 8081
         resources: {}
