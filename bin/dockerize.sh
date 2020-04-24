@@ -20,3 +20,10 @@ echo "----------Building deployer Docker--------------"
 cd ../
 cd deployer && docker build -t deployer:3.0.0 .
 [ $status -eq 0 ] && echo "build successful" || exit -1
+
+
+docker tag manager:3.0.0 qcdis/manager:3.0.0
+docker tag sure-tosca:3.0.0 qcdis/sure-tosca:3.0.0
+docker tag planner:3.0.0 qcdis/planner:3.0.0
+docker tag provisioner:3.0.0 qcdis/provisioner:3.0.0
+docker tag deployer:3.0.0 qcdis/deployer:3.0.0
