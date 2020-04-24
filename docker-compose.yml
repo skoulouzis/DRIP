@@ -91,14 +91,14 @@ services:
       RABBITMQ_HOST: rabbit      
       SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
     
-  #deployer:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: deployer:3.0.0 #deployer:3.0.0
-    #environment:
-      #RABBITMQ_HOST: rabbit           
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+  deployer:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: deployer:3.0.0 #deployer:3.0.0
+    environment:
+      RABBITMQ_HOST: rabbit           
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
 
       
 #volumes:

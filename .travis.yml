@@ -12,7 +12,7 @@ matrix:
     - pip install -r test-requirements.txt
     script:
     - python -m unittest discover
-    - docker build -t qcdia/sure-tosca:3.0.0 .
+    - docker build -t qcdis/sure-tosca:3.0.0 .
     
 #------------sure_tosca-client-----------------    
   - language: python
@@ -54,7 +54,7 @@ matrix:
     fi; done    
     script:
     - python -m unittest discover
-    - docker build -t qcdia/planner:3.0.0 .
+    - docker build -t qcdis/planner:3.0.0 .
     
 #------------deployer------------------  
   - language: python
@@ -73,7 +73,7 @@ matrix:
     fi; done   
     script:
     - python -m unittest discover
-    - docker build -t qcdia/deployer:3.0.0 .
+    - docker build -t qcdis/deployer:3.0.0 .
 
 #------------manager and provisioner------------------      
   - language: java
@@ -95,16 +95,16 @@ matrix:
     
 after_success:
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
-- docker tag manager:3.0.0 qcdia/manager:3.0.0
-- docker push qcdia/manager:3.0.0
-- docker tag sure-tosca:3.0.0 qcdia/sure-tosca:3.0.0
-- docker push qcdia/sure-tosca:3.0.0
-- docker tag planner:3.0.0 qcdia/planner:3.0.0
-- docker push qcdia/planner:3.0.0
-- docker tag provisioner:3.0.0 qcdia/provisioner:3.0.0
-- docker push qcdia/provisioner:3.0.0
-- docker tag deployer:3.0.0 qcdia/deployer:3.0.0
-- docker push qcdia/deployer:3.0.0
+- docker tag manager:3.0.0 qcdis/manager:3.0.0
+- docker push qcdis/manager:3.0.0
+- docker tag sure-tosca:3.0.0 qcdis/sure-tosca:3.0.0
+- docker push qcdis/sure-tosca:3.0.0
+- docker tag planner:3.0.0 qcdis/planner:3.0.0
+- docker push qcdis/planner:3.0.0
+- docker tag provisioner:3.0.0 qcdis/provisioner:3.0.0
+- docker push qcdis/provisioner:3.0.0
+- docker tag deployer:3.0.0 qcdis/deployer:3.0.0
+- docker push qcdis/deployer:3.0.0
 env:
   global:
   - secure: ymUnVWoFsn6dGShBx+mJvOOtkdTdtkXuKDWUxDitn+M5SVYdFUGN+UbvrMp8hKQfC8ZQT+/sOGIvdWWE2ruQEeAx9cBSQ4+4x7eup7kORNxzAH2OplWZwoYh+TAl3zx/kHiVh5k6+GnoRWPS3fDvlb/AALdUCsUtz3JzUpYLeAWPfs7czc8frc3gBvnBwORC4iomSrAw+/cmjPhcysyq7zMCnpiriC/APstbotzAuOzDyeOds8pZqUuUri8XKlzlMQtIqVX851S/P/dwf5XcOTX1RUFhRCcYosmkbfR98nabYekhbSyW/ONMQdGMsdurDLJ4obxbD4c/zijvZfUTWMWZnDIlmR1dTy9at8lNJ7OPQw7zHDkj1T4YuofrBZ+LNlDYz7Ad2U6Uo3vD8bTcgaBk9I/0/inJ4JjE6hAxCl9V19revyy+/89ogA7v30cTXW48tJ8JziZqmyXUYR4eLZGyTlR3Ee79Bsu3vsTqX06/8IWFbc1XfIg6ZrwsP1EfCTRDiK4nqAGInhiLo1x9y3kdZkI3X0m90Jr88T8VpUIp1Dvp7OScpEXnE/J1Lgo3e082l1k4ehXTb6ocwKrA3gSlKFV6vJCIhxmU9nUO67axzBz6Sz4gaY//+jhoDL59UOsUQ/dJATVmawkQJIVH1EcU42SD64bAGvjS1mSFEek=
