@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3f84153d-6ed1-4691-94d6-53105266f15e" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,7 +21,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../semaphore-python-client-generated" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../playbooks/install_nfs.yaml" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager">
@@ -59,10 +59,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="723" y="257" width="530" height="598" key="FileChooserDialogImpl" timestamp="1587046856074">
+    <state x="723" y="257" width="770" height="700" key="FileChooserDialogImpl" timestamp="1587904825236">
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
-    <state x="723" y="257" width="530" height="598" key="FileChooserDialogImpl/67.34.1853.1046@67.34.1853.1046" timestamp="1587046856074" />
+    <state x="723" y="257" width="770" height="700" key="FileChooserDialogImpl/67.34.1853.1046@67.34.1853.1046" timestamp="1587904825236" />
     <state width="1825" height="255" key="GridCell.Tab.0.bottom" timestamp="1587047773485">
       <screen x="67" y="34" width="1853" height="1046" />
     </state>
