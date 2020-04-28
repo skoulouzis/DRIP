@@ -14,7 +14,13 @@ spec:
     matchLabels:
       io.kompose.service: planner
   replicas: 1
-  strategy: {}
+  strategy:
+        type: RollingUpdate
+        rollingUpdate:
+            maxSurge: 50%
+            maxUnavailable: 50%
+  minReadySeconds: 10
+  revisionHistoryLimit: 3
   template:
     metadata:
       creationTimestamp: null
