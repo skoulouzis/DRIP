@@ -22,9 +22,9 @@ matrix:
     - pip install -r requirements.txt
     - pip install -r test-requirements.txt
     - docker stack deploy conf-test -c docker-compose-test.yml
-    - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
-    do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 4 ]; then break;
-    fi; done    
+#     - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
+#     do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 4 ]; then break;
+#     fi; done    
     script:
     - python -m unittest discover
     
@@ -36,9 +36,9 @@ matrix:
     - pip install -r requirements.txt
     - pip install -r test-requirements.txt
     - docker stack deploy conf-test -c docker-compose-test.yml
-    - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
-    do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 4 ]; then break;
-    fi; done    
+#     - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
+#     do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 4 ]; then break;
+#     fi; done    
     script:
     - python -m unittest discover    
     
@@ -49,9 +49,9 @@ matrix:
     - cd planner
     - pip install -r requirements.txt
     - docker stack deploy conf-test -c docker-compose-test.yml
-    - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
-    do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 4 ]; then break;
-    fi; done    
+#     - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
+#     do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 4 ]; then break;
+#     fi; done    
     script:
     - python -m unittest discover
     - docker build -t qcdis/planner:3.0.0 .
@@ -68,9 +68,9 @@ matrix:
     - python setup.py install
     - cd ../deployer
     - docker stack deploy conf-test -c docker-compose-test.yml
-    - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
-    do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 5 ]; then break;
-    fi; done   
+#     - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
+#     do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 5 ]; then break;
+#     fi; done   
     script:
     - python -m unittest discover
     - docker build -t qcdis/deployer:3.0.0 .
@@ -81,9 +81,9 @@ matrix:
     before_script:
     - mvn -Dmaven.test.skip=true install
     - docker stack deploy conf-test -c docker-compose-test.yml
-    - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
-    do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 5 ]; then break;
-    fi; done  
+#     - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
+#     do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 5 ]; then break;
+#     fi; done  
     script:
     - mvn test
     - cd manager
