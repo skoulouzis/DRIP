@@ -1,6 +1,7 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
+  #namespace: conf
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
@@ -21,12 +22,17 @@ spec:
         #backend:
           #serviceName: manager
           #servicePort: 8080
-      - path: /semaphore
+      - path: /conf/semaphore
         backend:
           serviceName: semaphore
           servicePort: 3000
-      - path: /sure-tosca
+      - path: /conf/sure-tosca
         backend:
           serviceName: sure-tosca
-          servicePort: 8081      
+          servicePort: 8081    
+          
+      - path: /conf/manager
+        backend:
+          serviceName: manager
+          servicePort: 8080
      

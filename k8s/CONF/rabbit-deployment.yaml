@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  #namespace: conf
   annotations:
     kompose.cmd: kompose convert
     kompose.version: 1.16.0 (0c01309)
@@ -23,7 +24,6 @@ spec:
       containers:
       - image: rabbitmq:3.8-management
         name: rabbit
-        imagePullPolicy: Always
         resources: {}
       restartPolicy: Always
 status: {}

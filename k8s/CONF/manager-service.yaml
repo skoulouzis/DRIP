@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
+  #namespace: conf
   annotations:
     kompose.cmd: kompose convert
     kompose.version: 1.16.0 (0c01309)
@@ -9,10 +10,10 @@ metadata:
     io.kompose.service: manager
   name: manager
 spec:
-  type: NodePort
   ports:
-    - port: 8080
-      nodePort: 30000
+  - name: "8080"
+    port: 8080
+    targetPort: 8080
   selector:
     io.kompose.service: manager
 status:
