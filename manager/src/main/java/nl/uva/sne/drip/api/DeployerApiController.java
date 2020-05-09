@@ -35,13 +35,13 @@ public class DeployerApiController implements DeployerApi {
 
     @Override
     public ResponseEntity<String> deployProvisionToscaTemplateByID(
-            @ApiParam(value = "ID of topolog template to deploy", required = true) 
+            @ApiParam(value = "ID of topolog template to deploy", required = true)
             @PathVariable("id") String id) {
-        
+
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("")) {
             try {
-                String planedYemplateId = dripService.deploy(id,null);
+                String planedYemplateId = dripService.deploy(id, null);
                 return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
 
             } catch (Exception ex) {

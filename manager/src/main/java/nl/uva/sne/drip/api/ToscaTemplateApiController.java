@@ -40,24 +40,20 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
     @Autowired
     private DRIPService dripService;
 
-
-
     @org.springframework.beans.factory.annotation.Autowired
     public ToscaTemplateApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.request = request;
     }
 
-
-    
     @Override
     public ResponseEntity<String> deleteToscaTemplateByID(
-            @ApiParam(value = "ID of topology template to return",required=true) 
-            @PathVariable("id") String id,@ApiParam(value = "The node(s) to delete") 
+            @ApiParam(value = "ID of topology template to return", required = true)
+            @PathVariable("id") String id, @ApiParam(value = "The node(s) to delete")
             @Valid @RequestParam(value = "node_names", required = false) List<String> nodeName) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("text/plain")) {
             try {
-                dripService.delete(id,nodeName);
+                dripService.delete(id, nodeName);
                 return new ResponseEntity<>("", HttpStatus.OK);
             } catch (IOException | ApiException | TypeExeption | TimeoutException | InterruptedException ex) {
                 java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,7 +65,6 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
-    
 
     @Override
     public ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id) {

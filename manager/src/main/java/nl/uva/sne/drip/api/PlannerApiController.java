@@ -25,7 +25,6 @@ public class PlannerApiController implements PlannerApi {
 
     private final HttpServletRequest request;
 
-    
     @Autowired
     private DRIPService dripService;
 

@@ -2,7 +2,6 @@ package nl.uva.sne.drip.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
-import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

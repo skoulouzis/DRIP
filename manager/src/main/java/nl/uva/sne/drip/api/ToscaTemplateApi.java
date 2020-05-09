@@ -35,7 +35,7 @@ public interface ToscaTemplateApi {
         @ApiResponse(code = 400, message = "Invalid ID supplied")
         ,
         @ApiResponse(code = 404, message = "ToscaTemplate not found")})
-    @RequestMapping(value = "/tosca_template/{id}",
+    @RequestMapping(value = "/manager/tosca_template/{id}",
             method = RequestMethod.DELETE)
     ResponseEntity<String> deleteToscaTemplateByID(@ApiParam(value = "ID of topology template to return", required = true) @PathVariable("id") String id, @ApiParam(value = "The node(s) to delete") @Valid @RequestParam(value = "node_name", required = false) List<String> nodeName);
 
@@ -54,7 +54,7 @@ public interface ToscaTemplateApi {
         @ApiResponse(code = 404, message = "ToscaTemplate not found")
         ,
         @ApiResponse(code = 405, message = "Invalid input")})
-    @RequestMapping(value = "/tosca_template/{id}",
+    @RequestMapping(value = "/manager/tosca_template/{id}",
             produces = {"text/plain"},
             method = RequestMethod.GET)
     ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id);
@@ -74,7 +74,7 @@ public interface ToscaTemplateApi {
         @ApiResponse(code = 404, message = "ToscaTemplate not found")
         ,
         @ApiResponse(code = 405, message = "Invalid input")})
-    @RequestMapping(value = "/tosca_template/ids",
+    @RequestMapping(value = "/manager/tosca_template/ids",
             produces = {"application/json"},
             method = RequestMethod.GET)
     ResponseEntity<List<String>> getToscaTemplateIDs();
@@ -94,7 +94,7 @@ public interface ToscaTemplateApi {
         @ApiResponse(code = 404, message = "ToscaTemplate not found")
         ,
         @ApiResponse(code = 405, message = "Invalid input")})
-    @RequestMapping(value = "/tosca_template/{id}",
+    @RequestMapping(value = "/manager/tosca_template/{id}",
             produces = {"text/plain"},
             consumes = {"multipart/form-data"},
             method = RequestMethod.PUT)
@@ -111,7 +111,7 @@ public interface ToscaTemplateApi {
         @ApiResponse(code = 200, message = "successful operation", response = String.class)
         ,
         @ApiResponse(code = 405, message = "Invalid input")})
-    @RequestMapping(value = "/tosca_template",
+    @RequestMapping(value = "/manager/tosca_template",
             consumes = {"multipart/form-data"},
             method = RequestMethod.POST)
     ResponseEntity<String> uploadToscaTemplate(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file);

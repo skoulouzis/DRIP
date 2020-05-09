@@ -35,7 +35,7 @@ public interface ScalerApi {
         @ApiResponse(code = 404, message = "ToscaTemplate not found")
         ,
         @ApiResponse(code = 405, message = "Invalid input")})
-    @RequestMapping(value = "/scaler/{id}",
+    @RequestMapping(value = "/manager/scaler/{id}",
             produces = {"text/plain"},
             method = RequestMethod.GET)
     ResponseEntity<String> scaleProvisionedToscaTemplateByID(
