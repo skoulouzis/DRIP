@@ -54,3 +54,4 @@
 /manager/target/
 /provisioner/nbproject/
 /provisioner/target/
+/k8s/CONF/nginx-configmap.yaml
