@@ -1,6 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  namespace: conf
   annotations:
     kompose.cmd: kompose convert
     kompose.version: 1.16.0 (0c01309)
