@@ -11,10 +11,11 @@ metadata:
   name: sure-tosca
 spec:
   ports:
-  - name: "8081"
-    port: 8081
+  - port: 8081
     targetPort: 8081
+    protocol: TCP
+    name: http
   selector:
     io.kompose.service: sure-tosca
 status:
-  loadBalancer: {}
+  loadBalancer: {}  

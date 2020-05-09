@@ -1,3 +1,0 @@
-cloudCreds:
-- cloudProvider: "EC2"
-  credInfoFile: "EC20.yml"
