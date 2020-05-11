@@ -21,7 +21,7 @@ matrix:
     - cd sure_tosca-client_python_stubs
     - pip install -r requirements.txt
     - pip install -r test-requirements.txt
-    - docker stack deploy conf-test -c ../docker-compose-test.yml
+    - docker stack deploy conf-test -c ../docker-compose/docker-compose-test.yml
     - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
     do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 4 ]; then break;
     fi; done    
@@ -35,7 +35,7 @@ matrix:
     - cd semaphore-python-client-generated
     - pip install -r requirements.txt
     - pip install -r test-requirements.txt
-    - docker stack deploy conf-test -c ../docker-compose-test.yml
+    - docker stack deploy conf-test -c ../docker-compose/docker-compose-test.yml
     - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
     do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 4 ]; then break;
     fi; done    
@@ -48,7 +48,7 @@ matrix:
     before_script:
     - cd planner
     - pip install -r requirements.txt
-    - docker stack deploy conf-test -c ../docker-compose-test.yml
+    - docker stack deploy conf-test -c ../docker-compose/docker-compose-test.yml
     - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
     do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 4 ]; then break;
     fi; done    
@@ -67,7 +67,7 @@ matrix:
     - cd ../sure_tosca-client_python_stubs/
     - python setup.py install
     - cd ../deployer
-    - docker stack deploy conf-test -c ../docker-compose-test.yml
+    - docker stack deploy conf-test -c ../docker-compose/docker-compose-test.yml
     - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
     do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 5 ]; then break;
     fi; done   
@@ -80,7 +80,7 @@ matrix:
     jdk: openjdk11
     before_script:
     - mvn -Dmaven.test.skip=true install
-    - docker stack deploy conf-test -c ../docker-compose-test.yml
+    - docker stack deploy conf-test -c ../docker-compose/docker-compose-test.yml
     - count=0 && until $(curl --output /dev/null --silent --head --fail http://localhost:8081);
     do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 5 ]; then break;
     fi; done  

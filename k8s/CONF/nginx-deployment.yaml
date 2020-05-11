@@ -1,44 +1,42 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: conf
   annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.16.0 (0c01309)
-  creationTimestamp: null
   labels:
     io.kompose.service: nginx
   name: nginx
 spec:
+  selector:
+    matchLabels:
+      io.kompose.service: nginx
   replicas: 1
-  strategy:
-    type: Recreate
   template:
     metadata:
-      creationTimestamp: null
       labels:
         io.kompose.service: nginx
     spec:
       containers:
       - image: nginx
         name: nginx
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         - containerPort: 443
-        resources: {}
-        volumeMounts:        
-        - mountPath: /etc/nginx/
-          name: nginx-conf
-      restartPolicy: Always
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/nginx/   
+          
       volumes:
-      - name: nginx-conf
+      - name: config-volume
         configMap:
-          name: nginx-conf
+          name: nginx-config
           items:
             - key: nginx.conf
               path: nginx.conf
+            - key: htpasswd
+              path: htpasswd      
             - key: cert.pem
-              path: cert.pem      
+              path: cert.pem       
             - key: privkey.pem
               path: privkey.pem       
-status: {}
