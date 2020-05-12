@@ -257,8 +257,11 @@ class Planner:
         number_of_matching_requirement = {}
         # Loop requirements to find nodes per requirement
         for req in all_requirements:
-            if 'capability' in req[next(iter(req))]:
-                capability = req[next(iter(req))]['capability']
+            key = next(iter(req))
+            if not req[key]:
+                raise Exception('Requirement: '+str(req)+ ' is not properly defined')
+            if 'capability' in req[key]:
+                capability = req[key]['capability']
                 # Find all nodes in the definitions that have the capability: capability
                 logger.info('  Looking for nodes in node types with capability: ' + capability)
                 capable_nodes = self.get_node_types_by_capability(capability)

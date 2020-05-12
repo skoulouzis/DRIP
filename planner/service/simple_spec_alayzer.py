@@ -30,26 +30,33 @@ class SimpleAnalyzer(SpecificationAnalyzer):
 
     def set_relationship_occurrences(self):
         return_nodes = []
-        orchestrator_nodes = tosca_helper.get_nodes_by_type('tosca.nodes.ARTICONF.docker.Orchestrator',
+        nodes_with_min_vms = tosca_helper.get_nodes_by_type('tosca.nodes.QC.docker.Orchestrator',
                                                             self.tosca_template.nodetemplates, self.all_node_types,
                                                             self.all_custom_def)
-        min_masters_num = 1
+        nodes_with_min_vms = nodes_with_min_vms + tosca_helper.get_nodes_by_type('tosca.nodes.QC.Application.GlusterFS',
+                                                                                 self.tosca_template.nodetemplates,
+                                                                                 self.all_node_types,
+                                                                                 self.all_custom_def)
+        min_masters_num = 0
         workers_num = 0
-        if orchestrator_nodes:
-            if 'properties' in orchestrator_nodes[0].entity_tpl:
-                if 'min_masters_num' in orchestrator_nodes[0].entity_tpl['properties']:
-                    min_masters_num = orchestrator_nodes[0].entity_tpl['properties']['min_masters_num']
-                if 'min_workers_num' in orchestrator_nodes[0].entity_tpl['properties']:
-                    workers_num = orchestrator_nodes[0].entity_tpl['properties']['min_workers_num']
-            else:
-                min_masters_num = orchestrator_nodes[0].get_property_value('min_masters_num')
-                workers_num = orchestrator_nodes[0].get_property_value('min_workers_num')
-
-        topology_nodes = tosca_helper.get_nodes_by_type('tosca.nodes.ARTICONF.VM.topology',
+        if nodes_with_min_vms:
+            for node_with_min_vms in nodes_with_min_vms:
+                if 'properties' in node_with_min_vms.entity_tpl:
+                    if 'min_masters_num' in node_with_min_vms.entity_tpl['properties']:
+                        min_masters_num = min_masters_num + node_with_min_vms.entity_tpl['properties'][
+                            'min_masters_num']
+                    if 'min_workers_num' in node_with_min_vms.entity_tpl['properties']:
+                        workers_num = workers_num + node_with_min_vms.entity_tpl['properties']['min_workers_num']
+                else:
+                    min_masters_num = min_masters_num + node_with_min_vms.get_property_value('min_masters_num')
+                    workers_num = workers_num + node_with_min_vms.get_property_value('min_workers_num')
+        if min_masters_num < 0:
+            min_masters_num = 1
+        topology_nodes = tosca_helper.get_nodes_by_type('tosca.nodes.QC.VM.topology',
                                                         self.tosca_template.nodetemplates, self.all_node_types,
                                                         self.all_custom_def)
         if topology_nodes:
-            vm_nodes = tosca_helper.get_nodes_by_type('tosca.nodes.ARTICONF.VM.Compute',
+            vm_nodes = tosca_helper.get_nodes_by_type('tosca.nodes.QC.VM.Compute',
                                                       self.tosca_template.nodetemplates, self.all_node_types,
                                                       self.all_custom_def)
             if vm_nodes:
@@ -65,7 +72,7 @@ class SimpleAnalyzer(SpecificationAnalyzer):
                     for requirement in topology_nodes[0].requirements:
                         requirement_key = next(iter(requirement))
                         requirement_value = requirement[requirement_key]
-                        if requirement_value['capability'] == 'tosca.capabilities.ARTICONF.VM':
+                        if requirement_value['capability'] == 'tosca.capabilities.QC.VM':
                             new_requirement = copy.deepcopy(requirement)
                             new_requirement[requirement_key]['node'] = new_vm.name
                             topology_nodes[0].requirements.append(new_requirement)
@@ -84,7 +91,7 @@ class SimpleAnalyzer(SpecificationAnalyzer):
                     for requirement in topology_nodes[0].requirements:
                         requirement_key = next(iter(requirement))
                         requirement_value = requirement[requirement_key]
-                        if requirement_value['capability'] == 'tosca.capabilities.ARTICONF.VM':
+                        if requirement_value['capability'] == 'tosca.capabilities.QC.VM':
                             new_requirement = copy.deepcopy(requirement)
                             new_requirement[requirement_key]['node'] = new_vm.name
                             topology_nodes[0].requirements.append(new_requirement)

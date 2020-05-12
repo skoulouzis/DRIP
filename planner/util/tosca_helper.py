@@ -121,8 +121,8 @@ def node_type_2_node_template(node_type, all_custom_def):
         node_type[next(iter(node_type))].pop('type')
 
     node_template = NodeTemplate(name, node_template_dict, node_type)
-    # For some reason the tosca.nodes.ARTICONF.docker.Orchestrator doesn't  have all definitions so we need to add them
-    # manually. We get 'toscaparser.common.exception.InvalidTypeError: Type "tosca.nodes.ARTICONF.docker.Orchestrator"
+    # For some reason the tosca.capabilities.QC.docker.Orchestrator doesn't  have all definitions so we need to add them
+    # manually. We get 'toscaparser.common.exception.InvalidTypeError: Type "tosca.capabilities.QC.docker.Orchestrator"
     # is not a valid type.'
     if len(node_template.custom_def) < len(all_custom_def):
         for def_key in all_custom_def:
@@ -273,7 +273,7 @@ def get_node_template_dict(node_template):
 
 
 def get_node_type_interfaces(node):
-    node_type_interfaces =  node.type_definition.interfaces
+    node_type_interfaces = node.type_definition.interfaces
     return node_type_interfaces
 
 
@@ -282,6 +282,6 @@ def get_node_template_interfaces(node):
     return node_template_interfaces
 
 
-def add_interfaces(node,node_type_interfaces):
+def add_interfaces(node, node_type_interfaces):
     # node.interfaces = node_type_interfaces
     return node
