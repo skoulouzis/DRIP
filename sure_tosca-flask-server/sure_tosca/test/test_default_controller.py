@@ -169,7 +169,7 @@ class TestDefaultController(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json, list)
 
-        query_string = [('type_name', 'tosca.nodes.ARTICONF.Container.Application.Docker'),
+        query_string = [('type_name', 'tosca.nodes.QC.Container.Application.Docker'),
                         ('node_name', None),
                         ('has_interfaces', None),
                         ('has_properties', None),
@@ -185,7 +185,7 @@ class TestDefaultController(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json, list)
 
-        query_string = [('type_name', 'tosca.nodes.ARTICONF.Application'),
+        query_string = [('type_name', 'tosca.nodes.QC.Application'),
                         ('node_name', None),
                         ('has_interfaces', True),
                         ('has_properties', None),
@@ -298,7 +298,7 @@ class TestDefaultController(BaseTestCase):
         self.assertTrue(id_example.strip().isdigit())
         query_string = [('kind_of_type', 'interface_types'),
                         ('has_interfaces', None),
-                        ('type_name', 'tosca.interfaces.ARTICONF.CloudsStorm'),
+                        ('type_name', 'tosca.interfaces.QC.CloudsStorm'),
                         ('has_properties', None),
                         ('has_attributes', None),
                         ('has_requirements', None),
@@ -376,7 +376,7 @@ class TestDefaultController(BaseTestCase):
                         ('operation_name', 'provision')]
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/interface/{interface_type}/default'.format(id=id_example,
-                                                                                              interface_type='tosca.interfaces.ARTICONF.CloudsStorm'),
+                                                                                              interface_type='tosca.interfaces.QC.CloudsStorm'),
             method='GET',
             query_string=query_string)
         self.assertTrue(response.is_json)
