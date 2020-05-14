@@ -13,7 +13,7 @@ topology_template:
           delete:
             inputs:
               playbook: "https://raw.githubusercontent.com/skoulouzis/CONF/develop/ansible_playbooks/k8s_delete.yaml"
-      type: "tosca.nodes.ARTICONF.docker.Orchestrator.Kubernetes"
+      type: "tosca.nodes.QC.docker.Orchestrator.Kubernetes"
 description: "TOSCA example"
 imports:
 - nodes: "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/nodes.yaml"

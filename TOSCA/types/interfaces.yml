@@ -1,7 +1,7 @@
 tosca_definitions_version: tosca_simple_yaml_1_0
 interface_types:
 
-  tosca.interfaces.ARTICONF.CloudsStorm:
+  tosca.interfaces.QC.CloudsStorm:
     description: Interface for VM topology management with CloudsStorm. More at https://cloudsstorm.github.io/
     derived_from: tosca.interfaces.node.lifecycle.Standard
     inputs:
@@ -62,7 +62,7 @@ interface_types:
       description: Provision the defined objects (resources). ObjectType can be SubTopology or VM.
       
       
-  tosca.interfaces.ARTICONF.Standard:
+  tosca.interfaces.QC.Standard:
     derived_from: tosca.interfaces.node.lifecycle.Standard
     inputs:
       inventory_file:
@@ -75,8 +75,8 @@ interface_types:
         type: string
         required: false        
       
-  tosca.interfaces.ARTICONF.Kubernetes:
-    derived_from: tosca.interfaces.ARTICONF.Standard
+  tosca.interfaces.QC.Kubernetes:
+    derived_from: tosca.interfaces.QC.Standard
     inputs:
       replicas:
         type: integer

@@ -21,16 +21,16 @@ package nl.uva.sne.drip.commons.utils;
  */
 public class Constants {
 
-    public static final String VM_CAPABILITY = "tosca.capabilities.ARTICONF.VM";
-    public static final String VM_TYPE = "tosca.nodes.ARTICONF.VM.Compute";
+    public static final String VM_CAPABILITY = "tosca.capabilities.QC.VM";
+    public static final String VM_TYPE = "tosca.nodes.QC.VM.Compute";
     public static final String VM_NUM_OF_CORES = "num_cores";
     public static final String MEM_SIZE = "mem_size";
     public static final String DISK_SIZE = "disk_size";
     public static final String VM_OS = "os";
-    public static final String VM_TOPOLOGY = "tosca.nodes.ARTICONF.VM.topology";
-    public static final String APPLICATION_TYPE = "tosca.nodes.ARTICONF.Application";
-    public static final String CLOUD_STORM_INTERFACE = "tosca.interfaces.ARTICONF.CloudsStorm";
-    public static final String ENCODED_FILE_DATATYPE = "tosca.datatypes.ARTICONF.encodedFile";
+    public static final String VM_TOPOLOGY = "tosca.nodes.QC.VM.topology";
+    public static final String APPLICATION_TYPE = "tosca.nodes.QC.Application";
+    public static final String CLOUD_STORM_INTERFACE = "tosca.interfaces.QC.CloudsStorm";
+    public static final String ENCODED_FILE_DATATYPE = "tosca.datatypes.QC.encodedFile";
     public static final String CLOUD_STORM_FILES_ZIP_SUFIX = "cloudStromFiles.zip";
 
     public static enum NODE_STATES {

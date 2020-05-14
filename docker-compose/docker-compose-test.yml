@@ -25,7 +25,7 @@ services:
       - "3306:3306"
       
   semaphore:
-    image: semaphore
+    image: qcdis/docker_ansible_semaphore
     environment:
       SEMAPHORE_DB_USER: semaphore
       SEMAPHORE_DB_PASS: semaphore

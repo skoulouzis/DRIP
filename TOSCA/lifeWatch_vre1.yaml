@@ -18,7 +18,7 @@ topology_template:
 
   node_templates:        
     ws-pema:
-        type: tosca.nodes.ARTICONF.Container.Application.Docker
+        type: tosca.nodes.QC.Container.Application.Docker
         properties:
             ports: 
             - "30001:8080"   
@@ -59,7 +59,7 @@ topology_template:
                 
       
     topology:
-        type: tosca.nodes.ARTICONF.VM.topology
+        type: tosca.nodes.QC.VM.topology
         interfaces:
             CloudsStorm:
                 provision:

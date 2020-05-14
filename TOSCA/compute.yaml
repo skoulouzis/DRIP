@@ -17,7 +17,7 @@ topology_template:
         num_cores: 2
         os: Ubuntu 18.04
         user_name: vm_user
-      type: tosca.nodes.ARTICONF.VM.Compute
+      type: tosca.nodes.QC.VM.Compute
 
 
 

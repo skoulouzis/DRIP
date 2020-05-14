@@ -104,7 +104,7 @@ class TestDefaultApi(unittest.TestCase):
             file_id = self.upload_tosca_template('application_example_provisioned.yaml')
             node_templates = self.api.get_node_templates(file_id)
             self.assertIsNotNone(node_templates)
-            nodes_to_deploy = self.api.get_node_templates(file_id,type_name = 'tosca.nodes.ARTICONF.Application')
+            nodes_to_deploy = self.api.get_node_templates(file_id,type_name = 'tosca.nodes.QC.Application')
         
 
 

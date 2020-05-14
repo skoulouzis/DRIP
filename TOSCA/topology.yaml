@@ -17,5 +17,5 @@ topology_template:
       properties:
         domain: Frankfurt
         provider: EC2
-      type: tosca.nodes.ARTICONF.VM.topology
+      type: tosca.nodes.QC.VM.topology
 tosca_definitions_version: tosca_simple_yaml_1_0

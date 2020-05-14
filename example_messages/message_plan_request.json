@@ -15,7 +15,7 @@
               "30001:8080"
             ]
           },
-          "type": "tosca.nodes.ARTICONF.Container.Application.Docker",
+          "type": "tosca.nodes.QC.Container.Application.Docker",
           "artifacts": {
             "image": {
               "type": "tosca.artifacts.Deployment.Image.Container.Docker",
