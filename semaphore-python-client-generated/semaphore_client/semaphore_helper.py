@@ -69,9 +69,8 @@ class SemaphoreHelper:
     def create_repository(self, name, project_id, key_id, git_url):
         repository_request = RepositoryRequest(name=name, project_id=project_id, git_url=git_url, ssh_key_id=key_id)
         self.project_api.project_project_id_repositories_post(repository_request ,project_id)
-
-        repositories = self.project_api.project_project_id_repositories_get(project_id, name, 'asc')
-        return repositories[0].id
+        repository = self.find_repository(project_id, name, git_url)
+        return repository.id
 
     def create_template(self, project_id,key_id,inventory_id,repository_id,playbook_name):
         template_request = TemplateRequest(ssh_key_id=key_id, project_id=project_id, inventory_id=inventory_id,
@@ -123,3 +122,10 @@ class SemaphoreHelper:
         for template in templates:
             if template.playbook == playbook_name:
                 return template
+
+    def find_repository(self, project_id, name, git_url):
+        repositories = self.project_api.project_project_id_repositories_get(project_id, name, 'asc')
+        for repo in repositories:
+            if repo.git_url == git_url:
+                return repo
+        return None
