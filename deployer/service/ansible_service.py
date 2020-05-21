@@ -1,6 +1,7 @@
 import base64
 import logging
 from time import sleep
+import datetime
 
 import yaml
 from semaphore_client.semaphore_helper import SemaphoreHelper
@@ -41,7 +42,8 @@ class AnsibleService:
             desired_state = application.node_template.attributes['desired_state']
 
         if desired_state:
-            project_id = self.semaphore_helper.create_project(application.name)
+            now = datetime.datetime.now()
+            project_id = self.semaphore_helper.create_project(application.name+'_'+str(now))
             inventory_contents = yaml.dump( self.build_yml_inventory(vms),default_flow_style=False)
             private_key = self.get_private_key(vms)
             key_id = self.semaphore_helper.create_ssh_key(application.name, project_id, private_key)

@@ -238,7 +238,6 @@ class CloudStormService {
         CloudsStormVM bestMatchingVM = null;
         List<CloudsStormVM> vmInfos = cloudStormDAO.findVmMetaInfoByProvider(CloudProviderEnum.fromValue(provider));
         for (CloudsStormVM vmInfo : vmInfos) {
-
             if (requestedOs.toLowerCase().equals(vmInfo.getOstype().toLowerCase())) {
                 Double cloudsStormVMdiskSize;
                 if (vmInfo.getDiskSize() == null) {
@@ -253,7 +252,9 @@ class CloudStormService {
                 } else {
                     cloudsStormVMdiskSize = Double.valueOf(vmInfo.getDiskSize());
                 }
-                double[] aveliableVector = convert2ArrayofDoubles(Double.valueOf(vmInfo.getCPU()), Double.valueOf(vmInfo.getMEM()), cloudsStormVMdiskSize);
+                double[] aveliableVector = convert2ArrayofDoubles(Double.valueOf(vmInfo.getCPU()),
+                        Double.valueOf(vmInfo.getMEM()),
+                        cloudsStormVMdiskSize);
                 EuclideanDistance dist = new EuclideanDistance();
                 double res = dist.compute(requestedVector, aveliableVector);
                 if (res < min) {
@@ -262,10 +263,15 @@ class CloudStormService {
                 }
             }
         }
-        if (bestMatchingVM != null && bestMatchingVM.getDiskSize() == null
-                && bestMatchingVM.getExtraInfo() == null && !bestMatchingVM.getExtraInfo().containsKey("DiskSize")) {
+        if (bestMatchingVM != null && provider.equals("EC2")) {
             bestMatchingVM.setDiskSize(requestedDiskSize.intValue());
+            bestMatchingVM.getExtraInfo().put("DiskSize", requestedDiskSize.intValue());
+            bestMatchingVM.getExtraInfo().put("diskSize", requestedDiskSize.intValue());
         }
+//        if (bestMatchingVM != null && bestMatchingVM.getDiskSize() == null
+//                && bestMatchingVM.getExtraInfo() == null && !bestMatchingVM.getExtraInfo().containsKey("DiskSize")) {
+//            bestMatchingVM.setDiskSize(requestedDiskSize.intValue());
+//        }
         Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "Found best matching VM: {0}", bestMatchingVM);
         return bestMatchingVM;
     }
