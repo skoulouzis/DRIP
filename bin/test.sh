@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-docker stack deploy conf-test -c ../docker-compose-test.yml
+docker stack deploy conf-test -c ../docker-compose/docker-compose-test.yml
 
 sure_tosca_url=http://localhost:8081
 
