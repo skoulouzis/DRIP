@@ -2,11 +2,6 @@ from __future__ import absolute_import
 
 import unittest
 
-import semaphore_client
-from semaphore_client import APIToken, RepositoryRequest
-from semaphore_client.models.login import Login  # noqa: E501
-from semaphore_client.rest import ApiException
-
 from semaphore_client.semaphore_helper import SemaphoreHelper
 
 

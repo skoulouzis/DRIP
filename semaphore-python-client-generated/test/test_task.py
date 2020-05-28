@@ -16,12 +16,9 @@ from __future__ import absolute_import
 import unittest
 from time import sleep
 
-import  yaml
-import semaphore_client
-from semaphore_client.models.task import Task  # noqa: E501
-from semaphore_client.rest import ApiException
+import yaml
+
 from semaphore_client.semaphore_helper import SemaphoreHelper
-import names
 
 yaml.Dumper.ignore_aliases = lambda *args : True
 
