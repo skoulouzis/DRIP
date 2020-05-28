@@ -15,7 +15,7 @@ fi
 
 docker stack deploy conf-test -c ../docker-compose/docker-compose-test.yml
 
-sure_tosca_url=http://localhost:8081/tosca-sure/1.0.0/ui
+sure_tosca_url=http://127.0.0.1:8081/tosca-sure/1.0.0/ui
 
 echo "Waiting for $sure_tosca_url"
 count=0 && until $(curl --output /dev/null --silent --head --fail "$sure_tosca_url"); do printf '.' && sleep 10 && count=$((count+1)) && if [ $count -gt 5 ]; then break; fi; done  
