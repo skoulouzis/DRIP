@@ -14,14 +14,12 @@ from __future__ import absolute_import
 
 import os
 import unittest
-from io import BytesIO
 
 import urllib3
 
 import sure_tosca_client
 from sure_tosca_client import Configuration, ApiClient
 from sure_tosca_client.api.default_api import DefaultApi  # noqa: E501
-from sure_tosca_client.rest import ApiException
 
 
 class TestDefaultApi(unittest.TestCase):
@@ -29,7 +27,7 @@ class TestDefaultApi(unittest.TestCase):
 
     def setUp(self):
         configuration = Configuration()
-        configuration.host = 'http://localhost:8081/tosca-sure/1.0.0' #Make sure we don't have '/' on the end of url
+        configuration.host = 'http://127.0.0.1:8081/tosca-sure/1.0.0' #Make sure we don't have '/' on the end of url
         if self.service_is_up(configuration.host):
             configuration.verify_ssl = False
             api_client = ApiClient(configuration=configuration)

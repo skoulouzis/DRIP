@@ -20,10 +20,10 @@ logger.setLevel(logging.DEBUG)
 
 class MyTestCase(unittest.TestCase):
 
-    # def test_tic_gluster_fs(self):
-    #     url = 'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/glusterFS.yaml'
-    #     input_tosca_file_path = self.get_remote_tosca_file(url)
-    #     self.run_test(input_tosca_file_path)
+    def test_tic_gluster_fs(self):
+        url = 'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/glusterFS.yaml'
+        input_tosca_file_path = self.get_remote_tosca_file(url)
+        self.run_test(input_tosca_file_path)
 
 
     def test_tic(self):
