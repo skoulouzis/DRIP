@@ -1,16 +1,16 @@
 #!/bin/bash
 
-#cd ../
-#cd sure_tosca-flask-server && venv/bin/pip3 install -r test-requirements.txt && venv/bin/python3 -m unittest discover
-#if [ $? -eq 0 ]
-#then
-#  echo "------- sure_tosca-flask-server tests successful------"
-#  docker build -t sure-tosca:3.0.0 .
-#  docker tag sure-tosca:3.0.0 qcdis/sure-tosca:3.0.0
-#else
-#  echo "sure_tosca-flask-server tests Failed"
-#  exit 1
-#fi
+cd ../
+cd sure_tosca-flask-server && venv/bin/pip3 install -r test-requirements.txt && venv/bin/python3 -m unittest discover
+if [ $? -eq 0 ]
+then
+  echo "------- sure_tosca-flask-server tests successful------"
+  docker build -t sure-tosca:3.0.0 .
+  docker tag sure-tosca:3.0.0 qcdis/sure-tosca:3.0.0
+else
+  echo "sure_tosca-flask-server tests Failed"
+  exit 1
+fi
 
 
 docker stack deploy conf-test -c ../docker-compose/docker-compose-test.yml

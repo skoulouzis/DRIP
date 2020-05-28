@@ -26,7 +26,7 @@ class TestTask(unittest.TestCase):
     """Task unit test stubs"""
 
     def setUp(self):
-        self.semaphore_base_url = 'http://localhost:3000/api'
+        self.semaphore_base_url = 'http://127.0.0.1:3000/api'
         if SemaphoreHelper.service_is_up(self.semaphore_base_url):
             self.username = 'admin'
             self.password = 'password'
