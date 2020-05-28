@@ -16,7 +16,10 @@ do
     cd $python_project 
     rm -rf venv 
     python3 -m venv venv
+    venv/bin/pip3 install pip --upgrade
+    venv/bin/pip3 install setuptools --upgrade
     venv/bin/pip3 install -r requirements.txt
+
     if [ "$python_project" == "deployer" ]; then
         cd ../semaphore-python-client-generated
         ../$python_project/venv/bin/python setup.py install
