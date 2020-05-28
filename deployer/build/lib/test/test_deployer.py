@@ -38,9 +38,9 @@ class TestDeployer(unittest.TestCase):
                 yaml.dump(tosca_template_dict, outfile, default_flow_style=False)
 
 
-            sure_tosca_base_url = 'http://localhost:8081/tosca-sure/1.0.0'
-            polemarch_base_url='http://localhost:30001/api/v2'
-            semaphore_base_url = 'http://localhost:3000/api'
+            sure_tosca_base_url = 'http://127.0.0.1:8081/tosca-sure/1.0.0'
+            polemarch_base_url='http://127.0.0.1:30001/api/v2'
+            semaphore_base_url = 'http://127.0.0.1:3000/api'
             tosca_service_is_up = ToscaHelper.service_is_up(sure_tosca_base_url)
             semaphore_is_up = ToscaHelper.service_is_up(semaphore_base_url)
 

@@ -49,7 +49,7 @@ import nl.uva.sne.drip.sure.tosca.auth.OAuth;
 
 public class ApiClient {
 
-    private String basePath = "https://localhost/tosca-sure/1.0.0";
+    private String basePath = "https://127.0.0.1/tosca-sure/1.0.0";
     private boolean debugging = false;
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
     private String tempFolderPath = null;
