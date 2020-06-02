@@ -39,7 +39,6 @@ class TestDeployer(unittest.TestCase):
 
 
             sure_tosca_base_url = 'http://127.0.0.1:8081/tosca-sure/1.0.0'
-            polemarch_base_url='http://127.0.0.1:30001/api/v2'
             semaphore_base_url = 'http://127.0.0.1:3000/api'
             tosca_service_is_up = ToscaHelper.service_is_up(sure_tosca_base_url)
             semaphore_is_up = ToscaHelper.service_is_up(semaphore_base_url)
