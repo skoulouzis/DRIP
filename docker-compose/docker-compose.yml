@@ -55,18 +55,18 @@ services:
       - "27017:27017"               
     
       
-  #manager:
-    #depends_on:
-      #- rabbit
-      #- mongo
-      #- sure-tosca
-    #image: qcdis/manager:3.0.0 
-    #environment:
-      #RABBITMQ_HOST: rabbit
-      #MONGO_HOST: mongo
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-    #ports:
-      #- "8080:8080"       
+  manager:
+    depends_on:
+      - rabbit
+      - mongo
+      - sure-tosca
+    image: qcdis/manager:3.0.0 
+    environment:
+      RABBITMQ_HOST: rabbit
+      MONGO_HOST: mongo
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+    ports:
+      - "8080:8080"       
             
   sure-tosca:
     image: qcdis/sure-tosca:3.0.0
@@ -81,23 +81,25 @@ services:
     environment:
       RABBITMQ_HOST: rabbit
     
-  #provisioner:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: qcdis/provisioner:3.0.0 
-    #environment:
-      #RABBITMQ_HOST: rabbit      
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+  provisioner:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: qcdis/provisioner:3.0.0 
+    environment:
+      RABBITMQ_HOST: rabbit      
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
     
-  #deployer:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: qcdis/deployer:3.0.0 
-    #environment:
-      #RABBITMQ_HOST: rabbit           
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+  deployer:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: qcdis/deployer:3.0.0 
+    environment:
+      RABBITMQ_HOST: rabbit           
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+      SEMAPHORE_BASE_PATH: http://semaphore:3000/api   
+          
       
 
     
