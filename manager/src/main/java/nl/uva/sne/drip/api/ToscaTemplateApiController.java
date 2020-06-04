@@ -54,7 +54,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
         if (accept != null && accept.contains("text/plain")) {
             try {
                 dripService.delete(id, nodeName);
-                return new ResponseEntity<>("", HttpStatus.OK);
+                return new ResponseEntity<>(id, HttpStatus.OK);
             } catch (IOException | ApiException | TypeExeption | TimeoutException | InterruptedException ex) {
                 java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
