@@ -8,12 +8,12 @@ COPY test-requirements.txt /usr/src/app/
 
 
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir -r test-requirements.txt
+#RUN pip install --no-cache-dir -r test-requirements.txt
 
 COPY . /usr/src/app
 
-RUN python -m unittest discover
-RUN pip uninstall -y --no-cache-dir -r test-requirements.txt
+#RUN python -m unittest discover
+#RUN pip uninstall -y --no-cache-dir -r test-requirements.txt
 
 
 EXPOSE 8081
