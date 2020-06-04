@@ -24,35 +24,32 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        try:
-            id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/TIC.yaml')
-            doc_id = int(id_example)
-            self.assertIsInstance(doc_id,int)
-            # id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_planed.yaml')
-            # doc_id = int(id_example)
-            self.assertIsInstance(doc_id,int)
-            id_example = self.upload_file(
-                'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_provisioned.yaml')
-            doc_id = int(id_example)
-            self.assertIsInstance(doc_id,int)
-            id_example = self.upload_file(
-                'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/glusterFS.yaml')
-            doc_id = int(id_example)
-            self.assertIsInstance(doc_id,int)
-            id_example = self.upload_file(
-                'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/kubernetes.yaml')
-            doc_id = int(id_example)
-            self.assertIsInstance(doc_id,int)
-            id_example = self.upload_file(
-                'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/lifeWatch_vre1.yaml')
-            doc_id = int(id_example)
-            self.assertIsInstance(doc_id,int)
-            id_example = self.upload_file(
-                'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/topology.yaml')
-            doc_id = int(id_example)
-            self.assertIsInstance(doc_id,int)
-        except Exception as e:
-            self.assertTrue(False)
+        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/TIC.yaml')
+        doc_id = int(id_example)
+        self.assertIsInstance(doc_id,int)
+        # id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_planed.yaml')
+        # doc_id = int(id_example)
+        self.assertIsInstance(doc_id,int)
+        id_example = self.upload_file(
+            'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_provisioned.yaml')
+        doc_id = int(id_example)
+        self.assertIsInstance(doc_id,int)
+        id_example = self.upload_file(
+            'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/glusterFS.yaml')
+        doc_id = int(id_example)
+        self.assertIsInstance(doc_id,int)
+        id_example = self.upload_file(
+            'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/kubernetes.yaml')
+        doc_id = int(id_example)
+        self.assertIsInstance(doc_id,int)
+        id_example = self.upload_file(
+            'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/lifeWatch_vre1.yaml')
+        doc_id = int(id_example)
+        self.assertIsInstance(doc_id,int)
+        id_example = self.upload_file(
+            'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/topology.yaml')
+        doc_id = int(id_example)
+        self.assertIsInstance(doc_id,int)
 
 
     def test_get_all_ancestor_properties(self):
