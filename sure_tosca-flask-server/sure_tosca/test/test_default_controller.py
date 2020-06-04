@@ -2,16 +2,13 @@
 
 from __future__ import absolute_import
 
+import os
 import tempfile
 
 import requests
 from flask import json
 from six import BytesIO
-import os
 
-from sure_tosca.models.node_template import NodeTemplateModel  # noqa: E501
-from sure_tosca.models.topology_template import TopologyTemplateModel  # noqa: E501
-from sure_tosca.models.tosca_template import ToscaTemplateModel  # noqa: E501
 from sure_tosca.test import BaseTestCase
 
 

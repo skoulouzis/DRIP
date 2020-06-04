@@ -25,7 +25,7 @@ class Test(TestCase):
 
         file_names = ['application_example_outputs.yaml','application_example_2_topologies.yaml','lifeWatch_vre1.yaml',
                       'application_example_updated.yaml','compute.yaml','application_example_provisioned.yaml','topology.yaml',
-                      'kubernetes.yaml','application_example_planed.yaml','TIC.yaml']
+                      'kubernetes.yaml','TIC.yaml']
 
         for file_name in file_names:
             logger.info("Testing : " + str(file_name))
