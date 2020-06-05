@@ -3,6 +3,9 @@ package nl.uva.sne.drip.api;
 import nl.uva.sne.drip.model.tosca.Credential;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.logging.Level;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import nl.uva.sne.drip.service.CredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,8 +48,12 @@ public class CredentialApiController implements CredentialApi {
             @Valid @RequestBody Credential body) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
-            String id = credentialService.save(body);
-            return new ResponseEntity<>(id, HttpStatus.OK);
+            try {
+                String id = credentialService.save(body);
+                return new ResponseEntity<>(id, HttpStatus.OK);
+            } catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }

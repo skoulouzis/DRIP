@@ -5,7 +5,6 @@
  */
 package nl.uva.sne.drip.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -38,7 +37,7 @@ public class CredentialService {
 
     public String save(Credential document) throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
-        dao.save(encryptCredential(document));
+        dao.save(Converter.encryptCredential(document,credentialSecret));
         return document.getId();
     }
 
@@ -68,21 +67,6 @@ public class CredentialService {
         return dao.findBycloudProviderName(provider);
     }
 
-    private Credential encryptCredential(Credential credential) throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
-        Map<String, String> credKeys = credential.getKeys();
-        Set<String> keySet = credKeys.keySet();
-        for (String key : keySet) {
-            String credKey = credKeys.get(key);
-            if (credKey != null) {
-                credKeys.put(key, Converter.encryptString(credKey, credentialSecret));
-            }
-        }
-        String token = credential.getToken();
-        if (token != null) {
-            credential.setToken(Converter.encryptString(token, credentialSecret));
-        }
-        return credential;
-    }
 
 }
