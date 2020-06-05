@@ -27,4 +27,4 @@ docker tag sure-tosca:3.0.0 qcdis/sure-tosca:3.0.0
 docker tag planner:3.0.0 qcdis/planner:3.0.0
 docker tag deployer:3.0.0 qcdis/deployer:3.0.0
 docker tag manager:3.0.0 qcdis/manager:3.0.0
-docker tag provisioner:3.0.0 qcdis/provisioner:3.0.0
+docker tag provisioner:3.0.0 qcdis/provisioner
