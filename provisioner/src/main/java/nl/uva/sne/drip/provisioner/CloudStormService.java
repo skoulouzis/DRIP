@@ -68,7 +68,7 @@ import topology.analysis.TopologyAnalysisMain;
  */
 class CloudStormService {
 
-    private String secret;
+    protected String secret;
     private String credentialSecret;
 
     /**
@@ -480,7 +480,7 @@ class CloudStormService {
         userKyes.put("private_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa"));
         userKyes.put("public_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa.pub"));
         userKeyPairCredential.setKeys(userKyes);
-
+//        userKeyPairCredential = Converter.encryptCredential(userKeyPairCredential, credentialSecret);
         CloudsStormVMs cloudsStormVMs = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + subTopology.getTopology() + ".yml"),
                 CloudsStormVMs.class);
         List<CloudsStormVM> vms = cloudsStormVMs.getVms();

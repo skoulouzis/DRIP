@@ -15,14 +15,12 @@
  */
 package nl.uva.sne.drip.commons.utils;
 
-import java.util.Map;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -56,7 +54,7 @@ public class ConverterTest {
     public void testEncryptDecryptString() throws Exception {
         System.out.println("decryptString");
         String contents = "this is very important information";
-        String secret = "1223";
+        String secret = "top_secret";
         String expResult = contents;
         String enc = Converter.encryptString(contents, secret);
         System.out.println("Encrypted String: " + enc);

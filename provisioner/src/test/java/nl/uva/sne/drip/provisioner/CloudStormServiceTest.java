@@ -284,6 +284,7 @@ public class CloudStormServiceTest {
 
                 assertTrue(provisionedFiles.containsKey("file_contents"));
                 String cloudStormZipFileContentsAsBase64 = provisionedFiles.get("file_contents");
+                cloudStormZipFileContentsAsBase64 = Converter.decryptString(cloudStormZipFileContentsAsBase64, instance.secret);
                 String testZipPath = tempInputDirPath + File.separator + "test.zip";
 
                 Converter.decodeBase64BToFile(cloudStormZipFileContentsAsBase64, testZipPath);
