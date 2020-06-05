@@ -37,6 +37,8 @@ spec:
           value: http://semaphore:3000/api     
         - name: CREDENTIAL_SECRET
           value: top_secret          
+        - name: ENCRYPTION_PASSWORD
+          value: top_secret             
         image: qcdis/deployer:3.0.0
         name: deployer
         imagePullPolicy: Always
