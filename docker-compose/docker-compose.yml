@@ -90,6 +90,8 @@ services:
     environment:
       RABBITMQ_HOST: rabbit      
       SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+      CLOUD_STORM_SECRET: 456
+      CREDENTIAL_SECRET: 123      
     
   deployer:
     depends_on:
@@ -99,9 +101,8 @@ services:
     environment:
       RABBITMQ_HOST: rabbit           
       SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-      SEMAPHORE_BASE_PATH: http://semaphore:3000/api   
-      CREDENTIAL_SECRET: 123
-      ENCRYPTION_PASSWORD: 456
+      SEMAPHORE_BASE_PATH: http://semaphore:3000/api
+      
           
       
 

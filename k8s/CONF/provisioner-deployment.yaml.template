@@ -7,12 +7,12 @@ metadata:
     kompose.version: 1.16.0 (0c01309)
   creationTimestamp: null
   labels:
-    io.kompose.service: deployer
-  name: deployer
+    io.kompose.service: provisioner
+  name: provisioner
 spec:
   selector:
     matchLabels:
-      io.kompose.service: deployer
+      io.kompose.service: provisioner
   replicas: 1
   strategy:
         type: RollingUpdate
@@ -25,7 +25,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: deployer
+        io.kompose.service: provisioner
     spec:
       containers:
       - env:
@@ -33,14 +33,8 @@ spec:
           value: rabbit
         - name: SURE_TOSCA_BASE_PATH
           value: http://sure-tosca:8081/tosca-sure/1.0.0
-        - name: SEMAPHORE_BASE_PATH
-          value: http://semaphore:3000/api     
-        - name: CREDENTIAL_SECRET
-          value: top_secret          
-        - name: ENCRYPTION_PASSWORD
-          value: top_secret             
-        image: qcdis/deployer:3.0.0
-        name: deployer
+        image: qcdis/provisioner:3.0.0
+        name: provisioner
         imagePullPolicy: Always
         resources: {}
       restartPolicy: Always
