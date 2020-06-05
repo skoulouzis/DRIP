@@ -113,7 +113,7 @@ class CloudStormService {
         if (sureToscaBasePath == null) {
             throw new NullPointerException("sureToscaBasePath cannot be null");
         }
-        secret = properties.getProperty("secret");
+        secret = properties.getProperty("cloud.storm.secret");
         if (secret == null) {
             throw new NullPointerException("secret cannot be null");
         }
