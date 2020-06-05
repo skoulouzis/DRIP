@@ -41,6 +41,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -49,6 +50,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import nl.uva.sne.drip.model.tosca.Credential;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
@@ -189,6 +191,39 @@ public class Converter {
         key = sha.digest(key);
         key = Arrays.copyOf(key, 16);
         return new SecretKeySpec(key, "AES");
+    }
+
+    public static Credential encryptCredential(Credential credential, String credentialSecret) throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+
+        Map<String, String> credKeys = credential.getKeys();
+        Set<String> keySet = credKeys.keySet();
+        for (String key : keySet) {
+            String credKey = credKeys.get(key);
+            if (credKey != null) {
+                credKeys.put(key, encryptString(credKey, credentialSecret));
+            }
+        }
+        String token = credential.getToken();
+        if (token != null) {
+            credential.setToken(encryptString(token, credentialSecret));
+        }
+        return credential;
+    }
+
+    public static Credential dencryptCredential(Credential credential, String credentialSecret) throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+        Map<String, String> credKeys = credential.getKeys();
+        Set<String> keySet = credKeys.keySet();
+        for (String key : keySet) {
+            String credKey = credKeys.get(key);
+            if (credKey != null) {
+                credKeys.put(key, decryptString(credKey, credentialSecret));
+            }
+        }
+        String token = credential.getToken();
+        if (token != null) {
+            credential.setToken(decryptString(token, credentialSecret));
+        }
+        return credential;
     }
 
 }

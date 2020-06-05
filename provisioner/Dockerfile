@@ -10,6 +10,7 @@ CMD jar -xf provisioner-3.0.0-jar-with-dependencies.jar application.properties &
     ENCRYPTION_PASSWORD=`date +%s | sha256sum | base64 | head -c 32 ; echo` && \
     echo "cloud.storm.secret=$ENCRYPTION_PASSWORD" >> application.properties && \
     echo "cloud.storm.db.path=/etc/UD" >> application.properties && \
+    echo "credential.secret=$CREDENTIAL_SECRET" >> application.properties && \
     cat application.properties && \
     jar -uf provisioner-3.0.0-jar-with-dependencies.jar application.properties && \
     sleep 5 && \

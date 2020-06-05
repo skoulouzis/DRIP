@@ -34,7 +34,9 @@ spec:
         - name: SURE_TOSCA_BASE_PATH
           value: http://sure-tosca:8081/tosca-sure/1.0.0
         - name: SEMAPHORE_BASE_PATH
-          value: http://semaphore:3000/api       
+          value: http://semaphore:3000/api     
+        - name: CREDENTIAL_SECRET
+          value: top_secret          
         image: qcdis/deployer:3.0.0
         name: deployer
         imagePullPolicy: Always
