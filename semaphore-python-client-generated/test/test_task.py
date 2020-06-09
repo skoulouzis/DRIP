@@ -60,7 +60,9 @@ class TestTask(unittest.TestCase):
 
             repository_id = self.semaphore_helper.create_repository(self.project_name, project_id, key_id, self.git_url)
             template_id = self.semaphore_helper.create_template(project_id, key_id, inventory_id, repository_id, self.playbook_name)
-            task_id = self.semaphore_helper.execute_task(project_id, template_id, self.playbook_name)
+            env_vars = {"SOME_VAR": "the contents"}
+            environment_id = self.semaphore_helper.create_environment(project_id,self.project_name,env_vars)
+            task_id = self.semaphore_helper.execute_task(project_id, template_id, self.playbook_name,environment_id=environment_id)
             for x in range(0, 2):
                 task = self.semaphore_helper.get_task(project_id, task_id)
                 print(task)
