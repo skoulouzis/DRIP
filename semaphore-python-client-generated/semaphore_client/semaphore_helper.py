@@ -79,11 +79,11 @@ class SemaphoreHelper:
         return self.find_template(templates,playbook_name).id
 
     def execute_task(self, project_id, template_id, playbook_name,environment_id=None):
-        environment_name = None
+        environment_json = None
         if environment_id:
             environment = self.find_environment(project_id,environment_id=environment_id)
-            environment_name = environment.name
-        task = Task(template_id=template_id, playbook=playbook_name,environment=environment_name)
+            environment_json = environment.json
+        task = Task(template_id=template_id, playbook=playbook_name,environment=environment_json)
         self.project_api.project_project_id_tasks_post(task,project_id)
         tasks = self.project_api.project_project_id_tasks_get(project_id)
         return self.find_latest_task(tasks).id
