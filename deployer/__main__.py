@@ -85,7 +85,7 @@ def handle_delivery(message):
     nodes_pairs = tosca_helper.get_deployment_node_pairs()
 
     deployService = DeployService(semaphore_base_url=semaphore_base_url, semaphore_username=semaphore_username,
-                                  semaphore_password=semaphore_password)
+                                  semaphore_password=semaphore_password,vms=tosca_helper.get_vms())
     for node_pair in nodes_pairs:
         deployService.deploy(node_pair)
 

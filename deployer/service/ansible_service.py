@@ -30,11 +30,11 @@ class AnsibleService:
 
 
 
-    def execute(self,nodes_pair):
-        vms = nodes_pair[0]
+    def execute(self, nodes_pair, interface_type, vms, env_vars=None):
         application = nodes_pair[1]
         name = application.name
         desired_state = None
+        tasks_outputs = {}
         interfaces = application.node_template.interfaces
         if 'current_state' in application.node_template.attributes:
             current_state = application.node_template.attributes['current_state']
@@ -49,25 +49,35 @@ class AnsibleService:
             key_id = self.semaphore_helper.create_ssh_key(application.name, project_id, private_key)
             inventory_id = self.semaphore_helper.create_inventory(application.name, project_id, key_id,inventory_contents)
             if 'RUNNING' == desired_state:
-                standard = interfaces['Standard']
-                create = standard['create']
+                interface = interfaces[interface_type]
+                create = interface['create']
                 inputs = create['inputs']
                 git_url = inputs['repository']
                 playbook_names = inputs['resources']
-                for playbook_name in playbook_names:
-                    task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name)
-                    if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
-                        break
+                # for playbook_name in playbook_names:
+                #     environment_id = None
+                #     if env_vars:
+                #         environment_id = self.semaphore_helper.create_environment(project_id,name,env_vars)
+                #     task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name, environment_id= environment_id)
+                #     if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
+                #         break
+                #     tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
 
-                if self.semaphore_helper.get_task(project_id,task_id).status == 'success':
-                    configure = standard['configure']
+                # if self.semaphore_helper.get_task(project_id,task_id).status == 'success':
+                if True:
+                    configure = interface['configure']
                     inputs = configure['inputs']
                     git_url = inputs['repository']
                     playbook_names = inputs['resources']
                     for playbook_name in playbook_names:
-                        task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name)
+                        environment_id = None
+                        if env_vars:
+                            environment_id = self.semaphore_helper.create_environment(project_id, name, env_vars)
+                        task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name,environment_id= environment_id)
                         if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
                             break
+                    tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
+            return tasks_outputs
 
     def build_yml_inventory(self, vms):
         # loader = DataLoader()
@@ -100,12 +110,12 @@ class AnsibleService:
         private_key = vms[0].node_template.attributes['user_key_pair']['keys']['private_key']
         return base64.b64decode(private_key).decode('utf-8').replace(r'\n', '\n')
 
-    def run_task(self, name, project_id, key_id, git_url, inventory_id, playbook_name):
+    def run_task(self, name, project_id, key_id, git_url, inventory_id, playbook_name,environment_id=None):
         logger.info('project_id: '+str(project_id)+ ' task name: ' + str(name)+ ' git url: '+git_url+' playbook: '+playbook_name)
         self.repository_id = self.semaphore_helper.create_repository(name, project_id, key_id, git_url)
         template_id = self.semaphore_helper.create_template(project_id, key_id, inventory_id, self.repository_id,
                                                             playbook_name)
-        task_id = self.semaphore_helper.execute_task(project_id, template_id, playbook_name)
+        task_id = self.semaphore_helper.execute_task(project_id, template_id, playbook_name,environment_id=environment_id)
         task = self.semaphore_helper.get_task(project_id, task_id)
         last_output = ''
         while task.status == 'waiting' or task.status == 'running':
@@ -116,8 +126,6 @@ class AnsibleService:
             if last_output != this_output:
                 logger.info('task output: ' + str(this_output))
             last_output = this_output
-
             # logger.info('task output: ' + str(latask name:st_output))
             sleep(3)
         return task_id
-

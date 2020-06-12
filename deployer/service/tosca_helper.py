@@ -49,7 +49,7 @@ class ToscaHelper:
                 # So we explicitly get the VMs
                 # I don't like this solution but I can't think of something better.
                 if related_node.node_template.type == 'tosca.nodes.QC.VM.topology':
-                    vms = self.tosca_client.get_node_templates(self.doc_id,type_name='tosca.nodes.QC.VM.Compute')
+                    vms = self.get_vms()
                     related_node = vms
                 pair = (related_node, node)
                 nodes_pairs.append(pair)
@@ -69,6 +69,9 @@ class ToscaHelper:
                 return True
 
         return True
+
+    def get_vms(self):
+        return self.tosca_client.get_node_templates(self.doc_id, type_name='tosca.nodes.QC.VM.Compute')
 
 
 def get_interface_types(node):
