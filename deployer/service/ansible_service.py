@@ -54,17 +54,16 @@ class AnsibleService:
                 inputs = create['inputs']
                 git_url = inputs['repository']
                 playbook_names = inputs['resources']
-                # for playbook_name in playbook_names:
-                #     environment_id = None
-                #     if env_vars:
-                #         environment_id = self.semaphore_helper.create_environment(project_id,name,env_vars)
-                #     task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name, environment_id= environment_id)
-                #     if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
-                #         break
-                #     tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
+                for playbook_name in playbook_names:
+                    environment_id = None
+                    if env_vars:
+                        environment_id = self.semaphore_helper.create_environment(project_id,name,env_vars)
+                    task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name, environment_id= environment_id)
+                    if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
+                        break
+                    tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
 
-                # if self.semaphore_helper.get_task(project_id,task_id).status == 'success':
-                if True:
+                if self.semaphore_helper.get_task(project_id,task_id).status == 'success':
                     configure = interface['configure']
                     inputs = configure['inputs']
                     git_url = inputs['repository']
