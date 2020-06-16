@@ -8,13 +8,15 @@ import os
 import sys
 import tempfile
 import time
+import traceback
 from threading import Thread
 from time import sleep
-from service.deploy_service import DeployService
-from service.tosca_helper import  ToscaHelper
+
 import pika
-import sure_tosca_client
 import yaml
+
+from service.deploy_service import DeployService
+from service.tosca_helper import ToscaHelper
 
 logger = logging.getLogger(__name__)
 
@@ -85,9 +87,21 @@ def handle_delivery(message):
     nodes_pairs = tosca_helper.get_deployment_node_pairs()
 
     deployService = DeployService(semaphore_base_url=semaphore_base_url, semaphore_username=semaphore_username,
-                                  semaphore_password=semaphore_password,vms=tosca_helper.get_vms())
-    for node_pair in nodes_pairs:
-        deployService.deploy(node_pair)
+                                  semaphore_password=semaphore_password, vms=tosca_helper.get_vms())
+    try:
+        for node_pair in nodes_pairs:
+            updated_node_pairs = deployService.deploy(node_pair)
+            for updated_node in updated_node_pairs:
+                if isinstance(updated_node, list):
+                    for node in updated_node:
+                        tosca_helper.set_node(node,tosca_template_dict)
+                else:
+                    tosca_helper.set_node(updated_node, tosca_template_dict)
+
+    except Exception as e:
+        track = traceback.format_exc()
+        print(track)
+        raise
 
     response = {'toscaTemplate': tosca_template_dict}
     output_current_milli_time = int(round(time.time() * 1000))

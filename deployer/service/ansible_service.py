@@ -6,7 +6,7 @@ import datetime
 import yaml
 from semaphore_client.semaphore_helper import SemaphoreHelper
 
-yaml.Dumper.ignore_aliases = lambda *args : True
+yaml.Dumper.ignore_aliases = lambda *args: True
 
 logger = logging.getLogger(__name__)
 if not getattr(logger, 'handler_set', None):
@@ -20,15 +20,14 @@ if not getattr(logger, 'handler_set', None):
 
 class AnsibleService:
 
-    def __init__(self, semaphore_base_url=None,semaphore_username=None,semaphore_password=None):
+    def __init__(self, semaphore_base_url=None, semaphore_username=None, semaphore_password=None):
         self.semaphore_base_url = semaphore_base_url
         self.semaphore_username = semaphore_username
         self.semaphore_password = semaphore_password
-        self.semaphore_helper = SemaphoreHelper(self.semaphore_base_url, self.semaphore_username, self.semaphore_password)
+        self.semaphore_helper = SemaphoreHelper(self.semaphore_base_url, self.semaphore_username,
+                                                self.semaphore_password)
         self.repository_id = None
         self.template_id = None
-
-
 
     def execute(self, nodes_pair, interface_type, vms, env_vars=None):
         application = nodes_pair[1]
@@ -43,11 +42,12 @@ class AnsibleService:
 
         if desired_state:
             now = datetime.datetime.now()
-            project_id = self.semaphore_helper.create_project(application.name+'_'+str(now))
-            inventory_contents = yaml.dump( self.build_yml_inventory(vms),default_flow_style=False)
+            project_id = self.semaphore_helper.create_project(application.name + '_' + str(now))
+            inventory_contents = yaml.dump(self.build_yml_inventory(vms), default_flow_style=False)
             private_key = self.get_private_key(vms)
             key_id = self.semaphore_helper.create_ssh_key(application.name, project_id, private_key)
-            inventory_id = self.semaphore_helper.create_inventory(application.name, project_id, key_id,inventory_contents)
+            inventory_id = self.semaphore_helper.create_inventory(application.name, project_id, key_id,
+                                                                  inventory_contents)
             if 'RUNNING' == desired_state:
                 interface = interfaces[interface_type]
                 create = interface['create']
@@ -57,13 +57,17 @@ class AnsibleService:
                 for playbook_name in playbook_names:
                     environment_id = None
                     if env_vars:
-                        environment_id = self.semaphore_helper.create_environment(project_id,name,env_vars)
-                    task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name, environment_id= environment_id)
+                        environment_id = self.semaphore_helper.create_environment(project_id, name, env_vars)
+                    task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name,
+                                            environment_id=environment_id)
                     if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
                         break
+                    logger.info('playbook: ' + playbook_name + ' task_id: ' + str(task_id))
                     tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
+                    for out in tasks_outputs[task_id]:
+                        logger.info('out: ' + out.output)
 
-                if self.semaphore_helper.get_task(project_id,task_id).status == 'success':
+                if 'configure' in interface and self.semaphore_helper.get_task(project_id, task_id).status == 'success':
                     configure = interface['configure']
                     inputs = configure['inputs']
                     git_url = inputs['repository']
@@ -72,10 +76,14 @@ class AnsibleService:
                         environment_id = None
                         if env_vars:
                             environment_id = self.semaphore_helper.create_environment(project_id, name, env_vars)
-                        task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name,environment_id= environment_id)
+                        task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name,
+                                                environment_id=environment_id)
                         if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
                             break
-                    tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
+                        logger.info('playbook: ' + playbook_name + ' task_id: ' + str(task_id))
+                        tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
+                        for out in tasks_outputs[task_id]:
+                            logger.info('out: ' + out.output)
             return tasks_outputs
 
     def build_yml_inventory(self, vms):
@@ -84,7 +92,7 @@ class AnsibleService:
         # variable_manager = VariableManager()
         inventory = {}
         all = {}
-        vars = {'ansible_ssh_common_args':'-o StrictHostKeyChecking=no'}
+        vars = {'ansible_ssh_common_args': '-o StrictHostKeyChecking=no'}
         vars['ansible_ssh_user'] = vms[0].node_template.properties['user_name']
         children = {}
         for vm in vms:
@@ -96,7 +104,7 @@ class AnsibleService:
             else:
                 hosts = children[role]
             host = {}
-            host[public_ip] =  vars
+            host[public_ip] = vars
             hosts['hosts'] = host
             children[role] = hosts
             # inventory.add_group(role)
@@ -109,22 +117,23 @@ class AnsibleService:
         private_key = vms[0].node_template.attributes['user_key_pair']['keys']['private_key']
         return base64.b64decode(private_key).decode('utf-8').replace(r'\n', '\n')
 
-    def run_task(self, name, project_id, key_id, git_url, inventory_id, playbook_name,environment_id=None):
-        logger.info('project_id: '+str(project_id)+ ' task name: ' + str(name)+ ' git url: '+git_url+' playbook: '+playbook_name)
+    def run_task(self, name, project_id, key_id, git_url, inventory_id, playbook_name, environment_id=None):
+        logger.info('project_id: ' + str(project_id) + ' task name: ' + str(
+            name) + ' git url: ' + git_url + ' playbook: ' + playbook_name)
         self.repository_id = self.semaphore_helper.create_repository(name, project_id, key_id, git_url)
         template_id = self.semaphore_helper.create_template(project_id, key_id, inventory_id, self.repository_id,
                                                             playbook_name)
-        task_id = self.semaphore_helper.execute_task(project_id, template_id, playbook_name,environment_id=environment_id)
+        task_id = self.semaphore_helper.execute_task(project_id, template_id, playbook_name,
+                                                     environment_id=environment_id)
         task = self.semaphore_helper.get_task(project_id, task_id)
-        last_output = ''
+        last_status = ''
         while task.status == 'waiting' or task.status == 'running':
             task = self.semaphore_helper.get_task(project_id, task_id)
-            logger.info('task name: '+name+ ' task status: ' + str(task.status))
-            task_outputs = self.semaphore_helper.get_task_outputs(project_id, task_id)
-            this_output = task_outputs[len(task_outputs)-1].output.replace(r'\n', '\n').replace(r'\r', '\r')
-            if last_output != this_output:
-                logger.info('task output: ' + str(this_output))
-            last_output = this_output
-            # logger.info('task output: ' + str(latask name:st_output))
+            this_status = task.status
+            if last_status != this_status:
+                logger.info('task name: ' + name + ', task status: ' + str(task.status))
+            last_status = this_status
             sleep(3)
+        if 'k8s/create_k8s_dashboard.yaml'  == playbook_name:
+            print(playbook_name)
         return task_id

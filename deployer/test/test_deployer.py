@@ -52,8 +52,9 @@ class TestDeployer(unittest.TestCase):
                 self.assertIsNotNone(nodes_pairs)
 
                 username = 'admin'
-                deployService = DeployService(polemarch_base_url=polemarch_base_url,polemarch_username=username,polemarch_password='admin',
-                                              semaphore_base_url=semaphore_base_url,semaphore_username=username,semaphore_password='password')
+                deployService = DeployService(polemarch_username=username,polemarch_password='admin',
+                                              semaphore_base_url=semaphore_base_url,semaphore_username=username,
+                                              semaphore_password='password')
                 for node_pair in nodes_pairs:
                     deployService.deploy(node_pair)
 

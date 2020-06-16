@@ -28,7 +28,6 @@ class ToscaHelper:
         return api
 
     def get_interface_types(target):
-        print(target.node_template.interfaces)
         interface_types = []
         for interface in target.node_template.interfaces:
             interface_types.append(interface)
@@ -72,6 +71,13 @@ class ToscaHelper:
 
     def get_vms(self):
         return self.tosca_client.get_node_templates(self.doc_id, type_name='tosca.nodes.QC.VM.Compute')
+
+    def set_node(self, updated_node, tosca_template_dict):
+        node_templates = tosca_template_dict['topology_template']['node_templates']
+        for node_name in node_templates:
+            if node_name == updated_node.name:
+                node_templates[node_name] = updated_node.node_template
+                return tosca_template_dict
 
 
 def get_interface_types(node):
