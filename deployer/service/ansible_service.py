@@ -62,10 +62,8 @@ class AnsibleService:
                                             environment_id=environment_id)
                     if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
                         break
-                    logger.info('playbook: ' + playbook_name + ' task_id: ' + str(task_id))
+                    # logger.info('playbook: ' + playbook_name + ' task_id: ' + str(task_id))
                     tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
-                    for out in tasks_outputs[task_id]:
-                        logger.info('out: ' + out.output)
 
                 if 'configure' in interface and self.semaphore_helper.get_task(project_id, task_id).status == 'success':
                     configure = interface['configure']
@@ -80,10 +78,8 @@ class AnsibleService:
                                                 environment_id=environment_id)
                         if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
                             break
-                        logger.info('playbook: ' + playbook_name + ' task_id: ' + str(task_id))
+                        # logger.info('playbook: ' + playbook_name + ' task_id: ' + str(task_id))
                         tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
-                        for out in tasks_outputs[task_id]:
-                            logger.info('out: ' + out.output)
             return tasks_outputs
 
     def build_yml_inventory(self, vms):

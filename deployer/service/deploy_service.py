@@ -50,7 +50,7 @@ class DeployService:
         source = nodes_pair[1]
         env_vars = {'K8s_NAMESPACE': 'default'}
         if source.node_template.type == 'tosca.nodes.QC.Container.Application.Docker':
-            env_vars = {'DOCKER_IMAGE':source.node_template.artifacts['image']['file']}
+            env_vars['DOCKER_IMAGE'] = source.node_template.artifacts['image']['file']
             env_vars['DOCKER_SERVICE_NAME'] = source.name
             env_vars['CONTAINER_PORT'] = source.node_template.properties['ports'][0].split(':')[1]
         return env_vars
