@@ -130,6 +130,4 @@ class AnsibleService:
                 logger.info('task name: ' + name + ', task status: ' + str(task.status))
             last_status = this_status
             sleep(3)
-        if 'k8s/create_k8s_dashboard.yaml'  == playbook_name:
-            print(playbook_name)
         return task_id

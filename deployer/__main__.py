@@ -90,25 +90,25 @@ def handle_delivery(message):
                                   semaphore_password=semaphore_password, vms=tosca_helper.get_vms())
     try:
         for node_pair in nodes_pairs:
-            updated_node_pairs = deployService.deploy(node_pair)
-            for updated_node in updated_node_pairs:
-                if isinstance(updated_node, list):
-                    for node in updated_node:
-                        tosca_helper.set_node(node,tosca_template_dict)
-                else:
-                    tosca_helper.set_node(updated_node, tosca_template_dict)
+            updated_node = deployService.deploy(node_pair)
+            if isinstance(updated_node, list):
+                for node in updated_node:
+                    tosca_template_dict = tosca_helper.set_node(node,tosca_template_dict)
+                    logger.info("tosca_template_dict :" + json.dumps(tosca_template_dict))
+            else:
+                tosca_template_dict = tosca_helper.set_node(updated_node, tosca_template_dict)
+                logger.info("tosca_template_dict :" + json.dumps(tosca_template_dict))
 
+        response = {'toscaTemplate': tosca_template_dict}
+        output_current_milli_time = int(round(time.time() * 1000))
+        response["creationDate"] = output_current_milli_time
+        logger.info("Returning Deployment")
+        logger.info("Output message:" + json.dumps(response))
+        return json.dumps(response)
     except Exception as e:
         track = traceback.format_exc()
         print(track)
         raise
-
-    response = {'toscaTemplate': tosca_template_dict}
-    output_current_milli_time = int(round(time.time() * 1000))
-    response["creationDate"] = output_current_milli_time
-    logger.info("Returning Deployment")
-    logger.info("Output message:" + json.dumps(response))
-    return json.dumps(response)
 
 
 def threaded_function(args):

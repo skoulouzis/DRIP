@@ -1,8 +1,9 @@
+import copy
 import os
 import sys
 import urllib.request
 
-from sure_tosca_client import Configuration, ApiClient
+from sure_tosca_client import Configuration, ApiClient, NodeTemplate
 from sure_tosca_client.api import default_api
 
 
@@ -76,7 +77,7 @@ class ToscaHelper:
         node_templates = tosca_template_dict['topology_template']['node_templates']
         for node_name in node_templates:
             if node_name == updated_node.name:
-                node_templates[node_name] = updated_node.node_template
+                node_templates[node_name] = updated_node.node_template.to_dict()
                 return tosca_template_dict
 
 

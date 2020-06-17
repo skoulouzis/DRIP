@@ -38,12 +38,12 @@ class DeployService:
             env_vars = self.get_env_vars(nodes_pair)
             if 'Standard' in interface_types:
                 task_outputs =  ansible_service.execute(nodes_pair, 'Standard', self.vms, env_vars=env_vars)
-                nodes_pair = self.set_attributes(task_outputs,nodes_pair)
+                source = self.set_attributes(task_outputs,source)
             if 'Kubernetes' in interface_types:
                 task_outputs = ansible_service.execute(nodes_pair, 'Kubernetes', self.vms, env_vars=env_vars)
-                nodes_pair = self.set_attributes(task_outputs,nodes_pair)
+                source = self.set_attributes(task_outputs,source)
 
-        return nodes_pair
+        return source
 
     def get_env_vars(self, nodes_pair):
         target = nodes_pair[0]
@@ -55,15 +55,17 @@ class DeployService:
             env_vars['CONTAINER_PORT'] = source.node_template.properties['ports'][0].split(':')[1]
         return env_vars
 
-    def set_attributes(self, task_outputs,nodes_pair):
-        target = nodes_pair[0]
-        source = nodes_pair[1]
+    def set_attributes(self, task_outputs,source):
+        # target = nodes_pair[0]
+        # source = nodes_pair[1]
         if source.node_template.type == 'tosca.nodes.QC.docker.Orchestrator.Kubernetes':
             source = self.set_kubernetes_attributes(source=source,task_outputs=task_outputs)
-            lst = list(nodes_pair)
-            lst[1] = source
-            nodes_pair = tuple(lst)
-        return nodes_pair
+        if source.node_template.type == 'tosca.nodes.QC.Container.Application.Docker':
+            source = self.set_docker_attributes(source=source, task_outputs=task_outputs)
+        # lst = list(nodes_pair)
+        # lst[1] = source
+        # nodes_pair = tuple(lst)
+        return source
 
 
 
@@ -130,7 +132,7 @@ class DeployService:
 
         if 'dashboard_url' not in source.node_template.attributes:
             dashboard_url = ''
-            attributes['dashboard_url'] = tokens
+            attributes['dashboard_url'] = dashboard_url
         else:
             dashboard_url = attributes['dashboard_url']
 
@@ -152,3 +154,18 @@ class DeployService:
                 attributes['dashboard_url'] = dashboard_url
                 logger.info('source.node_template.attributes: ' + str(attributes))
                 return source
+
+    def set_docker_attributes(self, source, task_outputs):
+        attributes = source.node_template.attributes
+        if 'service_url' not in source.node_template.attributes:
+            service_url = ''
+            attributes['service_url'] = service_url
+        for task_output_key in task_outputs:
+            task_output = task_outputs[task_output_key]
+            k8s_services = self.parse_ansible_var('k8s_services', task_output)
+            service_port = self.get_service_port(k8s_services, source.name, 'nodePort')
+            if service_port:
+                service_url = 'http://' + self.master_ip + ':' + str(service_port)
+                attributes['service_url'] = service_url
+                logger.info('source.node_template.attributes: ' + str(attributes))
+            return source

@@ -14,9 +14,10 @@ from __future__ import absolute_import
 
 import os
 import unittest
+from urllib.error import HTTPError
 
-import urllib3
-
+from urllib.request import urlopen
+import ssl
 import sure_tosca_client
 from sure_tosca_client import Configuration, ApiClient
 from sure_tosca_client.api.default_api import DefaultApi  # noqa: E501
@@ -28,7 +29,7 @@ class TestDefaultApi(unittest.TestCase):
     def setUp(self):
         configuration = Configuration()
         configuration.host = 'http://127.0.0.1:8081/tosca-sure/1.0.0' #Make sure we don't have '/' on the end of url
-        if self.service_is_up(configuration.host):
+        if self.check_service_is_up(configuration.host):
             configuration.verify_ssl = False
             api_client = ApiClient(configuration=configuration)
             self.api = sure_tosca_client.api.default_api.DefaultApi(api_client=api_client)  # noqa: E501
@@ -190,12 +191,17 @@ class TestDefaultApi(unittest.TestCase):
             return file_id
 
 
-    def service_is_up(self, url):
+    def check_service_is_up(self, url):
         code = None
         try:
-            http = urllib3.PoolManager()
-            r = http.request('HEAD', url)
+            response = urlopen(url, context=ssl._create_unverified_context())
+            print(response)
+            # http = urllib3.PoolManager()
+            # r = http.request('HEAD', url,context=ctx)
         except Exception as e:
+            if isinstance(e, HTTPError) and e.code == 401:
+                return True
+
             return False
 
         return True
