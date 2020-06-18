@@ -60,7 +60,7 @@ services:
       - rabbit
       - mongo
       - sure-tosca
-    image: manager:3.0.0 
+    image: qcdis/manager 
     environment:
       RABBITMQ_HOST: rabbit
       MONGO_HOST: mongo
@@ -70,7 +70,7 @@ services:
       - "8080:8080"       
             
   sure-tosca:
-    image: sure-tosca:3.0.0
+    image: qcdis/sure-tosca
     ports: 
       - "8081:8081"
     
@@ -78,7 +78,7 @@ services:
     depends_on:
       - rabbit
       - sure-tosca
-    image: planner:3.0.0 
+    image: qcdis/planner 
     environment:
       RABBITMQ_HOST: rabbit
     
@@ -86,22 +86,22 @@ services:
     depends_on:
       - rabbit
       - sure-tosca
-    image: provisioner:3.0.0 
+    image: qcdis/provisioner 
     environment:
       RABBITMQ_HOST: rabbit      
       SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
       CLOUD_STORM_SECRET: 456
       CREDENTIAL_SECRET: 123      
     
-  #deployer:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: deployer:3.0.0 
-    #environment:
-      #RABBITMQ_HOST: rabbit           
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-      #SEMAPHORE_BASE_PATH: http://semaphore:3000/api
+  deployer:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: qcdis/deployer 
+    environment:
+      RABBITMQ_HOST: rabbit           
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+      SEMAPHORE_BASE_PATH: http://semaphore:3000/api
       
           
       
