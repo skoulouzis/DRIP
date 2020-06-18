@@ -9,6 +9,7 @@ CMD jar -xf provisioner-3.0.0-jar-with-dependencies.jar application.properties &
     sed -ie "s#^cloud.storm.secret=.*#cloud.storm.secret=$CLOUD_STORM_SECRET#" application.properties && \
     sed -ie "s#^credential.secret=.*#credential.secret=$CREDENTIAL_SECRET#" application.properties && \
     sed -ie "s#^cloud.storm.db.path=.*#cloud.storm.db.path=/etc/UD#" application.properties && \
+    echo "" >> application.properties && \
     echo "cloud.storm.db.path=/etc/UD" >> application.properties && \
     cat application.properties && \
     jar -uf provisioner-3.0.0-jar-with-dependencies.jar application.properties && \
