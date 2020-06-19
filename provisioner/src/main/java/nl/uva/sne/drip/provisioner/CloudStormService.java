@@ -17,9 +17,12 @@ import com.jcraft.jsch.KeyPair;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +32,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import nl.uva.sne.drip.commons.utils.Constants;
 import static nl.uva.sne.drip.commons.utils.Constants.*;
 import nl.uva.sne.drip.commons.utils.Converter;
@@ -61,6 +67,9 @@ import topology.analysis.TopologyAnalysisMain;
  * @author S. Koulouzis
  */
 class CloudStormService {
+
+    protected String secret;
+    private String credentialSecret;
 
     /**
      * @return the helper
@@ -105,6 +114,15 @@ class CloudStormService {
         if (sureToscaBasePath == null) {
             throw new NullPointerException("sureToscaBasePath cannot be null");
         }
+        secret = properties.getProperty("cloud.storm.secret");
+        if (secret == null) {
+            throw new NullPointerException("secret cannot be null");
+        }
+        credentialSecret = properties.getProperty("credential.secret");
+        if (credentialSecret == null) {
+            throw new NullPointerException("secret cannot be null");
+        }
+
         Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "sureToscaBasePath: {0}", sureToscaBasePath);
         this.helper = new ToscaHelper(sureToscaBasePath);
         this.helper.uploadToscaTemplate(toscaTemplate);
@@ -123,9 +141,10 @@ class CloudStormService {
         for (NodeTemplateMap vmTopologyMap : helper.getVMTopologyTemplates()) {
             Map<String, Object> provisionedFiles = helper.getNodeArtifact(vmTopologyMap.getNodeTemplate(), "provisioned_files");
             if (provisionedFiles != null) {
-                String fileContentsBase64 = (String) provisionedFiles.get("file_contents");
-                if (fileContentsBase64 != null) {
+                String encryptedFileContents = (String) provisionedFiles.get("file_contents");
+                if (encryptedFileContents != null) {
                     File zipFile = new File(tempInputDir.getParent() + File.separator + Long.toString(System.nanoTime()) + "-" + CLOUD_STORM_FILES_ZIP_SUFIX);
+                    String fileContentsBase64 = Converter.decryptString(encryptedFileContents, secret);
                     Converter.decodeBase64BToFile(fileContentsBase64, zipFile.getAbsolutePath());
                     Converter.unzipFolder(zipFile.getAbsolutePath(), tempInputDir.getAbsolutePath());
 
@@ -282,6 +301,7 @@ class CloudStormService {
         int i = 0;
         for (NodeTemplateMap vmTopologyMap : vmTopologiesMaps) {
             Credential toscaCredentials = getHelper().getCredentialsFromVMTopology(vmTopologyMap);
+            toscaCredentials = Converter.dencryptCredential(toscaCredentials, credentialSecret);
             CloudCred cloudStormCredential = new CloudCred();
             cloudStormCredential.setCloudProvider(toscaCredentials.getCloudProviderName());
             String credInfoFile = toscaCredentials.getCloudProviderName() + i + ".yml";
@@ -355,7 +375,7 @@ class CloudStormService {
         FileUtils.copyDirectory(srcDir, destDir);
     }
 
-    protected ToscaTemplate runCloudStorm(String tempInputDirPath, boolean dryRun) throws IOException, ApiException {
+    protected ToscaTemplate runCloudStorm(String tempInputDirPath, boolean dryRun) throws IOException, ApiException, UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         String[] args = new String[]{"run", tempInputDirPath};
         File topTopologyFile = new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH
                 + TOP_TOPOLOGY_FILE_NAME);
@@ -402,7 +422,7 @@ class CloudStormService {
         return keyPair;
     }
 
-    protected NodeTemplateMap addCloudStromArtifacts(NodeTemplateMap vmTopologyMap, String tempInputDirPath) throws IOException {
+    protected NodeTemplateMap addCloudStromArtifacts(NodeTemplateMap vmTopologyMap, String tempInputDirPath) throws IOException, UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Map<String, Object> artifacts = vmTopologyMap.getNodeTemplate().getArtifacts();
         if (artifacts == null) {
             artifacts = new HashMap<>();
@@ -416,7 +436,8 @@ class CloudStormService {
         Logger.getLogger(CloudStormService.class.getName()).log(Level.FINE, "Created zip at: {0}", zipPath);
 
         String cloudStormZipFileContentsAsBase64 = Converter.encodeFileToBase64Binary(zipPath);
-        provisionedFiles.put("file_contents", cloudStormZipFileContentsAsBase64);
+        String encryptedCloudStormZipFileContents = Converter.encryptString(cloudStormZipFileContentsAsBase64, secret);
+        provisionedFiles.put("file_contents", encryptedCloudStormZipFileContents);
         provisionedFiles.put("encoding", "base64");
         provisionedFiles.put("file_ext", "zip");
         artifacts.put("provisioned_files", provisionedFiles);
@@ -425,7 +446,7 @@ class CloudStormService {
         return vmTopologyMap;
     }
 
-    private void setSSHKeysToVMAttributes(int i, List<NodeTemplateMap> vmTopologiesMaps, CloudsStormSubTopology subTopology, String tempInputDirPath) throws IOException, ApiException {
+    private void setSSHKeysToVMAttributes(int i, List<NodeTemplateMap> vmTopologiesMaps, CloudsStormSubTopology subTopology, String tempInputDirPath) throws IOException, ApiException, UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         NodeTemplateMap vmTopologyMap = vmTopologiesMaps.get(i);
 
         vmTopologyMap = addCloudStromArtifacts(vmTopologyMap, tempInputDirPath);
@@ -459,7 +480,7 @@ class CloudStormService {
         userKyes.put("private_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa"));
         userKyes.put("public_key", Converter.encodeFileToBase64Binary(userKyePairFolder + File.separator + "id_rsa.pub"));
         userKeyPairCredential.setKeys(userKyes);
-
+//        userKeyPairCredential = Converter.encryptCredential(userKeyPairCredential, credentialSecret);
         CloudsStormVMs cloudsStormVMs = objectMapper.readValue(new File(tempInputDirPath + TOPOLOGY_RELATIVE_PATH + File.separator + subTopology.getTopology() + ".yml"),
                 CloudsStormVMs.class);
         List<CloudsStormVM> vms = cloudsStormVMs.getVms();

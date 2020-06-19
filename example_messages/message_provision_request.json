@@ -1,6 +1,6 @@
 {
   "owner": "user",
-  "creationDate": 1585660972026,
+  "creationDate": 1591357712632,
   "toscaTemplate": {
     "tosca_definitions_version": "tosca_simple_yaml_1_0",
     "tosca_default_namespace": null,
@@ -11,7 +11,7 @@
       "node_templates": {
         "compute": {
           "properties": {
-            "disk_size": "10000 MB",
+            "disk_size": "20000 MB",
             "mem_size": "1000 MB",
             "num_cores": 1,
             "os": "Ubuntu 18.04",
@@ -26,7 +26,7 @@
         },
         "compute_1": {
           "properties": {
-            "disk_size": "10000 MB",
+            "disk_size": "20000 MB",
             "mem_size": "1000 MB",
             "num_cores": 1,
             "os": "Ubuntu 18.04",
@@ -39,7 +39,11 @@
           },
           "type": "tosca.nodes.QC.VM.Compute"
         },
-        "kubernetes": {
+        "glusterfs": {
+          "properties": {
+            "min_masters_num": 1,
+            "min_workers_num": 1
+          },
           "requirements": [
             {
               "host": {
@@ -53,25 +57,60 @@
             "Standard": {
               "configure": {
                 "inputs": {
-                  "playbook": "k8s_dashboard.yaml",
-                  "repository": "https://github.com/skoulouzis/playbooks.git"
+                  "repository": "https://github.com/QCDIS/mysome_glusterfs.git",
+                  "resources": [
+                    "002.setup_glusterfs_infra.yml",
+                    "003.setup_glusterfs_cluster.yml",
+                    "004.mount_glusterfs.yml"
+                  ]
                 }
               },
               "create": {
                 "inputs": {
-                  "playbook": "install_k8s.yaml",
-                  "repository": "https://github.com/skoulouzis/playbooks.git"
-                }
-              },
-              "delete": {
-                "inputs": {
-                  "playbook": "k8s_delete.yaml",
-                  "repository": "https://github.com/skoulouzis/playbooks.git"
+                  "repository": "https://github.com/QCDIS/playbooks.git",
+                  "resources": [
+                    "ec2/ec2_mount.yaml",
+                    "install_glusterfs_prerequisites.yaml"
+                  ]
                 }
               }
             }
           },
-          "type": "tosca.nodes.QC.docker.Orchestrator.Kubernetes"
+          "type": "tosca.nodes.QC.Application.GlusterFS"
+        },
+        "tic": {
+          "requirements": [
+            {
+              "storage": {
+                "capability": "tosca.capabilities.QC.GlusterFS",
+                "node": "glusterfs",
+                "relationship": "tosca.relationships.DependsOn"
+              }
+            }
+          ],
+          "interfaces": {
+            "Standard": {
+              "create": {
+                "inputs": {
+                  "repository": "https://github.com/bityoga/fabric_as_code.git",
+                  "resources": [
+                    "011.initialize_hosts.yml",
+                    "012.prepare_docker_images.yml",
+                    "013.mount_fs.yml",
+                    "014.spawn_swarm.yml",
+                    "015.deploy_swarm_visualizer.yml",
+                    "016.deploy_portainer.yml",
+                    "100.deploy_ca.yml",
+                    "101.deploy_orderer.yml",
+                    "102.deploy_peers.yml",
+                    "103.deploy_cli.yml",
+                    "104.deploy_hlf_explorer.yml"
+                  ]
+                }
+              }
+            }
+          },
+          "type": "tosca.nodes.QC.Application.TIC"
         },
         "topology": {
           "properties": {
@@ -133,9 +172,9 @@
             "credential": {
               "cloud_provider_name": "EC2",
               "keys": {
-                "aws_access_key_id": "XXXXXXXXXXXX"
+                "aws_access_key_id": "BGCAc9htRRjcZx5uZ6aWnRo67tNAgk7M26DwuN3cZvypnCt6V56U9RbEuRpmXbER"
               },
-              "token": "XXXXXXXXXXXXX",
+              "token": "BGCAc9htRRjcZx5uZ6aWnRo67tNAgk7M26DwuN3cZvypnCt6V56U9RbEuRpmXbER",
               "token_type": "access_key"
             },
             "desired_state": "RUNNING"
@@ -144,30 +183,6 @@
             "provisioned_files": {
               "required": false,
               "type": "string"
-            }
-          }
-        },
-        "ws-pema": {
-          "properties": {
-            "ports": [
-              "30001:8080"
-            ]
-          },
-          "requirements": [
-            {
-              "host": {
-                "capability": "tosca.capabilities.QC.docker.Orchestrator",
-                "node": "kubernetes",
-                "relationship": "tosca.relationships.HostedOn"
-              }
-            }
-          ],
-          "type": "tosca.nodes.QC.Container.Application.Docker",
-          "artifacts": {
-            "image": {
-              "file": "alogo53/ws-pema-lifewatch",
-              "repository": "docker_hub",
-              "type": "tosca.artifacts.Deployment.Image.Container.Docker"
             }
           }
         }
@@ -183,19 +198,19 @@
     "description": "TOSCA example",
     "imports": [
       {
-        "nodes": "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/nodes.yaml"
+        "nodes": "https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/types/nodes.yaml"
       },
       {
-        "data": "https://raw.githubusercontent.com/skoulouzis/CONF/develop/TOSCA/types/data.yml"
+        "data": "https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/types/data.yml"
       },
       {
-        "capabilities": "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/capabilities.yaml"
+        "capabilities": "https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/types/capabilities.yaml"
       },
       {
-        "policies": "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/policies.yaml"
+        "policies": "https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/types/policies.yaml"
       },
       {
-        "interfaces": "https://raw.githubusercontent.com/skoulouzis/DRIP/develop/TOSCA/types/interfaces.yml"
+        "interfaces": "https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/types/interfaces.yml"
       }
     ],
     "dsl_definitions": null,

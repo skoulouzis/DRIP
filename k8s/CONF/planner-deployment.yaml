@@ -31,7 +31,7 @@ spec:
       - env:
         - name: RABBITMQ_HOST
           value: rabbit
-        image: qcdis/planner:3.0.0
+        image: qcdis/planner
         name: planner
         imagePullPolicy: Always
         resources: {}

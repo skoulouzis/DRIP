@@ -28,6 +28,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +39,9 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import nl.uva.sne.drip.Swagger2SpringBoot;
 import nl.uva.sne.drip.api.NotFoundException;
 import nl.uva.sne.drip.commons.utils.Constants;
@@ -301,7 +306,7 @@ public class ServiceTests {
      * Test of save method, of class CredentialService.
      */
     @Test
-    public void testCredentialServiceSave() {
+    public void testCredentialServiceSave() throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "save");
         saveCredential();
     }
@@ -332,7 +337,7 @@ public class ServiceTests {
         assertEquals(keystorFileChecksum, keystorFileCopyChecksum);
     }
 
-    public String saveCredential() {
+    public String saveCredential() throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "saveCredential");
         Credential document = new Credential();
         document.setCloudProviderName("exogeni");
@@ -364,7 +369,7 @@ public class ServiceTests {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testCredentialServiceDeleteByID() throws JsonProcessingException {
+    public void testCredentialServiceDeleteByID() throws JsonProcessingException, UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "deleteByID");
         String id = saveCredential();
         credentialService.deleteByID(id);
@@ -382,7 +387,7 @@ public class ServiceTests {
      * Test of getAllIds method, of class CredentialService.
      */
     @Test
-    public void testCredentialServiceGetAllIds() {
+    public void testCredentialServiceGetAllIds() throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Logger.getLogger(ServiceTests.class.getName()).log(Level.INFO, "getAllIds");
         testCredentialServiceDeleteAll();
         int numOfINst = 3;
@@ -404,7 +409,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void testSetProvisionerOperation() throws FileNotFoundException, IOException, MissingCredentialsException, ApiException, TypeExeption, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException, MissingVMTopologyException {
+    public void testSetProvisionerOperation() throws FileNotFoundException, IOException, MissingCredentialsException, ApiException, TypeExeption, JsonProcessingException, TimeoutException, InterruptedException, NotFoundException, MissingVMTopologyException, UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         if (ToscaHelper.isServiceUp(sureToscaBasePath) && ToscaHelper.isServiceUp("http://" + messageBrokerHost + ":15672")) {
 
             addRandomCredential("ExoGENI");
@@ -447,7 +452,7 @@ public class ServiceTests {
         }
     }
 
-    private void addRandomCredential(String providerName) {
+    private void addRandomCredential(String providerName) throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Credential document = new Credential();
         document.setCloudProviderName(providerName);
         Map<String, String> keys = new HashMap<>();

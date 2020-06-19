@@ -1,9 +1,10 @@
+import json
 from datetime import datetime
 
 import urllib3
 
 from semaphore_client import Configuration, ApiClient, api, ProjectRequest, Login, AccessKeyRequest, InventoryRequest, \
-    RepositoryRequest, TemplateRequest, Task
+    RepositoryRequest, TemplateRequest, Task, EnvironmentRequest
 
 
 class SemaphoreHelper:
@@ -77,8 +78,12 @@ class SemaphoreHelper:
         templates = self.project_api.project_project_id_templates_get(project_id, playbook_name, 'asc')
         return self.find_template(templates,playbook_name).id
 
-    def execute_task(self, project_id, template_id, playbook_name):
-        task = Task(template_id=template_id, playbook=playbook_name)
+    def execute_task(self, project_id, template_id, playbook_name,environment_id=None):
+        environment_json = None
+        if environment_id:
+            environment = self.find_environment(project_id,environment_id=environment_id)
+            environment_json = environment.json
+        task = Task(template_id=template_id, playbook=playbook_name,environment=environment_json)
         self.project_api.project_project_id_tasks_post(task,project_id)
         tasks = self.project_api.project_project_id_tasks_get(project_id)
         return self.find_latest_task(tasks).id
@@ -126,4 +131,21 @@ class SemaphoreHelper:
         for repo in repositories:
             if repo.git_url == git_url:
                 return repo
+        return None
+
+    def create_environment(self, project_id,name,env_vars):
+        vars = {"ENV":env_vars}
+        vars_str = json.dumps(vars)
+        environment_request = EnvironmentRequest(name=name, project_id=project_id, password=None, json=vars_str)
+        self.project_api.project_project_id_environment_post(environment_request,project_id)
+        environment = self.find_environment(project_id, name,vars_str)
+        return environment.id
+
+    def find_environment(self, project_id, name=None,vars_str=None,environment_id=None):
+        environments = self.project_api.project_project_id_environment_get(project_id,'db-deploy','desc')
+        for environment in environments:
+            if environment_id and environment.id ==environment_id:
+                return environment
+            if environment.name and environment.name == name and environment.project_id == project_id and environment.json == vars_str:
+                return environment
         return None

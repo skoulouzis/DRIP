@@ -39,7 +39,6 @@ class TestDeployer(unittest.TestCase):
 
 
             sure_tosca_base_url = 'http://127.0.0.1:8081/tosca-sure/1.0.0'
-            polemarch_base_url='http://127.0.0.1:30001/api/v2'
             semaphore_base_url = 'http://127.0.0.1:3000/api'
             tosca_service_is_up = ToscaHelper.service_is_up(sure_tosca_base_url)
             semaphore_is_up = ToscaHelper.service_is_up(semaphore_base_url)
@@ -53,8 +52,9 @@ class TestDeployer(unittest.TestCase):
                 self.assertIsNotNone(nodes_pairs)
 
                 username = 'admin'
-                deployService = DeployService(polemarch_base_url=polemarch_base_url,polemarch_username=username,polemarch_password='admin',
-                                              semaphore_base_url=semaphore_base_url,semaphore_username=username,semaphore_password='password')
+                deployService = DeployService(polemarch_username=username,polemarch_password='admin',
+                                              semaphore_base_url=semaphore_base_url,semaphore_username=username,
+                                              semaphore_password='password')
                 for node_pair in nodes_pairs:
                     deployService.deploy(node_pair)
 
