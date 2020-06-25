@@ -32,6 +32,8 @@ class DeployService:
     def deploy(self,nodes_pair):
         target = nodes_pair[0]
         source = nodes_pair[1]
+        if source.name == 'mongo':
+            print(source)
         interface_types = tosca_helper.get_interface_types(source)
         if interface_types:
             ansible_service = AnsibleService(self.semaphore_base_url, self.semaphore_username, self.semaphore_password)
@@ -42,7 +44,10 @@ class DeployService:
             if 'Kubernetes' in interface_types:
                 task_outputs = ansible_service.execute(nodes_pair, 'Kubernetes', self.vms, env_vars=env_vars)
                 source = self.set_attributes(task_outputs,source)
-
+                if not source:
+                    print(source)
+            if not source:
+                print(source)
         return source
 
     def get_env_vars(self, nodes_pair):
@@ -59,6 +64,8 @@ class DeployService:
     def set_attributes(self, task_outputs,source):
         # target = nodes_pair[0]
         # source = nodes_pair[1]
+        if not source:
+            print(source)
         if source.node_template.type == 'tosca.nodes.QC.docker.Orchestrator.Kubernetes':
             source = self.set_kubernetes_attributes(source=source,task_outputs=task_outputs)
         if source.node_template.type == 'tosca.nodes.QC.Container.Application.Docker':
@@ -66,6 +73,8 @@ class DeployService:
         # lst = list(nodes_pair)
         # lst[1] = source
         # nodes_pair = tuple(lst)
+        if not source:
+            print(source)
         return source
 
 

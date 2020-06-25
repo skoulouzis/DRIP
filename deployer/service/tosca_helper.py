@@ -76,6 +76,8 @@ class ToscaHelper:
     def set_node(self, updated_node, tosca_template_dict):
         node_templates = tosca_template_dict['topology_template']['node_templates']
         for node_name in node_templates:
+            if not hasattr(updated_node, 'name'):
+                print(updated_node)
             if node_name == updated_node.name:
                 node_templates[node_name] = updated_node.node_template.to_dict()
                 return tosca_template_dict
