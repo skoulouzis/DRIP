@@ -17,10 +17,12 @@ import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.logging.Level;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
 @Controller
+@CrossOrigin(origins = "*")
 public class UserApiController implements UserApi {
 
     private static final Logger log = LoggerFactory.getLogger(UserApiController.class);

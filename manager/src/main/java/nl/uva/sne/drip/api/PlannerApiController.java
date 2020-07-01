@@ -15,8 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import nl.uva.sne.drip.service.DRIPService;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Controller
+@CrossOrigin(origins = "*")
 public class PlannerApiController implements PlannerApi {
 
     private static final Logger log = LoggerFactory.getLogger(PlannerApiController.class);

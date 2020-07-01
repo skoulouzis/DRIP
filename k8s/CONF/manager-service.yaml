@@ -10,10 +10,16 @@ metadata:
     io.kompose.service: manager
   name: manager
 spec:
+  type: NodePort  
   ports:
-  - name: "8080"
-    port: 8080
-    targetPort: 8080
+  - port: 8080
+    nodePort: 30000
+    protocol: TCP
+    name: http
+  #ports:
+  #- name: "8080"
+    #port: 8080
+    #targetPort: 8080
   selector:
     io.kompose.service: manager
 status:

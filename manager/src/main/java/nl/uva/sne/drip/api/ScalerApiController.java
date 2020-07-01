@@ -14,12 +14,14 @@ import nl.uva.sne.drip.service.ToscaTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
 @Controller
+@CrossOrigin(origins = "*")
 public class ScalerApiController implements ScalerApi {
 
     private static final Logger log = LoggerFactory.getLogger(ScalerApiController.class);

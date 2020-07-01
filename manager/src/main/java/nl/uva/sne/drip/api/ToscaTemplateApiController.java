@@ -23,11 +23,13 @@ import nl.uva.sne.drip.service.DRIPService;
 import nl.uva.sne.drip.service.ToscaTemplateService;
 import nl.uva.sne.drip.sure.tosca.client.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
 @Controller
+@CrossOrigin(origins = "*")
 public class ToscaTemplateApiController implements ToscaTemplateApi {
 
     private static final Logger log = LoggerFactory.getLogger(ToscaTemplateApiController.class);

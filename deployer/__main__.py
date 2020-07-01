@@ -91,8 +91,6 @@ def handle_delivery(message):
     try:
         for node_pair in nodes_pairs:
             updated_node = deployService.deploy(node_pair)
-            if not updated_node:
-                print(updated_node)
             if isinstance(updated_node, list):
                 for node in updated_node:
                     tosca_template_dict = tosca_helper.set_node(node,tosca_template_dict)

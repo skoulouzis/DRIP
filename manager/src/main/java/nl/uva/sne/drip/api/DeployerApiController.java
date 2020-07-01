@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
 import nl.uva.sne.drip.service.DRIPService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-10-10T17:15:46.465Z")
 
 @Controller
+@CrossOrigin(origins = "*")
 public class DeployerApiController implements DeployerApi {
 
     private static final Logger log = LoggerFactory.getLogger(DeployerApiController.class);
