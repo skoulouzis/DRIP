@@ -37,9 +37,24 @@ spec:
           value: "yes"
         - name: MYSQL_USER
           value: semaphore
-        image: mysql:5.6
+        image: mysql:5.7
         name: mysql
         imagePullPolicy: Always
         resources: {}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/mysql/mysql.conf.d/
+          
+      volumes:
+      - name: config-volume
+        configMap:
+          name: mysql-config
+          items:
+            - key: mysqld.cnf
+              path: mysqld.cnf
+              
+              
+              
+              
       restartPolicy: Always
 status: {}

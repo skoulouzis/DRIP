@@ -21,7 +21,9 @@ services:
       - "15671:15671"     
 
   mysql:
-    image: mysql:5.6
+    image: mysql:5.7
+    volumes:    
+        - ./mysql.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
       MYSQL_DATABASE: semaphore
@@ -60,7 +62,7 @@ services:
       - rabbit
       - mongo
       - sure-tosca
-    image: qcdis/manager 
+    image: manager 
     environment:
       RABBITMQ_HOST: rabbit
       MONGO_HOST: mongo

@@ -53,22 +53,23 @@ class AnsibleService:
                 create = interface['create']
                 inputs = create['inputs']
                 git_url = inputs['repository']
-                playbook_names = inputs['resources']
-                for playbook_name in playbook_names:
-                    environment_id = None
-                    if env_vars:
-                        environment_id = self.semaphore_helper.create_environment(project_id, name, env_vars)
-                    task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name,
-                                            environment_id=environment_id)
-                    if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
-                        msg = ''
-                        for out in self.semaphore_helper.get_task_outputs(project_id, task_id):
-                            msg  = msg+out.output
-                        raise Exception('Task: '+playbook_name+' failed. '+self.semaphore_helper.get_task(project_id, task_id).status+' Output: '+msg)
+                if 'resources' in inputs:
+                    playbook_names = inputs['resources']
+                    for playbook_name in playbook_names:
+                        environment_id = None
+                        if env_vars:
+                            environment_id = self.semaphore_helper.create_environment(project_id, name, env_vars)
+                        task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name,
+                                                environment_id=environment_id)
+                        if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
+                            msg = ' '
+                            for out in self.semaphore_helper.get_task_outputs(project_id, task_id):
+                                msg  = msg+' '+out.output
+                            raise Exception('Task: '+playbook_name+' failed. '+self.semaphore_helper.get_task(project_id, task_id).status+' Output: '+msg)
 
-                    tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
+                        tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
 
-                if 'configure' in interface and self.semaphore_helper.get_task(project_id, task_id).status == 'success':
+                if 'configure' in interface and self.semaphore_helper.get_task(project_id, task_id).status == 'success' and 'resources' in inputs:
                     configure = interface['configure']
                     inputs = configure['inputs']
                     git_url = inputs['repository']
@@ -137,5 +138,5 @@ class AnsibleService:
             if last_status != this_status:
                 logger.info('task name: ' + name + ', task status: ' + str(task.status))
             last_status = this_status
-            sleep(3)
+            sleep(6)
         return task_id
