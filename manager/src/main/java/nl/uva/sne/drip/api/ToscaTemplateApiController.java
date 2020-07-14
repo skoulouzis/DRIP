@@ -53,7 +53,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
             @PathVariable("id") String id, @ApiParam(value = "The node(s) to delete")
             @Valid @RequestParam(value = "node_names", required = false) List<String> nodeName) {
         String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("text/plain")) {
+//        if (accept != null && accept.contains("text/plain")) {
             try {
                 dripService.delete(id, nodeName);
                 return new ResponseEntity<>(id, HttpStatus.OK);
@@ -63,15 +63,15 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
             } catch (NotFoundException ex) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
     }
 
     @Override
     public ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("text/plain")) {
+//        if (accept != null && accept.contains("text/plain")) {
 
             try {
                 String ymlStr = toscaTemplateService.findByID(id);
@@ -81,9 +81,9 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
 
     }
 
@@ -93,7 +93,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
             @PathVariable("id") String id, @ApiParam(value = "file detail")
             @Valid @RequestPart("file") MultipartFile file) {
         String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("text/plain")) {
+//        if (accept != null && accept.contains("text/plain")) {
             try {
                 id = toscaTemplateService.updateToscaTemplateByID(id, file);
                 return new ResponseEntity<>(id, HttpStatus.OK);
@@ -102,15 +102,15 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
                 java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, e);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
     }
 
     @Override
     public ResponseEntity<String> uploadToscaTemplate(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file) {
         String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("*/*")) {
+//        if (accept != null && accept.contains("*/*")) {
             try {
                 String id = toscaTemplateService.saveFile(file);
                 return new ResponseEntity<>(id, HttpStatus.OK);
@@ -119,21 +119,21 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
                 log.error("Couldn't serialize response for content type application/json", e);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
 
     }
 
     @Override
     public ResponseEntity<List<String>> getToscaTemplateIDs() {
         String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
+//        if (accept != null && accept.contains("application/json")) {
             List<String> ids = toscaTemplateService.getAllIds();
             return new ResponseEntity<>(ids, HttpStatus.NOT_IMPLEMENTED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
 
     }
 

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -49,26 +48,26 @@ public class CredentialApiController implements CredentialApi {
             value = "Created user object", required = true)
             @Valid @RequestBody Credential body) {
         String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
+//        if (accept != null && accept.contains("application/json")) {
             try {
                 String id = credentialService.save(body);
                 return new ResponseEntity<>(id, HttpStatus.OK);
             } catch (UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
 
     }
 
     @Override
     public ResponseEntity<List<String>> getCredentialIDs() {
         String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
+//        if (accept != null && accept.contains("application/json")) {
             List<String> ids = credentialService.getAllIds();
             return new ResponseEntity<>(ids, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+//        }
+//        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 }

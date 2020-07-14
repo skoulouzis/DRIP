@@ -12,6 +12,9 @@ spec:
     nodePort: 30001
     protocol: TCP
     name: https
+  - port: 80
+    protocol: TCP
+    name: http    
   selector:
     io.kompose.service: nginx
 status:
