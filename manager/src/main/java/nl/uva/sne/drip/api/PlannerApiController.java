@@ -40,8 +40,8 @@ public class PlannerApiController implements PlannerApi {
     public ResponseEntity<String> planToscaTemplateByID(@ApiParam(
             value = "ID of topolog template to plan", required = true)
             @PathVariable("id") String id) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("text/plain")) {
+//        String accept = request.getHeader("Accept");
+//        if (accept != null && accept.contains("text/plain")) {
 
             try {
                 String planedYemplateId = dripService.plan(id);
@@ -51,9 +51,9 @@ public class PlannerApiController implements PlannerApi {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
 
     }
 

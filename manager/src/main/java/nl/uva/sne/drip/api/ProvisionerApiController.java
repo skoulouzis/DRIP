@@ -45,8 +45,8 @@ public class ProvisionerApiController implements ProvisionerApi {
     public ResponseEntity<String> provisionPlanToscaTemplateByID(
             @ApiParam(value = "ID of topolog template to provision", required = true)
             @PathVariable("id") String id) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("text/plain")) {
+//        String accept = request.getHeader("Accept");
+//        if (accept != null && accept.contains("text/plain")) {
             try {
                 String planedYemplateId = dripService.provision(id);
                 return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
@@ -57,9 +57,9 @@ public class ProvisionerApiController implements ProvisionerApi {
                 java.util.logging.Logger.getLogger(ProvisionerApiController.class.getName()).log(Level.SEVERE, null, ex);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
             }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
     }
 
 }

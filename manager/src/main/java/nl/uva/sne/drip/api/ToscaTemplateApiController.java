@@ -52,7 +52,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
             @ApiParam(value = "ID of topology template to return", required = true)
             @PathVariable("id") String id, @ApiParam(value = "The node(s) to delete")
             @Valid @RequestParam(value = "node_names", required = false) List<String> nodeName) {
-        String accept = request.getHeader("Accept");
+//        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("text/plain")) {
             try {
                 dripService.delete(id, nodeName);
@@ -70,9 +70,8 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
 
     @Override
     public ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id) {
-        String accept = request.getHeader("Accept");
+//        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("text/plain")) {
-
             try {
                 String ymlStr = toscaTemplateService.findByID(id);
                 return new ResponseEntity<>(ymlStr, HttpStatus.OK);
@@ -92,7 +91,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
             value = "ID of topolog template to return", required = true)
             @PathVariable("id") String id, @ApiParam(value = "file detail")
             @Valid @RequestPart("file") MultipartFile file) {
-        String accept = request.getHeader("Accept");
+//        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("text/plain")) {
             try {
                 id = toscaTemplateService.updateToscaTemplateByID(id, file);
@@ -109,7 +108,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
 
     @Override
     public ResponseEntity<String> uploadToscaTemplate(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file) {
-        String accept = request.getHeader("Accept");
+//        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("*/*")) {
             try {
                 String id = toscaTemplateService.saveFile(file);
@@ -127,7 +126,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
 
     @Override
     public ResponseEntity<List<String>> getToscaTemplateIDs() {
-        String accept = request.getHeader("Accept");
+//        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("application/json")) {
             List<String> ids = toscaTemplateService.getAllIds();
             return new ResponseEntity<>(ids, HttpStatus.NOT_IMPLEMENTED);

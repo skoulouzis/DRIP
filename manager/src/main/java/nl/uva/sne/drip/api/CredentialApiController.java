@@ -47,7 +47,7 @@ public class CredentialApiController implements CredentialApi {
     public ResponseEntity<String> createCredentials(@ApiParam(
             value = "Created user object", required = true)
             @Valid @RequestBody Credential body) {
-        String accept = request.getHeader("Accept");
+//        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("application/json")) {
             try {
                 String id = credentialService.save(body);
@@ -63,7 +63,7 @@ public class CredentialApiController implements CredentialApi {
 
     @Override
     public ResponseEntity<List<String>> getCredentialIDs() {
-        String accept = request.getHeader("Accept");
+//        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("application/json")) {
             List<String> ids = credentialService.getAllIds();
             return new ResponseEntity<>(ids, HttpStatus.OK);

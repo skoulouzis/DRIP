@@ -40,8 +40,8 @@ public class DeployerApiController implements DeployerApi {
             @ApiParam(value = "ID of topolog template to deploy", required = true)
             @PathVariable("id") String id) {
 
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("")) {
+//        String accept = request.getHeader("Accept");
+//        if (accept != null && accept.contains("")) {
             try {
                 String planedYemplateId = dripService.deploy(id, null);
                 return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
@@ -51,9 +51,9 @@ public class DeployerApiController implements DeployerApi {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
 
     }
 }
