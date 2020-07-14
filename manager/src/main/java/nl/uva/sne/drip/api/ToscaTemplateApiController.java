@@ -69,10 +69,12 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
     }
 
     @Override
-    public ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) @PathVariable("id") String id) {
+    public ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) 
+    @PathVariable("id") String id) {
 //        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("text/plain")) {
             try {
+                java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.INFO, "Requestsed ID: {0}", id);
                 String ymlStr = toscaTemplateService.findByID(id);
                 return new ResponseEntity<>(ymlStr, HttpStatus.OK);
             } catch (JsonProcessingException | NotFoundException ex) {
