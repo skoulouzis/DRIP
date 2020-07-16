@@ -76,6 +76,7 @@ public class ToscaTemplateService {
     public String findByID(String id) throws JsonProcessingException, NotFoundException {
         ToscaTemplate tt = dao.findById(id).get();
         if (tt == null) {
+            java.util.logging.Logger.getLogger(ToscaTemplateService.class.getName()).log(Level.SEVERE, "ToscaTemplate with id: " + id + " not found");
             throw new NotFoundException(404, "ToscaTemplate with id: " + id + " not found");
         }
         String ymlStr = objectMapper.writeValueAsString(tt);
