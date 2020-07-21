@@ -265,6 +265,8 @@ class Planner:
                 # Find all nodes in the definitions that have the capability: capability
                 logger.info('  Looking for nodes in node types with capability: ' + capability)
                 capable_nodes = self.get_node_types_by_capability(capability)
+                if capable_nodes and len(capable_nodes) == 1:
+                    return capable_nodes
                 if capable_nodes:
                     # Add number of matching capabilities for each node.
                     # Try to score matching_nodes to return one. The more requirements a node meets the better
