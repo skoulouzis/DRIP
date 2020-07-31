@@ -62,8 +62,7 @@ class AnsibleService:
                             environment_id = self.semaphore_helper.create_environment(project_id, name, env_vars)
                         arguments = None
                         if application.name == 'gluster_fs' or application.name == 'glusterfs' or application.name == 'tic':
-                            if playbook_name == '003.setup_glusterfs_cluster.yml':
-                                arguments = '["-u","vm_user"]'
+                            arguments = '["-u","vm_user"]'
                             if playbook_name == '013.mount_fs.yml':
                                 master_ip = next(iter(
                                     inventory_dict['all']['children']['swarm_manager_prime']['hosts']))  # outputs 'foo'
