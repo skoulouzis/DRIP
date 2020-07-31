@@ -84,13 +84,13 @@ def handle_delivery(message):
 
     tosca_helper = ToscaHelper(sure_tosca_base_url, tosca_template_path)
     # nodes_to_deploy = tosca_helper.get_application_nodes()
-    nodes_pairs = tosca_helper.get_deployment_node_pairs()
+    nodes = tosca_helper.get_deployment_node_pipeline()
 
     deployService = DeployService(semaphore_base_url=semaphore_base_url, semaphore_username=semaphore_username,
                                   semaphore_password=semaphore_password, vms=tosca_helper.get_vms())
     try:
-        for node_pair in nodes_pairs:
-            updated_node = deployService.deploy(node_pair)
+        for node in nodes:
+            updated_node = deployService.deploy(node)
             if isinstance(updated_node, list):
                 for node in updated_node:
                     tosca_template_dict = tosca_helper.set_node(node,tosca_template_dict)

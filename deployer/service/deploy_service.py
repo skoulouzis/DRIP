@@ -29,24 +29,24 @@ class DeployService:
                 self.master_ip = vm.node_template.attributes['public_ip']
                 break
 
-    def deploy(self,nodes_pair):
-        target = nodes_pair[0]
-        source = nodes_pair[1]
-        interface_types = tosca_helper.get_interface_types(source)
+    def deploy(self, application):
+        # target = nodes_pair[0]
+        # source = nodes_pair[1]
+        interface_types = tosca_helper.get_interface_types(application)
         if interface_types:
             ansible_service = AnsibleService(self.semaphore_base_url, self.semaphore_username, self.semaphore_password)
-            env_vars = self.get_env_vars(nodes_pair)
+            env_vars = self.get_env_vars(application)
             if 'Standard' in interface_types:
-                task_outputs = ansible_service.execute(nodes_pair, 'Standard', self.vms, env_vars=env_vars)
-                source = self.set_attributes(task_outputs,source)
+                task_outputs = ansible_service.execute(application, 'Standard', self.vms, env_vars=env_vars)
+                application = self.set_attributes(task_outputs, application)
             if 'Kubernetes' in interface_types:
-                task_outputs = ansible_service.execute(nodes_pair, 'Kubernetes', self.vms, env_vars=env_vars)
-                source = self.set_attributes(task_outputs,source)
-        return source
+                task_outputs = ansible_service.execute(application, 'Kubernetes', self.vms, env_vars=env_vars)
+                application = self.set_attributes(task_outputs, application)
+        return application
 
-    def get_env_vars(self, nodes_pair):
-        target = nodes_pair[0]
-        source = nodes_pair[1]
+    def get_env_vars(self, source):
+        # target = nodes_pair[0]
+        # source = nodes_pair[1]
         env_vars = {'K8s_NAMESPACE': 'default'}
         if source.node_template.type == 'tosca.nodes.QC.Container.Application.Docker':
             env_vars['DOCKER_IMAGE'] = source.node_template.artifacts['image']['file']
@@ -65,6 +65,8 @@ class DeployService:
             source = self.set_kubernetes_attributes(source=source,task_outputs=task_outputs)
         if source.node_template.type == 'tosca.nodes.QC.Container.Application.Docker':
             source = self.set_docker_attributes(source=source, task_outputs=task_outputs)
+        if source.node_template.type == 'tosca.nodes.QC.Application.TIC':
+            source = self.set_tic_attributes(source=source, task_outputs=task_outputs)
         # lst = list(nodes_pair)
         # lst[1] = source
         # nodes_pair = tuple(lst)
@@ -175,3 +177,13 @@ class DeployService:
                 attributes['service_url'] = service_url
                 logger.info('source.node_template.attributes: ' + str(attributes))
             return source
+
+    def set_tic_attributes(self, source, task_outputs):
+        attributes = source.node_template.attributes
+        if 'service_urls' not in source.node_template.attributes:
+            service_urls = []
+            attributes['service_urls'] = service_urls
+            for port in ['8090','9000','9090']:
+                service_urls.append('http://' + self.master_ip + ':' + str(port))
+            attributes['service_urls'] = service_urls
+        return source

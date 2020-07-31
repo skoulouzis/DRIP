@@ -1,4 +1,5 @@
 import base64
+import configparser
 import logging
 from time import sleep
 import datetime
@@ -29,8 +30,7 @@ class AnsibleService:
         self.repository_id = None
         self.template_id = None
 
-    def execute(self, nodes_pair, interface_type, vms, env_vars=None):
-        application = nodes_pair[1]
+    def execute(self, application, interface_type, vms, env_vars=None):
         name = application.name
         desired_state = None
         tasks_outputs = {}
@@ -43,7 +43,8 @@ class AnsibleService:
         if desired_state:
             now = datetime.datetime.now()
             project_id = self.semaphore_helper.create_project(application.name + '_' + str(now))
-            inventory_contents = yaml.dump(self.build_yml_inventory(vms), default_flow_style=False)
+            inventory_dict = self.build_inventory(vms, application_name=application.name)
+            inventory_contents = yaml.dump(inventory_dict, default_flow_style=False)
             private_key = self.get_private_key(vms)
             key_id = self.semaphore_helper.create_ssh_key(application.name, project_id, private_key)
             inventory_id = self.semaphore_helper.create_inventory(application.name, project_id, key_id,
@@ -59,17 +60,28 @@ class AnsibleService:
                         environment_id = None
                         if env_vars:
                             environment_id = self.semaphore_helper.create_environment(project_id, name, env_vars)
+                        arguments = None
+                        if application.name == 'gluster_fs' or application.name == 'glusterfs' or application.name == 'tic':
+                            if playbook_name == '003.setup_glusterfs_cluster.yml':
+                                arguments = '["-u","vm_user"]'
+                            if playbook_name == '013.mount_fs.yml':
+                                master_ip = next(iter(
+                                    inventory_dict['all']['children']['swarm_manager_prime']['hosts']))  # outputs 'foo'
+                                arguments = '["-u","vm_user","--extra-vars","gluster_cluster_host0=\'' + master_ip + '\' gluster_cluster_volume=\'gfs0\'"]'
                         task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name,
-                                                environment_id=environment_id)
+                                                environment_id=environment_id, arguments=arguments)
                         if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
                             msg = ' '
                             for out in self.semaphore_helper.get_task_outputs(project_id, task_id):
-                                msg  = msg+' '+out.output
-                            raise Exception('Task: '+playbook_name+' failed. '+self.semaphore_helper.get_task(project_id, task_id).status+' Output: '+msg)
+                                msg = msg + ' ' + out.output
+                            raise Exception(
+                                'Task: ' + playbook_name + ' failed. ' + self.semaphore_helper.get_task(project_id,
+                                                                                                        task_id).status + ' Output: ' + msg)
 
                         tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
 
-                if 'configure' in interface and self.semaphore_helper.get_task(project_id, task_id).status == 'success' and 'resources' in inputs:
+                if 'configure' in interface and self.semaphore_helper.get_task(project_id,
+                                                                               task_id).status == 'success' and 'resources' in inputs:
                     configure = interface['configure']
                     inputs = configure['inputs']
                     git_url = inputs['repository']
@@ -91,29 +103,40 @@ class AnsibleService:
                         tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
             return tasks_outputs
 
-    def build_yml_inventory(self, vms):
+    def build_inventory(self, vms, application_name=None):
         # loader = DataLoader()
         # inventory = InventoryManager(loader=loader)
         # variable_manager = VariableManager()
+        vars = {}
+        # vars ['ansible_ssh_common_args'] = '"-o StrictHostKeyChecking=no"'
+        vars['ansible_ssh_user'] = vms[0].node_template.properties['user_name']
+        vars['ansible_python_interpreter'] = '/usr/bin/python3'
+        if application_name == 'gluster_fs' or application_name == 'glusterfs':
+            return self.build_glusterfs_inventory(vms, vars)
+        if application_name == 'tic':
+            return self.build_tic_inventory(vms, vars)
         inventory = {}
         all = {}
-        vars = {'ansible_ssh_common_args': '-o StrictHostKeyChecking=no'}
-        vars['ansible_ssh_user'] = vms[0].node_template.properties['user_name']
+
         children = {}
         for vm in vms:
             attributes = vm.node_template.attributes
-            role = attributes['role']
+            roles = []
+            roles.append(attributes['role'])
             public_ip = attributes['public_ip']
-            if role not in children:
-                hosts = {}
-            else:
-                hosts = children[role]
-            host = {}
-            host[public_ip] = vars
-            hosts['hosts'] = host
-            children[role] = hosts
-            # inventory.add_group(role)
-            # inventory.add_host(public_ip,group=role)
+            for role in roles:
+                if role not in children:
+                    hosts = {}
+                else:
+                    hosts = children[role]
+
+                host = {}
+                host[public_ip] = vars
+                if 'hosts' in hosts:
+                    hosts['hosts'][public_ip] = vars
+                else:
+                    hosts['hosts'] = host
+                children[role] = hosts
         all['children'] = children
         inventory['all'] = all
         return inventory
@@ -122,12 +145,13 @@ class AnsibleService:
         private_key = vms[0].node_template.attributes['user_key_pair']['keys']['private_key']
         return base64.b64decode(private_key).decode('utf-8').replace(r'\n', '\n')
 
-    def run_task(self, name, project_id, key_id, git_url, inventory_id, playbook_name, environment_id=None):
+    def run_task(self, name, project_id, key_id, git_url, inventory_id, playbook_name, environment_id=None,
+                 arguments=None):
         logger.info('project_id: ' + str(project_id) + ' task name: ' + str(
             name) + ' git url: ' + git_url + ' playbook: ' + playbook_name)
         self.repository_id = self.semaphore_helper.create_repository(name, project_id, key_id, git_url)
         template_id = self.semaphore_helper.create_template(project_id, key_id, inventory_id, self.repository_id,
-                                                            playbook_name)
+                                                            playbook_name, arguments)
         task_id = self.semaphore_helper.execute_task(project_id, template_id, playbook_name,
                                                      environment_id=environment_id)
         task = self.semaphore_helper.get_task(project_id, task_id)
@@ -140,3 +164,67 @@ class AnsibleService:
             last_status = this_status
             sleep(6)
         return task_id
+
+    def build_glusterfs_inventory(self, vms, vars):
+        inventory = {}
+        all = {}
+        children = {}
+        for vm in vms:
+            attributes = vm.node_template.attributes
+            roles = []
+            roles.append('gfscluster')
+            public_ip = attributes['public_ip']
+            for role in roles:
+                if role not in children:
+                    hosts = {}
+                else:
+                    hosts = children[role]
+                if 'hosts' in hosts:
+                    hosts['hosts'][public_ip] = vars
+                else:
+                    host = {}
+                    host[public_ip] = vars
+                    hosts['hosts'] = host
+                children[role] = hosts
+        all['children'] = children
+        inventory['all'] = all
+        return inventory
+
+    def build_tic_inventory(self, vms, vars):
+        inventory = {}
+        all = {}
+        children = {}
+        for vm in vms:
+            attributes = vm.node_template.attributes
+            roles = []
+            if attributes['role'] == 'master':
+                roles.append('swarm_manager_prime')
+                roles.append('swarm_managers')
+            elif attributes['role'] == 'worker':
+                roles.append('swarm_workers')
+            public_ip = attributes['public_ip']
+            for role in roles:
+                if role not in children:
+                    hosts = {}
+                else:
+                    hosts = children[role]
+
+                if 'hosts' in hosts:
+                    # if attributes['role'] == 'master':
+                    hosts['hosts'] = {public_ip: vars}
+                    # else:
+                    #     hosts['hosts'] = {public_ip: vars}
+                else:
+                    host = {}
+                    host[public_ip] = vars
+                    # if role == 'swarm_manager_prime':
+                    #     host['fabric-manager'] = vars
+                    # elif role == 'swarm_managers':
+                    #     host['fabric-manager'] = {}
+                    # else:
+                    #     host['fabric-worker'] = vars
+                    hosts['hosts'] = host
+                children[role] = hosts
+        all['children'] = children
+        inventory['all'] = all
+        return inventory

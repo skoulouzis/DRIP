@@ -48,7 +48,7 @@ class TestDeployer(unittest.TestCase):
                 self.assertIsNotNone(tosca_helper.doc_id)
                 nodes_to_deploy = tosca_helper.get_application_nodes()
                 self.assertIsNotNone(nodes_to_deploy)
-                nodes_pairs = tosca_helper.get_deployment_node_pairs()
+                nodes_pairs = tosca_helper.get_deployment_node_pipeline()
                 self.assertIsNotNone(nodes_pairs)
 
                 username = 'admin'
