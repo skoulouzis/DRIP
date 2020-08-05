@@ -65,17 +65,22 @@ class AnsibleService:
                             arguments = '["-u","vm_user"]'
                             if playbook_name == '013.mount_fs.yml':
                                 master_ip = next(iter(
-                                    inventory_dict['all']['children']['swarm_manager_prime']['hosts']))  # outputs 'foo'
+                                    inventory_dict['all']['children']['swarm_manager_prime']['hosts']))
                                 arguments = '["-u","vm_user","--extra-vars","gluster_cluster_host0=\'' + master_ip + '\' gluster_cluster_volume=\'gfs0\'"]'
                         task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name,
                                                 environment_id=environment_id, arguments=arguments)
-                        if self.semaphore_helper.get_task(project_id, task_id).status != 'success':
-                            msg = ' '
-                            for out in self.semaphore_helper.get_task_outputs(project_id, task_id):
-                                msg = msg + ' ' + out.output
-                            raise Exception(
-                                'Task: ' + playbook_name + ' failed. ' + self.semaphore_helper.get_task(project_id,
-                                                                                                        task_id).status + ' Output: ' + msg)
+                        count = 0
+                        while self.semaphore_helper.get_task(project_id, task_id).status != 'success':
+                            task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name,
+                                                    environment_id=environment_id, arguments=arguments)
+                            count += 1
+                            if count >= 3:
+                                msg = ' '
+                                for out in self.semaphore_helper.get_task_outputs(project_id, task_id):
+                                    msg = msg + ' ' + out.output
+                                raise Exception(
+                                    'Task: ' + playbook_name + ' failed. ' + self.semaphore_helper.get_task(project_id,
+                                                                                                            task_id).status + ' Output: ' + msg)
 
                         tasks_outputs[task_id] = self.semaphore_helper.get_task_outputs(project_id, task_id)
 
@@ -202,26 +207,25 @@ class AnsibleService:
             elif attributes['role'] == 'worker':
                 roles.append('swarm_workers')
             public_ip = attributes['public_ip']
+            # vars['ansible_host'] = public_ip
             for role in roles:
                 if role not in children:
                     hosts = {}
                 else:
                     hosts = children[role]
-
                 if 'hosts' in hosts:
-                    # if attributes['role'] == 'master':
-                    hosts['hosts'] = {public_ip: vars}
+                    # if role == 'swarm_manager_prime' or role == 'swarm_managers':
+                        # hosts['hosts'] = {'fabric-manager': vars}
                     # else:
-                    #     hosts['hosts'] = {public_ip: vars}
+                        # hosts['hosts'] = {'fabric-worker': vars}
+                    hosts['hosts'] = {public_ip: vars}
                 else:
                     host = {}
                     host[public_ip] = vars
-                    # if role == 'swarm_manager_prime':
-                    #     host['fabric-manager'] = vars
-                    # elif role == 'swarm_managers':
-                    #     host['fabric-manager'] = {}
+                    # if role == 'swarm_manager_prime' or role == 'swarm_managers':
+                    #     host = {'fabric-manager': vars}
                     # else:
-                    #     host['fabric-worker'] = vars
+                    #     host = {'fabric-worker': vars}
                     hosts['hosts'] = host
                 children[role] = hosts
         all['children'] = children
