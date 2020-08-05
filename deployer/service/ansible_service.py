@@ -64,8 +64,11 @@ class AnsibleService:
                         if application.name == 'gluster_fs' or application.name == 'glusterfs' or application.name == 'tic':
                             arguments = '["-u","vm_user"]'
                             if playbook_name == '013.mount_fs.yml':
-                                master_ip = next(iter(
-                                    inventory_dict['all']['children']['swarm_manager_prime']['hosts']))
+                                for vm in vms:
+                                    attributes = vm.node_template.attributes
+                                    if attributes['role'] == 'master':
+                                        master_ip = attributes['public_ip']
+                                        break
                                 arguments = '["-u","vm_user","--extra-vars","gluster_cluster_host0=\'' + master_ip + '\' gluster_cluster_volume=\'gfs0\'"]'
                         task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name,
                                                 environment_id=environment_id, arguments=arguments)
@@ -173,22 +176,28 @@ class AnsibleService:
         inventory = {}
         all = {}
         children = {}
+        gfs_count = 1
         for vm in vms:
             attributes = vm.node_template.attributes
             roles = []
             roles.append('gfscluster')
             public_ip = attributes['public_ip']
+            vm_vars = {'ansible_host': public_ip}
+            vm_vars.update(vars)
+
             for role in roles:
                 if role not in children:
                     hosts = {}
                 else:
                     hosts = children[role]
                 if 'hosts' in hosts:
-                    hosts['hosts'][public_ip] = vars
+                    hosts['hosts']['gfs' + str(gfs_count)] = vm_vars
+
                 else:
                     host = {}
-                    host[public_ip] = vars
+                    host['gfs' + str(gfs_count)] = vm_vars
                     hosts['hosts'] = host
+                    gfs_count += 1
                 children[role] = hosts
         all['children'] = children
         inventory['all'] = all
