@@ -200,32 +200,34 @@ class AnsibleService:
         children = {}
         for vm in vms:
             attributes = vm.node_template.attributes
+            public_ip = attributes['public_ip']
+            vm_vars = {'ansible_host': public_ip}
+            vm_vars.update(vars)
             roles = []
             if attributes['role'] == 'master':
                 roles.append('swarm_manager_prime')
                 roles.append('swarm_managers')
             elif attributes['role'] == 'worker':
                 roles.append('swarm_workers')
-            public_ip = attributes['public_ip']
-            # vars['ansible_host'] = public_ip
+            fabric_count = 0
             for role in roles:
                 if role not in children:
                     hosts = {}
                 else:
                     hosts = children[role]
                 if 'hosts' in hosts:
-                    # if role == 'swarm_manager_prime' or role == 'swarm_managers':
-                        # hosts['hosts'] = {'fabric-manager': vars}
-                    # else:
-                        # hosts['hosts'] = {'fabric-worker': vars}
-                    hosts['hosts'] = {public_ip: vars}
+                    if role == 'swarm_manager_prime' or role == 'swarm_managers':
+                        host = {'hlf' + str(fabric_count): vm_vars}
+                    else:
+                        fabric_count += 1
+                        host = {'hlf' + str(fabric_count): vm_vars}
+                    hosts['hosts'] = host
                 else:
-                    host = {}
-                    host[public_ip] = vars
-                    # if role == 'swarm_manager_prime' or role == 'swarm_managers':
-                    #     host = {'fabric-manager': vars}
-                    # else:
-                    #     host = {'fabric-worker': vars}
+                    if role == 'swarm_manager_prime' or role == 'swarm_managers':
+                        host = {'hlf' + str(fabric_count): vm_vars}
+                    else:
+                        fabric_count += 1
+                        host = {'hlf' + str(fabric_count): vm_vars}
                     hosts['hosts'] = host
                 children[role] = hosts
         all['children'] = children
