@@ -94,10 +94,10 @@ def handle_delivery(message):
             if isinstance(updated_node, list):
                 for node in updated_node:
                     tosca_template_dict = tosca_helper.set_node(node,tosca_template_dict)
-                    logger.info("tosca_template_dict :" + json.dumps(tosca_template_dict))
+                    # logger.info("tosca_template_dict :" + json.dumps(tosca_template_dict))
             else:
                 tosca_template_dict = tosca_helper.set_node(updated_node, tosca_template_dict)
-                logger.info("tosca_template_dict :" + json.dumps(tosca_template_dict))
+                # logger.info("tosca_template_dict :" + json.dumps(tosca_template_dict))
 
         response = {'toscaTemplate': tosca_template_dict}
         output_current_milli_time = int(round(time.time() * 1000))
