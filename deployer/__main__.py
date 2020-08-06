@@ -114,7 +114,7 @@ def handle_delivery(message):
 def threaded_function(args):
     while not done:
         connection.process_data_events()
-        sleep(5)
+        sleep(8)
 
 
 if __name__ == "__main__":
