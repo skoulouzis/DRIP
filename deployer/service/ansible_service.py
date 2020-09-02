@@ -69,7 +69,9 @@ class AnsibleService:
                                     if attributes['role'] == 'master':
                                         master_ip = attributes['public_ip']
                                         break
-                                arguments = '["-u","vm_user","--extra-vars","gluster_cluster_host0=\'' + master_ip + '\' gluster_cluster_volume=\'gfs0\'"]'
+                                arguments = '["-u","vm_user","--extra-vars","gluster_cluster_host0=\'' + master_ip \
+                                            + '\' gluster_cluster_volume=\'gfs0\' devmode=\'false\' ' \
+                                              'device_path=\'/dev/xvdh\' gfs_size=\'15G\'"]'
                         task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name,
                                                 environment_id=environment_id, arguments=arguments)
                         count = 0
