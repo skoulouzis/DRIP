@@ -63,7 +63,7 @@ class AnsibleService:
                         arguments = None
                         if application.name == 'gluster_fs' or application.name == 'glusterfs' or application.name == 'tic':
                             arguments = '["-u","vm_user"]'
-                            if playbook_name == '013.mount_fs.yml':
+                            if playbook_name == '013.mount_fs.yml' or playbook_name == '002.setup_glusterfs_infra.yml':
                                 for vm in vms:
                                     attributes = vm.node_template.attributes
                                     if attributes['role'] == 'master':
