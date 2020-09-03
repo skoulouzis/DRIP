@@ -62,16 +62,14 @@ class AnsibleService:
                             environment_id = self.semaphore_helper.create_environment(project_id, name, env_vars)
                         arguments = None
                         if application.name == 'gluster_fs' or application.name == 'glusterfs' or application.name == 'tic':
-                            arguments = '["-u","vm_user"]'
-                            if playbook_name == '013.mount_fs.yml' or playbook_name == '002.setup_glusterfs_infra.yml':
-                                for vm in vms:
-                                    attributes = vm.node_template.attributes
-                                    if attributes['role'] == 'master':
-                                        master_ip = attributes['public_ip']
-                                        break
-                                arguments = '["-u","vm_user","--extra-vars","gluster_cluster_host0=\'' + master_ip \
-                                            + '\' gluster_cluster_volume=\'gfs0\' devmode=\'false\' ' \
-                                              'device_path=\'/dev/xvdh\' gfs_size=\'15G\'"]'
+                            for vm in vms:
+                                attributes = vm.node_template.attributes
+                                if attributes['role'] == 'master':
+                                    master_ip = attributes['public_ip']
+                                    break
+                            arguments = '["-u","vm_user","--extra-vars","gluster_cluster_host0=\'' + master_ip \
+                                        + '\' gluster_cluster_volume=\'gfs0\' devmode=\'false\' ' \
+                                          'device_path=\'/dev/xvdh\' gfs_size=\'15G\'"]'
                         task_id = self.run_task(name, project_id, key_id, git_url, inventory_id, playbook_name,
                                                 environment_id=environment_id, arguments=arguments)
                         count = 0

@@ -131,7 +131,7 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
 //        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("application/json")) {
             List<String> ids = toscaTemplateService.getAllIds();
-            return new ResponseEntity<>(ids, HttpStatus.NOT_IMPLEMENTED);
+            return new ResponseEntity<>(ids, HttpStatus.OK);
 //        } else {
 //            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 //        }
