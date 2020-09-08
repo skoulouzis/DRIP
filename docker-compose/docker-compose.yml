@@ -68,7 +68,19 @@ services:
     depends_on:
         - mongo
     ports:
-        - "8082:8082"      
+        - "8082:8082"    
+        
+        
+  mongoclient:
+    image: mongoclient
+    environment:
+        - MONGO_URL=mongodb://mongo:27017
+        - ROOT_URL=/mongoclient
+    depends_on:
+        - mongo
+    ports:
+        - "3001:3000"            
+        
     
       
   manager:
