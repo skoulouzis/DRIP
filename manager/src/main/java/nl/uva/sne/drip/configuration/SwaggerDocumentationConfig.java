@@ -15,8 +15,12 @@ public class SwaggerDocumentationConfig {
 
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-            .title("DRIP")
-            .description("The Dynamic Real-time infrastructure planner (DRIP) allows application developers to seamlessly plan a customized virtual infrastructure based on application level constraints on QoS and resource budgets, provisioning the virtual infrastructure, deploy application components onto the virtual infrastructure, and start execution on demand using TOSCA.")
+            .title("CONF")
+            .description("Allows application developers to seamlessly plan a customized "
+                    + "virtual infrastructure based on application level constraints "
+                    + "on QoS and resource budgets, provisioning the virtual infrastructure, "
+                    + "deploy application components onto the virtual infrastructure, "
+                    + "and start execution on demand using TOSCA.")
             .license("Apache 2.0")
             .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
             .termsOfServiceUrl("")
