@@ -236,7 +236,7 @@ DCMetaInfo:
     Price: 0.0058
     DefaultSSHAccount: "ubuntu"
     extraInfo:
-      AMI: "ami-0b418580298265d5c"
+      AMI: "ami-00e1a1c196475d9e1"
   - OS: "Ubuntu 18.04"
     CPU: 1
     MEM: 1
@@ -244,7 +244,7 @@ DCMetaInfo:
     Price: 0.0116
     DefaultSSHAccount: "ubuntu"
     extraInfo:
-      AMI: "ami-0b418580298265d5c"
+      AMI: "ami-00e1a1c196475d9e1"
   - OS: "Ubuntu 18.04"
     CPU: 1
     MEM: 2
@@ -252,7 +252,7 @@ DCMetaInfo:
     Price: 0.0116
     DefaultSSHAccount: "ubuntu"
     extraInfo:
-      AMI: "ami-0b418580298265d5c"
+      AMI: "ami-00e1a1c196475d9e1"
   - OS: "Ubuntu 18.04"
     CPU: 2
     MEM: 4
@@ -260,7 +260,7 @@ DCMetaInfo:
     Price: 0.0464
     DefaultSSHAccount: "ubuntu"
     extraInfo:
-      AMI: "ami-0b418580298265d5c"
+      AMI: "ami-00e1a1c196475d9e1"
   - OS: "Ubuntu 18.04"
     CPU: 2
     MEM: 8
@@ -268,7 +268,7 @@ DCMetaInfo:
     Price: 0.0464
     DefaultSSHAccount: "ubuntu"
     extraInfo:
-      AMI: "ami-0b418580298265d5c"
+      AMI: "ami-00e1a1c196475d9e1"
   - OS: "Ubuntu 18.04"
     CPU: 4
     MEM: 16
@@ -276,4 +276,4 @@ DCMetaInfo:
     Price: 0.0464
     DefaultSSHAccount: "ubuntu"
     extraInfo:
-      AMI: "ami-0b418580298265d5c"      
+      AMI: "ami-00e1a1c196475d9e1"      
