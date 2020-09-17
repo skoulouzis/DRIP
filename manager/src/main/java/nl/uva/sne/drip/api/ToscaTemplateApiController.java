@@ -69,6 +69,22 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
     }
 
     @Override
+    public ResponseEntity<String> deleteAllToscaTemplates() {
+        List<String> ids = toscaTemplateService.getAllIds();
+        try {
+            for (String id : ids) {
+                dripService.delete(id, null);
+            }
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IOException | ApiException | TypeExeption | TimeoutException | InterruptedException ex) {
+            java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
     public ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true)
             @PathVariable("id") String id) {
 //        String accept = request.getHeader("Accept");

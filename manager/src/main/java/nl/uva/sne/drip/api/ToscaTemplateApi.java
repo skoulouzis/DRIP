@@ -38,6 +38,24 @@ public interface ToscaTemplateApi {
     @RequestMapping(value = "/manager/tosca_template/{id}",
             method = RequestMethod.DELETE)
     ResponseEntity<String> deleteToscaTemplateByID(@ApiParam(value = "ID of topology template to return", required = true) @PathVariable("id") String id, @ApiParam(value = "The node(s) to delete") @Valid @RequestParam(value = "node_name", required = false) List<String> nodeName);
+    
+    
+    @ApiOperation(value = "Deletes all tosca topology templates", nickname = "deleteAllToscaTemplates", 
+            notes = "If the topology is provisoned it will delete the provison (Infrastructure). If it is deployed it will delete the deploymet too (Application)", response = String.class, authorizations = {
+        @Authorization(value = "auth", scopes = {
+            @AuthorizationScope(scope = "read:ToscaTemplate", description = "read your topolog template")
+            ,
+            @AuthorizationScope(scope = "write:ToscaTemplate", description = "modify topolog template in your account")
+        })
+    }, tags = {})
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "successful operation", response = String.class)
+        ,
+        @ApiResponse(code = 404, message = "ToscaTemplate not found")})
+    @RequestMapping(value = "/manager/tosca_template/all",
+            method = RequestMethod.DELETE)
+    ResponseEntity<String> deleteAllToscaTemplates();
+    
 
     @ApiOperation(value = "Find topolog template by ID", nickname = "getToscaTemplateByID", notes = "Returns a single topolog template", response = String.class, authorizations = {
         @Authorization(value = "auth", scopes = {

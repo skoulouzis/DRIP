@@ -165,10 +165,13 @@ public class DRIPService {
         //If no nodes are specified delete all the infrastructure
         if (nodeNames == null || nodeNames.isEmpty()) {
             List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
-            for (NodeTemplateMap vmTopology : vmTopologies) {
-                toscaTemplate = setDesieredSate(toscaTemplate, vmTopology, NODE_STATES.DELETED);
+            if (vmTopologies != null) {
+                for (NodeTemplateMap vmTopology : vmTopologies) {
+                    toscaTemplate = setDesieredSate(toscaTemplate, vmTopology, NODE_STATES.DELETED);
+                }
+                return execute(toscaTemplate, provisionerQueueName);
             }
-            return execute(toscaTemplate, provisionerQueueName);
+            return id;
         } else {
 
         }

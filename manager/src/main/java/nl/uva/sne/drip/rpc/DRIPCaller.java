@@ -67,9 +67,9 @@ public class DRIPCaller implements AutoCloseable {
             connection = factory.newConnection();
             channel = connection.createChannel();
             // create a single callback queue per client not per requests. 
-//            Map<String, Object> args = new HashMap<String, Object>();
+            Map<String, Object> args = new HashMap<>();
 //            args.put("x-message-ttl", 60000);
-//            channel.queueDeclare("myqueue", false, false, false, args);
+//            replyQueueName = channel.queueDeclare("myqueue", false, false, false, args).getQueue();
             replyQueueName = channel.queueDeclare().getQueue();
             
         }
@@ -139,9 +139,12 @@ public class DRIPCaller implements AutoCloseable {
         if (getRequestQeueName().equals("provisioner")) {
             timeOut = 10;
         }
+        
         String resp = response.poll(timeOut, TimeUnit.MINUTES);
         Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", resp);
         if (resp == null) {
+            getChannel().queueDeleteNoWait(getReplyQueueName(), false, true);
+            close();
             throw new TimeoutException("Timeout on qeue: " + getRequestQeueName());
         }
         return mapper.readValue(resp, Message.class);
