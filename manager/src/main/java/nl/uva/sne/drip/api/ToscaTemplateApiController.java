@@ -54,38 +54,40 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
             @Valid @RequestParam(value = "node_names", required = false) List<String> nodeName) {
 //        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("text/plain")) {
-            try {
-                dripService.delete(id, nodeName);
-                return new ResponseEntity<>(id, HttpStatus.OK);
-            } catch (IOException | ApiException | TypeExeption | TimeoutException | InterruptedException ex) {
-                java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            } catch (NotFoundException ex) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+        try {
+            dripService.delete(id, nodeName);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        } catch (IOException | ApiException | TypeExeption | TimeoutException | InterruptedException ex) {
+            java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 //        } else {
 //            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 //        }
     }
 
     @Override
-    public ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true) 
-    @PathVariable("id") String id) {
+    public ResponseEntity<String> getToscaTemplateByID(@ApiParam(value = "ID of topolog template to return", required = true)
+            @PathVariable("id") String id) {
 //        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("text/plain")) {
-            try {
-                java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.INFO, "Requestsed ID: {0}", id);
-                String ymlStr = toscaTemplateService.findByID(id);
-                return new ResponseEntity<>(ymlStr, HttpStatus.OK);
-            } catch (JsonProcessingException | NotFoundException ex) {
-                java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        try {
+            java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.INFO, "Requestsed ID: {0}", id);
+            String ymlStr = toscaTemplateService.findByID(id);
+            return new ResponseEntity<>(ymlStr, HttpStatus.OK);
+        } catch (NotFoundException | java.util.NoSuchElementException ex) {
+            java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.WARNING, null, ex);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (JsonProcessingException ex) {
+            java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
 //        } else {
 //            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 //        }
-
     }
 
     @Override
@@ -95,14 +97,14 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
             @Valid @RequestPart("file") MultipartFile file) {
 //        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("text/plain")) {
-            try {
-                id = toscaTemplateService.updateToscaTemplateByID(id, file);
-                return new ResponseEntity<>(id, HttpStatus.OK);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type ", e);
-                java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        try {
+            id = toscaTemplateService.updateToscaTemplateByID(id, file);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        } catch (IOException e) {
+            log.error("Couldn't serialize response for content type ", e);
+            java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 //        } else {
 //            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 //        }
@@ -112,14 +114,14 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
     public ResponseEntity<String> uploadToscaTemplate(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile file) {
 //        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("*/*")) {
-            try {
-                String id = toscaTemplateService.saveFile(file);
-                return new ResponseEntity<>(id, HttpStatus.OK);
-            } catch (IOException e) {
-                java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, e);
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        try {
+            String id = toscaTemplateService.saveFile(file);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        } catch (IOException e) {
+            java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.SEVERE, null, e);
+            log.error("Couldn't serialize response for content type application/json", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 //        } else {
 //            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 //        }
@@ -130,8 +132,8 @@ public class ToscaTemplateApiController implements ToscaTemplateApi {
     public ResponseEntity<List<String>> getToscaTemplateIDs() {
 //        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("application/json")) {
-            List<String> ids = toscaTemplateService.getAllIds();
-            return new ResponseEntity<>(ids, HttpStatus.OK);
+        List<String> ids = toscaTemplateService.getAllIds();
+        return new ResponseEntity<>(ids, HttpStatus.OK);
 //        } else {
 //            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 //        }

@@ -43,18 +43,23 @@ public class PlannerApiController implements PlannerApi {
 //        String accept = request.getHeader("Accept");
 //        if (accept != null && accept.contains("text/plain")) {
 
-            try {
-                String planedYemplateId = dripService.plan(id);
-                return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
-            } catch (ApiException | NotFoundException | IOException | TimeoutException | InterruptedException ex) {
-                java.util.logging.Logger.getLogger(PlannerApiController.class.getName()).log(Level.SEVERE, null, ex);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        try {
+            String planedYemplateId = dripService.plan(id);
+            return new ResponseEntity<>(planedYemplateId, HttpStatus.OK);
+        } catch (NotFoundException | java.util.NoSuchElementException ex) {
+            java.util.logging.Logger.getLogger(ToscaTemplateApiController.class.getName()).log(Level.WARNING, null, ex);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (TimeoutException ex) {
+            java.util.logging.Logger.getLogger(PlannerApiController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>(HttpStatus.GATEWAY_TIMEOUT);
+        } catch (ApiException | IOException | InterruptedException ex) {
+            java.util.logging.Logger.getLogger(PlannerApiController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
 //        } else {
 //            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 //        }
-
     }
 
 }

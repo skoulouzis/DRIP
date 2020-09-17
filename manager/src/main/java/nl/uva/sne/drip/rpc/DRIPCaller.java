@@ -9,9 +9,12 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,7 +67,11 @@ public class DRIPCaller implements AutoCloseable {
             connection = factory.newConnection();
             channel = connection.createChannel();
             // create a single callback queue per client not per requests. 
+//            Map<String, Object> args = new HashMap<String, Object>();
+//            args.put("x-message-ttl", 60000);
+//            channel.queueDeclare("myqueue", false, false, false, args);
             replyQueueName = channel.queueDeclare().getQueue();
+            
         }
     }
 
@@ -107,9 +114,11 @@ public class DRIPCaller implements AutoCloseable {
         final String corrId = UUID.randomUUID().toString();
         AMQP.BasicProperties props = new AMQP.BasicProperties.Builder()
                 .correlationId(corrId)
+                .expiration("10000")
                 .replyTo(getReplyQueueName())
                 .build();
         Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Sending: {0} to queue: {1}", new Object[]{jsonInString, getRequestQeueName()});
+
         getChannel().basicPublish("", getRequestQeueName(), props, jsonInString.getBytes("UTF-8"));
 
         final BlockingQueue<String> response = new ArrayBlockingQueue(1);
@@ -122,9 +131,19 @@ public class DRIPCaller implements AutoCloseable {
                 }
             }
         });
-        String resp = response.take();
+//        String resp = response.take();
+        int timeOut = 25;
+        if (getRequestQeueName().equals("planner")) {
+            timeOut = 5;
+        }
+        if (getRequestQeueName().equals("provisioner")) {
+            timeOut = 10;
+        }
+        String resp = response.poll(timeOut, TimeUnit.MINUTES);
         Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", resp);
-
+        if (resp == null) {
+            throw new TimeoutException("Timeout on qeue: " + getRequestQeueName());
+        }
         return mapper.readValue(resp, Message.class);
     }
 

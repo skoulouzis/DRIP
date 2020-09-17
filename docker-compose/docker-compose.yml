@@ -12,25 +12,25 @@ services:
     - "80:80"
     - "443:443"
     
-  #rabbit:
-    #image: rabbitmq:3.8-management
-    #ports:   
-      #- "5671-5672:5671-5672"
-      #- "15672:15672"
-      #- "4369:4369"
-      #- "15671:15671"     
+  rabbit:
+    image: rabbitmq:3.8-management
+    ports:   
+      - "5671-5672:5671-5672"
+      - "15672:15672"
+      - "4369:4369"
+      - "15671:15671"     
 
-  #mysql:
-    #image: mysql:5.7
-    #volumes:    
-        #- ./mysql.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
-    #environment:
-      #MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-      #MYSQL_DATABASE: semaphore
-      #MYSQL_USER: semaphore
-      #MYSQL_PASSWORD: semaphore
-    ##ports:
-      ##- "3306:3306"
+  mysql:
+    image: mysql:5.7
+    volumes:    
+        - ./mysql.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      MYSQL_DATABASE: semaphore
+      MYSQL_USER: semaphore
+      MYSQL_PASSWORD: semaphore
+    #ports:
+      #- "3306:3306"
       
   semaphore:
     image: qcdis/docker_ansible_semaphore
@@ -81,21 +81,21 @@ services:
     ports:
         - "3001:3000"            
         
-    
+
       
-  manager:
-    depends_on:
-      - rabbit
-      - mongo
-      - sure-tosca
-    image: qcdis/manager 
-    environment:
-      RABBITMQ_HOST: rabbit
-      MONGO_HOST: mongo
-      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-      CREDENTIAL_SECRET: top_secret
-    ports:
-      - "8080:8080"       
+  #manager:
+    #depends_on:
+      #- rabbit
+      #- mongo
+      #- sure-tosca
+    #image: qcdis/manager 
+    #environment:
+      #RABBITMQ_HOST: rabbit
+      #MONGO_HOST: mongo
+      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+      #CREDENTIAL_SECRET: top_secret
+    #ports:
+      #- "8080:8080"       
             
   sure-tosca:
     image: qcdis/sure-tosca
