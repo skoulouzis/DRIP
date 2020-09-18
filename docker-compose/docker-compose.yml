@@ -81,7 +81,6 @@ services:
     ports:
         - "3001:3000"            
         
-
       
   #manager:
     #depends_on:
@@ -102,24 +101,24 @@ services:
     ports: 
       - "8081:8081"
     
-  #planner:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: qcdis/planner 
-    #environment:
-      #RABBITMQ_HOST: rabbit
+  planner:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: qcdis/planner 
+    environment:
+      RABBITMQ_HOST: rabbit
     
-  #provisioner:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: qcdis/provisioner 
-    #environment:
-      #RABBITMQ_HOST: rabbit      
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-      #CLOUD_STORM_SECRET: 456
-      #CREDENTIAL_SECRET: top_secret
+  provisioner:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: qcdis/provisioner 
+    environment:
+      RABBITMQ_HOST: rabbit      
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+      CLOUD_STORM_SECRET: 456
+      CREDENTIAL_SECRET: top_secret
     
   #deployer:
     #depends_on:
@@ -131,7 +130,16 @@ services:
       #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
       #SEMAPHORE_BASE_PATH: http://semaphore:3000/api
       
+      
+      
+  cadvisor:
+    image: google/cadvisor
+    ports: 
+      - "8083:8081"      
+    volumes:
+      - '/:/rootfs:ro'
+      - '/var/run:/var/run:rw'
+      - '/sys:/sys:ro'
+      - '/var/lib/docker/:/var/lib/docker:ro' 
           
       
-
-    

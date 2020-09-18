@@ -175,6 +175,7 @@ public class DRIPService {
                     }
                 }
                 if (!nothingToDelete) {
+                    this.toscaTemplateService.deleteByID(id);
                     return execute(toscaTemplate, provisionerQueueName);
                 }
             }
