@@ -162,14 +162,21 @@ public class DRIPService {
 
     public String delete(String id, List<String> nodeNames) throws NotFoundException, IOException, JsonProcessingException, ApiException, TypeExeption, TimeoutException, InterruptedException {
         ToscaTemplate toscaTemplate = initExecution(id);
+        boolean nothingToDelete = true;
         //If no nodes are specified delete all the infrastructure
         if (nodeNames == null || nodeNames.isEmpty()) {
             List<NodeTemplateMap> vmTopologies = helper.getVMTopologyTemplates();
             if (vmTopologies != null) {
                 for (NodeTemplateMap vmTopology : vmTopologies) {
-                    toscaTemplate = setDesieredSate(toscaTemplate, vmTopology, NODE_STATES.DELETED);
+                    NODE_STATES currentState = helper.getNodeCurrentState(vmTopology);
+                    if (currentState != null && currentState != NODE_STATES.DELETED) {
+                        nothingToDelete = false;
+                        toscaTemplate = setDesieredSate(toscaTemplate, vmTopology, NODE_STATES.DELETED);
+                    }
                 }
-                return execute(toscaTemplate, provisionerQueueName);
+                if (!nothingToDelete) {
+                    return execute(toscaTemplate, provisionerQueueName);
+                }
             }
             return id;
         } else {

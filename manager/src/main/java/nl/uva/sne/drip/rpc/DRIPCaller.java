@@ -71,7 +71,7 @@ public class DRIPCaller implements AutoCloseable {
 //            args.put("x-message-ttl", 60000);
 //            replyQueueName = channel.queueDeclare("myqueue", false, false, false, args).getQueue();
             replyQueueName = channel.queueDeclare().getQueue();
-            
+
         }
     }
 
@@ -110,11 +110,19 @@ public class DRIPCaller implements AutoCloseable {
 
         String jsonInString = mapper.writeValueAsString(r);
 
+        int timeOut = 25;
+        if (getRequestQeueName().equals("planner")) {
+            timeOut = 5;
+        }
+        if (getRequestQeueName().equals("provisioner")) {
+            timeOut = 10;
+        }
+
         //Build a correlation ID to distinguish responds 
         final String corrId = UUID.randomUUID().toString();
         AMQP.BasicProperties props = new AMQP.BasicProperties.Builder()
                 .correlationId(corrId)
-                .expiration("10000")
+                .expiration(String.valueOf(timeOut*60000))
                 .replyTo(getReplyQueueName())
                 .build();
         Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Sending: {0} to queue: {1}", new Object[]{jsonInString, getRequestQeueName()});
@@ -132,14 +140,7 @@ public class DRIPCaller implements AutoCloseable {
             }
         });
 //        String resp = response.take();
-        int timeOut = 25;
-        if (getRequestQeueName().equals("planner")) {
-            timeOut = 5;
-        }
-        if (getRequestQeueName().equals("provisioner")) {
-            timeOut = 10;
-        }
-        
+
         String resp = response.poll(timeOut, TimeUnit.MINUTES);
         Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", resp);
         if (resp == null) {
