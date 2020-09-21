@@ -137,7 +137,7 @@ if __name__ == "__main__":
         test_tosca_template = test_planner.resolve_requirements()
         test_tosca_template = test_planner.set_node_templates_properties()
         template_dict = tosca_helper.get_tosca_template_2_topology_template_dictionary(test_tosca_template)
-        logger.info("template ----: \n" + yaml.dump(template_dict))
+        logger.debug("template ----: \n" + yaml.dump(template_dict))
 
         ToscaTemplate(yaml_dict_tpl=copy.deepcopy(template_dict))
 

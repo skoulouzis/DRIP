@@ -11,7 +11,7 @@ from service.simple_spec_alayzer import SimpleAnalyzer
 from util import tosca_helper
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 def add_requirement(node, missing_requirement, capable_node_name):
