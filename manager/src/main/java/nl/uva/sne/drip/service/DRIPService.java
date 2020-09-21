@@ -58,19 +58,28 @@ public class DRIPService {
     @Value("${message.broker.queue.deployer}")
     private String deployerQueueName;
 
-    private String execute(ToscaTemplate toscaTemplate, String requestQeueName) throws JsonProcessingException, ApiException, IOException, TimeoutException, InterruptedException {
-        caller.init();
-        Logger.getLogger(DRIPService.class.getName()).log(Level.INFO, "toscaTemplate:\n{0}", toscaTemplate);
-        Message message = new Message();
-        message.setOwner("user");
-        message.setCreationDate(System.currentTimeMillis());
-        message.setToscaTemplate(toscaTemplate);
-
-        caller.setRequestQeueName(requestQeueName);
-        Message response = caller.call(message);
-        ToscaTemplate updatedToscaTemplate = response.getToscaTemplate();
-        caller.close();
-        return toscaTemplateService.save(updatedToscaTemplate);
+    private String execute(ToscaTemplate toscaTemplate, String requestQeueName) throws IOException, TimeoutException, InterruptedException{
+        try {
+            caller.init();
+            Logger.getLogger(DRIPService.class.getName()).log(Level.INFO, "toscaTemplate:\n{0}", toscaTemplate);
+            Message message = new Message();
+            message.setOwner("user");
+            message.setCreationDate(System.currentTimeMillis());
+            message.setToscaTemplate(toscaTemplate);
+            
+            caller.setRequestQeueName(requestQeueName);
+            Message response = caller.call(message);
+            ToscaTemplate updatedToscaTemplate = response.getToscaTemplate();
+            return toscaTemplateService.save(updatedToscaTemplate);
+        } catch (IOException | TimeoutException | InterruptedException ex) {
+            throw ex;
+        }finally{
+            try {
+                caller.close();
+            } catch (IOException | TimeoutException ex) {
+                Logger.getLogger(DRIPService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
     }
 

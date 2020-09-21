@@ -62,7 +62,7 @@ class Planner:
             self.tosca_template = ToscaTemplate(tosca_path)
         elif yaml_dict_tpl:
             self.yaml_dict_tpl = yaml_dict_tpl
-            logger.info('yaml_dict_tpl:\n' + str(yaml.dump(yaml_dict_tpl)))
+            logger.debug('yaml_dict_tpl:\n' + str(yaml.dump(yaml_dict_tpl)))
             self.tosca_template = ToscaTemplate(yaml_dict_tpl=yaml_dict_tpl)
 
         self.tosca_node_types = self.tosca_template.nodetemplates[0].type_definition.TOSCA_DEF
@@ -81,7 +81,7 @@ class Planner:
         return self.tosca_template
 
     def set_default_node_properties(self, node):
-        logger.info('Setting properties for: ' + str(node.type))
+        logger.debug('Setting properties for: ' + str(node.type))
         ancestors_properties = tosca_helper.get_all_ancestors_properties(node, self.all_node_types,
                                                                          self.all_custom_def)
         default_properties = {}
@@ -113,7 +113,7 @@ class Planner:
                             default_properties[prop_name] = node.templates[node_name]['properties'][prop_name][
                                 'default']
 
-            logger.info(
+            logger.debug(
                 'Adding to : ' + str(node.templates[node_name]) + ' properties: ' + str(default_properties))
             node.templates[node_name]['properties'] = default_properties
         return node
@@ -165,9 +165,9 @@ class Planner:
     def add_required_nodes(self, node):
         """Adds the required nodes in self.required_nodes for an input node."""
         if isinstance(node, NodeTemplate):
-            logger.info('Resolving requirements for: ' + node.name)
+            logger.debug('Resolving requirements for: ' + node.name)
         elif isinstance(node, dict):
-            logger.info('Resolving requirements for: ' + str(next(iter(node))))
+            logger.debug('Resolving requirements for: ' + str(next(iter(node))))
         # Get all requirements for node.
         all_requirements = self.get_all_requirements(node)
         if not all_requirements:
@@ -188,7 +188,7 @@ class Planner:
                     break
             if not tosca_helper.contains_node_type(self.required_nodes, matching_node_type_name) and \
                 not tosca_helper.contains_node_type(self.tosca_template.nodetemplates, matching_node_type_name):
-                logger.info('  Adding: ' + str(matching_node_template.name))
+                logger.debug('  Adding: ' + str(matching_node_template.name))
                 self.required_nodes.append(matching_node)
             # Find matching nodes for the new node's requirements
             self.add_required_nodes(matching_node)
@@ -197,13 +197,13 @@ class Planner:
         """Returns  all requirements for an input node including all parents requirements"""
 
         node_type_name = tosca_helper.get_node_type_name(node)
-        logger.info('      Looking for requirements for node: ' + node_type_name)
+        logger.debug('      Looking for requirements for node: ' + node_type_name)
         # Get the requirements for this node from its definition e.g. docker: hostedOn k8s
         def_type = self.all_node_types[node_type_name]
         all_requirements = []
         if 'requirements' in def_type.keys():
             all_requirements = def_type['requirements']
-            logger.info('      Found requirements: ' + str(all_requirements) + ' for node: ' + node_type_name)
+            logger.debug('      Found requirements: ' + str(all_requirements) + ' for node: ' + node_type_name)
 
         # Get the requirements for this node from the template. e.g. wordpress: connectsTo mysql
         # node_requirements =  tosca_helper.get_node_requirements(node)
@@ -214,7 +214,7 @@ class Planner:
         parent_requirements = tosca_helper.get_ancestors_requirements(node, self.all_node_types, self.all_custom_def)
         parent_type = tosca_helper.get_node_type_name(node)
         if parent_type and parent_requirements:
-            logger.info(
+            logger.debug(
                 '       Adding to : ' + str(node_type_name) + '  parent requirements from: ' + str(parent_type))
             if not all_requirements:
                 all_requirements += parent_requirements
@@ -270,7 +270,7 @@ class Planner:
             if 'capability' in req[key]:
                 capability = req[key]['capability']
                 # Find all nodes in the definitions that have the capability: capability
-                logger.info('  Looking for nodes in node types with capability: ' + capability)
+                logger.debug('  Looking for nodes in node types with capability: ' + capability)
                 capable_nodes = self.get_node_types_by_capability(capability)
                 if not capable_nodes:
                     logger.error('Did not find any node with required capability: ' + str(capability))

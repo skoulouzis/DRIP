@@ -108,7 +108,7 @@ def handle_delivery(message, sys=None):
     template_dict = tosca_helper.get_tosca_template_2_topology_template_dictionary(tosca_template)
 
     Planner(yaml_dict_tpl=template_dict, spec_service=spec_service)
-    logger.info("template ----: \n" + yaml.dump(template_dict))
+    logger.debug("template ----: \n" + yaml.dump(template_dict))
 
     response = {'toscaTemplate': template_dict}
     output_current_milli_time = int(round(time.time() * 1000))

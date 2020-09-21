@@ -71,43 +71,43 @@ services:
         - "8082:8082"    
         
         
-  mongoclient:
-    image: mongoclient
-    environment:
-        - MONGO_URL=mongodb://mongo:27017
-        - ROOT_URL=/mongoclient
-    depends_on:
-        - mongo
-    ports:
-        - "3001:3000"            
+  #mongoclient:
+    #image: mongoclient/mongoclient
+    #environment:
+        #- MONGO_URL=mongodb://mongo:27017
+        #- ROOT_URL=http://mongoclient/mongoclient
+    #depends_on:
+        #- mongo
+    #ports:
+        #- "3001:3000"            
         
       
-  #manager:
-    #depends_on:
-      #- rabbit
-      #- mongo
-      #- sure-tosca
-    #image: qcdis/manager 
-    #environment:
-      #RABBITMQ_HOST: rabbit
-      #MONGO_HOST: mongo
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-      #CREDENTIAL_SECRET: top_secret
-    #ports:
-      #- "8080:8080"       
+  manager:
+    depends_on:
+      - rabbit
+      - mongo
+      - sure-tosca
+    image: qcdis/manager 
+    environment:
+      RABBITMQ_HOST: rabbit
+      MONGO_HOST: mongo
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+      CREDENTIAL_SECRET: top_secret
+    ports:
+      - "8080:8080"       
             
   sure-tosca:
     image: qcdis/sure-tosca
     ports: 
       - "8081:8081"
     
-  planner:
-    depends_on:
-      - rabbit
-      - sure-tosca
-    image: qcdis/planner 
-    environment:
-      RABBITMQ_HOST: rabbit
+  #planner:
+    #depends_on:
+      #- rabbit
+      #- sure-tosca
+    #image: qcdis/planner 
+    #environment:
+      #RABBITMQ_HOST: rabbit
     
   provisioner:
     depends_on:
@@ -120,26 +120,24 @@ services:
       CLOUD_STORM_SECRET: 456
       CREDENTIAL_SECRET: top_secret
     
-  #deployer:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: qcdis/deployer 
-    #environment:
-      #RABBITMQ_HOST: rabbit           
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-      #SEMAPHORE_BASE_PATH: http://semaphore:3000/api
-      
-      
+  deployer:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: qcdis/deployer 
+    environment:
+      RABBITMQ_HOST: rabbit           
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+      SEMAPHORE_BASE_PATH: http://semaphore:3000/api
       
   cadvisor:
-    image: google/cadvisor
-    ports: 
-      - "8083:8081"      
+    image: gcr.io/google-containers/cadvisor:latest
+    ports:
+    - 8083:8080
     volumes:
-      - '/:/rootfs:ro'
-      - '/var/run:/var/run:rw'
-      - '/sys:/sys:ro'
-      - '/var/lib/docker/:/var/lib/docker:ro' 
-          
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+    
       
