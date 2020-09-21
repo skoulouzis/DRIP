@@ -43,9 +43,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class DRIPCaller implements AutoCloseable {
 
-    private Connection connection;
-    private Channel channel;
-    private String replyQueueName;
+//    private Connection connection;
+//    private Channel channel;
+//    private String replyQueueName;
     private String requestQeueName;
     private final ObjectMapper mapper;
     private final ConnectionFactory factory;
@@ -63,92 +63,93 @@ public class DRIPCaller implements AutoCloseable {
     }
 
     public void init() throws IOException, TimeoutException {
-        if (connection == null || !connection.isOpen()) {
-            connection = factory.newConnection();
-            channel = connection.createChannel();
-            // create a single callback queue per client not per requests. 
-            Map<String, Object> args = new HashMap<>();
-//            args.put("x-message-ttl", 60000);
-//            replyQueueName = channel.queueDeclare("myqueue", false, false, false, args).getQueue();
-            replyQueueName = channel.queueDeclare().getQueue();
-
-        }
+//        if (connection == null || !connection.isOpen()) {
+//            connection = factory.newConnection();
+//        }
     }
 
-    /**
-     * @return the connection
-     */
-    public Connection getConnection() {
-        return connection;
-    }
-
-    /**
-     * @return the channel
-     */
-    public Channel getChannel() {
-        return channel;
-    }
-
-    /**
-     * @return the replyQueueName
-     */
-    public String getReplyQueueName() {
-        return replyQueueName;
-    }
-
+//    /**
+//     * @return the connection
+//     */
+//    public Connection getConnection() {
+//        return connection;
+//    }
+//    /**
+//     * @return the channel
+//     */
+//    public Channel getChannel() {
+//        return channel;
+//    }
+//    /**
+//     * @return the replyQueueName
+//     */
+//    public String getReplyQueueName() {
+//        return replyQueueName;
+//    }
     @Override
     public void close() throws IOException, TimeoutException {
-        if (channel != null && channel.isOpen()) {
-            channel.close();
-        }
-        if (connection != null && connection.isOpen()) {
-            connection.close();
-        }
+
+//        if (connection != null && connection.isOpen()) {
+//            connection.close();
+//        }
     }
 
     public Message call(Message r) throws IOException, TimeoutException, InterruptedException {
+        Channel channel = null;
+        Connection connection = null;
+        try {
+            String jsonInString = mapper.writeValueAsString(r);
 
-        String jsonInString = mapper.writeValueAsString(r);
-
-        int timeOut = 25;
-        if (getRequestQeueName().equals("planner")) {
-            timeOut = 5;
-        }
-        if (getRequestQeueName().equals("provisioner")) {
-            timeOut = 10;
-        }
-
-        //Build a correlation ID to distinguish responds 
-        final String corrId = UUID.randomUUID().toString();
-        AMQP.BasicProperties props = new AMQP.BasicProperties.Builder()
-                .correlationId(corrId)
-                .expiration(String.valueOf(timeOut*60000))
-                .replyTo(getReplyQueueName())
-                .build();
-        Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Sending: {0} to queue: {1}", new Object[]{jsonInString, getRequestQeueName()});
-
-        getChannel().basicPublish("", getRequestQeueName(), props, jsonInString.getBytes("UTF-8"));
-
-        final BlockingQueue<String> response = new ArrayBlockingQueue(1);
-
-        getChannel().basicConsume(getReplyQueueName(), true, new DefaultConsumer(getChannel()) {
-            @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                if (properties.getCorrelationId().equals(corrId)) {
-                    response.offer(new String(body, "UTF-8"));
-                }
+            int timeOut = 25;
+            if (getRequestQeueName().equals("planner")) {
+                timeOut = 5;
             }
-        });
+            if (getRequestQeueName().equals("provisioner")) {
+                timeOut = 10;
+            }
+            connection = factory.newConnection();
+
+            channel = connection.createChannel();
+            Map<String, Object> args = new HashMap<>();
+            String replyQueueName = channel.queueDeclare().getQueue();
+
+            //Build a correlation ID to distinguish responds 
+            final String corrId = UUID.randomUUID().toString();
+            AMQP.BasicProperties props = new AMQP.BasicProperties.Builder()
+                    .correlationId(corrId)
+                    .expiration(String.valueOf(timeOut * 60000))
+                    .replyTo(replyQueueName)
+                    .build();
+            Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Sending: {0} to queue: {1}", new Object[]{jsonInString, getRequestQeueName()});
+
+            channel.basicPublish("", getRequestQeueName(), props, jsonInString.getBytes("UTF-8"));
+
+            final BlockingQueue<String> response = new ArrayBlockingQueue(1);
+
+            channel.basicConsume(replyQueueName, true, new DefaultConsumer(channel) {
+                @Override
+                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                    if (properties.getCorrelationId().equals(corrId)) {
+                        response.offer(new String(body, "UTF-8"));
+                    }
+                }
+            });
 //        String resp = response.take();
 
-        String resp = response.poll(timeOut, TimeUnit.MINUTES);
-        Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", resp);
-        if (resp == null) {
-            getChannel().queueDeleteNoWait(getReplyQueueName(), false, true);
-            close();
-            throw new TimeoutException("Timeout on qeue: " + getRequestQeueName());
+            String resp = response.poll(timeOut, TimeUnit.MINUTES);
+            Logger.getLogger(DRIPCaller.class.getName()).log(Level.INFO, "Got: {0}", resp);
+            if (resp == null) {
+                throw new TimeoutException("Timeout on qeue: " + getRequestQeueName());
+            }
+            return mapper.readValue(resp, Message.class);
+        } finally {
+            if (channel != null && channel.isOpen()) {
+                channel.close();
+            }
+            if (connection != null && connection.isOpen()) {
+                connection.close();
+            }
         }
-        return mapper.readValue(resp, Message.class);
     }
 
     /**

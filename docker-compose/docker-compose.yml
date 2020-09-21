@@ -82,32 +82,32 @@ services:
         #- "3001:3000"            
         
       
-  manager:
-    depends_on:
-      - rabbit
-      - mongo
-      - sure-tosca
-    image: qcdis/manager 
-    environment:
-      RABBITMQ_HOST: rabbit
-      MONGO_HOST: mongo
-      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-      CREDENTIAL_SECRET: top_secret
-    ports:
-      - "8080:8080"       
+  #manager:
+    #depends_on:
+      #- rabbit
+      #- mongo
+      #- sure-tosca
+    #image: qcdis/manager 
+    #environment:
+      #RABBITMQ_HOST: rabbit
+      #MONGO_HOST: mongo
+      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+      #CREDENTIAL_SECRET: top_secret
+    #ports:
+      #- "8080:8080"       
             
   sure-tosca:
     image: qcdis/sure-tosca
     ports: 
       - "8081:8081"
     
-  #planner:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: qcdis/planner 
-    #environment:
-      #RABBITMQ_HOST: rabbit
+  planner:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: qcdis/planner 
+    environment:
+      RABBITMQ_HOST: rabbit
     
   provisioner:
     depends_on:
