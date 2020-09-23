@@ -61,7 +61,7 @@ public class DRIPService {
     private String execute(ToscaTemplate toscaTemplate, String requestQeueName) throws IOException, TimeoutException, InterruptedException{
         try {
             caller.init();
-            Logger.getLogger(DRIPService.class.getName()).log(Level.INFO, "toscaTemplate:\n{0}", toscaTemplate);
+//            Logger.getLogger(DRIPService.class.getName()).log(Level.INFO, "toscaTemplate:\n{0}", toscaTemplate);
             Message message = new Message();
             message.setOwner("user");
             message.setCreationDate(System.currentTimeMillis());
