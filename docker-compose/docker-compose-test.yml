@@ -1,27 +1,33 @@
 version: '3'
 services:
 
-  nginx:
-    image: nginx
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./cert.pem:/etc/nginx/cert.pem
-      - ./privkey.pem:/etc/nginx/privkey.pem
-      #- ./www:/data/www
-    ports:
-    - "80:80"
-    - "443:443"
+  #nginx:
+    #image: nginx
+    #volumes:
+      #- ./nginx.conf:/etc/nginx/nginx.conf
+      #- ./cert.pem:/etc/nginx/cert.pem
+      #- ./privkey.pem:/etc/nginx/privkey.pem
+      ##- ./www:/data/www
+    #ports:
+    #- "80:80"
+    #- "443:443"
+    ##networks:
+      ##frontend:
+        ##ipv4_address: 172.20.0.2    
     
-  rabbit:
-    image: rabbitmq:3.8-management
-    ports:   
-      - "5671-5672:5671-5672"
-      - "15672:15672"
-      - "4369:4369"
-      - "15671:15671"     
+  #rabbit:
+    #image: rabbitmq:3.8-management
+    #ports:   
+      #- "5671-5672:5671-5672"
+      #- "15672:15672"
+      #- "4369:4369"
+      #- "15671:15671"     
+    ##networks:
+      ##frontend:
+        ##ipv4_address: 172.20.0.3
 
   mysql:
-    image: mysql:5.7
+    image: mysql:5.7 #works with 5.6 abd emaphore:2.4.1
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
       MYSQL_DATABASE: semaphore
@@ -29,9 +35,12 @@ services:
       MYSQL_PASSWORD: semaphore
     #ports:
       #- "3306:3306"
+    #networks:
+      #frontend:
+        #ipv4_address: 172.20.0.4      
       
   semaphore:
-    image: qcdis/docker_ansible_semaphore
+    image: qcdis/docker_ansible_semaphore:2.4.1-2.9.9
     environment:
       SEMAPHORE_DB_USER: semaphore
       SEMAPHORE_DB_PASS: semaphore
@@ -48,20 +57,49 @@ services:
       - "3000:3000"
     depends_on:
       - mysql
+    #networks:
+      #frontend:
+        #ipv4_address: 172.20.0.5  
       
-  mongo:
-    image: mongo:4
-    ports:
-      - "27017:27017"               
+  #mongo:
+    #image: mongo:4
+    #ports:
+      #- "27017:27017"           
+    ##networks:
+      ##frontend:
+        ##ipv4_address: 172.20.0.6      
     
+  #sure-tosca:
+    #image: qcdis/sure-tosca
+    #ports: 
+      #- "8081:8081"
+    ##networks:
+      ##frontend:
+        ##ipv4_address: 172.20.0.7  
       
-  
-            
-  sure-tosca:
-    image: qcdis/sure-tosca
-    ports: 
-      - "8081:8081"
-    
+ 
+  #compute:
+    #image: ubuntu:18.04
+    #volumes:
+      #- "./run.sh:/tmp/run.sh"    
+    #command: "/tmp/run.sh"
+    ##networks:
+      ##frontend:
+        ##ipv4_address: 172.20.0.8
+
+  ##compute_1:
+    ##image: ubuntu:18.04
+    ##command: "apt update && apt install openssh-server && tail -f /dev/null"
+    ##networks:
+      ##frontend:
+        ##ipv4_address: 172.20.0.9 
+
+      
+##networks:
+  ##frontend:
+    ##ipam:
+      ##config:
+        ##- subnet: 172.20.0.0/24
 
       
           
