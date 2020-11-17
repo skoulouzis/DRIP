@@ -33,7 +33,11 @@ spec:
           value: rabbit
         - name: SURE_TOSCA_BASE_PATH
           value: http://sure-tosca:8081/tosca-sure/1.0.0
-        image: qcdis/provisioner:3.0.0
+        - name: CLOUD_STORM_SECRET
+          value: ODlkYjgxM2RhNTAzMjExZTdiYWNhYWQ0
+        - name: CREDENTIAL_SECRET
+          value: MGY0MGQ1MDFkYzg5ZGIxYjY4MjQ4MzQz     
+        image: qcdis/provisioner
         name: provisioner
         imagePullPolicy: Always
         resources: {}

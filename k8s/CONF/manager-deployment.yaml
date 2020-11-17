@@ -36,8 +36,8 @@ spec:
         - name: SURE_TOSCA_BASE_PATH
           value: http://sure-tosca:8081/tosca-sure/1.0.0
         - name: CREDENTIAL_SECRET
-          value: top_secret
-        image: qcdis/manager:3.0.0
+          value: MGY0MGQ1MDFkYzg5ZGIxYjY4MjQ4MzQz
+        image: qcdis/manager
         name: manager
         imagePullPolicy: Always
         ports:
