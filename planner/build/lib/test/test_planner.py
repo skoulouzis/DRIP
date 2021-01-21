@@ -20,15 +20,10 @@ logger.setLevel(logging.DEBUG)
 
 class MyTestCase(unittest.TestCase):
 
-    def test_open_stack(self):
-        url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/openstack.yaml'
-        input_tosca_file_path = self.get_remote_tosca_file(url)
-        self.run_test(input_tosca_file_path)
-
-    def test_tic_gluster_fs(self):
-        url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/glusterFS.yaml'
-        input_tosca_file_path = self.get_remote_tosca_file(url)
-        self.run_test(input_tosca_file_path)
+    # def test_tic_gluster_fs(self):
+    #     url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/glusterFS.yaml'
+    #     input_tosca_file_path = self.get_remote_tosca_file(url)
+    #     self.run_test(input_tosca_file_path)
 
 
     def test_tic(self):
@@ -64,7 +59,7 @@ class MyTestCase(unittest.TestCase):
     def test_lifeWatch(self):
         url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/lifeWatch_vre1.yaml'
         tic_tosca = requests.get(url)
-        input_tosca_file_path = os.path.join(tempfile.gettempdir(),'lifeWatch_vre1.yaml')
+        input_tosca_file_path = os.path.join(tempfile.gettempdir(),'TIC.yaml')
         open( input_tosca_file_path, 'wb').write(tic_tosca.content)
         self.run_test(input_tosca_file_path)
 

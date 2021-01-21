@@ -18,7 +18,7 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 h.setFormatter(formatter)
 logger.addHandler(h)
 logger.handler_set = True
-base_url = 'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/'
+base_url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/'
 
 class Test(TestCase):
     def test_upload(self):

@@ -14,15 +14,15 @@ services:
     
   rabbit:
     image: rabbitmq:3.8-management
-    ports:   
+    ports:
       - "5671-5672:5671-5672"
       - "15672:15672"
       - "4369:4369"
-      - "15671:15671"     
+      - "15671:15671"
 
   mysql:
     image: mysql:5.7
-    volumes:    
+    volumes:
         - ./mysql.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
@@ -31,7 +31,7 @@ services:
       MYSQL_PASSWORD: semaphore
     #ports:
       #- "3306:3306"
-      
+
   semaphore:
     image: qcdis/docker_ansible_semaphore
     environment:
@@ -50,12 +50,12 @@ services:
       - "3000:3000"
     depends_on:
       - mysql
-      
+
   mongo:
     image: mongo:4
     ports:
-      - "27017:27017"  
-      
+      - "27017:27017"
+
   mongo-express:
     image: mongo-express
     environment:
@@ -68,9 +68,9 @@ services:
     depends_on:
         - mongo
     ports:
-        - "8082:8082"    
-        
-        
+        - "8082:8082"
+
+
   #mongoclient:
     #image: mongoclient/mongoclient
     #environment:
@@ -79,57 +79,57 @@ services:
     #depends_on:
         #- mongo
     #ports:
-        #- "3001:3000"            
-        
-      
-  manager:
+        #- "3001:3000"
+
+
+  sdia-orchestrator:
     depends_on:
       - rabbit
       - mongo
       - sure-tosca
-    image: qcdis/manager 
+    image: qcdis/sdia-orchestrator
     environment:
       RABBITMQ_HOST: rabbit
       MONGO_HOST: mongo
       SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
       CREDENTIAL_SECRET: top_secret
     ports:
-      - "8080:8080"       
-            
+      - "8080:8080"
+
   sure-tosca:
     image: qcdis/sure-tosca
-    ports: 
+    ports:
       - "8081:8081"
-    
+
   planner:
     depends_on:
       - rabbit
       - sure-tosca
-    image: qcdis/planner 
+    image: qcdis/planner
     environment:
       RABBITMQ_HOST: rabbit
-    
+
   provisioner:
     depends_on:
       - rabbit
       - sure-tosca
-    image: qcdis/provisioner 
+    image: qcdis/provisioner
     environment:
-      RABBITMQ_HOST: rabbit      
+      RABBITMQ_HOST: rabbit
       SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
       CLOUD_STORM_SECRET: 456
       CREDENTIAL_SECRET: top_secret
-    
-  #deployer:
-    #depends_on:
-      #- rabbit
-      #- sure-tosca
-    #image: qcdis/deployer 
-    #environment:
-      #RABBITMQ_HOST: rabbit           
-      #SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
-      #SEMAPHORE_BASE_PATH: http://semaphore:3000/api
-      
+
+  deployer:
+    depends_on:
+      - rabbit
+      - sure-tosca
+    image: qcdis/deployer
+    environment:
+      RABBITMQ_HOST: rabbit
+      SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
+      SEMAPHORE_BASE_PATH: http://semaphore:3000/api
+
   #cadvisor:
     #image: gcr.io/google-containers/cadvisor:latest
     #ports:

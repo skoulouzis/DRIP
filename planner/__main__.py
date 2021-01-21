@@ -130,7 +130,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     if sys.argv[1] == "test_local":
         tosca_path = "../TOSCA/"
-        input_tosca_file_path = tosca_path + '/application_example_updated.yaml'
+        input_tosca_file_path = tosca_path + '/generated_tosca_description_a8a061322c3b4b5593c289df841727af.yaml'
         conf = {'url': "http://host"}
         spec_service = SpecService(conf)
         test_planner = Planner(input_tosca_file_path, spec_service)

@@ -1,0 +1,1457 @@
+{
+	"info": {
+		"_postman_id": "413f892b-e0d4-4300-a556-7dfcea38cb10",
+		"name": "CONF test deploy",
+		"description": "CONF allows application developers to seamlessly plan a customized virtual infrastructure based on application level constraints on QoS and resource budgets, provisioning the virtual infrastructure, deploy application components onto the virtual infrastructure, and start execution on demand using TOSCA.\n\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Find topolog template by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "291160c7-0f44-42cf-84cc-240f8ef6b7e6",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"",
+							"",
+							"// var data = {",
+							"//     \"data\" : [",
+							"//         {",
+							"//             \"name\" : \"Postmany\"",
+							"//         }",
+							"//         ]",
+							"// };",
+							"// var template = `",
+							"//     <table>",
+							"//         <tr>",
+							"//             <th>Name</th>",
+							"//         </tr>",
+							"",
+							"//         {{#each response.data}}",
+							"//             <tr>",
+							"//                 <td>{{name}}</td>",
+							"//             </tr>",
+							"//         {{/each}}",
+							"//     </table>",
+							"// `;",
+							"// pm.visualizer.set(template, {",
+							"//     // Pass the responses you need in a single JSON as data",
+							"//     response: data",
+							"// });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "edvbafeabvafdb",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "deploy_tester",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "text/plain",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/tosca_template/{{tosca_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"tosca_template",
+						"{{tosca_id}}"
+					]
+				},
+				"description": "Returns a single topology template. "
+			},
+			"response": [
+				{
+					"name": "Invalid input",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Method Not Allowed",
+					"code": 405,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "Invalid ID supplied",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "ToscaTemplate not found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": "<string>"
+				}
+			]
+		},
+		{
+			"name": "PLAN tosca template",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3a4a1b37-9f1e-4ff1-8f10-e72639631533",
+						"exec": [
+							"// tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Response Body is not empty\"] = responseBody !== 200;",
+							"postman.setEnvironmentVariable(\"planed_tosca_id\", responseBody);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "deploy_tester",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "edvbafeabvafdb",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": " text/plain",
+						"type": "text"
+					},
+					{
+						"key": "accept",
+						"value": "text/plain",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/planner/plan/{{tosca_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"planner",
+						"plan",
+						"{{tosca_id}}"
+					]
+				},
+				"description": "Planns and returns the ID of the planed topolog template"
+			},
+			"response": [
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/planner/plan/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"planner",
+								"plan",
+								"<string>"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": "<string>"
+				},
+				{
+					"name": "Invalid ID supplied",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/planner/plan/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"planner",
+								"plan",
+								"<string>"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "ToscaTemplate not found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/planner/plan/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"planner",
+								"plan",
+								"<string>"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "Invalid input",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/planner/plan/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"planner",
+								"plan",
+								"<string>"
+							]
+						}
+					},
+					"status": "Method Not Allowed",
+					"code": 405,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Find  planed topolog template by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a566254b-f701-4d5f-af1a-5b479f31532c",
+						"exec": [
+							"// tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Response Body is not empty\"] = responseBody !== 200;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "deploy_tester",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "edvbafeabvafdb",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "text/plain",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/tosca_template/{{planed_tosca_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"tosca_template",
+						"{{planed_tosca_id}}"
+					]
+				},
+				"description": "Returns a single topolog template"
+			},
+			"response": [
+				{
+					"name": "ToscaTemplate not found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "Invalid input",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Method Not Allowed",
+					"code": 405,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "Invalid ID supplied",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": "<string>"
+				}
+			]
+		},
+		{
+			"name": "PROVISION tosca template",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "083634e0-93a7-4f4d-aa66-39c851d2436c",
+						"exec": [
+							"postman.setEnvironmentVariable(\"provisioned_tosca_id\", responseBody);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "deploy_tester",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "edvbafeabvafdb",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/provisioner/provision/{{planed_tosca_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"provisioner",
+						"provision",
+						"{{planed_tosca_id}}"
+					]
+				},
+				"description": "provosions the operationId: Plan Tosca Template Returns the provision ID"
+			},
+			"response": [
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/provisioner/provision/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"provisioner",
+								"provision",
+								"<string>"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": "<string>"
+				},
+				{
+					"name": "Invalid ID supplied",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/provisioner/provision/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"provisioner",
+								"provision",
+								"<string>"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "ToscaTemplate not found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/provisioner/provision/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"provisioner",
+								"provision",
+								"<string>"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "Invalid input",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/provisioner/provision/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"provisioner",
+								"provision",
+								"<string>"
+							]
+						}
+					},
+					"status": "Method Not Allowed",
+					"code": 405,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Find provisioned topolog template by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a8e9d158-341d-4344-bd79-ecf0a61984e6",
+						"exec": [
+							"// tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Response Body is not empty\"] = responseBody !== 200;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "deploy_tester",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "edvbafeabvafdb",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "text/plain",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/tosca_template/{{provisioned_tosca_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"tosca_template",
+						"{{provisioned_tosca_id}}"
+					]
+				},
+				"description": "Returns a single topolog template"
+			},
+			"response": [
+				{
+					"name": "Invalid input",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Method Not Allowed",
+					"code": 405,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "ToscaTemplate not found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": "<string>"
+				},
+				{
+					"name": "Invalid ID supplied",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "DEPLOY the software tosca template",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "020d63ca-7845-492a-96d8-d36d9f330dfd",
+						"exec": [
+							"postman.setEnvironmentVariable(\"deployed_tosca_id\", responseBody);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "deploy_tester",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "edvbafeabvafdb",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/deployer/deploy/{{provisioned_tosca_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"deployer",
+						"deploy",
+						"{{provisioned_tosca_id}}"
+					]
+				},
+				"description": "Returns the deployment ID"
+			},
+			"response": [
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/deployer/deploy/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"deployer",
+								"deploy",
+								"<string>"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": "<string>"
+				},
+				{
+					"name": "Invalid input",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/deployer/deploy/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"deployer",
+								"deploy",
+								"<string>"
+							]
+						}
+					},
+					"status": "Method Not Allowed",
+					"code": 405,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "Invalid ID supplied",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/deployer/deploy/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"deployer",
+								"deploy",
+								"<string>"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "ToscaTemplate not found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/deployer/deploy/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"deployer",
+								"deploy",
+								"<string>"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Find deployed topolog template by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "98e68ae8-9e40-4bd2-bdf6-10699ba589e1",
+						"exec": [
+							"// tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Response Body is not empty\"] = responseBody !== 200;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "edvbafeabvafdb",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "deploy_tester",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"type": "text",
+						"value": "text/plain"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/tosca_template/{{deployed_tosca_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"tosca_template",
+						"{{deployed_tosca_id}}"
+					]
+				},
+				"description": "Returns a single topolog template"
+			},
+			"response": [
+				{
+					"name": "Invalid input",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Method Not Allowed",
+					"code": 405,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "ToscaTemplate not found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": "<string>"
+				},
+				{
+					"name": "Invalid ID supplied",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Delete provisioned topolog template by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "40be57b1-b0de-4fab-86da-0a568f403d48",
+						"exec": [
+							"// tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Response Body is not empty\"] = responseBody !== 200;",
+							"postman.setEnvironmentVariable(\"deleted_tosca_id\", responseBody);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "deploy_tester",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "edvbafeabvafdb",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "accept",
+						"type": "text",
+						"value": "text/plain"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/tosca_template/{{provisioned_tosca_id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"tosca_template",
+						"{{provisioned_tosca_id}}"
+					]
+				},
+				"description": "Returns a single topolog template"
+			},
+			"response": [
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": "<string>"
+				},
+				{
+					"name": "ToscaTemplate not found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "Invalid ID supplied",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "Invalid input",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tosca_template/<string>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tosca_template",
+								"<string>"
+							]
+						}
+					},
+					"status": "Method Not Allowed",
+					"code": 405,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "c8620248-6b77-4e71-a078-5ce2397e6eef",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "ca112a09-3e91-4ad9-8fe8-857d59a75ccc",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "123752b8-f664-4303-a32d-96684daad374",
+			"key": "baseUrl",
+			"value": "/conf-api/3.0"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

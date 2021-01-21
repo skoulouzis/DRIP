@@ -21,30 +21,30 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/TIC.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/TIC.yaml')
         doc_id = int(id_example)
         self.assertIsInstance(doc_id,int)
-        # id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_planed.yaml')
+        # id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_planed.yaml')
         # doc_id = int(id_example)
         self.assertIsInstance(doc_id,int)
         id_example = self.upload_file(
-            'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_provisioned.yaml')
+            'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_provisioned.yaml')
         doc_id = int(id_example)
         self.assertIsInstance(doc_id,int)
         id_example = self.upload_file(
-            'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/glusterFS.yaml')
+            'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/glusterFS.yaml')
         doc_id = int(id_example)
         self.assertIsInstance(doc_id,int)
         id_example = self.upload_file(
-            'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/kubernetes.yaml')
+            'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/kubernetes.yaml')
         doc_id = int(id_example)
         self.assertIsInstance(doc_id,int)
         id_example = self.upload_file(
-            'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/lifeWatch_vre1.yaml')
+            'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/lifeWatch_vre1.yaml')
         doc_id = int(id_example)
         self.assertIsInstance(doc_id,int)
         id_example = self.upload_file(
-            'https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/topology.yaml')
+            'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/topology.yaml')
         doc_id = int(id_example)
         self.assertIsInstance(doc_id,int)
 
@@ -54,7 +54,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_properties'.format(
@@ -69,7 +69,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_types'.format(
@@ -84,7 +84,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/ancestors_requirements'.format(
@@ -100,7 +100,7 @@ class TestDefaultController(BaseTestCase):
 
         """
         # query_string = [('anchors', 'anchors_example'), ('derived_from', 'derived_from_example')]
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/dsl_definitions'.format(id=id_example),
@@ -112,7 +112,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/imports'.format(id=id_example),
@@ -124,7 +124,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_outputs.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_outputs.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/outputs'.format(
@@ -139,7 +139,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/properties'.format(
@@ -154,7 +154,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/requirements'.format(
@@ -169,7 +169,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         query_string = [('type_name', None),
                         ('node_name', 'compute'),
@@ -240,7 +240,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/type_name'.format(
@@ -255,7 +255,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/derived_from'.format(
@@ -270,7 +270,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates/{node_name}/related'.format(
@@ -285,7 +285,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         query_string = [('type_name', None),
                         ('derived_from', None)]
@@ -300,7 +300,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template'.format(id=id_example),
@@ -314,7 +314,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}'.format(id=id_example),
@@ -328,7 +328,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         query_string = [('kind_of_type', 'interface_types'),
                         ('has_interfaces', None),
@@ -368,7 +368,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         properties = {'properties': {'cpu_frequency': '2 GHz'}}
         response = self.client.open(
@@ -388,7 +388,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         response = self.client.open(
             '/tosca-sure/1.0.0/tosca_template/{id}/topology_template/node_templates'.format(id=id_example),
@@ -404,7 +404,7 @@ class TestDefaultController(BaseTestCase):
 
 
         """
-        id_example = self.upload_file('https://raw.githubusercontent.com/QCDIS/sdia-tosca/master/examples/application_example_2_topologies.yaml')
+        id_example = self.upload_file('https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_2_topologies.yaml')
         self.assertTrue(id_example.strip().isdigit())
         query_string = [('instance_name', 'instance_name_example'),
                         ('operation_name', 'provision')]
