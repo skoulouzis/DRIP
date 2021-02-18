@@ -2,7 +2,7 @@
 
 cd ../
 python3 -m venv venv
-cd sure_tosca-flask-server && venv/bin/pip3 install -r test-requirements.txt && venv/bin/python3 -m unittest discover
+cd sure_tosca-flask-server && python3 -m venv venv && venv/bin/pip3 install -r test-requirements.txt && venv/bin/python3 -m unittest discover
 if [ $? -eq 0 ]
 then
   echo "------- sure_tosca-flask-server tests successful------"
