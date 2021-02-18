@@ -62,7 +62,7 @@ fi
 #  exit 1
 #fi
 
-#cd ../
+cd ../
 cd semaphore-python-client-generated  && python3 -m venv venv && venv/bin/pip3 install -r test-requirements.txt && venv/bin/pip3 install -r requirements.txt && venv/bin/python3 -m unittest discover
 if [ $? -eq 0 ]
 then
