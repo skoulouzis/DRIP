@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cd ../
+python3 -m venv venv
 cd sure_tosca-flask-server && venv/bin/pip3 install -r test-requirements.txt && venv/bin/python3 -m unittest discover
 if [ $? -eq 0 ]
 then
