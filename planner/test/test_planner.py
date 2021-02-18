@@ -37,10 +37,10 @@ class MyTestCase(unittest.TestCase):
         self.run_test(input_tosca_file_path)
 
 
-    def test_docker(self):
-        url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_updated.yaml'
-        input_tosca_file_path = self.get_remote_tosca_file(url)
-        self.run_test(input_tosca_file_path)
+    # def test_docker(self):
+    #     url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_updated.yaml'
+    #     input_tosca_file_path = self.get_remote_tosca_file(url)
+    #     self.run_test(input_tosca_file_path)
 
         url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/lifeWatch_vre1.yaml'
         input_tosca_file_path = self.get_remote_tosca_file(url)
