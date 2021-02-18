@@ -73,16 +73,16 @@ else
   exit 1
 fi
 
-cd ../
-cd deployer  && python3 -m venv venv && venv/bin/pip3 install -U pip setuptools  && venv/bin/pip3 install -r test-requirements.txt && venv/bin/pip3 install -r requirements.txt && venv/bin/python3 -m unittest discover
-if [ $? -eq 0 ]
-then
-  echo "------- deployer tests successful ------"
-else
-  echo "deployer tests Failed"
-  docker stack rm conf-test
-  exit 1
-fi
+#cd ../
+#cd deployer  && python3 -m venv venv && venv/bin/pip3 install -U pip setuptools  && venv/bin/pip3 install -r test-requirements.txt && venv/bin/pip3 install -r requirements.txt && venv/bin/python3 -m unittest discover
+#if [ $? -eq 0 ]
+#then
+#  echo "------- deployer tests successful ------"
+#else
+#  echo "deployer tests Failed"
+#  docker stack rm conf-test
+#  exit 1
+#fi
 
 
 docker stack rm conf-test
