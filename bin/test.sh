@@ -29,38 +29,38 @@ else
 fi
 
 
-#cd ../
-#mvn test
-#if [ $? -eq 0 ]
-#then
-#  echo "------- Java tests successful------"
-#else
-#  echo "Java tests Failed"
-#  docker stack rm conf-test
-#  exit 1
-#fi
-#
-#cd planner && python3 -m venv venv && venv/bin/pip3 install -r test-requirements.txt && venv/bin/pip3 install -r requirements.txt && venv/bin/python3 -m unittest discover
-#if [ $? -eq 0 ]
-#then
-#  echo "------- Planner tests successful------"
-#else
-#  echo "Planner tests Failed"
-#  docker stack rm conf-test
-#  exit 1
-#fi
-#
-#
-#cd ../
-#cd sure_tosca-client_python_stubs  && python3 -m venv venv && venv/bin/pip3 install -r test-requirements.txt && venv/bin/pip3 install -r requirements.txt && venv/bin/python3 -m unittest discover
-#if [ $? -eq 0 ]
-#then
-#  echo "------- sure_tosca-client_python_stubs tests successful------"
-#else
-#  echo "sure_tosca-client_python_stubs tests Failed"
-#  docker stack rm conf-test
-#  exit 1
-#fi
+cd ../
+mvn test
+if [ $? -eq 0 ]
+then
+  echo "------- Java tests successful------"
+else
+  echo "Java tests Failed"
+  docker stack rm conf-test
+  exit 1
+fi
+
+cd planner && python3 -m venv venv && venv/bin/pip3 install -r test-requirements.txt && venv/bin/pip3 install -r requirements.txt && venv/bin/python3 -m unittest discover
+if [ $? -eq 0 ]
+then
+  echo "------- Planner tests successful------"
+else
+  echo "Planner tests Failed"
+  docker stack rm conf-test
+  exit 1
+fi
+
+
+cd ../
+cd sure_tosca-client_python_stubs  && python3 -m venv venv && venv/bin/pip3 install -r test-requirements.txt && venv/bin/pip3 install -r requirements.txt && venv/bin/python3 -m unittest discover
+if [ $? -eq 0 ]
+then
+  echo "------- sure_tosca-client_python_stubs tests successful------"
+else
+  echo "sure_tosca-client_python_stubs tests Failed"
+  docker stack rm conf-test
+  exit 1
+fi
 
 cd ../
 cd semaphore-python-client-generated  && python3 -m venv venv && venv/bin/pip3 install -r test-requirements.txt && venv/bin/pip3 install -r requirements.txt && venv/bin/python3 -m unittest discover
