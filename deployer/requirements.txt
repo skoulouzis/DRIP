@@ -12,4 +12,4 @@ python_dateutil==2.8.1
 # setuptools==46.1.3
 # urllib3==1.25.8
 kubernetes==11.0.0
-sure_tosca_client==1.0.6
+sure_tosca_client==1.0.0
