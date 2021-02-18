@@ -38,7 +38,7 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_docker(self):
-        url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/application_example_updated.yaml'
+        url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-totest_kubernetessca/master/examples/application_example_updated.yaml'
         input_tosca_file_path = self.get_remote_tosca_file(url)
         self.run_test(input_tosca_file_path)
 
@@ -46,10 +46,10 @@ class MyTestCase(unittest.TestCase):
         input_tosca_file_path = self.get_remote_tosca_file(url)
         self.run_test(input_tosca_file_path)
 
-    def test_kubernetes(self):
-        url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/kubernetes.yaml'
-        input_tosca_file_path = self.get_remote_tosca_file(url)
-        self.run_test(input_tosca_file_path)
+    # def test_kubernetes(self):
+    #     url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/kubernetes.yaml'
+    #     input_tosca_file_path = self.get_remote_tosca_file(url)
+    #     self.run_test(input_tosca_file_path)
 
     def test_topology(self):
         url = 'https://raw.githubusercontent.com/qcdis-sdia/sdia-tosca/master/examples/topology.yaml'
