@@ -39,7 +39,7 @@ else
   exit 1
 fi
 
-cd planner && venv/bin/python3 -m unittest discover
+cd planner && python3 -m venv venv && venv/bin/python3 -m unittest discover
 if [ $? -eq 0 ]
 then
   echo "------- Planner tests successful------"
@@ -50,7 +50,7 @@ fi
 
 
 cd ../
-cd sure_tosca-client_python_stubs  && venv/bin/python3 -m unittest discover
+cd sure_tosca-client_python_stubs  && python3 -m venv venv && venv/bin/python3 -m unittest discover
 if [ $? -eq 0 ]
 then
   echo "------- sure_tosca-client_python_stubs tests successful------"
@@ -60,7 +60,7 @@ else
 fi
 
 cd ../
-cd semaphore-python-client-generated  && venv/bin/python3 -m unittest discover
+cd semaphore-python-client-generated  && python3 -m venv venv && venv/bin/python3 -m unittest discover
 if [ $? -eq 0 ]
 then
   echo "------- semaphore-python-client-generated tests successful ------"
@@ -70,7 +70,7 @@ else
 fi
 
 cd ../
-cd deployer  && venv/bin/python3 -m unittest discover
+cd deployer  && python3 -m venv venv && venv/bin/python3 -m unittest discover
 if [ $? -eq 0 ]
 then
   echo "------- deployer tests successful ------"
