@@ -7,3 +7,4 @@ tinydb==3.15.2
 tosca-parser==2.0.0
 flask-restx==0.2.0
 werkzeug==1.0.1
+six==1.15.0
