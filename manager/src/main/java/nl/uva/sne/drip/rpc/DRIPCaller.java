@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.uva.sne.drip.model.Message;
+import nl.uva.qcdis.sdia.model.Message;
 import org.springframework.stereotype.Service;
 
 /*

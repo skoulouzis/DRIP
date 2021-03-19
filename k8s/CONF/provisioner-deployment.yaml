@@ -37,7 +37,7 @@ spec:
           value: ODlkYjgxM2RhNTAzMjExZTdiYWNhYWQ0
         - name: CREDENTIAL_SECRET
           value: MGY0MGQ1MDFkYzg5ZGIxYjY4MjQ4MzQz     
-        image: qcdis/provisioner
+        image: qcdis/sdia-provisioner:1.0.3 #qcdis/provisioner
         name: provisioner
         imagePullPolicy: Always
         resources: {}

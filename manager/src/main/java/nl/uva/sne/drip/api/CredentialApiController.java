@@ -1,6 +1,6 @@
 package nl.uva.sne.drip.api;
 
-import nl.uva.sne.drip.model.tosca.Credential;
+import nl.uva.qcdis.sdia.model.tosca.Credential;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import java.io.UnsupportedEncodingException;

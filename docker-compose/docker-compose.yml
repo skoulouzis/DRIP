@@ -29,8 +29,8 @@ services:
       MYSQL_DATABASE: semaphore
       MYSQL_USER: semaphore
       MYSQL_PASSWORD: semaphore
-    #ports:
-      #- "3306:3306"
+    ports:
+      - "3306:3306"
 
   semaphore:
     image: qcdis/docker_ansible_semaphore
@@ -110,6 +110,7 @@ services:
       RABBITMQ_HOST: rabbit
 
   provisioner:
+    restart: unless-stopped
     depends_on:
       - rabbit
       - sure-tosca
@@ -129,15 +130,5 @@ services:
       RABBITMQ_HOST: rabbit
       SURE_TOSCA_BASE_PATH: http://sure-tosca:8081/tosca-sure/1.0.0
       SEMAPHORE_BASE_PATH: http://semaphore:3000/api
-
-  #cadvisor:
-    #image: gcr.io/google-containers/cadvisor:latest
-    #ports:
-    #- 8083:8080
-    #volumes:
-    #- /:/rootfs:ro
-    #- /var/run:/var/run:rw
-    #- /sys:/sys:ro
-    #- /var/lib/docker/:/var/lib/docker:ro
     
       
