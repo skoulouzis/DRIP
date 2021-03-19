@@ -36,7 +36,7 @@ spec:
         - name: SEMAPHORE_BASE_PATH
           value: http://semaphore:3000/api
         - name: CREDENTIAL_SECRET
-          value: MGY0MGQ1MDFkYzg5ZGIxYjY4MjQ4MzQz
+          value: sn7M5MwhUDi7GviSU-0YtNDpgXlKvA4NYHGKBvzToas=
         image: qcdis/sdia-deployer:1.0.3
         name: deployer
         imagePullPolicy: Always
